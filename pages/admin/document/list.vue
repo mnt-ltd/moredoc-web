@@ -44,6 +44,22 @@
               >
             </el-tooltip>
           </el-form-item>
+          <el-form-item>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="批量将选中的文档设置为VIP文档或取消VIP文档"
+              placement="top"
+            >
+              <el-button
+                type="warning"
+                @click="batchUpdateDocumentsVIP"
+                :disabled="selectedRow.length === 0"
+                icon="el-icon-edit"
+                >批量VIP</el-button
+              >
+            </el-tooltip>
+          </el-form-item>
         </template>
       </FormSearch>
     </el-card>
@@ -141,6 +157,18 @@
     </el-dialog>
     <el-dialog
       :close-on-click-modal="false"
+      title="批量VIP"
+      width="640px"
+      :visible.sync="formDocumentsVIPVisible"
+    >
+      <FormUpdateDocumentsVIP
+        v-if="formDocumentsVIPVisible"
+        :documents="categoryDocuments"
+        @success="formSuccess"
+      />
+    </el-dialog>
+    <el-dialog
+      :close-on-click-modal="false"
       title="推荐设置"
       :visible.sync="formDocumentRecommendVisible"
       width="640px"
@@ -192,6 +220,7 @@ export default {
       boolOptions,
       document: { id: 0 },
       formDocumentsCategoryVisible: false,
+      formDocumentsVIPVisible: false,
       categoryDocuments: [],
     }
   },
@@ -299,9 +328,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listDocument()
       } else {
@@ -355,6 +384,7 @@ export default {
       this.formVisible = false
       this.formDocumentRecommendVisible = false
       this.formDocumentsCategoryVisible = false
+      this.formDocumentsVIPVisible = false
       this.listDocument()
     },
     batchDelete() {
@@ -382,6 +412,10 @@ export default {
     batchUpdateDocumentsCategory() {
       this.categoryDocuments = this.selectedRow
       this.formDocumentsCategoryVisible = true
+    },
+    batchUpdateDocumentsVIP() {
+      this.categoryDocuments = this.selectedRow
+      this.formDocumentsVIPVisible = true
     },
     deleteRow(row) {
       this.$confirm(
@@ -469,6 +503,12 @@ export default {
           label: '分类',
           minWidth: 180,
           type: 'breadcrumb',
+        },
+        {
+          prop: 'is_vip',
+          label: 'VIP文档',
+          width: 80,
+          type: 'bool',
         },
         { prop: 'size', label: '大小', width: 100, type: 'bytes' },
         { prop: 'pages', label: '页数', width: 80, type: 'number' },

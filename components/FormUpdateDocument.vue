@@ -56,28 +56,42 @@
             ></el-input-number> </el-form-item
         ></el-col>
       </el-row>
-      <el-form-item
-        v-if="isAdmin"
-        label="状态"
-        prop="status"
-        :rules="[
-          { required: true, message: '请选择文档状态', trigger: 'change' },
-        ]"
-      >
-        <el-select
-          v-model="document.status"
-          filterable
-          placeholder="请选择文档状态"
-        >
-          <el-option
-            v-for="item in documentStatusOptions"
-            :key="'status-' + item.value"
-            :value="item.value"
-            :label="item.label"
-            :disabled="item.disabled"
-          ></el-option>
-        </el-select>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <!-- 是否是VIP文档 -->
+          <el-form-item label="VIP文档" prop="is_vip">
+            <el-switch
+              v-model="document.is_vip"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+            ></el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            v-if="isAdmin"
+            label="状态"
+            prop="status"
+            :rules="[
+              { required: true, message: '请选择文档状态', trigger: 'change' },
+            ]"
+          >
+            <el-select
+              v-model="document.status"
+              filterable
+              placeholder="请选择文档状态"
+            >
+              <el-option
+                v-for="item in documentStatusOptions"
+                :key="'status-' + item.value"
+                :value="item.value"
+                :label="item.label"
+                :disabled="item.disabled"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
       <el-form-item label="关键字">
         <el-input
@@ -99,6 +113,7 @@
           type="primary"
           class="btn-block"
           icon="el-icon-check"
+          :loading="loading"
           @click="setDocument"
           >提交</el-button
         >
@@ -135,6 +150,7 @@ export default {
   data() {
     return {
       documentStatusOptions,
+      loading: false,
       document: this.getInitialDocumentData(),
     }
   },
@@ -178,6 +194,7 @@ export default {
     setDocument() {
       this.$refs.document.validate(async (valid) => {
         if (valid) {
+          this.loading = true
           const res = await updateDocument(this.document)
           if (res.status === 200) {
             this.$message.success('更新成功')
@@ -185,6 +202,7 @@ export default {
           } else {
             this.$message.error(res.data.message || '更新失败')
           }
+          this.loading = false
         }
       })
     },

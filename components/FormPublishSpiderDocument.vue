@@ -1,0 +1,137 @@
+<template>
+  <div class="com-form-publish-spider-document">
+    <!-- 发布文档 -->
+    <el-form ref="form" :model="form" label-position="top">
+      <el-form-item
+        label="用户ID"
+        prop="user_id"
+        :rules="[{ required: true, message: '请输入用户ID', trigger: 'blur' }]"
+      >
+        <el-input-number v-model="form.user_id"></el-input-number>
+      </el-form-item>
+      <el-form-item
+        label="发布到分类"
+        prop="category_id"
+        :rules="[
+          {
+            required: true,
+            message: '请选择发布到文档的分类',
+            trigger: 'blur',
+          },
+        ]"
+      >
+        <el-cascader
+          v-model="form.category_id"
+          :options="categoryTrees"
+          :props="{
+            checkStrictly: true,
+            expandTrigger: 'hover',
+            label: 'title',
+            value: 'id',
+          }"
+          clearable
+          filterable
+          placeholder="请选择发布到文档的分类"
+        ></el-cascader>
+      </el-form-item>
+      <!-- 价格 -->
+      <el-form-item label="价格" prop="price">
+        <el-input-number v-model="form.price"></el-input-number>
+      </el-form-item>
+      <el-form-item label="文档清单" prop="documents">
+        <el-table :data="documents" height="360">
+          <el-table-column prop="id" label="ID" width="80"></el-table-column>
+          <el-table-column prop="title" label="标题"></el-table-column>
+          <!-- <el-table-column prop="price" label="价格" width="140">
+            <template slot-scope="scope">
+              <el-input-number
+                v-model="scope.row.price"
+                :min="0"
+                :max="100000"
+                size="mini"
+              />
+            </template>
+          </el-table-column> -->
+          <el-table-column prop="size" label="大小" width="100">
+            <template slot-scope="scope">
+              {{ formatBytes(scope.row.size) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="ext"
+            width="70"
+            label="扩展名"
+          ></el-table-column>
+        </el-table>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          class="btn-block"
+          icon="el-icon-check"
+          @click="batchUpdateSpiderDocuments"
+          >提交发布</el-button
+        >
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+import { formatBytes } from '~/utils/utils'
+import { batchUpdateSpiderDocument } from '~/api/spiderdocument'
+
+export default {
+  props: {
+    documents: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      users: [],
+      prices: [],
+      form: {
+        user_id: '',
+        category_id: [],
+        status: 5, // 加入到发布队列
+        price: 0, // 价格
+      },
+    }
+  },
+  computed: {
+    ...mapGetters('category', ['categoryTrees']),
+  },
+  methods: {
+    formatBytes,
+    async batchUpdateSpiderDocuments() {
+      this.$refs.form.validate(async (valid) => {
+        if (valid) {
+          const docs = this.documents.map((item) => {
+            const newItem = {
+              ...item,
+              status: 5, // 加入到发布队列
+              category_id: JSON.stringify(this.form.category_id),
+              user_id: this.form.user_id,
+              price: this.form.price || 0,
+            }
+            delete newItem.url_html
+            delete newItem.editing
+            return newItem
+          })
+          const res = await batchUpdateSpiderDocument({
+            spider_document: docs,
+          })
+          if (res.status === 200) {
+            this.$message.success('加入发布队列成功')
+            this.$emit('success')
+          } else {
+            this.$message.error(res.data.message)
+          }
+        }
+      })
+    },
+  },
+}
+</script>

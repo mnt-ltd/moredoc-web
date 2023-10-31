@@ -192,10 +192,10 @@
                       :src="`/static/images/${doc.icon}_24.png`"
                       :alt="`${doc.icon}文档`"
                     />
-                    {{ doc.title }}
+                    <span v-html="doc.title"></span>
                   </a>
                 </h3>
-                <div class="doc-desc">{{ doc.description }}</div>
+                <div class="doc-desc" v-html="doc.description"></div>
                 <div class="doc-info">
                   <el-rate
                     v-model="doc.score"
@@ -635,6 +635,10 @@ export default {
     height: 1px;
   }
   .search-main {
+    mark {
+      background-color: #fff;
+      color: #f56c6c;
+    }
     .el-card__header {
       font-weight: normal;
       font-size: 15px;

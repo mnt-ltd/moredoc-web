@@ -3,6 +3,7 @@
     <el-table
       v-loading="loading"
       :data="tableData"
+      border
       style="width: 100%"
       row-key="id"
       :tree-props="treeProps"
@@ -24,7 +25,7 @@
         :min-width="item.minWidth"
         :fixed="item.fixed"
       >
-        <template slot-scope="scope">
+        <template slot-scope="scope" :class="[item.editable ? 'editable' : '']">
           <!-- 头像 -->
           <el-avatar
             v-if="item.type === 'avatar'"
@@ -34,13 +35,19 @@
             <img src="/static/images/blank.png" />
           </el-avatar>
           <!-- 数字 -->
-          <span v-else-if="item.type === 'number'">{{
-            scope.row[item.prop] || '0'
-          }}</span>
+          <div v-else-if="item.type === 'number'">
+            <el-input-number
+              v-if="item.editable && scope.row['editing']"
+              v-model="scope.row[item.prop]"
+              size="medium"
+            ></el-input-number>
+            <div v-else>{{ scope.row[item.prop] || '0' }}</div>
+          </div>
           <el-tag
             v-else-if="item.type === 'bool'"
             :type="scope.row[item.prop] ? 'success' : 'danger'"
             effect="dark"
+            size="medium"
           >
             {{ scope.row[item.prop] ? '是' : '否' }}</el-tag
           >
@@ -48,16 +55,31 @@
             {{ formatBytes(scope.row[item.prop]) }}
           </span>
           <!-- 枚举，键为数字 -->
-          <span v-else-if="item.type === 'enum'">
-            <el-tag
-              v-if="item.enum[scope.row[item.prop] || 0]"
-              :type="item.enum[scope.row[item.prop] || 0].type || 'info'"
-              :effect="item.enum[scope.row[item.prop] || 0].effect || 'dark'"
+          <div v-else-if="item.type === 'enum'">
+            <el-select
+              v-if="item.editable && scope.row['editing']"
+              v-model="scope.row[item.prop]"
+              size="medium"
             >
-              {{ item.enum[scope.row[item.prop] || 0].label }}
-            </el-tag>
-            <span v-else>-</span>
-          </span>
+              <el-option
+                v-for="(option, index) in item.enum"
+                :key="'enum-' + item.prop + index"
+                :label="option.label"
+                :value="option.value"
+              ></el-option>
+            </el-select>
+            <template v-else>
+              <el-tag
+                size="medium"
+                v-if="item.enum[scope.row[item.prop] || 0]"
+                :type="item.enum[scope.row[item.prop] || 0].type || 'info'"
+                :effect="item.enum[scope.row[item.prop] || 0].effect || 'dark'"
+              >
+                {{ item.enum[scope.row[item.prop] || 0].label }}
+              </el-tag>
+              <span v-else>-</span>
+            </template>
+          </div>
           <span v-else-if="item.type === 'datetime'">
             {{ formatDatetime(scope.row[item.prop]) || '0000-00-00 00:00:00' }}
           </span>
@@ -85,6 +107,7 @@
           <span v-else-if="item.type === 'array'">
             <template v-if="scope.row[item.prop]">
               <el-tag
+                size="medium"
                 v-for="(value, idx) in scope.row[item.prop]"
                 :key="item.prop + idx"
                 class="mgr-5px"
@@ -107,10 +130,18 @@
             <template v-else>-</template>
           </span>
           <!-- 字符串。更多，则需要继续扩展 -->
-          <span v-else-if="item.type==='html'">
+          <span v-else-if="item.type === 'html'">
             <span v-html="scope.row[item.prop]"></span>
           </span>
-          <span v-else>{{ scope.row[item.prop] || '-' }}</span>
+          <template v-else>
+            <el-input
+              v-if="item.editable && scope.row['editing']"
+              size="medium"
+              v-model="scope.row[item.prop]"
+              :placeholder="item.placeholder || '请输入' + item.label"
+            ></el-input>
+            <template v-else>{{ scope.row[item.prop] || '-' }}</template>
+          </template>
         </template>
       </el-table-column>
       <el-table-column
@@ -232,6 +263,19 @@ export default {
   }
   .el-breadcrumb__separator[class*='icon'] {
     margin: 0;
+  }
+  .el-table--border,
+  .el-table--group {
+    border: 0;
+  }
+  .el-table--border th.el-table__cell,
+  .el-table--border .el-table__cell,
+  .el-table__fixed-right-patch {
+    border: 0;
+  }
+  .editable {
+    cursor: pointer;
+    position: relative;
   }
 }
 </style>

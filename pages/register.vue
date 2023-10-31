@@ -14,7 +14,15 @@
         <div slot="header" class="clearfix">
           <span>用户注册</span>
         </div>
-        <form-register :redirect="redirect"></form-register>
+        <el-tabs type="card" v-if="settings.system.enable_sms">
+          <el-tab-pane label="邮箱注册">
+            <form-register :redirect="redirect"></form-register>
+          </el-tab-pane>
+          <el-tab-pane label="手机注册">
+            <form-register-mobile :redirect="redirect"></form-register-mobile>
+          </el-tab-pane>
+        </el-tabs>
+        <form-register v-else :redirect="redirect"></form-register>
       </el-card>
     </div>
   </div>

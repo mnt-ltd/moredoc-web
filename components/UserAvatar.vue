@@ -8,9 +8,22 @@
     >
       <img src="/static/images/avatar.png" />
     </el-avatar>
+    <div
+      class="vip-icon"
+      v-if="settings.vip.enable && user.is_vip"
+      :class="size <= 42 ? 'vip-icon-sm' : ''"
+    >
+      <el-tooltip class="item" effect="dark" content="VIP会员" placement="left">
+        <img
+          :src="settings.vip.icon || '/static/images/icon-vip.png'"
+          alt="VIP会员"
+        />
+      </el-tooltip>
+    </div>
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'UserAvatar',
   props: {
@@ -26,6 +39,9 @@ export default {
       type: Object,
       default: () => {},
     },
+  },
+  computed: {
+    ...mapGetters('setting', ['settings']),
   },
   methods: {
     errorAvatar() {
@@ -51,6 +67,29 @@ export default {
       // width: 100%;
       // border-radius: 50%;
       margin: 0 auto;
+    }
+  }
+  .vip-icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 10px;
+    height: 20px;
+    width: 20px;
+    box-sizing: border-box;
+    img {
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+    }
+    &.vip-icon-sm {
+      height: 16px;
+      width: 16px;
+      img {
+        height: 16px;
+        width: 16px;
+      }
     }
   }
 }

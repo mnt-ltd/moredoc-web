@@ -112,6 +112,9 @@
                 <el-dropdown-item command="me"
                   ><i class="fa fa-user-o"></i> 个人中心</el-dropdown-item
                 >
+                <el-dropdown-item command="order"
+                  ><i class="el-icon-goods"></i> 我的订单</el-dropdown-item
+                >
                 <!-- <el-dropdown-item command="profile"
                   ><i class="fa fa-edit"></i> 个人资料</el-dropdown-item
                 > -->
@@ -269,7 +272,7 @@
             v-html="settings.display.copyright_statement"
           ></div>
         </div>
-        <div>
+        <div v-if="settings.system.enable_powered_by">
           Powered By
           <el-link
             :underline="false"
@@ -280,7 +283,7 @@
             class="powered-by"
             >MOREDOC</el-link
           >
-          CE
+          PRO
           <span>{{ settings.system.version }}</span>
         </div>
       </div>
@@ -352,6 +355,14 @@
           <li>
             <div class="el-link el-link--default" @click="goToLink(`/me`)">
               <i class="fa fa-user-o"></i> &nbsp;个人中心
+            </div>
+          </li>
+          <li>
+            <div
+              class="el-link el-link--default"
+              @click="goToLink(`/me/order`)"
+            >
+              <i class="el-icon-goods"></i> &nbsp;我的订单
             </div>
           </li>
           <li>
@@ -571,6 +582,9 @@ export default {
         case 'me':
           this.$router.push(`/me`)
           break
+        case 'order':
+          this.$router.push(`/me/order`)
+          break
         case 'admin':
           this.$router.push('/admin')
           break
@@ -757,14 +771,15 @@ export default {
       border-color: transparent !important;
     }
     .el-dropdown-link {
-      line-height: 60px;
+      // line-height: 60px;
+      line-height: 1;
       display: inline-block;
       font-weight: 400;
       font-size: 1.2em;
-      margin-top: -8px;
+      margin-top: -5px;
       .nav-user-avatar {
         position: relative;
-        top: -2px;
+        // top: -2px;
       }
     }
   }
@@ -810,6 +825,12 @@ export default {
   padding: 1px 20px;
 }
 
+.btn-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  min-width: 100px;
+}
+
 .el-menu-mobile {
   margin-top: 15px;
   margin-left: -15px;
@@ -826,6 +847,27 @@ export default {
     height: 32px;
     line-height: 32px;
   }
+}
+
+.vip-doc::after {
+  content: '';
+  position: absolute;
+  z-index: 6;
+  color: #fff;
+  font-style: italic;
+  right: 2px;
+  font-size: 12px;
+  padding: 2px 3px 2px 1px;
+  border-radius: 4px;
+  height: 12px;
+  width: 28px;
+  top: 2px;
+  background: #fff url('/static/images/icon-vip-doc.png');
+  background-size: 100% 100%;
+}
+
+.vip-doc-icon {
+  height: 24px;
 }
 
 // =======================

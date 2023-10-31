@@ -43,6 +43,18 @@ const cumstomPermissionMap = {
     children: [],
     pages: ['/admin/report'],
   },
+  'api.v1.UserVipAPI': {
+    label: '会员管理',
+    path: 'ListUserVip',
+    children: [],
+    pages: ['/admin/user', '/admin/user/vip'],
+  },
+  'api.v1.OrderAPI': {
+    label: '订单管理',
+    path: 'ListOrder',
+    children: [],
+    pages: ['/admin/order'],
+  },
   'api.v1.BannerAPI': {
     label: '横幅管理',
     path: 'ListBanner',
@@ -54,6 +66,12 @@ const cumstomPermissionMap = {
     path: 'ListGroup',
     children: [],
     pages: ['/admin/user', '/admin/user/group'],
+  },
+  'api.v1.NavigationAPI': {
+    label: '导航管理',
+    path: 'ListNavigation',
+    children: [],
+    pages: ['/admin/navigation'],
   },
   'api.v1.PermissionAPI': {
     label: '权限管理',
@@ -79,11 +97,29 @@ const cumstomPermissionMap = {
     children: [],
     pages: ['/admin/comment'],
   },
+  'api.v1.SpiderUrlAPI': {
+    label: '采集链接管理',
+    path: 'ListSpiderUrl',
+    children: [],
+    pages: ['/admin/spider', '/admin/spider/url'],
+  },
+  'api.v1.SpiderDocumentAPI': {
+    label: '采集文档管理',
+    path: 'ListSpiderDocument',
+    children: [],
+    pages: ['/admin/spider', '/admin/spider/document'],
+  },
   'api.v1.PunishmentAPI': {
     label: '惩罚管理',
     path: 'ListPunishment',
     children: [],
-    pages: ['/admin/user/punishment'],
+    pages: ['/admin/user', '/admin/user/punishment'],
+  },
+  'api.v1.SmsAPI': {
+    label: '短信管理',
+    path: 'ListSms',
+    children: [],
+    pages: ['/admin/user', '/admin/user/sms'],
   },
   upload: {
     id: 0,

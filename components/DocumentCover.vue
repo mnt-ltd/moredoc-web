@@ -8,6 +8,7 @@
     lazy
     :alt="document.title"
     :style="{ height: height }"
+    :class="document.is_vip && settings.vip.enable ? 'vip-doc' : ''"
   >
     <div slot="error" class="image-slot">
       <img src="/static/images/default-cover.png" />
@@ -15,6 +16,7 @@
   </el-image>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'DocumentCover',
   props: {
@@ -29,6 +31,9 @@ export default {
   },
   data() {
     return {}
+  },
+  computed: {
+    ...mapGetters('setting', ['settings']),
   },
 }
 </script>

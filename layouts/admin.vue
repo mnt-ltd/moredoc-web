@@ -4,9 +4,21 @@
       :class="isCollapse ? 'layout-aside-collapsed' : ''"
       :width="'240px'"
     >
-      <div class="logo" @click="gohome" title="文库管理后台">
-        <img v-if="isCollapse" src="/static/images/logo-icon.png" />
-        <img v-else src="/static/images/logo.png" />
+      <div
+        class="logo"
+        @click="gohome"
+        :title="`${settings.system.sitename || '魔豆文库'}管理后台`"
+      >
+        <img
+          v-if="isCollapse"
+          :src="settings.system.favicon || '/static/images/logo-icon.png'"
+          :alt="settings.system.sitename || '魔豆文库'"
+        />
+        <img
+          v-else
+          :src="settings.system.logo || '/static/images/logo.png'"
+          :alt="settings.system.sitename || '魔豆文库'"
+        />
       </div>
       <transition
         :duration="{ enter: 800, leave: 800 }"
@@ -46,7 +58,7 @@
             </el-submenu>
             <el-menu-item
               v-else
-              v-show="allowPages.includes(menu.page)"
+              v-show="allowPages.includes(menu.page) || menu.is_public"
               :key="'menu-' + menu.page"
               :index="menu.page"
             >
@@ -54,10 +66,6 @@
               <span slot="title">{{ menu.title }}</span>
             </el-menu-item>
           </template>
-          <el-menu-item index="/admin/navigation">
-            <i class="el-icon-monitor"></i>
-            <span slot="title">导航管理</span>
-          </el-menu-item>
         </el-menu>
       </transition>
     </el-aside>
@@ -166,12 +174,50 @@ export default {
               title: '处罚管理',
               icon: 'el-icon-warning-outline',
             },
+            {
+              page: '/admin/user/vip',
+              title: '会员管理',
+              icon: 'el-icon-milk-tea',
+            },
+            {
+              page: '/admin/user/sms',
+              title: '短信管理',
+              icon: 'el-icon-chat-dot-square',
+            },
           ],
+        },
+        {
+          page: '/admin/spider',
+          title: '爬虫管理',
+          icon: 'el-icon-truck',
+          children: [
+            {
+              page: '/admin/spider/url',
+              title: '采集链接',
+              icon: 'el-icon-link',
+            },
+            {
+              page: '/admin/spider/document',
+              title: '采集文档',
+              icon: 'el-icon-tickets',
+            },
+          ],
+        },
+        {
+          page: '/admin/order',
+          title: '订单管理',
+          icon: 'el-icon-goods',
         },
         {
           page: '/admin/banner',
           title: '横幅管理',
           icon: 'el-icon-picture-outline',
+        },
+        {
+          page: '/admin/navigation',
+          title: '导航管理',
+          icon: 'el-icon-guide',
+          is_public: true,
         },
         {
           page: '/admin/article',
@@ -304,8 +350,9 @@ export default {
     img {
       padding: 5px;
       height: 50px;
-      margin: 0 2px;
+      margin: auto 2px;
       max-width: 100%;
+      box-sizing: border-box;
     }
     span {
       font-size: 26px;
@@ -381,6 +428,11 @@ export default {
 .layout-aside-collapsed {
   width: 64px !important;
   overflow: hidden;
+  .logo {
+    img {
+      margin: auto;
+    }
+  }
   .quickstart-upload {
     padding: 0;
     .el-button {

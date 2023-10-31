@@ -55,7 +55,8 @@
             class="el-link el-link--default doc-title"
           >
             <img :src="`/static/images/${scope.row.icon}_24.png`" alt="" />
-            {{ scope.row.title }}
+            <span v-if="isSearch" v-html="scope.row.title"></span>
+            <template v-else>{{ scope.row.title }}</template>
           </nuxt-link>
         </template>
       </el-table-column>
@@ -188,6 +189,7 @@ export default {
         wd: '',
         created_at: [],
       },
+      isSearch: false,
       updateDocumentVisible: false,
       document: { id: 0 },
     }
@@ -247,14 +249,14 @@ export default {
           ...this.query,
           user_id: this.userId,
         })
+        this.isSearch = true
       } else {
         res = await listDocument({
           ...this.query,
           user_id: this.userId,
         })
+        this.isSearch = false
       }
-
-      console.log(res)
 
       if (res.status === 200) {
         const docs = res.data.document || []

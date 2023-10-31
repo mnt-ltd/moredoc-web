@@ -28,34 +28,48 @@
       <div slot="header">
         <span>授权信息</span>
       </div>
-      <el-descriptions class="margin-top" :column="2" border>
+      <el-descriptions
+        v-loading="loadingLicense"
+        class="margin-top"
+        :column="2"
+        border
+      >
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-tickets"></i>
             最大文档数
           </template>
-          不限
+          {{ license.max_docs || '不限' }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-user"></i>
             最大用户数
           </template>
-          不限
+          {{ license.max_users || '不限' }}
         </el-descriptions-item>
+        <!-- <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-discover"></i>
+            授权域名
+          </template>
+          {{ license.domain || '-' }}
+        </el-descriptions-item> -->
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-cpu"></i>
-            授权协议
+            授权地址
           </template>
-          Apache License 2.0
+          {{ license.addr || '-' }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-time"></i>
             授权截止日期
           </template>
-          <span>-</span>
+          <span class="el-link el-link--danger">{{
+            formatDate(license.expired_at)
+          }}</span>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -63,19 +77,37 @@
             授权类型
           </template>
           <span class="opensource">
-            <span>魔豆文库 · 社区版</span>
-            （<a
+            <span v-if="license.type == 1">魔豆文库 · 专业版</span>
+            <span v-else
+              >魔豆文库 · 专业版<span v-if="!loadingLicense"
+                >(<span class="el-link el-link--danger">试用</span>)</span
+              >
+            </span>
+            （
+            <a
               href="https://www.bookstack.cn/read/moredoc/price.md"
               target="_blank"
               class="el-link el-link--primary"
-              >版本划分与定价策略 <i class="el-icon-top-right"></i> </a
-            >）
+              >版本划分与定价策略 <i class="el-icon-top-right"></i
+            ></a>
+            ）
           </span>
         </el-descriptions-item>
       </el-descriptions>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <div slot="header">数据统计</div>
+      <div slot="header">
+        <span>数据统计</span>
+        <el-button
+          style="float: right; padding: 3px 0"
+          @click="updateDocumentIndexes"
+          :loading="loading"
+          icon="el-icon-refresh"
+          type="text"
+        >
+          更新全文索引</el-button
+        >
+      </div>
       <el-descriptions class="margin-top" :column="3" border>
         <el-descriptions-item>
           <template slot="label">
@@ -86,17 +118,17 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-chat-dot-square"></i>
-            评论
-          </template>
-          {{ stats.comment_count || 0 }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template slot="label">
             <i class="el-icon-user"></i>
             用户
           </template>
           {{ stats.user_count || 0 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-chat-dot-square"></i>
+            评论
+          </template>
+          {{ stats.comment_count || 0 }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -125,6 +157,20 @@
             友链
           </template>
           {{ stats.friendlink_count || 0 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-magic-stick"></i>
+            索引
+          </template>
+          {{ stats.index_document_count || 0 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-truck"></i>
+            索引大小
+          </template>
+          {{ formatBytes(stats.index_size) }}
         </el-descriptions-item>
       </el-descriptions>
     </el-card>
@@ -187,9 +233,7 @@
         </el-table-column>
         <el-table-column prop="error" label="错误" min-width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.error" size="small">{{
-              scope.row.error
-            }}</span>
+            <span v-if="scope.row.error">{{ scope.row.error }}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -300,14 +344,29 @@
             </li>
           </ul>
         </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label"> Mac地址 </template>
+          <ul>
+            <li v-for="mac in stats.mac_addrs" :key="mac.mac">
+              【{{ mac.name }}】 {{ mac.mac }}
+            </li>
+          </ul>
+        </el-descriptions-item>
       </el-descriptions>
     </el-card>
   </div>
 </template>
 
 <script>
-import { getStats, getEnvs, updateSitemap, getDevice } from '~/api/config'
-import { formatDatetime, formatBytes } from '~/utils/utils'
+import { formatDatetime, formatBytes, formatDate } from '~/utils/utils'
+import { updateDocumentIndexes } from '~/api/document'
+import {
+  getStats,
+  getEnvs,
+  updateSitemap,
+  getLicense,
+  getDevice,
+} from '~/api/config'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { PieChart, GaugeChart } from 'echarts/charts'
@@ -359,9 +418,25 @@ export default {
         version: '-',
         hash: '-',
         build_at: '',
+        mac_addrs: [],
+      },
+      license: {
+        type: 0,
+        max_users: '-',
+        max_docs: '-',
+        addr: '-',
+        expired_at: '',
+      },
+      license: {
+        type: 0,
+        max_users: '-',
+        max_docs: '-',
+        addr: '-',
+        expired_at: '',
       },
       envs: [],
       loading: false,
+      loadingLicense: false,
       gauges: [],
       devices: [],
       timeouter: null,
@@ -374,13 +449,23 @@ export default {
   },
   created() {
     this.initDevice()
-    Promise.all([this.getStats(), this.getEnvs(), this.loopGetDevice()])
+    Promise.all([
+      this.getStats(),
+      this.getEnvs(),
+      this.getLicense(),
+      this.loopGetDevice(),
+    ])
+  },
+  beforeDestroy() {
+    clearTimeout(this.timeouter)
   },
   beforeDestroy() {
     clearTimeout(this.timeouter)
   },
   methods: {
+    formatDate,
     formatDatetime,
+    formatBytes,
     loopGetDevice() {
       this.getDevice()
       clearTimeout(this.timeouter)
@@ -408,6 +493,25 @@ export default {
       const res = await updateSitemap()
       if (res.status === 200) {
         this.$message.success('更新成功')
+        this.loading = false
+        return
+      }
+      this.loading = false
+      this.$message.error(res.data.message || '更新失败')
+    },
+    async getLicense() {
+      this.loadingLicense = true
+      const res = await getLicense()
+      if (res.status === 200) {
+        this.license = res.data || {}
+      }
+      this.loadingLicense = false
+    },
+    async updateDocumentIndexes() {
+      this.loading = true
+      const res = await updateDocumentIndexes()
+      if (res.status === 200) {
+        this.$message.success('提交成功')
         this.loading = false
         return
       }

@@ -32,6 +32,13 @@
           <el-button
             type="text"
             size="small"
+            icon="el-icon-coin"
+            @click="setCharge(scope.row)"
+            >充值</el-button
+          >
+          <el-button
+            type="text"
+            size="small"
             icon="el-icon-setting"
             @click="setUser(scope.row)"
             >设置</el-button
@@ -79,6 +86,17 @@
         ref="formUserProfile"
         :init-user="user"
         @success="successProfile"
+      />
+    </el-dialog>
+    <el-dialog
+      title="积分充值"
+      :visible.sync="formRechargeVisible"
+      width="520px"
+    >
+      <FormRecharge
+        ref="formRecharge"
+        :init-user="user"
+        @success="successRecharge"
       />
     </el-dialog>
   </div>
@@ -221,6 +239,14 @@ export default {
         this.user = { ...row }
       })
     },
+    setCharge(row) {
+      // 给用户账号添加积分
+      this.formRechargeVisible = true
+      this.$nextTick(() => {
+        this.$refs.formRecharge.reset()
+        this.user = { ...row }
+      })
+    },
     async editRow(row) {
       const res = await getUser({ id: row.id })
       if (res.status !== 200) {
@@ -264,6 +290,10 @@ export default {
     },
     successProfile() {
       this.formUserProfileVisible = false
+      this.listUser()
+    },
+    successRecharge() {
+      this.formRechargeVisible = false
       this.listUser()
     },
     batchDelete() {

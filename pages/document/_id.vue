@@ -1,12 +1,27 @@
 <template>
   <div class="page page-document">
+    <span v-html="watermarkStyleTag"></span>
     <el-row :gutter="20">
       <el-col :span="scaleSpan" class="doc-left">
         <el-card ref="docMain" shadow="never" class="doc-main">
           <div slot="header" class="clearfix">
             <h1>
-              <img :src="`/static/images/${document.icon}_24.png`" alt="" />
+              <img
+                :src="`/static/images/${document.icon}_24.png`"
+                :alt="`${document.icon}文档`"
+              />
               {{ document.title }}
+              <el-tooltip
+                v-if="document.is_vip"
+                content="VIP文档"
+                placement="top"
+              >
+                <img
+                  src="/static/images/icon-vip-doc.png"
+                  alt="VIP文档"
+                  class="vip-doc-icon"
+                />
+              </el-tooltip>
               <el-popover
                 class="hidden-xs-only"
                 placement="bottom"
@@ -18,6 +33,23 @@
                 <span slot="reference">
                   <span target="_blank" class="share-wechat">
                     <i class="fa fa-qrcode"></i>
+                  </span>
+                </span>
+              </el-popover>
+              <el-popover
+                class="hidden-xs-only"
+                placement="bottom"
+                width="200"
+                trigger="hover"
+                v-show="document.id > 0 && document.exist_wxacode"
+              >
+                <div class="qrcode text-center">
+                  <div style="margin-bottom:10px">微信扫码，打开到小程序</div>
+                  <img class="wxacode" :src="`/view/wxacode/${document.attachment.hash}/${document.id}`"/>
+                </div>
+                <span slot="reference">
+                  <span target="_blank" class="share-wechat">
+                    <img style="height: 22px;margin-left: 5px" src="/static/images/wxacode.png"/>
                   </span>
                 </span>
               </el-popover>
@@ -164,14 +196,35 @@
           <div class="doc-page-more text-center">
             <div>下载文档到本地，方便使用</div>
             <el-button
+              type="info"
+              icon="el-icon-download"
+              v-if="isGuestDownload"
+              :loading="downloading"
+              :size="isMobile ? 'medium' : ''"
+              @click="guestDownload"
+              >游客下载
+            </el-button>
+            <el-button
+              type="warning"
+              icon="el-icon-download"
+              v-if="isVIPDownload"
+              :loading="downloading"
+              :size="isMobile ? 'medium' : ''"
+              @click="vipDownload"
+              >VIP下载
+            </el-button>
+            <el-button
               type="primary"
               icon="el-icon-download"
               :size="isMobile ? 'medium' : ''"
               :loading="downloading"
               @click="downloadDocument"
             >
-              下载文档({{ formatBytes(document.size) }})</el-button
-            >
+              {{ downloadText }}
+              <template v-if="!(isGuestDownload || isVIPDownload)"
+                >({{ formatBytes(document.size) }})</template
+              >
+            </el-button>
             <div v-if="document.preview - pages.length > 0">
               还有 {{ document.preview - pages.length }} 页可预览，
               <span class="el-link el-link--primary" @click="continueRead"
@@ -210,15 +263,6 @@
                 icon="el-icon-warning-outline"
                 >举报</el-button
               >
-              <!-- <el-button
-                type="primary"
-                icon="el-icon-download"
-                class="float-right"
-                :size="isMobile ? 'medium' : ''"
-                :loading="downloading"
-                @click="downloadDocument"
-                >下载文档({{ formatBytes(document.size) }})</el-button
-              > -->
               <el-button
                 v-if="favorite.id > 0"
                 type="primary"
@@ -362,24 +406,63 @@
               class="btn-comment hidden-xs-only"
               icon="el-icon-chat-dot-square"
               @click="gotoComment"
-              >文档点评</el-button
+              >点评</el-button
             >
             <el-button-group class="float-right">
-              <el-button type="primary" icon="el-icon-coin" class="btn-coin"
-                >{{ document.price || 0
-                }}<span>
-                  {{ settings.system.credit_name || '魔豆' }}</span
-                ></el-button
+              <template
+                v-if="
+                  document.id > 0 &&
+                  !document.is_vip &&
+                  !user.id &&
+                  !document.price &&
+                  settings.download.enable_guest_download
+                "
               >
-              <el-button
-                type="primary"
-                icon="el-icon-download"
-                :loading="downloading"
-                @click="downloadDocument"
-                >下载文档<span class="hidden-xs-only"
-                  >({{ formatBytes(document.size) }})</span
+                <el-button
+                  type="info"
+                  icon="el-icon-download"
+                  :loading="downloading"
+                  @click="guestDownload"
+                  >游客下载
+                </el-button>
+                <el-button
+                  type="primary"
+                  icon="el-icon-download"
+                  :loading="downloading"
+                  @click="downloadDocument"
+                  >{{ downloadText
+                  }}<span class="hidden-xs-only"
+                    >({{ formatBytes(document.size) }})</span
+                  >
+                </el-button>
+              </template>
+              <template v-else>
+                <el-button type="primary" icon="el-icon-coin" class="btn-coin"
+                  >{{ document.price || 0
+                  }}<span>
+                    {{ settings.system.credit_name || '魔豆' }}</span
+                  ></el-button
                 >
-              </el-button>
+                <el-button
+                  type="warning"
+                  icon="el-icon-download"
+                  v-if="isVIPDownload"
+                  :loading="downloading"
+                  :size="isMobile ? 'medium' : ''"
+                  @click="vipDownload"
+                  >VIP下载
+                </el-button>
+                <el-button
+                  type="primary"
+                  icon="el-icon-download"
+                  :loading="downloading"
+                  @click="downloadDocument"
+                  >{{ downloadText
+                  }}<span class="hidden-xs-only"
+                    >({{ formatBytes(document.size) }})</span
+                  >
+                </el-button>
+              </template>
             </el-button-group>
           </el-col>
           <el-col :span="6" class="text-right hidden-xs-only">
@@ -402,22 +485,34 @@
         @success="formReportSuccess"
       />
     </el-dialog>
+    <el-dialog
+      title="用户登录"
+      :visible.sync="loginVisible"
+      :width="isMobile ? '95%' : '520px'"
+    >
+      <form-login
+        :enable-redirect="false"
+        @onSuccess="loginSuccess"
+      ></form-login>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { createOrder } from '~/api/order'
 import DocumentSimpleList from '~/components/DocumentSimpleList.vue'
 import {
   getDocument,
-  downloadDocument,
   getRelatedDocuments,
   setDocumentScore,
   getDocumentScore,
+  downloadDocument,
+  downloadVIPDocument,
 } from '~/api/document'
 import { getFavorite, createFavorite, deleteFavorite } from '~/api/favorite'
+import { documentStatusOptions, orderTypeBuyDocument } from '~/utils/enum'
 import { formatDatetime, formatBytes, getIcon, genPrevPage } from '~/utils/utils'
-import { documentStatusOptions } from '~/utils/enum'
 import QRCode from 'qrcodejs2' // 引入qrcode
 import FormComment from '~/components/FormComment.vue'
 import CommentList from '~/components/CommentList.vue'
@@ -427,9 +522,6 @@ export default {
     return {
       documentStatusOptions,
       docs: [],
-      user: {
-        id: 0,
-      },
       document: {
         id: 0,
         score: 4.0,
@@ -466,6 +558,7 @@ export default {
       cardWidth: 0,
       cardOffsetTop: 0,
       tips: '',
+      loginVisible: false,
       descriptions: [],
     }
   },
@@ -488,7 +581,29 @@ export default {
   },
   computed: {
     ...mapGetters('category', ['categoryMap']),
-    ...mapGetters('setting', ['settings']),
+    ...mapGetters('setting', ['settings', 'watermarkStyleTag']),
+    ...mapGetters('user', ['user']),
+    isVIPDownload() {
+      // VIP下载
+      return (
+        this.document.id > 0 && this.document.is_vip && this.settings.vip.enable
+      )
+    },
+    isGuestDownload() {
+      // 是否是游客下载
+      return (
+        this.document.id > 0 &&
+        !this.document.is_vip &&
+        !this.user.id &&
+        !this.document.price &&
+        this.settings.download.enable_guest_download
+      )
+    },
+    downloadText() {
+      return this.isGuestDownload || this.isVIPDownload
+        ? '普通下载'
+        : '下载文档'
+    },
   },
   created() {
     Promise.all([
@@ -649,6 +764,27 @@ export default {
       this.report.document_title = this.document.title
       this.reportVisible = true
     },
+    // 游客下载文档
+    guestDownload() {
+      this.downloading = true
+      this.execDownload()
+      this.downloading = false
+    },
+    // VIP 下载文档
+    async vipDownload() {
+      if (!this.user.is_vip) {
+        this.$router.push('/joinvip')
+        return
+      }
+      this.downloading = true
+      const res = await downloadVIPDocument({ id: this.documentId })
+      if (res.status === 200) {
+        location.href = res.data.url
+      } else {
+        this.$message.error(res.data.message || '下载失败')
+      }
+      this.downloading = false
+    },
     formReportSuccess() {
       this.reportVisible = false
     },
@@ -721,17 +857,35 @@ export default {
     async downloadDocument() {
       await this.checkAndRefreshUser()
 
-      this.downloading = true
-      const res = await downloadDocument({
-        id: this.documentId,
-      })
-      if (res.status === 200) {
-        this.getUser()
-        // 跳转下载
-        window.location.href = res.data.url
-      } else {
-        this.$message.error(res.data.message || '下载失败')
+      if (!this.user.id) {
+        // 未登录，显示登录
+        this.loginVisible = true
+        return
       }
+      this.downloading = true
+
+      const res = await createOrder({
+        order_type: orderTypeBuyDocument,
+        product_id: this.document.id,
+      })
+      console.log(res)
+      if (res.status === 200) {
+        // 订单状态为待支付，跳转到支付页面
+        if (res.data.status === 1) {
+          this.$router.push({
+            name: 'order',
+            query: {
+              order_no: res.data.order_no,
+            },
+          })
+        } else if (res.data.status === 2) {
+          this.$message.success('您已购买过该文档，正在为您下载')
+          this.execDownload()
+        }
+      } else {
+        this.$message.error(res.data.message)
+      }
+
       this.downloading = false
     },
     async getRelatedDocuments() {
@@ -740,6 +894,14 @@ export default {
       })
       if (res.status === 200) {
         this.relatedDocuments = res.data.document || []
+      }
+    },
+    async execDownload() {
+      const res = await downloadDocument({ id: this.documentId })
+      if (res.status === 200) {
+        location.href = res.data.url
+      } else {
+        this.$message.error(res.data.message || '下载失败')
       }
     },
     prevPage() {
@@ -902,12 +1064,7 @@ export default {
       }
     },
     async getDocumentScore() {
-      // 判断用户是否已登录
-      let userId = 0
-      try {
-        userId = this.$store.state.user.user.id || 0
-      } catch (error) {}
-      if (!userId) {
+      if (!this.user.id) {
         return
       }
       const res = await getDocumentScore({
@@ -933,6 +1090,10 @@ export default {
         colorDark: '#000',
         colorLight: '#fff',
       })
+    },
+    loginSuccess() {
+      this.loginVisible = false
+      this.downloadDocument()
     },
   },
 }
@@ -1102,7 +1263,12 @@ export default {
     width: 80px;
   }
 }
-
+.qrcode{
+    img{
+      width: 200px;
+      height: 200px;
+    }
+  }
 @media screen and (max-width: $mobile-width) {
   .el-image-viewer__wrapper {
     .el-image-viewer__actions {

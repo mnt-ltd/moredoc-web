@@ -25,6 +25,10 @@
               :key="item.value"
               :name="item.value"
               :label="item.label"
+              v-show="
+                item.value !== '/me/vip' ||
+                (item.value === '/me/vip' && settings.vip.enable)
+              "
             >
               <span slot="label">
                 <i :class="item.icon"></i> {{ item.label }}</span
@@ -41,6 +45,10 @@
               v-for="item in tabs"
               :key="item.value"
               :index="item.value"
+              v-show="
+                item.value !== '/me/vip' ||
+                (item.value === '/me/vip' && settings.vip.enable)
+              "
             >
               <i :class="item.icon"></i>
               <span slot="title">{{ item.label }}</span>
@@ -50,7 +58,18 @@
       </el-col>
       <el-col :span="18" class="part-right">
         <el-card shadow="never">
-          <div slot="header">{{ defaultActive.label }}</div>
+          <div slot="header">
+            <span>{{ defaultActive.label }}</span>
+            <nuxt-link v-if="$route.name === 'me-vip'" to="/joinvip"
+              ><el-button
+                style="float: right; position: relative; top: -7px"
+                size="small"
+                type="warning"
+                icon="el-icon-plus"
+                >加入VIP</el-button
+              ></nuxt-link
+            >
+          </div>
           <div class="nuxt-child">
             <nuxt-child :user="user" />
           </div>
@@ -78,6 +97,16 @@ export default {
           label: '我的动态',
           value: '/me',
           icon: 'el-icon-magic-stick',
+        },
+        {
+          label: '我的VIP',
+          value: '/me/vip',
+          icon: 'el-icon-milk-tea',
+        },
+        {
+          label: '我的订单',
+          value: '/me/order',
+          icon: 'el-icon-goods',
         },
         {
           label: '我的上传',

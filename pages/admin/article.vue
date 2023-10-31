@@ -80,6 +80,7 @@ import FormSearch from '~/components/FormSearch.vue'
 import FormArticle from '~/components/FormArticle.vue'
 import { genLinkHTML } from '~/utils/utils'
 import { mapGetters } from 'vuex'
+import { parseQueryIntArray } from '~/utils/utils'
 export default {
   components: { TableList, FormSearch, FormArticle },
   layout: 'admin',
@@ -125,6 +126,7 @@ export default {
           ...this.$route.query,
           page: parseInt(this.$route.query.page) || 1,
           size: parseInt(this.$route.query.size) || 10,
+          ...parseQueryIntArray(this.$route.query, ['is_notice']),
         }
         this.listArticle()
       },
@@ -184,7 +186,7 @@ export default {
       }
     },
     onCreate() {
-      this.article = { id: 0 }
+      this.article = { id: 0, notice: 0 }
       this.formArticleVisible = true
       this.$nextTick(() => {
         try {
@@ -197,7 +199,7 @@ export default {
     async editRow(row) {
       const res = await getArticle({ id: row.id })
       if (res.status === 200) {
-        this.article = res.data
+        this.article = { notice: 0, ...res.data }
         this.formArticleVisible = true
       } else {
         this.$message.error(res.data.message)
@@ -261,6 +263,18 @@ export default {
           name: 'wd',
           placeholder: '请输入关键字',
         },
+        // 是否是公告
+        {
+          type: 'select',
+          label: '是否是公告',
+          name: 'is_notice',
+          placeholder: '请选择是否是公告',
+          multiple: true,
+          options: [
+            { label: '是', value: 1 },
+            { label: '否', value: 0 },
+          ],
+        },
       ]
     },
     initTableListFields() {
@@ -275,6 +289,7 @@ export default {
         },
         { prop: 'identifier', label: '标识', width: 200 },
         { prop: 'view_count', label: '浏览', width: 80, type: 'number' },
+        { prop: 'notice', label: '公告值', width: 80, type: 'number' },
         { prop: 'keywords', label: '关键字', width: 200 },
         { prop: 'description', label: '摘要', minWidth: 200 },
         { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },

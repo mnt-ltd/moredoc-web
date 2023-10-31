@@ -15,6 +15,7 @@ export const attachmentTypeOptions = [
   { label: '横幅', value: 5 },
   { label: '分类封面', value: 6 },
   { label: '配置', value: 7 },
+  { label: '爬虫文档', value: 8 },
 ]
 
 export const documentStatusOptions = [
@@ -75,6 +76,36 @@ export const methodOptions = [
   },
 ]
 
+export const orderStatusOptions = [
+  { label: '待支付', name: 'pending', value: 1, type: 'danger' },
+  { label: '已支付', name: 'paid', value: 2, type: 'success' },
+  { label: '已关闭', name: 'closed', value: 3, type: 'info' },
+]
+
+export const orderTypeBuyDocument = 1 // 购买文档
+export const orderTypeBuyVIP = 2 // 购买VIP
+export const orderTypeRecharge = 3 // 充值
+export const orderTypeWithdraw = 4 // 提现
+
+// 支付方式
+export const paymentTypeOptions = [
+  { label: '微信支付', value: 1 },
+  { label: '支付宝支付', value: 2 },
+  { label: '银行卡', value: 3 },
+  { label: '现金支付', value: 4 },
+  { label: '积分支付', value: 5 },
+  { label: '系统充值', value: 6 },
+  { label: '虎皮椒支付', value: 8 },
+  { label: '其他', value: 7 },
+  { label: '下载码支付', value: 9 },
+]
+
+export const orderTypeOptions = [
+  { label: '购买文档', value: orderTypeBuyDocument },
+  { label: '购买VIP', value: orderTypeBuyVIP },
+  { label: '账户充值', value: orderTypeRecharge },
+  // { label: '提现', value: orderTypeWithdraw },
+]
 export const datetimePickerOptions = {
   shortcuts: [
     {
@@ -124,6 +155,25 @@ export const datetimePickerOptions = {
     },
   ],
 }
+
+export const spiderUrlStatusOptions = [
+  { label: '待采集', value: 0, type: 'info' },
+  { label: '采集中', value: 1, type: 'primary' },
+  { label: '采集完成', value: 2, type: 'success' },
+  { label: '采集失败', value: 3, type: 'warning' },
+]
+
+export const spiderDocumentStatusOptions = [
+  { label: '待采集', value: 0, type: 'info' },
+  { label: '采集队列', value: 1, type: 'primary' },
+  { label: '采集中..', value: 2, type: 'primary' },
+  { label: '采集成功', value: 3, type: 'success' },
+  { label: '采集失败', value: 4, type: 'warning' },
+  { label: '发布队列', value: 5, type: 'primary' },
+  { label: '发布中', value: 6, type: 'primary' },
+  { label: '发布成功', value: 7, type: 'success' },
+  { label: '发布失败', value: 8, type: 'danger' },
+]
 
 export const datetimePickerPunishmentOptions = {
   shortcuts: [
@@ -200,4 +250,45 @@ export const punishmentTypeOptions = [
   { label: '禁止上传', value: 3, type: 'warning' },
   { label: '禁止下载', value: 4, type: 'warning' },
   { label: '禁止收藏', value: 5, type: 'warning' },
+]
+
+export const vipTypeOptions = [
+  {
+    label: '年卡VIP',
+    value: 0,
+    type: 'success',
+  },
+  {
+    label: '季卡VIP',
+    value: 1,
+    type: 'primary',
+  },
+  {
+    label: '月卡VIP',
+    value: 2,
+    type: 'warning',
+  },
+]
+
+// 短信类型
+export const smsTypeOptions = [
+  { label: '注册', value: 0, type: 'primary' },
+  { label: '登录', value: 1, type: 'success' },
+  { label: '找回密码', value: 2, type: 'warning' },
+]
+
+// 短信状态
+export const smsStatusOptions = [
+  { label: '发送中', value: 0, type: 'primary' },
+  { label: '发送成功', value: 1, type: 'success' },
+  { label: '发送失败', value: 2, type: 'danger' },
+]
+
+// 短信服务商
+export const smsProviderOptions = [
+  { label: '阿里云', value: 'smsAliyun', type: 'primary' },
+  { label: '腾讯云', value: 'smsTencent', type: 'primary' },
+  { label: '百度云', value: 'smsBaidu', type: 'primary' },
+  { label: '华为云', value: 'smsHuawei', type: 'primary' },
+  { label: '浩信', value: 'smsHaomas', type: 'primary' },
 ]

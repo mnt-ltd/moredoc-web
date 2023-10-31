@@ -46,6 +46,13 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-row :gutter="20" class="notice-board" v-if="notices.length>0">
+      <el-col :span="24">
+        <el-card shadow="never">
+          <notice-board :notices="notices" />
+        </el-card>
+      </el-col>
+    </el-row>
     <el-row :gutter="20" class="mgt-20px">
       <el-col :span="6" class="float-right right-at-recommend">
         <el-card class="text-center stat-info" shadow="never">
@@ -210,6 +217,7 @@
                   "
                   lazy
                   :alt="item.title"
+                  :class="item.is_vip && settings.vip.enable ? 'vip-doc' : ''"
                 >
                   <div slot="error" class="image-slot">
                     <img src="/static/images/default-cover.png" />
@@ -310,6 +318,7 @@ import { listDocument, listDocumentForHome } from '~/api/document'
 import { getSignedToday, signToday } from '~/api/user'
 import { getStats } from '~/api/config'
 import { getIcon } from '~/utils/utils'
+import { listArticle } from '~/api/article'
 export default {
   components: { UserAvatar },
   data() {
@@ -327,6 +336,7 @@ export default {
         document_count: '-',
         user_count: '-',
       },
+      notices: [], // 公告
       carouselIndexes: [0], // 跑马灯index，用于跑马灯图片的懒加载
     }
   },
@@ -360,6 +370,7 @@ export default {
       this.getSignedToday(),
       this.getStats(),
       this.getUser(),
+      this.getNotices(),
     ])
   },
   methods: {
@@ -379,6 +390,16 @@ export default {
       if (this.search.wd) {
         location.href = '/search?wd=' + encodeURIComponent(this.search.wd)
         return
+      }
+    },
+    async getNotices() {
+      const res = await listArticle({
+        page: 1,
+        size: 100,
+        is_notice: [1],
+      })
+      if (res.status === 200) {
+        this.notices = res.data.article || []
       }
     },
     async getSignedToday() {
@@ -404,7 +425,7 @@ export default {
     },
     async getRecommendDocuments() {
       const res = await listDocument({
-        field: ['id', 'title'],
+        field: ['id', 'title', 'is_vip'],
         is_recommend: true,
         order: 'recommend_at desc',
         limit: 12,
@@ -462,7 +483,7 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 640px;
+      width: 520px;
       color: #fff;
       .el-form-item {
         margin-bottom: 0;
@@ -690,6 +711,16 @@ export default {
       }
     }
   }
+
+  .notice-board {
+    margin-bottom: 20px !important;
+    margin-top: -45px !important;
+    position: relative;
+    z-index: 90; // 小于100，避免对顶部导航栏的遮挡
+    .el-card__body {
+      padding: 0 20px;
+    }
+  }
 }
 
 // =================================
@@ -773,6 +804,17 @@ export default {
             }
           }
         }
+      }
+    }
+
+    .notice-board {
+      margin-top: -41px !important;
+      margin-bottom: 15px !important;
+      .el-card {
+        border-radius: 4px;
+      }
+      .el-card__body {
+        padding: 0 10px;
       }
     }
   }

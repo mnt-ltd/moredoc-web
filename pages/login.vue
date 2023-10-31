@@ -21,10 +21,17 @@
         <div v-if="settings.security.is_close" class="close-tips">
           <div v-html="settings.security.close_statement"></div>
         </div>
-        <form-login
-          v-if="!(user.id > 0 && settings.security.is_close)"
-          :redirect="redirect"
-        ></form-login>
+        <template v-else>
+          <el-tabs type="card" v-if="settings.system.enable_sms">
+            <el-tab-pane label="密码登录">
+              <form-login :redirect="redirect"></form-login>
+            </el-tab-pane>
+            <el-tab-pane label="短信登录">
+              <form-login-mobile :redirect="redirect"></form-login-mobile>
+            </el-tab-pane>
+          </el-tabs>
+          <form-login v-else :redirect="redirect"></form-login>
+        </template>
       </el-card>
     </div>
   </div>
@@ -61,6 +68,11 @@ export default {
     ...mapGetters('setting', ['settings']),
     ...mapGetters('user', ['user']),
   },
+  created() {
+    if (this.user.id > 0) {
+      this.$router.push(this.redirect)
+    }
+  },
 }
 </script>
 <style lang="scss">
@@ -80,7 +92,7 @@ export default {
     margin-right: 0;
     &.close-box {
       margin-right: auto;
-      width: 640px;
+      width: 520px;
       .close-tips {
         margin-bottom: 20px;
         border: 1px dashed #f60;

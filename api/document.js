@@ -88,6 +88,14 @@ export const downloadDocument = (params) => {
   })
 }
 
+export const downloadVIPDocument = (params) => {
+  return service({
+    url: '/api/v1/document/download/vip',
+    method: 'get',
+    params,
+  })
+}
+
 export const listRecycleDocument = (params) => {
   return service({
     url: '/api/v1/document/recycle',
@@ -120,6 +128,14 @@ export const clearRecycleDocument = (params) => {
   })
 }
 
+export const updateDocumentIndexes = (data) => {
+  return service({
+    url: '/api/v1/document/index',
+    method: 'put',
+    data,
+  })
+}
+
 export const getDocumentScore = (params) => {
   return service({
     url: '/api/v1/document/score',
@@ -136,9 +152,25 @@ export const setDocumentScore = (data) => {
   })
 }
 
+export const isDocumentExist = (params) => {
+  return service({
+    url: '/api/v1/document/exist',
+    method: 'get',
+    params,
+  })
+}
+
 export const setDocumentsCategory = (data) => {
   return service({
     url: '/api/v1/document/category',
+    method: 'put',
+    data,
+  })
+}
+
+export const setDocumentsVIP = (data) => {
+  return service({
+    url: '/api/v1/document/vip',
     method: 'put',
     data,
   })

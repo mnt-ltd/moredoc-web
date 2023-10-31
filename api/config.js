@@ -45,6 +45,13 @@ export const getEnvs = () => {
   })
 }
 
+export const getLicense = () => {
+  return service({
+    url: '/api/v1/license',
+    method: 'get',
+  })
+}
+
 export const getDevice = () => {
   return service({
     url: '/api/v1/device',

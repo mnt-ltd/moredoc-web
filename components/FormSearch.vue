@@ -61,6 +61,7 @@
           >新增</el-button
         >
       </el-form-item>
+      <slot name="buttons"></slot>
       <el-form-item v-if="showDelete">
         <el-button
           type="danger"
@@ -70,7 +71,6 @@
           >批量删除</el-button
         >
       </el-form-item>
-      <slot name="buttons"></slot>
     </el-form>
   </div>
 </template>

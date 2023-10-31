@@ -8,7 +8,13 @@
               <el-breadcrumb-item>
                 <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
               </el-breadcrumb-item>
-              <el-breadcrumb-item>文章列表</el-breadcrumb-item>
+              <el-breadcrumb-item>
+                <nuxt-link to="/article">文章列表</nuxt-link>
+              </el-breadcrumb-item>
+              <el-breadcrumb-item
+                v-if="query.is_notice.length > 0 && query.is_notice[0]"
+                >公告列表</el-breadcrumb-item
+              >
             </el-breadcrumb>
           </div>
           <article-list :articles="articles" />
@@ -59,6 +65,7 @@ export default {
       size: 10,
       query: {
         page: 1,
+        is_notice: [],
       },
       populars: [],
       articles: [],
@@ -68,16 +75,22 @@ export default {
     ...mapGetters('setting', ['settings']),
   },
   watch: {
-    $route: {
+    '$route.query': {
       handler() {
         let page = this.$route.query.page || 1
         this.query.page = parseInt(page) || 1
+        this.query.is_notice = this.$route.query.is_notice
+          ? [this.$route.query.is_notice]
+          : []
         this.getArticles()
       },
       immediate: true,
     },
   },
   async created() {
+    this.query.is_notice = this.$route.query.is_notice
+      ? [this.$route.query.is_notice]
+      : []
     await Promise.all([this.getPopulars()])
   },
   methods: {
@@ -89,7 +102,11 @@ export default {
       })
     },
     async getArticles() {
-      const res = await listArticle({ size: this.size, page: this.query.page })
+      const res = await listArticle({
+        size: this.size,
+        page: this.query.page,
+        is_notice: this.query.is_notice,
+      })
       if (res.status !== 200) {
         this.$message.error(res.data.message || '获取文章列表失败')
         return

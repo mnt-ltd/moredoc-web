@@ -1,3 +1,5 @@
+import SparkMD5 from 'spark-md5'
+
 // 对Date的扩展，将 Date 转化为指定格式的String
 // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
 // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
@@ -178,6 +180,39 @@ export function getIcon(ext) {
   return extMapIcon[ext] || 'other'
 }
 
+// 通过spark-md5计算文件md5
+export function calcMD5(file) {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader()
+    const blobSlice =
+      File.prototype.slice ||
+      File.prototype.mozSlice ||
+      File.prototype.webkitSlice
+    const chunkSize = 2097152 // Read in chunks of 2MB
+    const chunks = Math.ceil(file.size / chunkSize)
+    let currentChunk = 0
+    const spark = new SparkMD5.ArrayBuffer()
+    fileReader.onload = (e) => {
+      spark.append(e.target.result) // Append array buffer
+      currentChunk += 1
+      if (currentChunk < chunks) {
+        loadNext()
+      } else {
+        resolve(spark.end())
+      }
+    }
+    fileReader.onerror = () => {
+      reject(new Error('文件读取失败'))
+    }
+    function loadNext() {
+      const start = currentChunk * chunkSize
+      const end = start + chunkSize >= file.size ? file.size : start + chunkSize
+      fileReader.readAsArrayBuffer(blobSlice.call(file, start, end))
+    }
+    loadNext()
+  })
+}
+
 // 解析 $route.query 中的数组
 export function parseQueryIntArray(query, keys) {
   const result = {}
@@ -201,6 +236,36 @@ export function parseQueryBoolArray(query, keys) {
     }
   })
   return result
+}
+
+export function countDownTime(endAt) {
+  try {
+    const now = new Date().getTime()
+    const end = new Date(endAt).getTime()
+    const diff = end - now
+    if (diff <= 0) {
+      return {
+        seconds: 0,
+        format: '00:00:00',
+      }
+    }
+    const day = Math.floor(diff / (24 * 60 * 60 * 1000))
+    const hour = Math.floor((diff / (60 * 60 * 1000)) % 24)
+    const minute = Math.floor((diff / (60 * 1000)) % 60)
+    const second = Math.floor((diff / 1000) % 60)
+    return {
+      seconds: diff,
+      format: `${day > 0 ? `${day}天` : ''}${hour > 0 ? `${hour}小时` : ''}${
+        minute > 0 ? `${minute}分` : '0分'
+      }${second > 0 ? `${second}秒` : '0秒'}`,
+    }
+  } catch (e) {
+    console.log(e)
+  }
+  return {
+    seconds: 0,
+    format: '00:00:00',
+  }
 }
 
 // 是否需要登录。针对关闭站点访问、或登录访问限制
@@ -278,6 +343,10 @@ export function genTimeDuration(duration) {
       return []
   }
   return [start.Format(fmt), new Date().Format(fmt)]
+}
+
+export function isValidMobile(mobile) {
+  return /^1[3456789]\d{9}$/.test(mobile)
 }
 
 export function genPrevPage(hash, pageNO, ext, enableGZIP){

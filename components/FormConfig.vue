@@ -9,7 +9,9 @@
       <el-form-item
         v-for="(item, index) in configs"
         :key="'cfg-' + item.id"
-        :label="item.label + '（' + item.placeholder + '）'"
+        :label="
+          item.label + (item.placeholder ? '（' + item.placeholder + '）' : '')
+        "
       >
         <el-input-number
           v-if="item.input_type === 'number'"
@@ -29,6 +31,7 @@
         <el-select
           v-else-if="item.input_type === 'select'"
           v-model="configs[index]['value']"
+          @change="onChange(item)"
         >
           <el-option
             v-for="option in item.options.split('\n')"
@@ -61,6 +64,10 @@
           :inactive-value="'false'"
         >
         </el-switch>
+        <el-color-picker
+          v-else-if="item.input_type === 'color'"
+          v-model="configs[index]['value']"
+        ></el-color-picker>
         <UploadImage
           v-else-if="item.input_type === 'image'"
           :action="'/api/v1/upload/config'"
@@ -75,7 +82,7 @@
           clearable
         ></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="showButton">
         <el-button
           type="primary"
           icon="el-icon-check"
@@ -97,6 +104,14 @@ export default {
       default: () => {
         return []
       },
+    },
+    showMessage: {
+      type: Boolean,
+      default: true,
+    },
+    showButton: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -147,14 +162,22 @@ export default {
       })
       const res = await updateConfig({ config: configs })
       if (res.status === 200) {
-        this.$message.success('配置更新成功')
+        if (this.showMessage) this.$message.success('配置更新成功')
+        this.$emit('onSuccess', res.data)
       } else {
-        this.$message.error(res.data.message || '配置更新失败')
+        if (this.showMessage) {
+          this.$message.error(res.data.message || '配置更新失败')
+        }
+        this.$emit('onError', res.data)
       }
       this.loading = false
     },
     success(res, index) {
       this.configs[index] = { ...this.configs[index], value: res.data.path }
+    },
+    onChange(item) {
+      console.log('onChange', item)
+      this.$emit('change', item)
     },
   },
 }

@@ -6,6 +6,8 @@ import {
   logout,
   getUserPermissions,
   register,
+  registerByMobile,
+  loginByMobile,
 } from '~/api/user'
 import { permissionsToTree } from '~/utils/permission'
 export const user = {
@@ -85,8 +87,38 @@ export const user = {
       await dispatch('getUserPermissions')
       return res
     },
+    async registerByMobile({ commit, dispatch }, registerInfo) {
+      const res = await registerByMobile(registerInfo)
+      if (res.status !== 200) {
+        Message({
+          type: 'error',
+          message: res.data.message || '注册失败',
+        })
+        return res
+      }
+      commit('setUser', res.data.user)
+      commit('setToken', res.data.token)
+      // 获取用户权限
+      await dispatch('getUserPermissions')
+      return res
+    },
     async login({ commit, dispatch }, loginInfo) {
       const res = await login(loginInfo)
+      if (res.status !== 200) {
+        Message({
+          type: 'error',
+          message: res.data.message || '登录失败',
+        })
+        return res
+      }
+      commit('setUser', res.data.user)
+      commit('setToken', res.data.token)
+      // 获取用户权限
+      await dispatch('getUserPermissions')
+      return res
+    },
+    async loginByMobile({ commit, dispatch }, loginInfo) {
+      const res = await loginByMobile(loginInfo)
       if (res.status !== 200) {
         Message({
           type: 'error',

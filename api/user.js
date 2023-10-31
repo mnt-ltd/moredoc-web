@@ -148,3 +148,51 @@ export const findPasswordStepTwo = (data) => {
     data,
   })
 }
+
+export const listUserOrder = (params) => {
+  return service({
+    url: '/api/v1/user/order',
+    method: 'get',
+    params,
+  })
+}
+
+export const listUserVIP = (params) => {
+  return service({
+    url: '/api/v1/user/vip',
+    method: 'get',
+    params,
+  })
+}
+
+export const getUserVIPOrder = (params) => {
+  return service({
+    url: '/api/v1/user/vip/order',
+    method: 'get',
+    params,
+  })
+}
+
+export const registerByMobile = (data) => {
+  return service({
+    url: '/api/v1/user/register/mobile',
+    method: 'post',
+    data,
+  })
+}
+
+export const loginByMobile = (data) => {
+  return service({
+    url: '/api/v1/user/login/mobile',
+    method: 'post',
+    data,
+  })
+}
+
+export const findPasswordByMobile = (data) => {
+  return service({
+    url: '/api/v1/user/findpassword/mobile',
+    method: 'post',
+    data,
+  })
+}

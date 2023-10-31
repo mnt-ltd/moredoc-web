@@ -1,10 +1,10 @@
 <template>
   <div class="com-form-login">
     <el-form label-position="top" label-width="80px" :model="user">
-      <el-form-item label="用户名">
+      <el-form-item label="账号">
         <el-input
           v-model="user.username"
-          placeholder="请输入您的登录用户名"
+          placeholder="请输入您的用户名、邮箱或手机号码"
         ></el-input>
       </el-form-item>
       <el-form-item label="密码">
@@ -74,6 +74,10 @@ export default {
       type: String,
       default: '',
     },
+    enableRedirect: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -99,16 +103,21 @@ export default {
       const res = await this.login(this.user)
       if (res.status === 200) {
         this.$message.success('登录成功')
-        if (this.redirect) {
-          this.$router.push(this.redirect)
+        if (this.enableRedirect) {
+          if (this.redirect) {
+            this.$router.push(this.redirect)
+          } else {
+            this.$router.push({ name: 'index' })
+          }
         } else {
-          this.$router.push({ name: 'index' })
+          this.$emit('onSuccess', res)
         }
         this.loading = false
       } else {
         this.loadCaptcha()
         this.loading = false
       }
+      this.loading = false
     },
     async loadCaptcha() {
       const res = await getUserCaptcha({ type: 'login', t: Date.now() })

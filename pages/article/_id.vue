@@ -4,7 +4,25 @@
       <el-col :span="24">
         <el-card shadow="never">
           <div slot="header">
-            <h1>{{ article.title }}</h1>
+            <h1>
+              <el-tooltip
+                v-if="article.notice"
+                placement="top"
+                :content="'网站公告'"
+              >
+                <nuxt-link
+                  :to="{
+                    name: 'article',
+                    query: {
+                      is_notice: true,
+                    },
+                  }"
+                  class="el-link el-link--danger"
+                  ><i class="fa fa-volume-up"></i
+                ></nuxt-link>
+              </el-tooltip>
+              {{ article.title }}
+            </h1>
             <el-breadcrumb separator="/">
               <el-breadcrumb-item>
                 <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
@@ -136,6 +154,11 @@ export default {
       font-weight: 400;
       margin: 0;
       color: #111;
+      .fa {
+        font-size: 18px;
+        position: relative;
+        top: -2px;
+      }
     }
   }
   [data-w-e-type='todo'] {

@@ -19,25 +19,38 @@
           clearable
         ></el-input>
       </el-form-item>
-      <el-form-item
-        label="标识"
-        prop="identifier"
-        :rules="[
-          {
-            required: true,
-            trigger: 'blur',
-            message: '请输入文章标识，建议为字母和数字组合',
-          },
-        ]"
-      >
-        <!-- 如果是编辑文章，不允许修改文章标识 -->
-        <el-input
-          v-model="article.identifier"
-          placeholder="请输入文章标识，建议为字母和数字组合"
-          :disabled="article.id > 0"
-          clearable
-        ></el-input>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item
+            label="标识"
+            prop="identifier"
+            :rules="[
+              {
+                required: true,
+                trigger: 'blur',
+                message: '请输入文章标识，建议为字母和数字组合',
+              },
+            ]"
+          >
+            <!-- 如果是编辑文章，不允许修改文章标识 -->
+            <el-input
+              v-model="article.identifier"
+              placeholder="请输入文章标识，建议为字母和数字组合"
+              :disabled="article.id > 0"
+              clearable
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="公告值（大于0表示为公告，值越大越靠前）">
+            <el-input-number
+              v-model="article.notice"
+              :min="0"
+              clearable
+            ></el-input-number>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="作者">
         <el-input
           v-model="article.author"
@@ -150,7 +163,7 @@ export default {
   watch: {
     initArticle: {
       handler(val) {
-        this.article = { ...val }
+        this.article = { notice: 0, ...val }
       },
       immediate: true,
     },
@@ -214,6 +227,7 @@ export default {
         keywords: '',
         description: '',
         content: '',
+        notice: 0,
       }
     },
     reset() {

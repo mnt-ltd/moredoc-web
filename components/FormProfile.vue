@@ -2,11 +2,16 @@
   <!-- 更新当前用户自身资料 -->
   <div class="com-form-profile">
     <el-form ref="profile" label-width="80px" :model="profile">
-      <el-form-item label="用户名">
+      <el-form-item
+        label="用户名"
+        prop="username"
+        :rules="[
+          { required: true, message: '请输入您的登录用户名', trigger: 'blur' },
+        ]"
+      >
         <el-input
           v-model="profile.username"
           placeholder="请输入您的登录用户名"
-          :disabled="true"
         ></el-input>
       </el-form-item>
       <el-form-item label="真实姓名" prop="realname">
@@ -19,14 +24,21 @@
         label="联系邮箱"
         prop="email"
         :rules="[
-          { required: true, message: '请输入电子邮箱', trigger: 'blur' },
           { type: 'email', message: '请输入正确的电子邮箱', trigger: 'blur' },
         ]"
       >
-        <el-input v-model="profile.email" clearable></el-input>
+        <el-input
+          v-model="profile.email"
+          :disabled="disabledEmail"
+          clearable
+        ></el-input>
       </el-form-item>
       <el-form-item label="联系电话">
-        <el-input v-model="profile.mobile" clearable></el-input>
+        <el-input
+          v-model="profile.mobile"
+          :disabled="disabledMobile"
+          clearable
+        ></el-input>
       </el-form-item>
       <el-form-item label="联系地址">
         <el-input
@@ -64,6 +76,8 @@ export default {
   data() {
     return {
       profile: {},
+      disabledEmail: false,
+      disabledMobile: false,
     }
   },
   computed: {
@@ -73,6 +87,8 @@ export default {
     this.profile = {
       ...this.user,
     }
+    this.disabledEmail = !!this.user.email
+    this.disabledMobile = !!this.user.mobile
   },
   methods: {
     ...mapActions('user', ['updateUserProfile']),

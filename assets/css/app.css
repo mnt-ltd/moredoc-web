@@ -48,6 +48,10 @@ body {
   border: 0;
 }
 
+.mgb-20px {
+  margin-bottom: 20px;
+}
+
 .el-card__header {
   font-weight: bold;
 }

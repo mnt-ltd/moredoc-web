@@ -2,11 +2,16 @@
   <!-- 更新指定用户的资料 -->
   <div class="com-form-user-profile">
     <el-form label-position="left" label-width="80px" :model="profile">
-      <el-form-item label="用户名">
+      <el-form-item
+        label="用户名"
+        prop="username"
+        :rules="[
+          { required: true, message: '请输入您的登录用户名', trigger: 'blur' },
+        ]"
+      >
         <el-input
           v-model="profile.username"
           placeholder="请输入您的登录用户名"
-          :disabled="true"
         ></el-input>
       </el-form-item>
       <el-form-item label="真实姓名" prop="realname">

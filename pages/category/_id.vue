@@ -85,6 +85,10 @@
                 :key="item.value"
                 :to="{ query: { ...$route.query, fee_type: item.value } }"
                 class="el-link"
+                v-show="
+                  item.value != 'vip' ||
+                  (item.value == 'vip' && settings.vip.enable)
+                "
                 :class="
                   item.value === $route.query.fee_type ||
                   (!item.value && !$route.query.fee_type)
@@ -224,6 +228,7 @@ export default {
         { label: '不限', value: '' },
         { label: '免费', value: 'free' },
         { label: '付费', value: 'charge' },
+        { label: 'VIP特享', value: 'vip' },
       ],
     }
   },
@@ -419,6 +424,7 @@ export default {
           'pages',
           'ext',
           'score',
+          'is_vip',
         ],
         fee_type: this.$route.query.fee_type,
       })
@@ -540,6 +546,7 @@ export default {
         background-color: rgb(168, 168, 168);
       }
     }
+
     a {
       margin-right: 10px;
       margin-bottom: 10px;

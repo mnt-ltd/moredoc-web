@@ -2,6 +2,18 @@
   <div class="com-article-list">
     <ul v-if="articles.length > 0">
       <li v-for="article in articles" :key="'a' + article.id">
+        <el-tooltip v-if="article.notice" placement="top" :content="'网站公告'">
+          <nuxt-link
+            :to="{
+              name: 'article',
+              query: {
+                is_notice: true,
+              },
+            }"
+            class="el-link el-link--danger"
+            ><i class="fa fa-volume-up"></i
+          ></nuxt-link>
+        </el-tooltip>
         <nuxt-link
           :to="`/article/${article.identifier}`"
           class="el-link el-link--default"
@@ -16,9 +28,10 @@
         </div>
         <div class="help-block">
           <el-tooltip
+            placement="right"
             :content="'发布时间:' + formatDatetime(article.created_at)"
           >
-            <span title="发布时间">
+            <span>
               <i class="el-icon-time"></i>
               {{ formatRelativeTime(article.created_at) }}
             </span>
@@ -104,7 +117,7 @@ export default {
         margin-right: 20px;
       }
     }
-    a {
+    a.el-link--default {
       font-size: 18px;
       color: #222;
       display: inline-block;

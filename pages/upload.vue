@@ -6,52 +6,100 @@
           <div slot="header" class="clearfix">
             <strong>上传文档</strong>
           </div>
-          <el-row :gutter="40">
-            <el-col :span="14" class="part-left">
+          <el-row :gutter="20">
+            <el-col
+              :span="setKeywordsAndDescription && fileList.length > 0 ? 24 : 14"
+              class="part-left"
+              :class="
+                setKeywordsAndDescription && fileList.length > 0
+                  ? 'hide-border'
+                  : ''
+              "
+            >
               <el-form
                 ref="form"
                 :model="document"
                 label-position="top"
                 label-width="80px"
               >
-                <el-form-item
-                  label="文档分类"
-                  prop="category_id"
-                  :rules="[
-                    {
-                      required: true,
-                      trigger: 'blur',
-                      message: '请选择文档分类',
-                    },
-                  ]"
-                >
-                  <el-cascader
-                    v-model="document.category_id"
-                    :options="categoryTrees"
-                    :filterable="true"
-                    :disabled="loading"
-                    :props="{
-                      checkStrictly: true,
-                      expandTrigger: 'hover',
-                      label: 'title',
-                      value: 'id',
-                    }"
-                    placeholder="请选择文档分类"
-                  ></el-cascader>
-                </el-form-item>
-                <el-form-item
-                  :label="`默认售价（${
-                    settings.system.credit_name || '魔豆'
-                  }）`"
-                  prop="price"
-                >
-                  <el-input-number
-                    v-model="document.price"
-                    :min="0"
-                    :step="1"
-                    :disabled="loading"
-                  ></el-input-number>
-                </el-form-item>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <el-form-item
+                      label="文档分类"
+                      prop="category_id"
+                      :rules="[
+                        {
+                          required: true,
+                          trigger: 'blur',
+                          message: '请选择文档分类',
+                        },
+                      ]"
+                    >
+                      <el-cascader
+                        v-model="document.category_id"
+                        :options="categoryTrees"
+                        :filterable="true"
+                        :disabled="loading"
+                        :props="{
+                          checkStrictly: true,
+                          expandTrigger: 'hover',
+                          label: 'title',
+                          value: 'id',
+                        }"
+                        placeholder="请选择文档分类"
+                      ></el-cascader>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item prop="price">
+                      <template slot="label">
+                        <span>{{
+                          `默认售价（${settings.system.credit_name || '魔豆'}）`
+                        }}</span>
+                        <ToolTip
+                          content="如果您不想为每个文档单独设置售价，可以在此处设置默认售价"
+                        />
+                      </template>
+                      <el-input-number
+                        v-model="document.price"
+                        :min="0"
+                        :step="1"
+                        :disabled="loading"
+                      ></el-input-number>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                  <el-col :span="8">
+                    <el-form-item prop="isDir">
+                      <el-checkbox
+                        v-model="isDir"
+                        @change="changeDir"
+                        :disabled="loading"
+                        >上传文件夹</el-checkbox
+                      >
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8" v-if="settings.vip.enable">
+                    <el-form-item prop="is_vip">
+                      <el-checkbox
+                        v-model="isVIP"
+                        @change="changeVIP"
+                        :disabled="loading"
+                        >加入VIP文档</el-checkbox
+                      >
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item>
+                      <el-checkbox
+                        v-model="setKeywordsAndDescription"
+                        :disabled="loading"
+                        >设置文档关键字与摘要</el-checkbox
+                      >
+                    </el-form-item>
+                  </el-col>
+                </el-row>
                 <el-form-item>
                   <el-upload
                     ref="upload"
@@ -67,7 +115,8 @@
                   >
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">
-                      将文件拖到此处，或<em>点击上传</em>
+                      <template v-if="isDir">点击选择需要上传的<em>文件夹</em></template>
+                      <template v-else>将文件拖到此处，或<em>点击上传</em></template>
                     </div>
                   </el-upload>
                   <vxe-table
@@ -78,10 +127,21 @@
                     stripe
                     border="inner"
                     :column-config="{resizable: true}"
+                    :row-config="{height: 110}"
                   >
                     <vxe-column type="seq" width="60"></vxe-column>
-                    <vxe-column field="title" title="文件" min-width="180">
-                      <template #default="{row}">
+                    <vxe-column field="title" title="文档" min-width="180">
+                      <template #header>
+                        文档
+                        (<el-button
+                          type="text"
+                          size="mini"
+                          :disabled="loading"
+                          @click="clearAllFiles"
+                          >清空</el-button
+                        >)
+                      </template>
+                      <template #default="{row, rowIndex}">
                         <el-input v-model="row.title" :disabled="loading">
                           <template slot="append">{{
                             row.ext
@@ -101,6 +161,21 @@
                           v-else-if="row.percentage > 0"
                           :percentage="row.percentage"
                         ></el-progress>
+                        <div class="table-action">
+                          <el-checkbox
+                            v-if="settings.vip.enable"
+                            v-model="row.is_vip"
+                            :disabled="loading"
+                            >加入VIP文档</el-checkbox
+                          > &nbsp; <el-button
+                            size="mini"
+                            type="text"
+                            icon="el-icon-delete"
+                            :disabled="loading"
+                            @click="handleRemove(rowIndex)"
+                            >移除文档</el-button
+                          >
+                        </div>
                       </template>
                     </vxe-column>
                     <vxe-column field="size" title="大小" width="100" sortable>
@@ -119,30 +194,39 @@
                         ></el-input-number>
                       </template>
                     </vxe-column>
-                    <vxe-column width="100" fixed="right">
-                      <template #header>
-                        操作 (<el-button
-                          type="text"
-                          size="mini"
-                          :disabled="loading"
-                          @click="clearAllFiles"
-                          >清空</el-button
-                        >)
-                      </template>
-                      <template #default="{rowIndex}">
-                        <el-button
-                          size="mini"
-                          type="text"
-                          icon="el-icon-delete"
-                          :disabled="loading"
-                          @click="handleRemove(rowIndex)"
-                        >
-                          移除
-                        </el-button>
-                      </template>
-                    </vxe-column>
+                    <template v-if="setKeywordsAndDescription">
+                      <vxe-column field="keywords" title="关键字" width="250">
+                        <template #default="{row}">
+                          <el-input
+                            v-model="row.keywords"
+                            :disabled="loading"
+                            type="textarea"
+                            :rows="3"
+                            placeholder="请输入关键字，多个关键字请用英文逗号分隔"
+                          ></el-input>
+                        </template>
+                      </vxe-column>
+                      <vxe-column field="description" title="摘要" width="250">
+                        <template #default="{row}">
+                          <el-input
+                            v-model="row.description"
+                            :disabled="loading"
+                            type="textarea"
+                            :rows="3"
+                            placeholder="请输入文档摘要，用以描述和介绍文档"
+                          ></el-input>
+                        </template>
+                      </vxe-column>
+                    </template>
                   </vxe-table>
                 </el-form-item>
+                <el-alert
+                  title="告警提示"
+                  type="warning" class="tips-alert" :closable="false" v-if="fileMessages.length>0">
+                  <div v-for="(message, index) in fileMessages" :key="'msg-'+index">
+                    {{ message }}
+                  </div>
+                </el-alert>
                 <el-form-item style="margin-bottom: 0">
                   <el-button
                     v-if="canIUploadDocument"
@@ -167,7 +251,13 @@
                 </el-form-item>
               </el-form>
             </el-col>
-            <el-col :span="10" class="upload-tips part-right">
+            <el-col
+              :span="10"
+              v-if="
+                !(setKeywordsAndDescription && fileList.length > 0) || isMobile
+              "
+              class="upload-tips part-right"
+            >
               <div><strong>温馨提示</strong></div>
               <div class="help-block">
                 <ul>
@@ -253,8 +343,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { formatBytes } from '~/utils/utils'
-import { createDocument } from '~/api/document'
+import { calcMD5, formatBytes } from '~/utils/utils'
+import { createDocument, isDocumentExist } from '~/api/document'
 import { canIUploadDocument } from '~/api/user'
 import { uploadDocument } from '~/api/attachment'
 export default {
@@ -266,6 +356,8 @@ export default {
         price: 0,
         overwrite: false,
       },
+      isVIP: false,
+      setKeywordsAndDescription: false,
       maxDocumentSize: 50 * 1024 * 1024,
       fileList: [],
       filesMap: {},
@@ -310,6 +402,8 @@ export default {
       totalFailed: 0, // 失败个数
       totalSuccess: 0, // 成功个数
       totalDone: 0, // 完成个数
+      fileMessages: [],
+      isDir: false,
     }
   },
   head() {
@@ -367,20 +461,27 @@ export default {
   methods: {
     formatBytes,
     ...mapActions('user', ['getUser']),
+    // 设置是否允许选择文件夹上传
+    changeDir() {
+      const upload = this.$refs.upload.$el.querySelector('input[type=file]')
+      if(this.isDir){
+        upload.setAttribute('webkitdirectory', 'webkitdirectory')
+        upload.setAttribute('directory', 'directory')
+      }else{
+        upload.removeAttribute('webkitdirectory')
+        upload.removeAttribute('directory')
+      }
+    },
     onChange(file) {
       const name = file.name.toLowerCase()
       const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
       if (!this.allowExt.includes(ext)) {
-        this.$message.warning(`${file.name} 不支持的文件格式，忽略该文件`)
+        this.fileMessages.unshift(`${file.name} 不支持的文件格式，已忽略该文件`)
         return
       }
 
       if (file.size > this.maxDocumentSize) {
-        this.$message.warning(
-          `${file.name} 文件大小${formatBytes(
-            file.size
-          )} 超过限制（最大${formatBytes(this.maxDocumentSize)}），忽略该文件`
-        )
+        this.fileMessages.unshift(`${file.name} 文件大小${formatBytes(file.size)} 超过限制（最大${formatBytes(this.maxDocumentSize)}），已忽略该文件`)
         return
       }
 
@@ -395,6 +496,7 @@ export default {
           title: file.name.substring(0, file.name.lastIndexOf('.')),
           ext,
           price: this.document.price || 0,
+          is_vip: this.isVIP || false,
           progressStatus: 'success',
           error: '',
           percentage: 0,
@@ -451,13 +553,40 @@ export default {
       }
       this.fileList = []
       this.filesMap = {}
+      this.fileMessages = []
       this.$refs.upload.clearFiles()
     },
     async uploadDocument(file) {
+      // 计算文档md5，如果文档已经存在，则不上传
+      if (this.settings.security.disable_upload_exist_document) {
+        let md5
+        try {
+          md5 = await calcMD5(file.raw)
+        } catch (error) {
+          this.$message.error(`文档《${file.name}》md5计算失败:` + error)
+          return
+        }
+
+        const res = await isDocumentExist({ hash: md5 })
+        // 返回200，说明文档已经存在，跳过上传
+        if (res.status === 200) {
+          this.$message.warning(`文档《${file.name}》已存在，跳过上传`)
+          this.totalDone++
+          this.removeFile(file)
+          if (this.totalDone === this.totalFiles) {
+            this.loading = false
+          }
+          return
+        }
+      }
+
       if (file.percentage === 100 && file.attachment_id) {
         // 不用再次上传
         this.createDocument(file)
         this.totalDone++
+        if (this.totalDone === this.totalFiles) {
+          this.loading = false
+        }
         return
       }
       file.error = ''
@@ -505,6 +634,9 @@ export default {
           {
             title: doc.title,
             price: doc.price,
+            is_vip: doc.is_vip,
+            keywords: doc.keywords,
+            description: doc.description,
             attachment_id: doc.attachment_id,
           },
         ],
@@ -513,26 +645,44 @@ export default {
       if (res.status === 200) {
         // 从 fileList 中剔除 attachment_id 与当前文档相同的文档
         this.$message.success(`《${doc.title}》上传成功`)
-        this.fileList = this.fileList.filter((item) => {
-          return item.attachment_id !== doc.attachment_id && doc.attachment_id
-        })
-
-        // 过滤 filesMap 中的文档
-        this.filesMap = Object.keys(this.filesMap).reduce((acc, key) => {
-          if (this.filesMap[key].attachment_id !== doc.attachment_id) {
-            acc[key] = this.filesMap[key]
-          }
-          return acc
-        }, {})
+        this.removeFile(doc)
       } else {
         this.$message.error(`《${doc.title}》上传失败 ` + res.data.message)
       }
+    },
+    // 剔除文档
+    removeFile(file) {
+      this.fileList = this.fileList.filter((item) => {
+        return item.name !== file.name
+      })
+      this.filesMap = Object.keys(this.filesMap).reduce((acc, key) => {
+        if (this.filesMap[key].name !== file.name) {
+          acc[key] = this.filesMap[key]
+        }
+        return acc
+      }, {})
+    },
+    changeVIP() {
+      this.fileList.forEach((file) => {
+        file.is_vip = this.isVIP
+      })
     },
   },
 }
 </script>
 <style lang="scss">
 .page-upload {
+  .tips-alert{
+    margin-bottom: 20px;
+    .el-alert__content{
+      width: 100%;
+      .el-alert__description{
+        width: 100%;
+        max-height: 200px;
+        overflow: auto;
+      }
+    }
+  }
   .vxe-table{
     .el-input-number{
       width: 100%;
@@ -556,9 +706,15 @@ export default {
   .error-tips {
     font-size: 12px;
   }
+  .part-left {
+    border-right: 1px dashed rgb(252, 155, 91);
+    &.hide-border {
+      border-right: none;
+    }
+  }
   .upload-tips {
-    line-height: 180%;
-    border-left: 1px dashed rgb(252, 155, 91);
+    line-height: 160%;
+    padding-left: 20px !important;
     ul,
     li {
       list-style: none;
@@ -566,20 +722,32 @@ export default {
       padding: 0;
     }
     li {
-      margin-bottom: 10px;
+      margin: 4px 0;
     }
     .el-link {
       top: -2px;
     }
     img {
       position: relative;
-      top: 7px;
+      top: 5px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+  .table-action {
+    margin-top: 8px;
+    font-size: 14px;
+    .file-size {
+      display: inline-block;
+      margin: 0 8px;
+      color: #999;
     }
   }
 }
 @media screen and (max-width: $mobile-width) {
   .page-upload {
     .part-left {
+      border-right: 0;
       width: 100% !important;
       .el-upload {
         display: block;
@@ -594,6 +762,10 @@ export default {
       li {
         margin-bottom: 0;
       }
+    }
+    .upload-tips {
+      border-left: 0;
+      padding-left: 10px !important;
     }
   }
 }
