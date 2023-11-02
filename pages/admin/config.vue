@@ -1,6 +1,6 @@
 <template>
   <el-card shadow="never">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-model="activeName" @tab-click="tabClick">
       <el-tab-pane
         v-for="item in categories"
         :key="'category-' + item.value"
@@ -10,12 +10,8 @@
       </el-tab-pane>
     </el-tabs>
     <div
-      v-if="
-        activeName == 'pay' &&
-        (subActiveName == 'xunhupay' ||
-          subActiveName == 'alipay' ||
-          subActiveName == 'wechatpay')
-      "
+      v-if="activeName == 'pay'"
+      style="margin-bottom: 10px;"
     >
       <el-alert title="重要配置提示" type="warning" :closable="false" show-icon>
         <ul>
@@ -42,17 +38,16 @@
           </li>
         </ul>
       </el-alert>
-
-      <el-tabs v-model="subActiveName" @tab-click="subHandleClick">
-        <el-tab-pane
-          v-for="item in subCategories"
-          :key="'sub-category-' + item.value"
-          :label="item.label"
-          :name="item.value"
-        >
-        </el-tab-pane>
-      </el-tabs>
     </div>
+    <el-tabs v-if="subActiveName && subCategories" type="card" v-model="subActiveName" @tab-click="subTabClick">
+      <el-tab-pane
+        v-for="item in subCategories"
+        :key="'sub-category-' + item.value"
+        :label="item.label"
+        :name="item.value"
+      >
+      </el-tab-pane>
+    </el-tabs>
     <el-row v-if="activeName === 'sms'" :gutter="20">
       <el-col :span="10">
         <FormConfig
@@ -93,7 +88,8 @@ export default {
   data() {
     return {
       activeName: 'system',
-      subActiveName: 'wechatpay',
+      subActiveName: '',
+      subCategories: [],
       configs: [],
       subConfigs: [],
       categories: [
@@ -104,6 +100,20 @@ export default {
         {
           label: '支付配置',
           value: 'pay',
+          children: [
+            {
+              label: '微信支付',
+              value: 'wechatpay',
+            },
+            {
+              label: '支付宝支付',
+              value: 'alipay',
+            },
+            {
+              label: '虎皮椒支付',
+              value: 'xunhupay',
+            },
+          ],
         },
         {
           label: '小程序配置',
@@ -124,6 +134,48 @@ export default {
         {
           label: '底链配置',
           value: 'footer',
+        },
+        {
+          label: 'Oauth配置',
+          value: 'oauth',
+          children: [
+            {
+              label: '微信登录',
+              value: 'oauthWechat',
+            },
+            {
+              label: 'QQ登录',
+              value: 'oauthQQ',
+            },
+            {
+              label: 'Github登录',
+              value: 'oauthGithub',
+            },
+            {
+              label: 'Gitee登录',
+              value: 'oauthGitee',
+            },
+            {
+              label: '自定义Oauth',
+              value: 'oauthCustom',
+            },
+            // {
+            //   label: '微博登录',
+            //   value: 'oauthWeibo',
+            // },
+            // {
+            //   label: '飞书登录',
+            //   value: 'oauthFeishu',
+            // },
+            // {
+            //   label: '钉钉登录',
+            //   value: 'oauthDingtalk',
+            // },
+            // {
+            //   label: '企业微信登录',
+            //   value: 'oauthWechatEnterprise',
+            // },
+          ]
         },
         {
           label: '验证码配置',
@@ -150,20 +202,6 @@ export default {
           value: 'email',
         },
       ],
-      subCategories: [
-        {
-          label: '微信支付',
-          value: 'wechatpay',
-        },
-        {
-          label: '支付宝支付',
-          value: 'alipay',
-        },
-        {
-          label: '虎皮椒支付',
-          value: 'xunhupay',
-        },
-      ],
     }
   },
   head() {
@@ -178,42 +216,53 @@ export default {
     '$route.query': {
       handler() {
         this.activeName = this.$route.query.tab || 'system'
-        this.loadConfig()
+        this.loadConfig(this.activeName)
       },
       immediate: true,
     },
   },
   methods: {
-    handleClick(tab) {
+    tabClick(tab) {
       this.activeName = tab.name
+      this.subActiveName=''
+      this.subCategories = []
       this.$router.push({
         query: {
           tab: tab.name,
         },
       })
     },
-    subHandleClick(tab) {
+    subTabClick(tab) {
       this.subActiveName = tab.name
       this.loadConfig(tab.name)
     },
     async loadConfig(tabname) {
       let activeTab = tabname
-      if (activeTab === undefined && this.activeName === 'pay') {
-        // 默认
-        activeTab = 'wechatpay'
-      } else if (this.activeName !== 'pay') {
-        activeTab = this.activeName
+      let subCategories = []
+      this.categories.map(item=>{
+        if(item.value === this.activeName){
+          subCategories = item.children || []
+        }
+      })
+      this.subCategories = subCategories
+      if(subCategories.length>0 && this.subActiveName===''){
+        activeTab = subCategories[0].value
+        this.subActiveName=activeTab
       }
+
+      console.log('loadConfig', activeTab, this.activeName, subCategories)
 
       const res = await listConfig({ category: [activeTab] })
       if (res.status === 200) {
         this.configs = res.data.config || []
-        if (this.activeName === 'sms') {
-          this.configs.map((item) => {
-            if (item.name === 'sms_provider') {
-              this.loadSubConfigs(item.value)
-            }
-          })
+        if (this.activeName==='sms'){
+            this.configs.map((item) => {
+              if (item.name === 'sms_provider') {
+                this.loadSubConfigs(item.value)
+              }
+            })
+        }else{
+
         }
       } else {
         this.configs = []
