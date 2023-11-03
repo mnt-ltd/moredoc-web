@@ -23,6 +23,7 @@
           </el-tab-pane>
         </el-tabs>
         <form-register v-else :redirect="redirect"></form-register>
+        <Oauth/>
       </el-card>
     </div>
   </div>

@@ -31,6 +31,7 @@
             </el-tab-pane>
           </el-tabs>
           <form-login v-else :redirect="redirect"></form-login>
+          <Oauth/>
         </template>
       </el-card>
     </div>
