@@ -292,3 +292,30 @@ export const smsProviderOptions = [
   { label: '华为云', value: 'smsHuawei', type: 'primary' },
   { label: '浩信', value: 'smsHaomas', type: 'primary' },
 ]
+
+// // Oauth 类型
+// enum OauthType {
+//   Unknown = 0;
+//   QQ = 1;
+//   WECHAT = 2;
+//   GITEE = 3;
+//   GITHUB = 4;
+//   WECHAT_MINI = 5;
+//   CUSTOM = 6;
+// }
+
+export const oauthTypeQQ = 1
+export const oauthTypeWechat = 2
+export const oauthTypeGitee = 3
+export const oauthTypeGithub = 4
+export const oauthTypeWechatMini = 5
+export const oauthTypeCustom = 6
+
+export const oauthTypeOptions = [
+  { label: 'QQ', value: oauthTypeQQ },
+  { label: '微信', value: oauthTypeWechat },
+  { label: '码云', value: oauthTypeGitee },
+  { label: 'Github', value: oauthTypeGithub },
+  { label: '微信小程序', value: oauthTypeWechatMini },
+  { label: '自定义', value: oauthTypeCustom },
+]

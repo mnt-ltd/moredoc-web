@@ -10,6 +10,13 @@
 import {
     getEnableOauths
 } from '~/api/oauth'
+import {
+    oauthTypeCustom,
+    oauthTypeGitee,
+    oauthTypeGithub,
+    oauthTypeQQ,
+    oauthTypeWechat
+} from '~/utils/enum'
 export default {
     name: 'Oauth',
     data() {
@@ -30,19 +37,19 @@ export default {
                 let oauths = res.data.oauths || []
                 oauths = oauths.map(item=>{
                     switch (item.type) {
-                        case 'qq':
+                        case oauthTypeQQ:
                             item.authorize_url = `https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=${item.client_id}&redirect_uri=${item.redirect_url}&state=qq&scope=get_user_info`
                             break;
-                        case 'wechat':
+                        case oauthTypeWechat:
                             item.authorize_url = `https://open.weixin.qq.com/connect/qrconnect?appid=${item.client_id}&redirect_uri=${item.redirect_url}&response_type=code&scope=snsapi_login&state=wechat#wechat_redirect`
                             break;
-                        case 'gitee':
+                        case oauthTypeGitee:
                             item.authorize_url = `https://gitee.com/oauth/authorize?client_id=${item.client_id}&redirect_uri=${item.redirect_url}&response_type=code&scope=user_info`
                             break;
-                        case 'github':
+                        case oauthTypeGithub:
                             item.authorize_url = `https://github.com/login/oauth/authorize?client_id=${item.client_id}&redirect_uri=${item.redirect_url}&response_type=code&scope=user`
                             break;
-                        case 'custom':
+                        case oauthTypeCustom:
                             item.authorize_url = `${item.authorize_url}?client_id=${item.client_id}&redirect_uri=${item.redirect_url}&response_type=code&scope=user`
                             break;
                         default:

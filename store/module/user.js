@@ -10,6 +10,9 @@ import {
   loginByMobile,
 } from '~/api/user'
 import { permissionsToTree } from '~/utils/permission'
+import {
+  loginOauth
+} from '~/api/oauth'
 export const user = {
   namespaced: true,
   state: {
@@ -115,6 +118,26 @@ export const user = {
       commit('setToken', res.data.token)
       // 获取用户权限
       await dispatch('getUserPermissions')
+      return res
+    },
+    async logonOauth({ commit, dispatch }, loginInfo) {
+      const res = await loginOauth(loginInfo)
+      if (res.status !== 200) {
+        Message({
+          type: 'error',
+          message: res.data.message || '登录失败',
+        })
+        return res
+      }
+      
+      if(res.data.token && res.data.user){        // 如果返回信息中有token和用户信息，则表示登录成功。否则表示需要对用户信息进行绑定
+        commit('setUser', res.data.user)
+        commit('setToken', res.data.token)
+        await dispatch('getUserPermissions')
+      }
+
+      // 如果没返回上述数据，则表示需要绑定
+
       return res
     },
     async loginByMobile({ commit, dispatch }, loginInfo) {

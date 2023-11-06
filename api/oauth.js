@@ -8,41 +8,18 @@ export const loginOauthQQ = (data) => {
   })
 }
 
-export const loginOauthWechat = (data) => {
+export const loginOauth = (data) => {
   return service({
-    url: '/api/v1/oauth/wechat',
+    url: '/api/v1/oauth/login',
     method: 'post',
     data,
   })
 }
 
-export const loginOauthGitee = (data) => {
+// 绑定oauth
+export const bindOauth = (data) => {
   return service({
-    url: '/api/v1/oauth/gitee',
-    method: 'post',
-    data,
-  })
-}
-
-export const loginOauthGithub = (data) => {
-  return service({
-    url: '/api/v1/oauth/github',
-    method: 'post',
-    data,
-  })
-}
-
-export const loginOauthWechatMini = (data) => {
-  return service({
-    url: '/api/v1/oauth/wechat/mini',
-    method: 'post',
-    data,
-  })
-}
-
-export const loginOauthCustom = (data) => {
-  return service({
-    url: '/api/v1/oauth/custom',
+    url: '/api/v1/oauth/bind',
     method: 'post',
     data,
   })
@@ -50,7 +27,7 @@ export const loginOauthCustom = (data) => {
 
 export const getEnableOauths = (params) => {
   return service({
-    url: '/api/v1/oauths',
+    url: '/api/v1/oauth/configs',
     method: 'get',
     params,
   })
