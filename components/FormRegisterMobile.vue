@@ -128,14 +128,6 @@
           :loading="loading"
           >立即注册</el-button
         >
-        <nuxt-link to="/findpassword" class="el-link el-link--default"
-          >找回密码</nuxt-link
-        >
-        <nuxt-link
-          :to="{ name: 'login', query: { redirect } }"
-          class="el-link el-link--default float-right"
-          >马上登录</nuxt-link
-        >
       </el-form-item>
     </el-form>
   </div>

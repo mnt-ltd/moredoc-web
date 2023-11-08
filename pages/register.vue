@@ -23,6 +23,16 @@
           </el-tab-pane>
         </el-tabs>
         <form-register v-else :redirect="redirect"></form-register>
+        <div class="login">
+          <nuxt-link to="/findpassword" class="el-link el-link--default"
+            >找回密码</nuxt-link
+          >
+          <nuxt-link
+            :to="{ name: 'login', query: { redirect } }"
+            class="el-link el-link--default float-right"
+            >马上登录</nuxt-link
+          >
+        </div>
         <Oauth/>
       </el-card>
     </div>
@@ -77,8 +87,11 @@ export default {
     max-width: 100%;
     margin: 100px auto;
     margin-right: 0;
-    .el-card__body {
+    .el-card__body{
       padding-bottom: 0;
+    }
+    .login{
+      margin: -10px auto 10px;
     }
   }
 }

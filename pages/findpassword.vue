@@ -53,6 +53,10 @@ export default {
     float: right;
     margin-top: -10px;
   }
+  .el-card__body{
+    padding-bottom: 0;
+    margin-bottom: -20px;
+  }
 }
 @media screen and (max-width: 768px) {
   .page-findpassword {

@@ -97,15 +97,6 @@
           :loading="loading"
           >立即登录</el-button
         >
-        <nuxt-link to="/findpassword" class="el-link el-link--default"
-          >找回密码</nuxt-link
-        >
-        <nuxt-link
-          :to="{ name: 'register', query: { redirect } }"
-          title="注册账户"
-          class="el-link el-link--default float-right"
-          >注册账户</nuxt-link
-        >
       </el-form-item>
     </el-form>
   </div>
