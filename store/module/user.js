@@ -30,6 +30,7 @@ export const user = {
     token: '',
     permissions: [],
     allowPages: [],
+    redirectAfterOauth: '/me', // oauth 登录后的跳转页面
   },
   mutations: {
     setUser(state, user) {
@@ -54,8 +55,14 @@ export const user = {
     setAllowPages(state, pages) {
       state.allowPages = pages
     },
+    setRedirectAfterOauth(state, redirect) {
+      state.redirectAfterOauth = redirect
+    },
   },
   actions: {
+    setRedirectAfterOauth({ commit }, redirect) {
+      commit('setRedirectAfterOauth', redirect)
+    },
     // 获取用户信息
     async getUser({ commit }) {
       const res = await getUser()
@@ -225,5 +232,8 @@ export const user = {
     allowPages(state) {
       return state.allowPages
     },
+    redirectAfterOauth(state) {
+      return state.redirectAfterOauth
+    }
   },
 }

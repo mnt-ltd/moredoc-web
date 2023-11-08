@@ -43,7 +43,7 @@
             >注册账户</nuxt-link
           >
         </div>
-        <Oauth/>
+        <Oauth :redirect="redirect"/>
       </el-card>
     </div>
   </div>

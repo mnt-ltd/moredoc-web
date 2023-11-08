@@ -118,6 +118,19 @@
           style="margin-bottom: 10px"
         ></el-alert>
         <el-button
+          v-if="isOauthBind"
+          type="primary"
+          class="btn-block btn-register"
+          icon="el-icon-connection"
+          @click="execRegister"
+          :disabled="
+            settings && settings.security && !settings.security.enable_register
+          "
+          :loading="loading"
+          >注册并绑定</el-button
+        >
+        <el-button
+          v-else
           type="primary"
           class="btn-block btn-register"
           icon="el-icon-check"
@@ -143,6 +156,10 @@ export default {
     redirect: {
       type: String,
       default: '',
+    },
+    isOauthBind: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -178,7 +195,12 @@ export default {
             mobile: this.user.mobile,
             password: this.user.password,
           })
+          this.loading = false
           if (res.status === 200) {
+            if(this.isOauthBind){
+              this.$emit('onSuccess', res)
+              return
+            }
             this.$message.success('注册成功')
             if (this.redirect) {
               this.$router.replace(this.redirect)
@@ -186,7 +208,6 @@ export default {
               this.$router.replace({ name: 'index' })
             }
           }
-          this.loading = false
         }
       })
     },

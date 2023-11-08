@@ -90,6 +90,16 @@
       ></el-alert>
       <el-form-item class="login">
         <el-button
+          v-if="isOauthBind"
+          type="primary"
+          class="btn-block"
+          icon="el-icon-connection"
+          @click="execLogin"
+          :loading="loading"
+          >登录并绑定</el-button
+        >
+        <el-button
+          v-else
           type="primary"
           class="btn-block"
           icon="el-icon-check"
@@ -112,6 +122,10 @@ export default {
     redirect: {
       type: String,
       default: '',
+    },
+    isOauthBind: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -146,7 +160,12 @@ export default {
             code: this.user.code,
             mobile: this.user.mobile,
           })
+          this.loading = false
           if (res.status === 200) {
+            if (this.isOauthBind) {
+              this.$emit('onSuccess', res)
+              return
+            }
             this.$message.success('登录成功')
             if (this.redirect) {
               this.$router.replace(this.redirect)
@@ -154,7 +173,6 @@ export default {
               this.$router.replace({ name: 'index' })
             }
           }
-          this.loading = false
         }
       })
     },

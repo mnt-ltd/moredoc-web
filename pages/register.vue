@@ -33,7 +33,7 @@
             >马上登录</nuxt-link
           >
         </div>
-        <Oauth/>
+        <Oauth :redirect="redirect"/>
       </el-card>
     </div>
   </div>

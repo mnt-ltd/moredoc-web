@@ -1,6 +1,6 @@
 <template>
     <div class="page-oauth">
-        <el-card shadow="never">
+        <el-card shadow="never" v-if="oauth.id>0">
             <div slot="header">完善用户信息</div>
             <OauthBind :oauth="oauth"/>
         </el-card>

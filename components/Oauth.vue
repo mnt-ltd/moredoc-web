@@ -10,6 +10,9 @@
 import {
     getEnableOauths
 } from '~/api/oauth'
+import{
+    mapActions,
+} from 'vuex'
 import {
     oauthTypeCustom,
     oauthTypeGitee,
@@ -24,13 +27,26 @@ export default {
             oauths: []
         }
     },
-    mounted() {
-        
+    props:{
+        redirect: {
+            type: String,
+            default: '/me',
+        },
+    },
+    watch:{
+        redirect:{
+            handler(val){
+                this.setRedirectAfterOauth(val)
+            },
+            deep:true,
+            immediate:true,
+        }
     },
     created() {
         this.getEnableOauths()
     },
     methods: {
+        ...mapActions('user', ['setRedirectAfterOauth']),
         async getEnableOauths() {
             const res = await getEnableOauths()
             if (res.status === 200 && res.data) {
@@ -59,7 +75,15 @@ export default {
                 })
                 this.oauths = oauths
             }
-        }
+        },
+        newWindow(href){
+            // 新开一个浏览器窗口打开oauth登录链接
+            window.open(
+                href,
+                'newWindow',
+                'height=600,width=800,top=100,left=100,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no'
+            )
+        },
     }
 }
 </script>
