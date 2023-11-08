@@ -4,6 +4,9 @@
             <div slot="header">完善用户信息</div>
             <OauthBind :oauth="oauth"/>
         </el-card>
+        <div v-if="loading" style="padding: 150px 0;text-align: center;">
+            <el-button icon="el-icon-loading" type="text">登录中...</el-button>
+        </div>
     </div>
 </template>
 <script>
@@ -25,10 +28,12 @@ export default{
             oauth:{
                 id: 0,
             },
+            loading: false,
         }
     },
     computed:{
         ...mapGetters('setting',['settings']),
+        ...mapGetters('user',['redirectAfterOauth'])
     },
     head(){
         return{
@@ -72,23 +77,24 @@ export default{
                 this.$message.error('未知授权类型')
                 return
             }
-
-            console.log(this.$route.query, this.$route.params)
-            const res = await this.loginOauth({
-                code:this.code,
+            const req = {
+                code: code,
                 oauth_type: oauthType,
-            })
-
+            }
+            console.log(this.$route.query, this.$route.params, req)
+            this.loading=true
+            const res = await this.loginOauth(req)
+            this.loading=false
             if(res.status===200){
                 if(res.data.oauth){
                     this.title=`[${this.$route.params.type}] 完善用户信息 - ${this.settings.system.sitename}`
                     this.oauth = res.data.oauth
                 }else{
                     this.$message.success('登录成功')
-                    this.$router.push('/')
+                    this.$router.replace(this.redirectAfterOauth || '/me')
                 }
             }else{
-                this.$message.error(res.data.message || '登录失败')
+                this.$router.push('/')
             }
         }
     }
