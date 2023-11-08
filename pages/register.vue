@@ -15,6 +15,14 @@
           <span>用户注册</span>
         </div>
         <form-register :redirect="redirect"></form-register>
+        <nuxt-link to="/findpassword" class="el-link el-link--default"
+          >找回密码</nuxt-link
+        >
+        <nuxt-link
+          :to="{ name: 'login', query: { redirect } }"
+          class="el-link el-link--default float-right"
+          >马上登录</nuxt-link
+        >
       </el-card>
     </div>
   </div>
@@ -68,9 +76,6 @@ export default {
     max-width: 100%;
     margin: 100px auto;
     margin-right: 0;
-    .el-card__body {
-      padding-bottom: 0;
-    }
   }
 }
 

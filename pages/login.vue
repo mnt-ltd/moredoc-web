@@ -25,6 +25,20 @@
           v-if="!(user.id > 0 && settings.security.is_close)"
           :redirect="redirect"
         ></form-login>
+        <div>
+          <nuxt-link
+            to="/findpassword"
+            title="找回密码"
+            class="el-link el-link--default"
+            >找回密码</nuxt-link
+          >
+          <nuxt-link
+            :to="{ name: 'register', query: { redirect } }"
+            title="注册账户"
+            class="el-link el-link--default float-right"
+            >注册账户</nuxt-link
+          >
+        </div>
       </el-card>
     </div>
   </div>
@@ -89,9 +103,6 @@ export default {
         line-height: 180%;
         font-size: 15px;
       }
-    }
-    .el-card__body {
-      padding-bottom: 0;
     }
   }
 }
