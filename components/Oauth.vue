@@ -1,7 +1,7 @@
 <template>
     <div v-if="oauths.length>0" class="oauth">
         <div class="tips">您可以通过以下方式快速注册或登录</div>
-        <a v-for="(oauth, idx) in oauths" :key="idx" :href="oauth.authorize_url" >
+        <a v-for="(oauth, idx) in oauths" :key="idx" :href="oauth.authorize_url" rel="nofollow" >
             <img :src="oauth.icon" :alt="oauth.name" :title="oauth.name">
         </a>
     </div>

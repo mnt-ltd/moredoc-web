@@ -11,7 +11,8 @@ import {
 } from '~/api/user'
 import { permissionsToTree } from '~/utils/permission'
 import {
-  loginOauth
+  loginOauth,
+  bindOauth,
 } from '~/api/oauth'
 export const user = {
   namespaced: true,
@@ -120,7 +121,7 @@ export const user = {
       await dispatch('getUserPermissions')
       return res
     },
-    async logonOauth({ commit, dispatch }, loginInfo) {
+    async loginOauth({ commit, dispatch }, loginInfo) {
       const res = await loginOauth(loginInfo)
       if (res.status !== 200) {
         Message({
@@ -135,9 +136,22 @@ export const user = {
         commit('setToken', res.data.token)
         await dispatch('getUserPermissions')
       }
-
       // 如果没返回上述数据，则表示需要绑定
-
+      return res
+    },
+    // 绑定oauth。如果已登录，则绑定到当前用户。如果未登录，则绑定到新用户
+    async bindOauth({ commit, dispatch }, bindInfo) {
+      const res = await bindOauth(bindInfo)
+      if (res.status !== 200) {
+        Message({
+          type: 'error',
+          message: res.data.message || '绑定失败',
+        })
+        return res
+      }
+      if(res.data.token) commit('setToken', res.data.token)
+      if(res.data.user) commit('setUser', res.data.user)
+      await dispatch('getUserPermissions')
       return res
     },
     async loginByMobile({ commit, dispatch }, loginInfo) {
