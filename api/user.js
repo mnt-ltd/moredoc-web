@@ -196,3 +196,19 @@ export const findPasswordByMobile = (data) => {
     data,
   })
 }
+
+export const listUserOauth = (params) => {
+  return service({
+    url: '/api/v1/user/oauth',
+    method: 'get',
+    params,
+  })
+}
+
+export const deleteUserOauth = (params) => {
+  return service({
+    url: '/api/v1/user/oauth',
+    method: 'delete',
+    params,
+  })
+}

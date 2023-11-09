@@ -81,6 +81,9 @@
       <el-tab-pane label="修改密码" name="password">
         <form-password />
       </el-tab-pane>
+      <el-tab-pane label="第三方绑定" name="oauth">
+        <user-oauth/>
+      </el-tab-pane>
       <!-- <el-tab-pane label="修改邮箱" name="email">
         <form-password />
       </el-tab-pane>

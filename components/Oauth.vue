@@ -1,8 +1,10 @@
 <template>
     <div v-if="oauths.length>0" class="oauth">
-        <div class="tips">您可以通过以下方式快速注册或登录</div>
-        <a v-for="(oauth, idx) in oauths" :key="idx" :href="oauth.authorize_url" rel="nofollow" >
+        <div class="tips" v-if="isBind">您还可以绑定以下第三方帐号</div>
+        <div class="tips" v-else>您可以通过以下方式快速注册或登录</div>
+        <a v-for="(oauth, idx) in oauths" :key="idx" :href="isBound(oauth.type) ? 'javascript:;':oauth.authorize_url" rel="nofollow" :class="isBound(oauth.type) ? 'bound': ''" >
             <img :src="oauth.icon" :alt="oauth.name" :title="oauth.name">
+            <div v-if="showName">{{ oauth.name }}</div>
         </a>
     </div>
 </template>
@@ -24,7 +26,8 @@ export default {
     name: 'Oauth',
     data() {
         return {
-            oauths: []
+            oauths: [],
+            bound:{},
         }
     },
     props:{
@@ -32,11 +35,32 @@ export default {
             type: String,
             default: '/me',
         },
+        isBind:{
+            type:Boolean,
+            default:false,
+        },
+        showName:  {
+            type:Boolean,
+            default:false,
+        },
+        userOauths:{
+            type:Array,
+            default:()=>[]
+        }
     },
     watch:{
         redirect:{
             handler(val){
                 this.setRedirectAfterOauth(val)
+            },
+            deep:true,
+            immediate:true,
+        },
+        userOauths:{
+            handler(val){
+                val.map(item=>{
+                    this.bound[item.oauth_type] = true
+                })
             },
             deep:true,
             immediate:true,
@@ -84,6 +108,9 @@ export default {
                 'height=600,width=800,top=100,left=100,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no'
             )
         },
+        isBound(type){
+            return this.bound[type]
+        }
     }
 }
 </script>
@@ -96,10 +123,25 @@ export default {
     a {
         display: inline-block;
         margin: 10px 10px 10px 0;
+        text-align: center;
+        text-decoration: none;
+        font-size: 13px;
+        color: #888;
+        &:hover{
+            color: #333;
+        }
         img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
+        }
+        &.bound{
+            color: #ccc;
+            cursor: not-allowed;
+            img {
+                // 将图片设置为浅灰色
+                filter: invert(0.2);
+            }
         }
     }
 }
