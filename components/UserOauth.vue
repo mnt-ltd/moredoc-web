@@ -12,7 +12,12 @@
                     <el-avatar :size="48" :src="scope.row.avatar"></el-avatar>
                 </template>
             </el-table-column>
-            <el-table-column prop="username" label="用户名"></el-table-column>
+            <el-table-column prop="username" label="用户名">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.username">{{ scope.row.username }}</span>
+                    <span v-else>-</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="nickname" label="昵称"></el-table-column>
             <el-table-column prop="updated_at" label="绑定时间">
                 <template slot-scope="scope">
@@ -51,11 +56,9 @@ export default{
             loadDone: false,
         }
     },
-    created(){
-        Promise.all([
-            this.getUserOauths(),
-            this.getEnableOauths(),
-        ])
+    async created(){
+        await this.getEnableOauths()
+        await this.getUserOauths()
     },
     methods:{
         formatDatetime,
