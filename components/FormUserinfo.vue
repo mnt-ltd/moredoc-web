@@ -114,12 +114,19 @@ export default {
   },
   created() {
     this.getUser()
+    this.activeTab = this.$route.query.tab || 'profile'
   },
   methods: {
     formatDatetime,
     ...mapActions('user', ['getUser']),
     handleClick(tab, event) {
       console.log(tab, event)
+      this.$router.push({
+        path: '/me/profile',
+        query: {
+          tab: tab.name,
+        },
+      })
     },
   },
 }

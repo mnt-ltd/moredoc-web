@@ -58,6 +58,7 @@ export default {
         },
         userOauths:{
             handler(val){
+                this.bound = {}
                 val.map(item=>{
                     this.bound[item.oauth_type] = true
                 })

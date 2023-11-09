@@ -26,7 +26,7 @@
             </el-table-column>
         </el-table>
         <div class="mgt-20px" v-if="loadDone">
-            <Oauth :redirect="`/me/profile`" :isBind="true" :showName="true" :userOauths="userOauths" ref="oauth"/>
+            <Oauth :redirect="`/me/profile?tab=oauth`" :isBind="true" :showName="true" :userOauths="userOauths" ref="oauth"/>
         </div>
     </div>
 </template>

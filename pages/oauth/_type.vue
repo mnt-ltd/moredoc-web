@@ -21,6 +21,7 @@ import {
     mapActions,
     mapGetters,
 } from 'vuex'
+import { bindOauth } from '~/api/oauth'
 export default{
     data(){
         return{
@@ -33,7 +34,7 @@ export default{
     },
     computed:{
         ...mapGetters('setting',['settings']),
-        ...mapGetters('user',['redirectAfterOauth'])
+        ...mapGetters('user',['redirectAfterOauth', 'user'])
     },
     head(){
         return{
