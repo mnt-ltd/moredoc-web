@@ -148,3 +148,11 @@ export const findPasswordStepTwo = (data) => {
     data,
   })
 }
+
+export const sendEmailCode = (data) => {
+  return service({
+    url: '/api/v1/user/email/code',
+    method: 'post',
+    data,
+  })
+}
