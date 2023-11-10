@@ -68,7 +68,7 @@
             授权截止日期
           </template>
           <span class="el-link el-link--danger">{{
-            formatDate(license.expired_at)
+            calcLicenseExpiredAt(license.expired_at)
           }}</span>
         </el-descriptions-item>
         <el-descriptions-item>
@@ -466,6 +466,19 @@ export default {
     formatDate,
     formatDatetime,
     formatBytes,
+    // 计算授权
+    calcLicenseExpiredAt(expiredAt){
+      try {
+        const expiredYear =  new Date(expiredAt).getFullYear()     
+        const currentYear = new Date().getFullYear()
+        if (expiredYear - currentYear > 3) {
+          return '永久授权'
+        }
+        return formatDate(expiredAt)
+      } catch (error) {
+        return '-'
+      }
+    },
     loopGetDevice() {
       this.getDevice()
       clearTimeout(this.timeouter)
