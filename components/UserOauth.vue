@@ -41,7 +41,7 @@ import {
     deleteUserOauth,
 } from '~/api/user'
 import {
-    getEnableOauths,
+    getOauths,
 } from '~/api/oauth'
 import {
     formatDatetime,
@@ -57,7 +57,7 @@ export default{
         }
     },
     async created(){
-        await this.getEnableOauths()
+        await this.getOauths()
         await this.getUserOauths()
     },
     methods:{
@@ -70,8 +70,8 @@ export default{
             }
             this.loadDone=true
         },
-        async getEnableOauths(){
-            const res = await getEnableOauths()
+        async getOauths(){
+            const res = await getOauths()
             if(res.status===200){
                 let oauths = res.data.oauths || []
                 this.oauths= oauths
@@ -102,7 +102,7 @@ export default{
                     })
                     await this.getUserOauths()
                     try {
-                        this.$refs.oauth.getEnableOauths()
+                        this.$refs.oauth.getOauths()
                     } catch (error) {
                         console.log(error)
                     }

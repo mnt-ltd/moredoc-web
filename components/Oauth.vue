@@ -2,7 +2,7 @@
     <div v-if="oauths.length>0" class="oauth">
         <div class="tips" v-if="isBind">您还可以绑定以下第三方帐号</div>
         <div class="tips" v-else>您可以通过以下方式快速注册或登录</div>
-        <a v-for="(oauth, idx) in oauths" :key="idx" :href="isBound(oauth.type) ? 'javascript:;':oauth.authorize_url" rel="nofollow" :class="isBound(oauth.type) ? 'bound': ''" >
+        <a v-for="(oauth, idx) in oauths" :key="idx" v-show="oauth.enable" :href="isBound(oauth.type) ? 'javascript:;':oauth.authorize_url" rel="nofollow" :class="isBound(oauth.type) ? 'bound': ''" >
             <img :src="oauth.icon" :alt="oauth.name" :title="oauth.name">
             <div v-if="showName">{{ oauth.name }}</div>
         </a>
@@ -10,7 +10,7 @@
 </template>
 <script>
 import {
-    getEnableOauths
+    getOauths
 } from '~/api/oauth'
 import{
     mapActions,
@@ -68,12 +68,12 @@ export default {
         }
     },
     created() {
-        this.getEnableOauths()
+        this.getOauths()
     },
     methods: {
         ...mapActions('user', ['setRedirectAfterOauth']),
-        async getEnableOauths() {
-            const res = await getEnableOauths()
+        async getOauths() {
+            const res = await getOauths()
             if (res.status === 200 && res.data) {
                 let oauths = res.data.oauths || []
                 oauths = oauths.map(item=>{

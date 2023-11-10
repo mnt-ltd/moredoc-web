@@ -25,7 +25,7 @@ export const bindOauth = (data) => {
   })
 }
 
-export const getEnableOauths = (params) => {
+export const getOauths = (params) => {
   return service({
     url: '/api/v1/oauth/configs',
     method: 'get',
