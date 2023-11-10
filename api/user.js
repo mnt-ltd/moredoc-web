@@ -212,3 +212,11 @@ export const deleteUserOauth = (params) => {
     params,
   })
 }
+
+export const sendEmailCode = (data) => {
+  return service({
+    url: '/api/v1/user/email/code',
+    method: 'post',
+    data,
+  })
+}
