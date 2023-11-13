@@ -61,6 +61,8 @@ export const user = {
   },
   actions: {
     setRedirectAfterOauth({ commit }, redirect) {
+      // 如果redirect的地址是oauth前缀的地址，则不变更
+      if(redirect.startsWith('/oauth')) return
       commit('setRedirectAfterOauth', redirect)
     },
     // 获取用户信息

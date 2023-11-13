@@ -83,6 +83,7 @@ export default {
             const resOauth =await bindOauth({
                 openid: this.oauth.openid,
                 oauth_type: this.oauth.oauth_type,
+                session: this.oauth.session,
             })
             if(resOauth.status===200){
                 this.$message.success('绑定成功')

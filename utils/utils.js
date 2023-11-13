@@ -271,12 +271,14 @@ export function countDownTime(endAt) {
 // 是否需要登录。针对关闭站点访问、或登录访问限制
 export function requireLogin(settings, user, route, permissions = []) {
   if (settings.security && settings.security.login_required && !user.id) {
+    console.log('requireLogin', route.name)
     // 未登录，且开启了登录访问限制
     if (
       !(
         route.name === 'login' ||
         route.name === 'register' ||
-        route.name === 'findpassword'
+        route.name === 'findpassword' ||
+        route.name === 'oauth-type' // 第三方登录
       )
     ) {
       return true
