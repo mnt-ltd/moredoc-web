@@ -21,7 +21,6 @@ import {
     mapActions,
     mapGetters,
 } from 'vuex'
-import { bindOauth } from '~/api/oauth'
 export default{
     data(){
         return{

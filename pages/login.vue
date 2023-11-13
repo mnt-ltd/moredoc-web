@@ -21,17 +21,15 @@
         <div v-if="settings.security.is_close" class="close-tips">
           <div v-html="settings.security.close_statement"></div>
         </div>
-        <template v-else>
-          <el-tabs type="card" v-if="settings.system.enable_sms">
-            <el-tab-pane label="密码登录">
-              <form-login :redirect="redirect"></form-login>
-            </el-tab-pane>
-            <el-tab-pane label="短信登录">
-              <form-login-mobile :redirect="redirect"></form-login-mobile>
-            </el-tab-pane>
-          </el-tabs>
-          <form-login v-else :redirect="redirect"></form-login>
-        </template>
+        <el-tabs type="card" v-if="settings.system.enable_sms">
+          <el-tab-pane label="密码登录">
+            <form-login :redirect="redirect"></form-login>
+          </el-tab-pane>
+          <el-tab-pane label="短信登录">
+            <form-login-mobile :redirect="redirect"></form-login-mobile>
+          </el-tab-pane>
+        </el-tabs>
+        <form-login v-else :redirect="redirect"></form-login>
         <div class="reg">
           <nuxt-link to="/findpassword" class="el-link el-link--default"
             >找回密码</nuxt-link
@@ -43,7 +41,7 @@
             >注册账户</nuxt-link
           >
         </div>
-        <Oauth :redirect="redirect"/>
+        <Oauth v-if="!settings.security.is_close" :redirect="redirect"/>
       </el-card>
     </div>
   </div>
@@ -104,7 +102,7 @@ export default {
     margin-right: 0;
     &.close-box {
       margin-right: auto;
-      width: 520px;
+      width: 640px;
       .close-tips {
         margin-bottom: 20px;
         border: 1px dashed #f60;
