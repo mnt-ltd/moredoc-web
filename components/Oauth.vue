@@ -1,8 +1,8 @@
 <template>
-    <div v-if="oauths.length>0" class="oauth">
+    <div v-if="enableOauths.length>0" class="oauth">
         <div class="tips" v-if="isBind">您还可以绑定以下第三方帐号</div>
         <div class="tips" v-else>您可以通过以下方式快速注册或登录</div>
-        <a v-for="(oauth, idx) in oauths" :key="idx" v-show="oauth.enable" :href="isBound(oauth.type) ? 'javascript:;':oauth.authorize_url" rel="nofollow" :class="isBound(oauth.type) ? 'bound': ''" >
+        <a v-for="(oauth, idx) in enableOauths" :key="idx" :href="isBound(oauth.type) ? 'javascript:;':oauth.authorize_url" rel="nofollow" :class="isBound(oauth.type) ? 'bound': ''" >
             <img :src="oauth.icon" :alt="oauth.name" :title="oauth.name">
             <div v-if="showName">{{ oauth.name }}</div>
         </a>
@@ -27,6 +27,7 @@ export default {
     data() {
         return {
             oauths: [],
+            enableOauths: [],
             bound:{},
         }
     },
@@ -99,6 +100,7 @@ export default {
                     return item
                 })
                 this.oauths = oauths
+                this.enableOauths = oauths.filter(item=>item.enable)
             }
         },
         newWindow(href){
