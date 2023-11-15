@@ -9,6 +9,9 @@
       >
       </el-tab-pane>
     </el-tabs>
+    <el-alert title="Oauth配置提示" type="success" v-if="activeName==='oauth'" class="oauth-tips">
+      当前Oauth的回调地址是：{{ location.origin }}/oauth/{{ oauthType }}
+    </el-alert>
     <div
       v-if="activeName == 'pay'"
       style="margin-bottom: 10px;"
@@ -36,6 +39,7 @@
               >安全配置</nuxt-link
             >】->【待支付超时关闭】，以确定待支付订单超时多长时间自动关闭。
           </li>
+          <li>当前支付的回调地址是：<span class="text-danger">{{ location.origin }}/callback/{{ subActiveName }}</span></li>
         </ul>
       </el-alert>
     </div>
@@ -89,6 +93,7 @@ export default {
     return {
       activeName: 'system',
       subActiveName: '',
+      location: window.location,
       subCategories: [],
       configs: [],
       subConfigs: [],
@@ -211,6 +216,9 @@ export default {
   },
   computed: {
     ...mapGetters('setting', ['settings']),
+    oauthType(){
+      return this.subActiveName.toLocaleLowerCase().replace('oauth','')
+    }
   },
   watch: {
     '$route.query': {
@@ -292,3 +300,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.oauth-tips {
+  margin-bottom: 10px;
+}
+</style>
