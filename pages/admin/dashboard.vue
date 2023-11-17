@@ -195,7 +195,7 @@
         style="width: 100%"
         empty-text="您暂无权限查看环境依赖情况"
       >
-        <el-table-column prop="name" label="名称" width="100"> </el-table-column>
+        <el-table-column prop="name" label="名称" width="120"> </el-table-column>
         <el-table-column prop="is_required" label="是否必须" width="100">
           <template slot-scope="scope">
             <el-tag
