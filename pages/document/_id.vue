@@ -569,7 +569,7 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.document.description,
+          content: this.subDescription || this.document.title,
         },
         {
           hid: 'keywords',
@@ -604,6 +604,13 @@ export default {
         ? '普通下载'
         : '下载文档'
     },
+    subDescription(){
+      try {
+        return this.document.description.substring(0, 200)
+      } catch (error) {
+        return ''
+      }
+    }
   },
   created() {
     Promise.all([
