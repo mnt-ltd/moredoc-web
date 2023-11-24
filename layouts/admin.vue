@@ -114,6 +114,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import FormProfile from '~/components/FormProfile.vue'
 import FormPassword from '~/components/FormPassword.vue'
+import { adminMenus } from '~/utils/permission'
 export default {
   components: {
     FormProfile,
@@ -126,130 +127,7 @@ export default {
       formPasswordVisible: false,
       isCollapse: false,
       activeMenu: this.$route.path,
-      menus: [
-        {
-          page: '/admin/document',
-          title: '文档管理',
-          icon: 'el-icon-document-copy',
-          children: [
-            {
-              page: '/admin/document/category',
-              title: '分类管理',
-              icon: 'el-icon-s-grid',
-            },
-            {
-              page: '/admin/document/list',
-              title: '文档列表',
-              icon: 'el-icon-tickets',
-            },
-            {
-              page: '/admin/document/recycle',
-              title: '回收站',
-              icon: 'el-icon-delete',
-            },
-          ],
-        },
-        {
-          page: '/admin/user',
-          title: '用户管理',
-          icon: 'el-icon-user',
-          children: [
-            {
-              page: '/admin/user/list',
-              title: '用户管理',
-              icon: 'el-icon-user',
-            },
-            {
-              page: '/admin/user/group',
-              title: '角色管理',
-              icon: 'el-icon-magic-stick',
-            },
-            {
-              page: '/admin/user/permission',
-              title: '权限管理',
-              icon: 'el-icon-circle-check',
-            },
-            {
-              page: '/admin/user/punishment',
-              title: '处罚管理',
-              icon: 'el-icon-warning-outline',
-            },
-            {
-              page: '/admin/user/vip',
-              title: '会员管理',
-              icon: 'el-icon-milk-tea',
-            },
-            {
-              page: '/admin/user/sms',
-              title: '短信管理',
-              icon: 'el-icon-chat-dot-square',
-            },
-          ],
-        },
-        {
-          page: '/admin/spider',
-          title: '爬虫管理',
-          icon: 'el-icon-truck',
-          children: [
-            {
-              page: '/admin/spider/url',
-              title: '采集链接',
-              icon: 'el-icon-link',
-            },
-            {
-              page: '/admin/spider/document',
-              title: '采集文档',
-              icon: 'el-icon-tickets',
-            },
-          ],
-        },
-        {
-          page: '/admin/order',
-          title: '订单管理',
-          icon: 'el-icon-goods',
-        },
-        {
-          page: '/admin/banner',
-          title: '横幅管理',
-          icon: 'el-icon-picture-outline',
-        },
-        {
-          page: '/admin/navigation',
-          title: '导航管理',
-          icon: 'el-icon-guide',
-          is_public: true,
-        },
-        {
-          page: '/admin/article',
-          title: '文章管理',
-          icon: 'el-icon-discover',
-        },
-        {
-          page: '/admin/friendlink',
-          title: '友链管理',
-          icon: 'el-icon-link',
-        },
-        {
-          page: '/admin/comment',
-          title: '评论管理',
-          icon: 'el-icon-chat-dot-square',
-        },
-        {
-          page: '/admin/report',
-          title: '举报管理',
-          icon: 'el-icon-warning-outline',
-        },
-        {
-          page: '/admin/attachment',
-          title: '附件管理',
-          icon: 'el-icon-paperclip',
-        },
-        {
-          page: '/admin/config',
-          title: '系统设置',
-          icon: 'el-icon-setting',
-        },
-      ],
+      menus: adminMenus,
     }
   },
   head() {

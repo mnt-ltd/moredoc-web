@@ -83,7 +83,24 @@ const cumstomPermissionMap = {
     label: '系统设置',
     path: 'ListConfig',
     children: [],
-    pages: ['/admin/config'],
+    pages: [
+      '/admin/config',
+      '/admin/config/system',
+      '/admin/config/display',
+      '/admin/config/footer',
+      '/admin/config/security',
+      '/admin/config/converter',
+      '/admin/config/download',
+      '/admin/config/score',
+      '/admin/config/email',
+      '/admin/config/captcha',
+      '/admin/config/pay',
+      '/admin/config/vip',
+      '/admin/config/miniprogram',
+      '/admin/config/oauth',
+      '/admin/config/sms',
+      '/admin/config/oauth',
+    ],
   },
   'api.v1.ArticleAPI': {
     label: '文章管理',
@@ -166,3 +183,200 @@ export const permissionsToTree = (permissions) => {
   })
   return tree
 }
+
+
+// 管理员菜单
+export const adminMenus = [
+  {
+    page: '/admin/document',
+    title: '文档管理',
+    icon: 'el-icon-document-copy',
+    children: [
+      {
+        page: '/admin/document/category',
+        title: '分类管理',
+        icon: 'el-icon-s-grid',
+      },
+      {
+        page: '/admin/document/list',
+        title: '文档列表',
+        icon: 'el-icon-tickets',
+      },
+      {
+        page: '/admin/document/recycle',
+        title: '回收站',
+        icon: 'el-icon-delete',
+      },
+    ],
+  },
+  {
+    page: '/admin/user',
+    title: '用户管理',
+    icon: 'el-icon-user',
+    children: [
+      {
+        page: '/admin/user/list',
+        title: '用户管理',
+        icon: 'el-icon-user',
+      },
+      {
+        page: '/admin/user/group',
+        title: '角色管理',
+        icon: 'el-icon-magic-stick',
+      },
+      {
+        page: '/admin/user/permission',
+        title: '权限管理',
+        icon: 'el-icon-circle-check',
+      },
+      {
+        page: '/admin/user/punishment',
+        title: '处罚管理',
+        icon: 'el-icon-warning-outline',
+      },
+      {
+        page: '/admin/user/vip',
+        title: '会员管理',
+        icon: 'el-icon-milk-tea',
+      },
+      {
+        page: '/admin/user/sms',
+        title: '短信管理',
+        icon: 'el-icon-chat-dot-square',
+      },
+    ],
+  },
+  {
+    page: '/admin/spider',
+    title: '爬虫管理',
+    icon: 'el-icon-truck',
+    children: [
+      {
+        page: '/admin/spider/url',
+        title: '采集链接',
+        icon: 'el-icon-link',
+      },
+      {
+        page: '/admin/spider/document',
+        title: '采集文档',
+        icon: 'el-icon-tickets',
+      },
+    ],
+  },
+  {
+    page: '/admin/order',
+    title: '订单管理',
+    icon: 'el-icon-goods',
+  },
+  {
+    page: '/admin/banner',
+    title: '横幅管理',
+    icon: 'el-icon-picture-outline',
+  },
+  {
+    page: '/admin/navigation',
+    title: '导航管理',
+    icon: 'el-icon-guide',
+    is_public: true,
+  },
+  {
+    page: '/admin/article',
+    title: '文章管理',
+    icon: 'el-icon-discover',
+  },
+  {
+    page: '/admin/friendlink',
+    title: '友链管理',
+    icon: 'el-icon-link',
+  },
+  {
+    page: '/admin/comment',
+    title: '评论管理',
+    icon: 'el-icon-chat-dot-square',
+  },
+  {
+    page: '/admin/report',
+    title: '举报管理',
+    icon: 'el-icon-warning-outline',
+  },
+  {
+    page: '/admin/attachment',
+    title: '附件管理',
+    icon: 'el-icon-paperclip',
+  },
+  {
+    page: '/admin/config',
+    title: '系统设置',
+    icon: 'el-icon-setting',
+    children: [
+      {
+        title: '基础配置',
+        page: '/admin/config/system',
+        icon: 'el-icon-setting',
+      },
+      {
+        title: '短信配置',
+        page: '/admin/config/sms',
+        icon: 'el-icon-chat-dot-square',
+      },
+      {
+        title: '支付配置',
+        page: '/admin/config/pay',
+        icon: 'el-icon-s-order',
+      },
+      {
+        title: 'VIP配置',
+        page: '/admin/config/vip',
+        icon: 'el-icon-milk-tea',
+      },{
+        title:'小程序配置',
+        page:'/admin/config/miniprogram',
+        icon:'el-icon-goods'
+      },{
+        title: 'Oauth配置',
+        page: '/admin/config/oauth',
+        icon: 'el-icon-connection',
+      },
+      {
+        title: '验证码配置',
+        page: '/admin/config/captcha',
+        icon: 'el-icon-postcard',
+      },
+      {
+        title: '安全配置',
+        page: '/admin/config/security',
+        icon: 'el-icon-coffee-cup',
+      },
+      {
+        title: '转换配置',
+        page: '/admin/config/converter',
+        icon: 'el-icon-refresh',
+      },
+      {
+        title: '积分配置',
+        page: '/admin/config/score',
+        icon: 'el-icon-coin',
+      },
+      {
+        title: '邮箱配置',
+        page: '/admin/config/email',
+        icon: 'el-icon-message',
+      },
+      {
+        title: '展示配置',
+        page: '/admin/config/display',
+        icon: 'el-icon-s-platform',
+      },
+      {
+        title: '底链配置',
+        page: '/admin/config/footer',
+        icon: 'el-icon-link',
+      },
+      {
+        title: '下载配置',
+        page: '/admin/config/download',
+        icon: 'el-icon-download',
+      },
+    ],
+  },
+]

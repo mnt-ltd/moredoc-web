@@ -367,6 +367,7 @@ export default {
       this.$router.push({
         path: `/category/${this.categoryId}`,
         query: {
+          ...this.$route.query,
           sort: this.query.sort,
           page,
         },
