@@ -146,15 +146,15 @@ export const permissionsToTree = (permissions) => {
 // 管理员菜单
 export const adminMenus = [
   {
-    page: '/admin/category',
-    title: '分类管理',
-    icon: 'el-icon-s-grid',
-  },
-  {
     page: '/admin/document',
     title: '文档管理',
     icon: 'el-icon-document-copy',
     children: [
+      {
+        page: '/admin/document/category',
+        title: '分类管理',
+        icon: 'el-icon-s-grid',
+      },
       {
         page: '/admin/document/list',
         title: '文档列表',
