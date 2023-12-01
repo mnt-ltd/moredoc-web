@@ -41,7 +41,7 @@
                 placement="bottom"
                 width="200"
                 trigger="hover"
-                v-show="document.id > 0 && document.exist_wxacode"
+                v-if="document.id > 0 && document.exist_wxacode"
               >
                 <div class="qrcode text-center">
                   <div style="margin-bottom:10px">微信扫码，打开到小程序</div>
