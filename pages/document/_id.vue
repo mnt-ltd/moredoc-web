@@ -5,7 +5,7 @@
         <el-card ref="docMain" shadow="never" class="doc-main">
           <div slot="header" class="clearfix">
             <h1>
-              <img :src="`/static/images/${document.icon}_24.png`" alt="" />
+              <img v-if="document.id>0" :src="`/static/images/${document.icon}_24.png`" alt="" />
               {{ document.title }}
               <el-popover
                 class="hidden-xs-only"
@@ -427,9 +427,6 @@ export default {
     return {
       documentStatusOptions,
       docs: [],
-      user: {
-        id: 0,
-      },
       document: {
         id: 0,
         score: 4.0,
@@ -489,14 +486,18 @@ export default {
   computed: {
     ...mapGetters('category', ['categoryMap']),
     ...mapGetters('setting', ['settings']),
+    ...mapGetters('user', ['user']),
   },
   created() {
-    Promise.all([
+    const requests = [
       this.getDocument(),
-      this.getFavorite(),
       this.getRelatedDocuments(),
       this.getDocumentScore(),
-    ])
+    ]
+    if(this.user.id){
+      requests.push(this.getFavorite())
+    }
+    Promise.all(requests)
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)

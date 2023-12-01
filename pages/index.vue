@@ -353,14 +353,17 @@ export default {
     ...mapGetters('setting', ['settings']),
   },
   async created() {
-    await Promise.all([
+    const requests = [
       this.getRecommendDocuments(),
       this.listBanner(),
       this.getDocuments(),
       this.getSignedToday(),
       this.getStats(),
-      this.getUser(),
-    ])
+    ]
+    if(this.user.id){
+      requests.push(this.getUser())
+    }
+    await Promise.all(requests)
   },
   methods: {
     ...mapActions('user', ['logout', 'getUser']),
@@ -382,12 +385,19 @@ export default {
       }
     },
     async getSignedToday() {
+      if(!this.user.id){
+        return
+      }
       const res = await getSignedToday()
       if (res.status === 200) {
         this.sign = res.data || { id: 0 }
       }
     },
     async signToday() {
+      if (this.sign.id > 0) {
+        this.$message.warning('今日已签到')
+        return
+      }
       const res = await signToday()
       if (res.status === 200) {
         const sign = res.data || { id: 1 }
