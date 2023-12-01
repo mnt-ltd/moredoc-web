@@ -172,6 +172,8 @@ export default {
       },
       captcha: {
         enable: false,
+        captcha: '/static/images/touch-captcha.png',
+        type: 'image',
       },
       loading: false,
       leftSeconds: 0,
@@ -181,7 +183,10 @@ export default {
     ...mapGetters('setting', ['settings']),
   },
   created() {
-    this.loadCaptcha()
+    // this.loadCaptcha()
+    if(this.settings.security.enable_captcha_register){
+      this.captcha.enable = true
+    }
   },
   methods: {
     ...mapActions('user', ['registerByMobile']),

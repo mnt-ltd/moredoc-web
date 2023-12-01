@@ -123,6 +123,7 @@ import {
 } from '~/api/user'
 import { isValidMobile } from '~/utils/utils'
 import { sendSMS } from '~/api/sms'
+import { mapGetters } from 'vuex'
 export default {
   name: 'FormFindPasswordStepOne',
   props: {
@@ -143,13 +144,21 @@ export default {
       },
       captcha: {
         enable: false,
+        captcha: '/static/images/touch-captcha.png',
+        type: 'image',
       },
       loading: false,
       disabled: false,
     }
   },
+  computed: {
+    ...mapGetters('setting', ['settings']),
+  },
   created() {
-    this.loadCaptcha()
+    // this.loadCaptcha()
+    if(this.settings.security.enable_captcha_find_password){
+      this.captcha.enable = true
+    }
   },
   methods: {
     async execFindPassword() {

@@ -208,6 +208,8 @@ export default {
       },
       captcha: {
         enable: false,
+        captcha: '/static/images/touch-captcha.png',
+        type: 'image',
       },
       downloading: false,
       activeTab: 'direct',
@@ -227,11 +229,14 @@ export default {
       ],
     }
   },
-  created() {
-    this.loadCaptcha()
-  },
   computed: {
     ...mapGetters('setting', ['settings']),
+  },
+  created() {
+    // this.loadCaptcha()
+    if(this.settings.download.enable_captcha_download){
+      this.captcha.enable = true
+    }
   },
   methods: {
     ...mapActions('user', ['getUser']),
