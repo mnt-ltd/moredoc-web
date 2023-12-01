@@ -7,6 +7,7 @@
           <div slot="header" class="clearfix">
             <h1>
               <img
+                v-if="document.id>0"
                 :src="`/static/images/${document.icon}_24.png`"
                 :alt="`${document.icon}文档`"
               />
@@ -613,12 +614,15 @@ export default {
     }
   },
   created() {
-    Promise.all([
+    const requests = [
       this.getDocument(),
-      this.getFavorite(),
       this.getRelatedDocuments(),
       this.getDocumentScore(),
-    ])
+    ]
+    if(this.user.id){
+      requests.push(this.getFavorite())
+    }
+    Promise.all(requests)
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
