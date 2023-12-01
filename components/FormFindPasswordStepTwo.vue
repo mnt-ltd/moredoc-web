@@ -71,6 +71,7 @@
 </template>
 <script>
 import { getUserCaptcha, findPasswordStepTwo } from '~/api/user'
+import { mapGetters } from 'vuex'
 export default {
   name: 'FormFindPasswordStepTwo',
   props: {
@@ -91,15 +92,23 @@ export default {
       },
       captcha: {
         enable: false,
+        captcha: '/static/images/touch-captcha.png',
+        type: 'image',
       },
       loading: false,
       disabled: false,
     }
   },
+  computed: {
+    ...mapGetters('setting', ['settings']),
+  },
   created() {
     this.user.token = this.$route.query.token
     this.user.email = this.$route.query.email
-    this.loadCaptcha()
+    // this.loadCaptcha()
+    if(this.settings.security.enable_captcha_find_password){
+      this.captcha.enable = true
+    }
   },
   methods: {
     async execFindPassword() {

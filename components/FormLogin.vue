@@ -81,7 +81,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { getUserCaptcha } from '~/api/user'
 export default {
   name: 'FormLogin',
@@ -109,12 +109,20 @@ export default {
       },
       captcha: {
         enable: false,
+        captcha: '/static/images/touch-captcha.png',
+        type: 'image',
       },
       loading: false,
     }
   },
+  computed: {
+    ...mapGetters('setting', ['settings']),
+  },
   created() {
-    this.loadCaptcha()
+    // this.loadCaptcha()
+    if(this.settings.security.enable_captcha_login){
+      this.captcha.enable = true
+    }
   },
   methods: {
     ...mapActions('user', ['login']),

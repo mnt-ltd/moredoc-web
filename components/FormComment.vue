@@ -116,6 +116,8 @@ export default {
       },
       captcha: {
         enable: false,
+        captcha: '/static/images/touch-captcha.png',
+        type: 'image',
       },
       rules: {
         content: [
@@ -123,6 +125,9 @@ export default {
         ],
       },
     }
+  },
+  computed: {
+    ...mapGetters('setting', ['settings']),
   },
   watch: {
     documentId: {
@@ -139,7 +144,10 @@ export default {
     },
   },
   created() {
-    this.loadCaptcha()
+    // this.loadCaptcha()
+    if(this.settings.security.enable_captcha_comment){
+      this.captcha.enable = true
+    }
   },
   methods: {
     submitForm(formName) {
