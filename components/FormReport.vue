@@ -97,7 +97,10 @@ export default {
   methods: {
     async setReport() {
       if (this.report.id > 0) {
-        const res = await updateReport(this.report)
+        let report = { ...this.report }
+        delete report.document_title_html
+        delete report.username_html
+        const res = await updateReport(report)
         if (res.status === 200) {
           this.$message.success('更新成功')
           this.$emit('success')
