@@ -82,7 +82,7 @@ const cumstomPermissionMap = {
     label: '文章管理',
     path: 'ListArticle',
     children: [],
-    pages: ['/admin/article'],
+    pages: ['/admin/article','/admin/article/set'],
   },
   'api.v1.CommentAPI': {
     label: '评论管理',
