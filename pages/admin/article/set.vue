@@ -81,7 +81,7 @@
         <el-form-item label="内容" class="editor-item">
           <Editor :init="init" v-model="article.content"></Editor>
         </el-form-item>
-        <el-form-item v-if="!isEditorFullScreen">
+        <el-form-item>
           <el-button
             type="primary"
             class="btn-block"
@@ -118,19 +118,7 @@ export default {
           toolbar: 'undo redo | styleselect blocks | kityformula-editor codesample table searchreplace link bold italic fullscreen | alignleft aligncenter alignright alignjustify | indent outdent | bullist numlist | image media | help',
           plugins:'kityformula-editor image media wordcount codesample code link charmap emoticons table searchreplace visualblocks fullscreen media table paste code help wordcount',
           relative_urls: false,//是否使用相对路径
-          paste_data_images: true,//是否允许粘贴图片
-          image_advtab: true,//是否显示高级选项
-          image_caption: true,//是否允许图片添加标题
-          image_title: true,//是否允许图片添加标题
-          image_description: true,//是否允许图片添加描述
-          image_dimensions: true,//是否允许图片添加尺寸
-          image_class_list: [
-            { title: 'None', value: '' },
-            { title: 'Responsive', value: 'img-responsive' },
-          ],
-          image_uploadtab: true,//是否显示上传选项
-          image_upload_url: '/api/upload/image',//图片上传地址
-          image_upload_credentials: true,//是否允许携带cookie
+          images_upload_handler: this.images_upload_handler,
         },
         article:{
           title:'',
@@ -162,6 +150,39 @@ export default {
           return
         }
         this.article = res.data
+      },
+      images_upload_handler(blobInfo, progress) {
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.withCredentials = false;
+          xhr.open('POST', '/api/v1/upload/article?type=image');
+          // 设置header
+          xhr.setRequestHeader('Authorization', 'Bearer ' + this.$store.state.user.token);
+          xhr.upload.onprogress = (e) => {
+              progress(e.loaded / e.total * 100);
+          };
+
+          xhr.onload = () => {
+              if (xhr.status === 403) {
+                  reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
+                  return;
+              }
+              if (xhr.status < 200 || xhr.status >= 300) {
+                  reject('HTTP Error: ' + xhr.status);
+                  return;
+              }
+              const res = JSON.parse(xhr.responseText);
+              console.log(res)
+              resolve(res.data.url);
+          };
+
+          xhr.onerror = () => {
+              reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+          };
+          const formData = new FormData();
+          formData.append('file', blobInfo.blob(), blobInfo.filename());
+          xhr.send(formData);
+        })
       },
       async onSubmit(){
         this.$refs.formArticle.validate(async (valid) => {
