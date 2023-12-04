@@ -184,24 +184,10 @@ export default {
       }
     },
     onCreate() {
-      this.article = { id: 0 }
-      this.formArticleVisible = true
-      this.$nextTick(() => {
-        try {
-          this.$refs.articleForm.reset()
-        } catch (error) {
-          console.log(error)
-        }
-      })
+      this.$router.push('/admin/article/set')
     },
     async editRow(row) {
-      const res = await getArticle({ id: row.id })
-      if (res.status === 200) {
-        this.article = res.data
-        this.formArticleVisible = true
-      } else {
-        this.$message.error(res.data.message)
-      }
+      this.$router.push(`/admin/article/set?id=${row.id}`)
     },
     formSuccess() {
       this.formArticleVisible = false
