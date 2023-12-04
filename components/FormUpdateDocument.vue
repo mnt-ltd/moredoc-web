@@ -5,6 +5,7 @@
       label-position="top"
       label-width="80px"
       :model="document"
+      v-loading="loading"
     >
       <el-form-item
         label="名称"
@@ -122,7 +123,7 @@
   </div>
 </template>
 <script>
-import { updateDocument } from '~/api/document'
+import { updateDocument,getDocument } from '~/api/document'
 import { documentStatusOptions } from '~/utils/enum'
 import { mapGetters } from 'vuex'
 export default {
@@ -156,8 +157,10 @@ export default {
   },
   watch: {
     initDocument: {
-      handler(val) {
-        this.document = { price: 0, ...val }
+      async handler(val) {
+        if(val.id){
+          this.getDocument(val.id)
+        }
       },
       immediate: true,
     },
@@ -206,6 +209,14 @@ export default {
         }
       })
     },
+    async getDocument(documentId){
+      this.loading=true
+      const res = await getDocument({id: documentId})
+      if (res.status === 200) {
+        this.document = res.data
+      }
+      this.loading=false
+    }
   },
 }
 </script>
