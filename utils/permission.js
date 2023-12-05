@@ -61,6 +61,12 @@ const cumstomPermissionMap = {
     children: [],
     pages: ['/admin/user', '/admin/user/permission'],
   },
+  'api.v1.AdvertisementAPI': {
+    label: '广告管理',
+    path: 'ListAdvertisement',
+    children: [],
+    pages: ['/admin/advertisement'],
+  },
   'api.v1.ConfigAPI': {
     label: '系统设置',
     path: 'ListConfig',
@@ -200,6 +206,12 @@ export const adminMenus = [
     icon: 'el-icon-picture-outline',
   },
   {
+    page: '/admin/navigation',
+    title: '导航管理',
+    icon: 'el-icon-monitor',
+    is_public: true,
+  },
+  {
     page: '/admin/article',
     title: '文章管理',
     icon: 'el-icon-discover',
@@ -218,6 +230,11 @@ export const adminMenus = [
     page: '/admin/report',
     title: '举报管理',
     icon: 'el-icon-warning-outline',
+  },
+  {
+    title: '广告管理',
+    page: '/admin/advertisement',
+    icon: 'el-icon-s-flag',
   },
   {
     page: '/admin/attachment',

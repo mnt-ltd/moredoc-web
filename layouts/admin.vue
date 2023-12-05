@@ -26,7 +26,7 @@
           <template v-for="menu in menus">
             <el-submenu
               v-if="menu.children"
-              v-show="allowPages.includes(menu.page)"
+              v-show="allowPages.includes(menu.page) || menu.is_public"
               :key="'submenu-' + menu.page"
               :index="menu.page"
             >
@@ -36,7 +36,7 @@
               </template>
               <el-menu-item
                 v-for="child in menu.children"
-                v-show="allowPages.includes(child.page)"
+                v-show="allowPages.includes(child.page)  || menu.is_public"
                 :key="child.page"
                 :index="child.page"
               >
@@ -46,7 +46,7 @@
             </el-submenu>
             <el-menu-item
               v-else
-              v-show="allowPages.includes(menu.page)"
+              v-show="allowPages.includes(menu.page) || menu.is_public"
               :key="'menu-' + menu.page"
               :index="menu.page"
             >
@@ -54,10 +54,6 @@
               <span slot="title">{{ menu.title }}</span>
             </el-menu-item>
           </template>
-          <el-menu-item index="/admin/navigation">
-            <i class="el-icon-monitor"></i>
-            <span slot="title">导航管理</span>
-          </el-menu-item>
         </el-menu>
       </transition>
     </el-aside>
