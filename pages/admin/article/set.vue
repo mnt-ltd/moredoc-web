@@ -20,19 +20,31 @@
         label-width="80px"
         :model="article"
       >
-        <el-form-item
-          label="标题"
-          prop="title"
-          :rules="[
-            { required: true, trigger: 'blur', message: '请输入文章标题' },
-          ]"
-        >
-          <el-input
-            v-model="article.title"
-            placeholder="请输入文章标题"
-            clearable
-          ></el-input>
-        </el-form-item>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item
+              label="标题"
+              prop="title"
+              :rules="[
+                { required: true, trigger: 'blur', message: '请输入文章标题' },
+              ]"
+            >
+              <el-input
+                v-model="article.title"
+                placeholder="请输入文章标题"
+                clearable
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="关键字">
+              <el-input
+                v-model="article.keywords"
+                placeholder="请输入文章关键字，多个关键字用英文逗号分隔"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item
@@ -64,12 +76,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="关键字">
-          <el-input
-            v-model="article.keywords"
-            placeholder="请输入文章关键字，多个关键字用英文逗号分隔"
-          ></el-input>
-        </el-form-item>
         <el-form-item label="描述">
           <el-input
             v-model="article.description"
@@ -112,11 +118,11 @@ export default {
           language_url: '/static/tinymce/langs/zh-Hans.js',// 语言包的路径
           language: 'zh-Hans',//语言
           skin_url: '/static/tinymce/skins/ui/oxide',// skin路径
-          height: 500,//编辑器高度
+          height: 600,//编辑器高度
           branding: true,//是否禁用“Powered by TinyMCE”
           menubar: true,//顶部菜单栏显示,
-          toolbar: 'undo redo | styleselect blocks | kityformula-editor codesample table searchreplace link bold italic fullscreen | alignleft aligncenter alignright alignjustify | indent outdent | bullist numlist | image media | help',
-          plugins:'kityformula-editor image media wordcount codesample code link charmap emoticons table searchreplace visualblocks fullscreen media table paste code help wordcount',
+          toolbar: 'undo redo | styleselect blocks | kityformula-editor codesample table link bold italic | bullist numlist alignleft aligncenter alignright alignjustify indent outdent | image media | searchreplace preview fullscreen help',
+          plugins:'kityformula-editor image media wordcount codesample code link charmap emoticons table searchreplace visualblocks fullscreen table paste code help wordcount lists preview',
           relative_urls: false,//是否使用相对路径
           images_upload_handler: this.images_upload_handler,
         },
@@ -131,9 +137,7 @@ export default {
       }
     },
     mounted() {
-      tinymce.init({
-        selector: '#mytextarea'
-      });
+      tinymce.init({});
     },
     created() {
       this.getArticle()
