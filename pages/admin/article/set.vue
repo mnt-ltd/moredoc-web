@@ -199,8 +199,6 @@ export default {
             const res = await updateArticle(article)
             if (res.status === 200) {
               this.$message.success('修改成功')
-              this.resetFields()
-              this.$emit('success', res.data)
             } else {
               this.$message.error(res.data.message)
             }
@@ -208,8 +206,7 @@ export default {
             const res = await createArticle(article)
             if (res.status === 200) {
               this.$message.success('新增成功')
-              this.resetFields()
-              this.$emit('success', res.data)
+              this.article = res.data
             } else {
               this.$message.error(res.data.message)
             }

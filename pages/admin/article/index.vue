@@ -195,7 +195,7 @@ export default {
     },
     batchDelete() {
       this.$confirm(
-        `您确定要删除选中的【${this.selectedRow.length}条】文章吗？删除之后不可恢复！`,
+        `您确定要删除选中的【${this.selectedRow.length}篇】文章吗？删除之后不可恢复！`,
         '温馨提示',
         {
           confirmButtonText: '确定',
