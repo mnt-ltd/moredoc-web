@@ -46,6 +46,11 @@
         </el-form-item>
       </el-form>
     </div>
+
+    <template v-for="item in advertisements">
+      <div :key="'global-top'+item.id" v-if="item.position=='index_banner_bottom'" v-html="item.content"></div>
+    </template>
+
     <el-row :gutter="20" class="mgt-20px">
       <el-col :span="6" class="float-right right-at-recommend">
         <el-card class="text-center stat-info" shadow="never">
@@ -222,6 +227,11 @@
         </el-card>
       </el-col>
     </el-row>
+    
+    <template v-for="item in advertisements">
+      <div :key="'global-top'+item.id" v-if="item.position=='index_category_top'" v-html="item.content"></div>
+    </template>
+
     <div
       class="categories mgt-20px"
       v-if="settings.display.show_index_categories"
@@ -253,6 +263,11 @@
         </div>
       </el-row>
     </div>
+    
+    <template v-for="item in advertisements">
+      <div :key="'global-top'+item.id" v-if="item.position=='index_category_bottom'" v-html="item.content"></div>
+    </template>
+    
     <el-row :gutter="20" class="category-item">
       <el-col
         v-for="item in documents"
@@ -299,6 +314,11 @@
         </el-card>
       </el-col>
     </el-row>
+    
+    <template v-for="item in advertisements">
+      <div :key="'global-top'+item.id" v-if="item.position=='index_link_top'" v-html="item.content"></div>
+    </template>
+ 
   </div>
 </template>
 
@@ -310,6 +330,7 @@ import { listDocument, listDocumentForHome } from '~/api/document'
 import { getSignedToday, signToday } from '~/api/user'
 import { getStats } from '~/api/config'
 import { getIcon } from '~/utils/utils'
+import { advertisementPositions } from '~/utils/enum'
 export default {
   components: { UserAvatar },
   data() {
@@ -328,6 +349,7 @@ export default {
         user_count: '-',
       },
       carouselIndexes: [0], // 跑马灯index，用于跑马灯图片的懒加载
+      advertisementPositions,
     }
   },
   head() {
@@ -359,6 +381,7 @@ export default {
       this.getDocuments(),
       this.getSignedToday(),
       this.getStats(),
+      this.getAdvertisements('index'),
     ]
     if(this.user.id){
       requests.push(this.getUser())
@@ -447,7 +470,7 @@ export default {
         carouselIndexes.push(index)
       }
       this.carouselIndexes = carouselIndexes
-    }
+    },
   },
 }
 </script>

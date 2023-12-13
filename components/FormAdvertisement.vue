@@ -150,6 +150,13 @@ export default {
         }
         this.loading = true
         const advertisement = { ...this.advertisement }
+        if (!advertisement.start_time){
+          delete advertisement.start_time
+        }
+        if (!advertisement.end_time){
+          delete advertisement.end_time
+        }
+
         if (this.advertisement.id > 0) {
           const res = await updateAdvertisement(advertisement)
           if (res.status === 200) {

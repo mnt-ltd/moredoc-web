@@ -32,6 +32,14 @@ export const getAdvertisement = (params) => {
   })
 }
 
+export const getAdvertisementByPosition = (params) => {
+  return service({
+    url: '/api/v1/advertisement/position',
+    method: 'get',
+    params,
+  })
+}
+
 export const listAdvertisement = (params) => {
   return service({
     url: '/api/v1/advertisement/list',
