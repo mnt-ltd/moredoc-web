@@ -319,3 +319,129 @@ export const oauthTypeOptions = [
   { label: '微信小程序', value: oauthTypeWechatMini },
   { label: '自定义', value: oauthTypeCustom },
 ]
+
+// 广告位置
+export const advertisementPositions = [
+  {
+    label: '全局广告',
+    value: 'global',
+    description: '网站全局广告，所有页面都会显示',
+    children: [
+      { 
+        label: '全局底部',
+        value: 'global_bottom',
+        description: '网站全局底部，所有页面都会显示',
+      },
+      {
+        label: '全局顶部',
+        value: 'global_top',
+        description: '网站全局顶部，所有页面都会显示',
+      },
+    ]
+  },
+  {
+    label: '首页',
+    value: 'index',
+    description: '网站首页，只有首页会显示',
+    children:[
+      {
+        label: '首页轮播图下方',
+        value: 'index_banner_bottom',
+        description: '网站首页轮播图下方，只有首页会显示',
+      },
+      {
+        label: '首页分类上方',
+        value: 'index_category_top',
+        description: '网站首页分类上方，只有首页会显示',
+      },
+      {
+        label: '首页分类下方',
+        value: 'index_category_bottom',
+        description: '网站首页分类下方，只有首页会显示',
+      },
+      {
+        label: '首页友链上方',
+        value: 'index_link_top',
+        description: '网站首页友链上方，只有首页会显示',
+      },
+    ]
+  },
+  {
+    label: '列表页',
+    value: 'list',
+    description: '网站列表页，只有列表页会显示',
+    children:[
+      {
+        label: '列表页导航下方',
+        value: 'list_nav_bottom',
+        description: '网站列表页导航下方，只有列表页会显示',
+      },
+      {
+        label: '列表页文档列表上方',
+        value: 'list_document_top',
+        description: '网站列表页文档列表内容上方，只有列表页会显示',
+      },
+      {
+        label: '列表页文档列表下方',
+        value: 'list_document_bottom',
+        description: '网站列表页文档列表内容下方，只有列表页会显示',
+      },
+    ]
+  },
+  {
+    label: '文档浏览页',
+    value: 'document',
+    description: '网站文档浏览页，只有文档浏览页会显示',
+    children: [
+      {
+        label: '文档浏览页顶部',
+        value: 'document_top',
+        description: '网站文档浏览页顶部，只有文档浏览页会显示',
+      },{
+        label: '文档浏览页评论顶部',
+        value: 'document_bottom',
+        description: '文档浏览页评论顶部，只有文档浏览页会显示',
+      },{
+        label: '文档浏览页页间',
+        value: 'document_between',
+        description: '网站文档浏览页页间，只有文档浏览页会显示',
+      }
+    ]
+  },
+  {
+    label: '个人主页',
+    value: 'user',
+    description: '网站个人主页，只有个人主页会显示',
+    children: [
+      {
+        label: '个人主页顶部',
+        value: 'user_top',
+        description: '网站个人主页顶部，只有个人主页会显示',
+      },{
+        label: '个人主页文档列表顶部',
+        value: 'user_document_top',
+        description: '网站个人主页文档列表顶部，只有个人主页会显示',
+      }
+    ]
+  },
+  {
+    label: '搜索结果页',
+    value: 'search',
+    description: '网站搜索结果页，只有搜索结果页会显示',
+    children: [
+      {
+        label: '搜索结果页顶部',
+        value: 'search_top',
+        description: '网站搜索结果页顶部，只有搜索结果页会显示',
+      },{
+        label: '搜索结果页底部',
+        value: 'search_bottom',
+        description: '网站搜索结果页底部，只有搜索结果页会显示',
+      },{
+        label: '搜索结果页右侧',
+        value: 'search_right',
+        description: '网站搜索结果页右侧，只有搜索结果页会显示',
+      }
+    ]
+  }
+]

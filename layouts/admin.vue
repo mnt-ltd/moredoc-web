@@ -38,7 +38,7 @@
           <template v-for="menu in menus">
             <el-submenu
               v-if="menu.children"
-              v-show="allowPages.includes(menu.page)"
+              v-show="allowPages.includes(menu.page) || menu.is_public"
               :key="'submenu-' + menu.page"
               :index="menu.page"
             >
@@ -48,7 +48,7 @@
               </template>
               <el-menu-item
                 v-for="child in menu.children"
-                v-show="allowPages.includes(child.page)"
+                v-show="allowPages.includes(child.page)  || menu.is_public"
                 :key="child.page"
                 :index="child.page"
               >

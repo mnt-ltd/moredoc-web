@@ -1,9 +1,13 @@
+import { advertisementPositions } from "~/utils/enum"
+import { getAdvertisementByPosition } from '~/api/advertisement'
 export default {
   data() {
     return {
       isMobile: false,
       isPad: false,
       isPC: true,
+      advertisementPositions,
+      advertisements:[], // 广告
     }
   },
   mounted() {
@@ -30,5 +34,21 @@ export default {
         this.isPC = true
       }
     },
+    async getAdvertisements(page) {
+        const positions = []
+        this.advertisementPositions.map(item=>{
+          if(item.value===page){
+            (item.children || []).map(child=>{
+              positions.push(child.value)
+            })
+          }
+        })
+        const res = await getAdvertisementByPosition({
+          position: positions,
+        })
+        if(res.status===200){
+          this.advertisements = res.data.advertisement || []
+        }
+      }
   },
 }

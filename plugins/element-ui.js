@@ -38,8 +38,8 @@ hotkeys.filter = (e) => {
 }
 
 // mixins
-import device from '~/mixins/device'
-Vue.mixin(device)
+import mixins from '~/mixins/mixins'
+Vue.mixin(mixins)
 
 // Vue2 引入快捷键
 Vue.prototype.$hotkeys = hotkeys

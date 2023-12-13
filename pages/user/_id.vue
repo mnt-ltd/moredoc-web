@@ -1,5 +1,8 @@
 <template>
   <div class="page page-user">
+    <template v-for="item in advertisements">
+      <div :key="item.position+item.id" v-if="item.position=='user_top'" v-html="item.content"></div>
+    </template>
     <el-row>
       <el-col :span="24">
         <el-card shadow="never">
@@ -22,6 +25,9 @@
                 >
               </span>
             </el-tab-pane>
+            <template v-for="item in advertisements">
+              <div :key="item.position+item.id" v-if="item.position=='user_document_top'" v-html="item.content"></div>
+            </template>
             <nuxt-child :user="user" />
           </el-tabs>
         </el-card>
@@ -66,7 +72,10 @@ export default {
     try {
       const id = parseInt(this.$route.params.id)
       this.user.id = id
-      this.getUser()
+      Promise.all([
+        this.getUser(),
+        this.getAdvertisements('user')
+      ])
     } catch (error) {}
   },
   methods: {

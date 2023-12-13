@@ -55,6 +55,9 @@
       </el-row>
     </div>
     <el-row :gutter="20">
+      <template v-for="item in advertisements">
+        <el-col :span="24" :key="item.position+item.id" v-if="item.position=='search_top'" v-html="item.content"></el-col>
+      </template>
       <el-col :span="18" class="search-main" ref="searchMain">
         <el-card v-loading="loading" shadow="never">
           <div slot="header">
@@ -263,8 +266,14 @@
             />
           </el-card> -->
         </div>
+        <template v-for="item in advertisements">
+          <div :key="item.position+item.id" v-if="item.position=='search_right'" v-html="item.content"></div>
+        </template>
       </el-col>
     </el-row>
+    <template v-for="item in advertisements">
+      <div :key="item.position+item.id" v-if="item.position=='search_bottom'" v-html="item.content"></div>
+    </template>
   </div>
 </template>
 
@@ -396,7 +405,10 @@ export default {
       console.log(error)
     }
     this.query = query
-    this.getStats()
+    Promise.all([
+      this.getStats(),
+      this.getAdvertisements('search'),
+    ])
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)

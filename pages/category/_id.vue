@@ -1,5 +1,10 @@
 <template>
   <div class="page page-category">
+
+    <template v-for="item in advertisements">
+      <div :key="item.position+item.id" v-if="item.position=='list_nav_bottom'" v-html="item.content"></div>
+    </template>
+
     <el-row>
       <el-col :span="24">
         <el-card shadow="never" ref="breadcrumb">
@@ -102,6 +107,11 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <template v-for="item in advertisements">
+      <div :key="item.position+item.id" v-if="item.position=='list_document_top'" v-html="item.content"></div>
+    </template>
+
     <el-row :gutter="20" class="mgt-20px">
       <el-col :span="18">
         <el-card shadow="never" ref="docList" class="doc-list">
@@ -179,6 +189,11 @@
         </el-card>
       </el-col>
     </el-row>
+  
+    <template v-for="item in advertisements">
+      <div :key="item.position+item.id" v-if="item.position=='list_document_bottom'" v-html="item.content"></div>
+    </template>
+
   </div>
 </template>
 
@@ -301,7 +316,10 @@ export default {
     this.categoryChildren = categoryChildren
 
     this.setQuery()
-    this.loadData()
+    Promise.all([
+      this.loadData(),
+      this.getAdvertisements('list'),
+    ])
   },
   mounted() {
     this.$nextTick(() => {
