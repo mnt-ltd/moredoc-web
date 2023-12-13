@@ -1,7 +1,7 @@
 <template>
   <el-container class="layout-default" v-loading="loading">
     <template v-for="item in advertisements">
-      <div :key="'global-top'+item.id" v-if="item.position=='global_top'" v-html="item.content"></div>
+      <div :key="item.position+item.id" v-if="item.position=='global_top'" v-html="item.content"></div>
     </template>
     <el-header v-if="$route.name !== 'search' || isMobile">
       <div>
@@ -413,7 +413,7 @@
       </el-menu>
     </el-drawer>
     <template v-for="item in advertisements">
-      <div :key="'global-top'+item.id" v-if="item.position=='global_bottom'" v-html="item.content"></div>
+      <div :key="item.position+item.id" v-if="item.position=='global_bottom'" v-html="item.content"></div>
     </template>
   </el-container>
 </template>

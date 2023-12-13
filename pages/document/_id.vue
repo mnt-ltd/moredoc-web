@@ -98,6 +98,11 @@
             </el-alert>
             <div class="mgt-20px"></div>
           </template>
+
+          <template v-for="item in advertisements">
+            <div :key="item.position+item.id" v-if="item.position=='document_top'" v-html="item.content"></div>
+          </template>
+
           <el-descriptions
             v-if="settings.display.show_document_descriptions"
             class="document-descriptions"
@@ -129,36 +134,38 @@
           </el-descriptions>
           <div ref="docPages" class="doc-pages" @contextmenu.prevent>
             <div v-if="isMobile" v-viewer>
-              <el-image
-                v-for="(page, index) in pages"
-                :key="index + page.src"
-                :src="page.src"
-                :alt="page.alt"
-                :data-source="page.lazySrc"
-                lazy
-                class="doc-page"
-                :style="{
-                  width: pageWidth + 'px',
-                  height: pageHeight + 'px',
-                }"
-              >
-              </el-image>
+              <div v-for="(page, index) in pages" :key="index + page.src">
+                <el-image
+                  :src="page.src"
+                  :alt="page.alt"
+                  :data-source="page.lazySrc"
+                  lazy
+                  class="doc-page"
+                  :style="{
+                    width: pageWidth + 'px',
+                    height: pageHeight + 'px',
+                  }"
+                >
+                </el-image>
+                <div class="doc-page" v-if="randomAdvertisement()" v-html="randomAdvertisement().content"></div>
+              </div>
             </div>
             <div v-else>
-              <el-image
-                v-for="(page, index) in pages"
-                :key="index + page.src"
-                :src="page.src"
-                :alt="page.alt"
-                :data-source="page.lazySrc"
-                lazy
-                class="doc-page"
-                :style="{
-                  width: pageWidth + 'px',
-                  height: pageHeight + 'px',
-                }"
-              >
-              </el-image>
+              <div v-for="(page, index) in pages" :key="index + page.src">
+                <el-image
+                  :src="page.src"
+                  :alt="page.alt"
+                  :data-source="page.lazySrc"
+                  lazy
+                  class="doc-page"
+                  :style="{
+                    width: pageWidth + 'px',
+                    height: pageHeight + 'px',
+                  }"
+                >
+                </el-image>
+                <div class="doc-page" v-if="randomAdvertisement()" v-html="randomAdvertisement().content"></div>
+              </div>
             </div>
           </div>
           <div class="doc-page-more text-center">
@@ -249,6 +256,11 @@
             :docs="isMobile ? relatedDocuments.slice(0, 5) : relatedDocuments"
           />
         </el-card>
+
+        <template v-for="item in advertisements">
+          <div :key="item.position+item.id" v-if="item.position=='document_bottom'" v-html="item.content"></div>
+        </template>
+
         <el-card
           v-if="document.id > 0"
           ref="commentBox"
@@ -493,6 +505,7 @@ export default {
       this.getDocument(),
       this.getRelatedDocuments(),
       this.getDocumentScore(),
+      this.getAdvertisements('document'),
     ]
     if(this.user.id){
       requests.push(this.getFavorite())
@@ -935,6 +948,14 @@ export default {
         colorLight: '#fff',
       })
     },
+    randomAdvertisement(){
+      let advertisements = this.advertisements.filter(item => item.position == 'document_between')
+      if(advertisements.length > 0){
+        let index = Math.floor(Math.random() * advertisements.length)
+        return advertisements[index]
+      }
+      return null
+    }
   },
 }
 </script>

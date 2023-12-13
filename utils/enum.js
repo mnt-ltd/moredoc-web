@@ -292,7 +292,7 @@ export const advertisementPositions = [
   },
   {
     label: '个人主页',
-    value: 'home',
+    value: 'user',
     description: '网站个人主页，只有个人主页会显示',
     children: [
       {

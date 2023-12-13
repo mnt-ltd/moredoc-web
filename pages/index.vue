@@ -48,7 +48,7 @@
     </div>
 
     <template v-for="item in advertisements">
-      <div :key="'global-top'+item.id" v-if="item.position=='index_banner_bottom'" v-html="item.content"></div>
+      <div :key="item.position+item.id" v-if="item.position=='index_banner_bottom'" v-html="item.content"></div>
     </template>
 
     <el-row :gutter="20" class="mgt-20px">
@@ -229,7 +229,7 @@
     </el-row>
     
     <template v-for="item in advertisements">
-      <div :key="'global-top'+item.id" v-if="item.position=='index_category_top'" v-html="item.content"></div>
+      <div :key="item.position+item.id" v-if="item.position=='index_category_top'" v-html="item.content"></div>
     </template>
 
     <div
@@ -265,7 +265,7 @@
     </div>
     
     <template v-for="item in advertisements">
-      <div :key="'global-top'+item.id" v-if="item.position=='index_category_bottom'" v-html="item.content"></div>
+      <div :key="item.position+item.id" v-if="item.position=='index_category_bottom'" v-html="item.content"></div>
     </template>
     
     <el-row :gutter="20" class="category-item">
@@ -316,7 +316,7 @@
     </el-row>
     
     <template v-for="item in advertisements">
-      <div :key="'global-top'+item.id" v-if="item.position=='index_link_top'" v-html="item.content"></div>
+      <div :key="item.position+item.id" v-if="item.position=='index_link_top'" v-html="item.content"></div>
     </template>
  
   </div>
