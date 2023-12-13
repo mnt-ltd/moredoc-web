@@ -264,6 +264,12 @@ export default {
       ]
     },
     initTableListFields() {
+      const positions = {}
+      this.advertisementPositions.map(item=>{
+        (item.children || []).map(item=>{
+          positions[item.value] = item
+        })
+      })
       this.tableListFields = [
         { prop: 'id', label: 'ID', width: 80, type: 'number', fixed: 'left' },
         {
@@ -273,16 +279,20 @@ export default {
           type: 'bool',
           fixed: 'left',
         },
-        {
-          prop: 'title_html',
-          label: '名称',
-          minWidth: 150,
-          fixed: 'left',
-          type: 'html',
+        { 
+          prop: 'position', label: '广告位', width: 200,
+          type: 'enum',
+          enum: positions,
         },
-        { prop: 'link', label: '链接', minWidth: 250 },
-        { prop: 'sort', label: '排序', width: 80, type: 'number' },
-        { prop: 'description', label: '描述', minWidth: 250 },
+        {
+          prop: 'title',
+          label: '广告名称',
+          minWidth: 150,
+        },
+        { prop: 'remark', label: '广告备注', minWidth: 250 },
+        // { prop: 'content', label: '广告代码', minWidth:250 },
+        { prop: 'start_time', label: '开始时间', width: 160, type: 'datetime' },
+        { prop: 'end_time', label: '截止时间', width: 160, type: 'datetime' },
         { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
         { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
       ]
