@@ -3,8 +3,10 @@
         <div class="tips" v-if="isBind">您还可以绑定以下第三方帐号</div>
         <div class="tips" v-else>您可以通过以下方式快速注册或登录</div>
         <a v-for="(oauth, idx) in enableOauths" :key="idx" :href="isBound(oauth.type) ? 'javascript:;':oauth.authorize_url" rel="nofollow" :class="isBound(oauth.type) ? 'bound': ''" >
-            <img :src="oauth.icon" :alt="oauth.name" :title="oauth.name">
-            <div v-if="showName">{{ oauth.name }}</div>
+            <el-tooltip class="item" effect="dark" :content="oauth.name">
+                <img :src="oauth.icon" :alt="oauth.name">
+                <div v-if="showName">{{ oauth.name }}</div>
+            </el-tooltip>
         </a>
     </div>
 </template>

@@ -20,20 +20,18 @@
             type="card"
             @tab-click="tabClick"
           >
-            <el-tab-pane
-              v-for="item in tabs"
-              :key="item.value"
-              :name="item.value"
-              :label="item.label"
-              v-show="
-                item.value !== '/me/vip' ||
-                (item.value === '/me/vip' && settings.vip.enable)
-              "
-            >
-              <span slot="label">
-                <i :class="item.icon"></i> {{ item.label }}</span
+            <template v-for="item in tabs">
+              <el-tab-pane
+                :key="item.value"
+                :name="item.value"
+                :label="item.label"
+                v-if="showMenu(item)"
               >
-            </el-tab-pane>
+                <span slot="label">
+                  <i :class="item.icon"></i> {{ item.label }}</span
+                >
+              </el-tab-pane>
+            </template>
           </el-tabs>
           <el-menu
             v-else
@@ -45,10 +43,7 @@
               v-for="item in tabs"
               :key="item.value"
               :index="item.value"
-              v-show="
-                item.value !== '/me/vip' ||
-                (item.value === '/me/vip' && settings.vip.enable)
-              "
+              v-show="showMenu(item)"
             >
               <i :class="item.icon"></i>
               <span slot="title">{{ item.label }}</span>
@@ -151,6 +146,22 @@ export default {
     },
   },
   methods: {
+    showMenu(menuItem){
+      console.log(menuItem.value, this.settings.display.show_order)
+      if(menuItem.value !== '/me/vip' && menuItem.value !== '/me/order'){
+        return true
+      }
+
+      if (menuItem.value === '/me/order' && this.settings.display.show_order){
+        return true
+      }
+
+      if (menuItem.value === '/me/vip' && this.settings.vip.enable){
+        return true
+      }
+
+      return  false
+    },
     tabClick(tab) {
       this.defaultActive = {
         value: tab.name,

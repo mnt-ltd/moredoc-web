@@ -115,7 +115,7 @@
                 <el-dropdown-item command="me"
                   ><i class="fa fa-user-o"></i> 个人中心</el-dropdown-item
                 >
-                <el-dropdown-item command="order"
+                <el-dropdown-item command="order" v-if="settings.display.show_order"
                   ><i class="el-icon-goods"></i> 我的订单</el-dropdown-item
                 >
                 <!-- <el-dropdown-item command="profile"
@@ -360,7 +360,7 @@
               <i class="fa fa-user-o"></i> &nbsp;个人中心
             </div>
           </li>
-          <li>
+          <li v-if="settings.display.show_order">
             <div
               class="el-link el-link--default"
               @click="goToLink(`/me/order`)"
