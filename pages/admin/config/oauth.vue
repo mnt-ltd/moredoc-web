@@ -45,6 +45,10 @@
                 value: 'oauthQQ',
               },
               {
+                label: '谷歌登录',
+                value: 'oauthGoogle',
+              },
+              {
                 label: 'Github登录',
                 value: 'oauthGithub',
               },

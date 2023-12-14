@@ -310,6 +310,7 @@ export const oauthTypeGitee = 3
 export const oauthTypeGithub = 4
 export const oauthTypeWechatMini = 5
 export const oauthTypeCustom = 6
+export const oauthTypeGoogle = 7
 
 export const oauthTypeOptions = [
   { label: 'QQ', value: oauthTypeQQ },
@@ -317,6 +318,7 @@ export const oauthTypeOptions = [
   { label: '码云', value: oauthTypeGitee },
   { label: 'Github', value: oauthTypeGithub },
   { label: '微信小程序', value: oauthTypeWechatMini },
+  { label:'谷歌', value: oauthTypeGoogle},
   { label: '自定义', value: oauthTypeCustom },
 ]
 

@@ -16,6 +16,7 @@ import{
     oauthTypeQQ,
     oauthTypeWechat,
     oauthTypeCustom,
+    oauthTypeGoogle,
 } from '~/utils/enum'
 import {
     mapActions,
@@ -69,6 +70,8 @@ export default{
                 case "custom":
                     oauthType = oauthTypeCustom
                     break;
+                case 'google':
+                    oauthType = oauthTypeGoogle
                 default:
                     break;
             }

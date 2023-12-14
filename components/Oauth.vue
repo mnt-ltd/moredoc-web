@@ -20,7 +20,8 @@ import {
     oauthTypeGitee,
     oauthTypeGithub,
     oauthTypeQQ,
-    oauthTypeWechat
+    oauthTypeWechat,
+    oauthTypeGoogle,
 } from '~/utils/enum'
 export default {
     name: 'Oauth',
@@ -93,6 +94,9 @@ export default {
                             break;
                         case oauthTypeCustom:
                             item.authorize_url = `${item.authorize_url}?client_id=${item.client_id}&redirect_uri=${item.redirect_url}&response_type=code&scope=user`
+                            break;
+                        case oauthTypeGoogle:
+                            item.authorize_url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${item.client_id}&redirect_uri=${item.redirect_url}&response_type=code&scope=openid%20email%20profile`
                             break;
                         default:
                             break;
