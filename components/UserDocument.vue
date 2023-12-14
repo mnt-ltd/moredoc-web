@@ -206,7 +206,6 @@ export default {
           page: parseInt(this.$route.query.page) || 1,
           size: parseInt(this.$route.query.size) || 20,
         }
-        console.log(this.$route.query, this.query)
         this.getDocuments()
       },
       immediate: true,

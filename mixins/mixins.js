@@ -35,6 +35,15 @@ export default {
       }
     },
     async getAdvertisements(page) {
+        // 如果用户是VIP用户，则不获取广告
+        try {
+          if(this.$store.state.user.user.is_vip){
+            this.advertisements = []
+            return
+          }
+        } catch (error) {
+          
+        }
         const positions = []
         this.advertisementPositions.map(item=>{
           if(item.value===page){

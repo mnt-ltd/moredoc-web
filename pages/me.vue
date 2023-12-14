@@ -147,7 +147,6 @@ export default {
   },
   methods: {
     showMenu(menuItem){
-      console.log(menuItem.value, this.settings.display.show_order)
       if(menuItem.value !== '/me/vip' && menuItem.value !== '/me/order'){
         return true
       }
