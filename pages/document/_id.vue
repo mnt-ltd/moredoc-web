@@ -508,6 +508,12 @@
         @onSuccess="loginSuccess"
       ></form-login>
     </el-dialog>
+    <el-dialog title="文档下载" 
+        :visible.sync="downloadVisible"
+        :width="isMobile ? '95%' : '520px'"
+      >
+      <form-download :document="document" :order_no="orderNO" @success="hideDownload"></form-download>
+    </el-dialog>
   </div>
 </template>
 
@@ -572,7 +578,9 @@ export default {
       cardOffsetTop: 0,
       tips: '',
       loginVisible: false,
+      downloadVisible: false,
       descriptions: [],
+      orderNO: '',
     }
   },
   head() {
@@ -667,6 +675,9 @@ export default {
     formatDatetime,
     formatBytes,
     ...mapActions('user', ['getUser', 'checkAndRefreshUser']),
+    hideDownload(){
+      this.downloadVisible=false
+    },
     async getDocument() {
       const res = await getDocument({
         id: this.documentId,
@@ -886,16 +897,25 @@ export default {
         this.loginVisible = true
         return
       }
-      this.downloading = true
 
+      this.downloading = true
       const res = await createOrder({
         order_type: orderTypeBuyDocument,
         product_id: this.document.id,
       })
-      console.log(res)
+      this.downloading = false
       if (res.status === 200) {
         // 订单状态为待支付，跳转到支付页面
         if (res.data.status === 1) {
+
+          // 如果不显示订单，直接演出下载积分支付和下载页面
+          if(!this.settings.display.show_order){
+            this.downloadVisible=true
+            this.orderNO=res.data.order_no || ''
+            return
+          }
+
+          // 跳转到订单页面
           this.$router.push({
             name: 'order',
             query: {
@@ -910,7 +930,6 @@ export default {
         this.$message.error(res.data.message)
       }
 
-      this.downloading = false
     },
     async getRelatedDocuments() {
       const res = await getRelatedDocuments({
@@ -1258,7 +1277,7 @@ export default {
       .el-button {
         border: 0;
         border-radius: 0;
-        padding: 18px 20px;
+        padding: 18px 15px;
       }
       .btn-comment {
         top: 1px;
