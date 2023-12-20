@@ -98,6 +98,7 @@ export const paymentTypeOptions = [
   { label: '虎皮椒支付', value: 8 },
   { label: '其他', value: 7 },
   { label: '下载码支付', value: 9 },
+  {label: '广告支付', value: 10},
 ]
 
 export const orderTypeOptions = [

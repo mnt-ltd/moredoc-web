@@ -220,3 +220,19 @@ export const sendEmailCode = (data) => {
     data,
   })
 }
+
+export const getRewardedAdOpportunities = (params) => {
+  return service({
+    url: '/api/v1/user/rewarded/opportunities',
+    method: 'get',
+    params,
+  })
+}
+
+export const setRewardedAdCreditAward = (data) => {
+  return service({
+    url: '/api/v1/user/rewarded/credit',
+    method: 'put',
+    data,
+  })
+}
