@@ -148,6 +148,7 @@
         :data="envs"
         style="width: 100%"
         empty-text="您暂无权限查看环境依赖情况"
+        v-loading="envLoading"
       >
         <el-table-column prop="name" label="名称" width="120"> </el-table-column>
         <el-table-column prop="is_required" label="是否必须" width="100">
@@ -362,6 +363,7 @@ export default {
       },
       envs: [],
       loading: false,
+      envLoading: false,
       gauges: [],
       devices: [],
       timeouter: null,
@@ -398,7 +400,9 @@ export default {
       }
     },
     async getEnvs() {
+      this.envLoading = true
       const res = await getEnvs()
+      this.envLoading = false
       if (res.status === 200) {
         this.envs = res.data.envs
       }
