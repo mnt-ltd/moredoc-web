@@ -438,6 +438,7 @@ export default {
           'pages',
           'ext',
           'score',
+          'recommend_at',
         ],
         fee_type: this.$route.query.fee_type,
       })

@@ -17,7 +17,9 @@
                   :src="`/static/images/${getIcon(doc.ext)}_24.png`"
                   :alt="`${getIcon(doc.ext)} 文档`"
                 />
-                {{ doc.title }}</nuxt-link
+                {{ doc.title }}
+                <img v-if="doc.recommend_at" src="/static/images/recommend.png" alt="推荐">
+                </nuxt-link
               >
             </h3>
             <div class="doc-info">
