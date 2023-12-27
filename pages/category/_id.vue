@@ -444,6 +444,7 @@ export default {
           'ext',
           'score',
           'is_vip',
+          'recommend_at',
         ],
         fee_type: this.$route.query.fee_type,
       })

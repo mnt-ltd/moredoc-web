@@ -23,6 +23,7 @@
                   class="vip-doc-icon"
                 />
               </el-tooltip>
+              <img v-if="document.recommend_at" class="icon-recommend" src="/static/images/recommend.png" alt="推荐">
               <el-popover
                 class="hidden-xs-only"
                 placement="bottom"
@@ -54,6 +55,15 @@
                   </span>
                 </span>
               </el-popover>
+              <div class="actions" v-if="user.id>0 && (accessDelete || accessRecommend || accessUpdate || accessForbiden)">
+                <el-button type="text" icon="el-icon-edit" v-if="accessUpdate" @click="showUpdateDocument">编辑文档</el-button>
+                <el-button type="text" icon="el-icon-delete" v-if="accessDelete" @click="deleteDocument">删除文档</el-button>
+                <template>
+                  <!-- 管理员权限 -->
+                  <el-button type="text" icon="el-icon-no-smoking" v-if="accessForbiden" @click="forbiden">禁用文档</el-button>
+                  <el-button type="text" icon="el-icon-document-checked" v-if="accessRecommend" @click="setRecommend">推荐设置</el-button>
+                </template>
+              </div>
             </h1>
             <el-breadcrumb separator-class="el-icon-arrow-right">
               <el-breadcrumb-item>
@@ -514,6 +524,26 @@
       >
       <form-download :document="document" :order_no="orderNO" @success="hideDownload"></form-download>
     </el-dialog>
+    <el-dialog
+      title="编辑文档"
+      :visible.sync="updateDocumentVisible"
+      :width="isMobile ? '95%' : '640px'"
+    >
+      <FormUpdateDocument
+        :category-trees="categoryTrees"
+        :init-document="updateDocument"
+        :is-admin="false"
+        @success="updateDocumentSuccess"
+      />
+    </el-dialog>
+    <el-dialog
+      :close-on-click-modal="false"
+      title="推荐设置"
+      :visible.sync="formDocumentRecommendVisible"
+      :width="isMobile ? '95%' : '640px'"
+    >
+      <FormDocumentRecommend :init-document="updateDocument" @success="setRecommendSuccess" />
+    </el-dialog>
   </div>
 </template>
 
@@ -528,6 +558,8 @@ import {
   getDocumentScore,
   downloadDocument,
   downloadVIPDocument,
+  deleteDocument,
+  updateDocument,
 } from '~/api/document'
 import { getFavorite, createFavorite, deleteFavorite } from '~/api/favorite'
 import { documentStatusOptions, orderTypeBuyDocument } from '~/utils/enum'
@@ -551,6 +583,7 @@ export default {
           hash: '',
         },
       },
+      updateDocument: {},
       score: null,
       disabledScore: false,
       downloading: false,
@@ -581,6 +614,8 @@ export default {
       downloadVisible: false,
       descriptions: [],
       orderNO: '',
+      updateDocumentVisible: false,
+      formDocumentRecommendVisible: false,
     }
   },
   head() {
@@ -601,9 +636,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('category', ['categoryMap']),
+    ...mapGetters('category', ['categoryMap', 'categoryTrees']),
     ...mapGetters('setting', ['settings', 'watermarkStyleTag']),
-    ...mapGetters('user', ['user']),
+    ...mapGetters('user', ['user', 'permissions']),
     isVIPDownload() {
       // VIP下载
       return (
@@ -631,7 +666,25 @@ export default {
       } catch (error) {
         return ''
       }
-    }
+    },
+    accessUpdate(){
+      if(this.user.id === this.document.user_id){
+        return true
+      }
+      return this.permissions.filter(item=>item.path.endsWith('UpdateDocument')).length>0
+    },
+    accessDelete(){
+      if(this.user.id === this.document.user_id){
+        return true
+      }
+      return this.permissions.filter(item=>item.path.endsWith('DeleteDocument')).length>0
+    },
+    accessRecommend(){
+      return this.permissions.filter(item=>item.path.endsWith('SetDocumentRecommend')).length>0
+    },
+    accessForbiden(){
+      return this.permissions.filter(item=>item.path.endsWith('UpdateDocument')).length>0
+    },
   },
   created() {
     const requests = [
@@ -677,6 +730,66 @@ export default {
     ...mapActions('user', ['getUser', 'checkAndRefreshUser']),
     hideDownload(){
       this.downloadVisible=false
+    },
+    updateDocumentSuccess() {
+      this.updateDocumentVisible = false
+      this.getDocument()
+    },
+    showUpdateDocument(){
+      this.updateDocumentVisible = true
+      let doc = { ...this.document }
+      delete doc.icon
+      this.updateDocument = doc
+    },
+    forbiden(){
+      this.$confirm(`您确定要禁用文档《${this.document.title}》吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(async () => {
+        let doc = { ...this.document }
+        delete doc.icon
+        doc.status=4 // 更新文档状态为禁用状态
+        const res = await updateDocument(doc)
+        if (res.status === 200) {
+          this.$message({
+            type: 'success',
+            message: '禁用成功!',
+          })
+          this.getDocument()
+        }else{
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    setRecommend(){
+      let doc = { ...this.document }
+      delete doc.icon
+      this.updateDocument=doc
+      this.formDocumentRecommendVisible = true
+    },
+    setRecommendSuccess(){
+      this.formDocumentRecommendVisible = false
+      this.getDocument()
+    },
+    deleteDocument(){
+      this.$confirm(`您确定要删除文档《${this.document.title}》吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(async () => {
+        const res = await deleteDocument({ id: this.document.id })
+        if (res.status === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+          })
+          // 跳转到首页
+          this.$router.push('/')
+        }else{
+          this.$message.error(res.data.message)
+        }
+      })
     },
     async getDocument() {
       const res = await getDocument({
@@ -1178,6 +1291,12 @@ export default {
       &:hover {
         color: unset;
       }
+    }
+    .actions{
+      margin-bottom: -8px;
+    }
+    .icon-recommend{
+      height: 26px;
     }
   }
   .el-breadcrumb {
