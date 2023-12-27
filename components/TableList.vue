@@ -25,7 +25,7 @@
         :min-width="item.minWidth"
         :fixed="item.fixed"
       >
-        <template slot-scope="scope" :class="[item.editable ? 'editable' : '']">
+        <template slot-scope="scope">
           <!-- 头像 -->
           <el-avatar
             v-if="item.type === 'avatar'"
@@ -139,6 +139,8 @@
               size="medium"
               v-model="scope.row[item.prop]"
               :placeholder="item.placeholder || '请输入' + item.label"
+              type="textarea"
+              :rows="3"
             ></el-input>
             <template v-else>{{ scope.row[item.prop] || '-' }}</template>
           </template>
