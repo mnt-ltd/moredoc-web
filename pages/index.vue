@@ -202,22 +202,24 @@
               :span="4"
               :class="isMobile && index > 7 ? 'hidden-xs-only' : ''"
             >
-              <nuxt-link :to="`/document/${item.id}`">
-                <el-image
-                  :src="
+              <el-tooltip class="item" effect="dark" :content="item.title" placement="top">
+                <nuxt-link :to="`/document/${item.id}`">
+                  <el-image
+                    :src="
                     item.attachment && item.attachment.hash
                       ? `/view/cover/${item.attachment.hash}`
                       : ''
                   "
-                  lazy
-                  :alt="item.title"
-                >
-                  <div slot="error" class="image-slot">
-                    <img src="/static/images/default-cover.png" />
-                  </div>
-                </el-image>
-                <div class="el-link el-link--default">{{ item.title }}</div>
-              </nuxt-link>
+                    lazy
+                    :alt="item.title"
+                  >
+                    <div slot="error" class="image-slot">
+                      <img src="/static/images/default-cover.png" />
+                    </div>
+                  </el-image>
+                  <div class="el-link el-link--default">{{ item.title }}</div>
+                </nuxt-link>
+              </el-tooltip>
             </el-col>
           </el-row>
         </el-card>
