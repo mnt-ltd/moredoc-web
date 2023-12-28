@@ -35,7 +35,7 @@
   },
   // vue 扩展的文件默认使用 prettier 进行格式化
   "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "Vue.volar"
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
