@@ -465,8 +465,9 @@ import { documentStatusOptions } from '~/utils/enum'
 import QRCode from 'qrcodejs2' // 引入qrcode
 import FormComment from '~/components/FormComment.vue'
 import CommentList from '~/components/CommentList.vue'
+import DocumentCard from '~/components/DocumentCard.vue'
 export default {
-  components: { DocumentSimpleList, FormComment, CommentList },
+  components: { DocumentSimpleList, FormComment, CommentList, DocumentCard },
   data() {
     return {
       documentStatusOptions,
