@@ -1,5 +1,5 @@
 <template>
-  <el-container class="layout-default" v-loading="loading">
+  <el-container class="layout-default">
     <template v-for="item in advertisements">
       <div :key="item.position+item.id" v-if="item.position=='global_top'" v-html="item.content"></div>
     </template>
@@ -155,7 +155,7 @@
     <el-main>
       <nuxt />
     </el-main>
-    <el-footer>
+    <el-footer height="auto">
       <div
         v-if="$route.path === '/' && friendlinks.length > 0"
         class="footer-friendlink"
@@ -452,7 +452,6 @@ export default {
       menuDrawerVisible: false,
       sign: { id: 0 },
       activeCollapse: 'categories',
-      loading: false,
       navigations: [],
     }
   },
@@ -478,7 +477,6 @@ export default {
     ...mapGetters('category', ['categories']),
   },
   async created() {
-    this.loading = true
     await Promise.all([
       this.getCategories(),
       this.getSettings(),
@@ -492,7 +490,6 @@ export default {
     )
 
     this.loopUpdate()
-    this.loading = false
     if (requireLogin(this.settings, this.user, this.$route, this.permissions)) {
       this.$router.push('/login')
       return

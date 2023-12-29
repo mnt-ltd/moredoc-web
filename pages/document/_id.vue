@@ -111,25 +111,25 @@
             </h1>
             <el-breadcrumb separator-class="el-icon-arrow-right">
               <el-breadcrumb-item>
-                <nuxt-link to="/"
-                  ><i class="el-icon-s-home"></i> 首页</nuxt-link
-                >
+                <nuxt-link to="/">
+                  <i class="el-icon-s-home"></i> 首页
+                </nuxt-link>
               </el-breadcrumb-item>
               <template v-if="breadcrumbs.length < 3">
                 <el-breadcrumb-item
                   v-for="breadcrumb in breadcrumbs"
                   :key="'bread-' + breadcrumb.id"
                 >
-                  <nuxt-link :to="`/category/${breadcrumb.id}`">{{
-                    breadcrumb.title
-                  }}</nuxt-link>
+                  <nuxt-link :to="`/category/${breadcrumb.id}`">
+                    {{ breadcrumb.title }}
+                  </nuxt-link>
                 </el-breadcrumb-item>
               </template>
               <template v-else>
                 <el-breadcrumb-item>
-                  <nuxt-link :to="`/category/${breadcrumbs[0].id}`">{{
-                    breadcrumbs[0].title
-                  }}</nuxt-link>
+                  <nuxt-link :to="`/category/${breadcrumbs[0].id}`">
+                    {{ breadcrumbs[0].title }}
+                  </nuxt-link>
                 </el-breadcrumb-item>
                 <el-breadcrumb-item>...</el-breadcrumb-item>
                 <el-breadcrumb-item>
@@ -142,36 +142,35 @@
               <el-breadcrumb-item>文档阅览</el-breadcrumb-item>
             </el-breadcrumb>
             <div class="float-right doc-info">
-              <span
-                ><i class="el-icon-files"></i>
-                {{ document.pages || '-' }} 页</span
-              >
-              <span
-                ><i class="el-icon-download"></i>
-                {{ document.download_count || 0 }} 下载</span
-              >
-              <span
-                ><i class="el-icon-view"></i>
-                {{ document.view_count || 0 }} 浏览</span
-              >
-              <span
-                ><i class="el-icon-chat-dot-square"></i>
-                {{ document.comment_count || 0 }} 评论</span
-              >
-              <span
-                ><i class="el-icon-star-off"></i>
-                {{ document.favorite_count || 0 }} 收藏</span
-              >
-              <span v-if="!settings.display.show_document_descriptions"
-                ><el-rate
+              <span>
+                <i class="el-icon-files"></i>
+                {{ document.pages || '-' }} 页
+              </span>
+              <span>
+                <i class="el-icon-download"></i>
+                {{ document.download_count || 0 }} 下载
+              </span>
+              <span>
+                <i class="el-icon-view"></i>
+                {{ document.view_count || 0 }} 浏览
+              </span>
+              <span>
+                <i class="el-icon-chat-dot-square"></i>
+                {{ document.comment_count || 0 }} 评论
+              </span>
+              <span>
+                <i class="el-icon-star-off"></i>
+                {{ document.favorite_count || 0 }} 收藏
+              </span>
+              <span v-if="!settings.display.show_document_descriptions">
+                <el-rate
                   v-model="document.score"
                   disabled
                   show-score
                   text-color="#ff9900"
                   score-template="{value}"
-                >
-                </el-rate
-              ></span>
+                ></el-rate>
+              </span>
             </div>
           </div>
           <template v-if="tips">
@@ -181,8 +180,7 @@
               :title="tips"
               show-icon
               :closable="false"
-            >
-            </el-alert>
+            ></el-alert>
             <div class="mgt-20px"></div>
           </template>
 
@@ -210,16 +208,15 @@
                 <i :class="item.icon"></i>
                 {{ item.label }}
               </template>
-              <span v-if="item.name === 'score'"
-                ><el-rate
+              <span v-if="item.name === 'score'">
+                <el-rate
                   v-model="item.value"
                   disabled
                   show-score
                   text-color="#ff9900"
                   score-template="{value}"
-                >
-                </el-rate
-              ></span>
+                ></el-rate>
+              </span>
               <div v-else>{{ item.value }}</div>
             </el-descriptions-item>
           </el-descriptions>
@@ -307,10 +304,10 @@
             </div>
             <template v-else>
               <div v-if="document.pages != document.preview" class="text-muted">
-                <small
-                  >- 可预览页数已用完，剩余
-                  {{ document.pages - document.preview }} 页请下载阅读 -</small
-                >
+                <small>
+                  - 可预览页数已用完，剩余
+                  {{ document.pages - document.preview }} 页请下载阅读 -
+                </small>
               </div>
             </template>
           </div>
@@ -321,11 +318,10 @@
                 :to="`/user/${document.user_id}`"
                 class="el-link el-link--primary"
                 >{{ document.user.username || '匿名用户' }}</nuxt-link
-              >
-              于
-              <span class="text-muted">{{
-                formatDatetime(document.created_at)
-              }}</span>
+              >于
+              <span class="text-muted">
+                {{ formatDatetime(document.created_at) }}
+              </span>
               上传分享
             </div>
             <div class="btn-actions">
@@ -365,6 +361,7 @@
           <div slot="header">相关文档</div>
           <document-simple-list
             :docs="isMobile ? relatedDocuments.slice(0, 5) : relatedDocuments"
+            :show-popover="!isMobile"
           />
         </el-card>
 
@@ -383,8 +380,8 @@
           class="mgt-20px"
         >
           <div>
-            <span class="score-tips" v-if="disabledScore">我的评分 </span>
-            <span class="score-tips" v-else>文档评分 </span>
+            <span class="score-tips" v-if="disabledScore">我的评分</span>
+            <span class="score-tips" v-else>文档评分</span>
             <el-rate
               :disabled="disabledScore"
               v-model="score"
@@ -397,8 +394,7 @@
                 '该文档很让我满意',
                 '该文档非常棒',
               ]"
-            >
-            </el-rate>
+            ></el-rate>
           </div>
           <FormComment
             :document-id="document.id"
@@ -420,7 +416,9 @@
           v-if="relatedDocuments.length > 0"
         >
           <div slot="header">相关文档</div>
-          <document-simple-list :docs="relatedDocuments" />
+          <div :style="`max-height: ${footerTop - 188}px;overflow-y: auto;`">
+            <document-simple-list :docs="relatedDocuments" />
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -1042,6 +1040,8 @@ export default {
         // 多加载一页
         this.pages[currentPage].src = this.pages[currentPage].lazySrc
       }
+
+      console.log(this.footerTop)
 
       // 右侧相关文档固定
       try {

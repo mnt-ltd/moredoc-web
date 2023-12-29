@@ -28,10 +28,10 @@ export default {
       type: String,
       default: '',
     },
-	lazy: {
-	  type: Boolean,
-	  default: true,
-	},
+    lazy: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {}
@@ -42,15 +42,15 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-	.el-image {
-		border: 2px solid #efefef;
-		border-radius: 5px;
-	}
-	img {
-		width: 100%;
-		transition: transform 0.3s ease 0s;
-		&:hover {
-			transform: scale(1.2);
-		}
-	}
+.el-image {
+  border: 2px solid #efefef;
+  border-radius: 5px;
+}
+img {
+  width: 100%;
+  transition: transform 0.3s ease 0s;
+  &:hover {
+    transform: scale(1.2);
+  }
+}
 </style>
