@@ -1,8 +1,11 @@
 <template>
   <div class="page page-category">
-
     <template v-for="item in advertisements">
-      <div :key="item.position+item.id" v-if="item.position=='list_nav_bottom'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'list_nav_bottom'"
+        v-html="item.content"
+      ></div>
     </template>
 
     <el-row>
@@ -105,7 +108,11 @@
     </el-row>
 
     <template v-for="item in advertisements">
-      <div :key="item.position+item.id" v-if="item.position=='list_document_top'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'list_document_top'"
+        v-html="item.content"
+      ></div>
     </template>
 
     <el-row :gutter="20" class="mgt-20px">
@@ -170,7 +177,10 @@
               <el-col :span="8" class="header-title">关键词</el-col>
             </el-row>
           </div>
-          <div v-loading="loading" :style="`max-height: ${footerTop - 188}px;overflow:auto`">
+          <div
+            v-loading="loading"
+            :style="`max-height: ${footerTop - 188}px;overflow:auto`"
+          >
             <nuxt-link
               v-for="keyword in keywords"
               :key="'kw' + keyword"
@@ -185,11 +195,14 @@
         </el-card>
       </el-col>
     </el-row>
-  
-    <template v-for="item in advertisements">
-      <div :key="item.position+item.id" v-if="item.position=='list_document_bottom'" v-html="item.content"></div>
-    </template>
 
+    <template v-for="item in advertisements">
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'list_document_bottom'"
+        v-html="item.content"
+      ></div>
+    </template>
   </div>
 </template>
 
@@ -311,10 +324,7 @@ export default {
     this.categoryChildren = categoryChildren
 
     this.setQuery()
-    Promise.all([
-      this.loadData(),
-      this.getAdvertisements('list'),
-    ])
+    Promise.all([this.loadData(), this.getAdvertisements('list')])
   },
   mounted() {
     this.$nextTick(() => {
