@@ -264,6 +264,7 @@
           <div slot="header">相关文档</div>
           <document-simple-list
             :docs="isMobile ? relatedDocuments.slice(0, 5) : relatedDocuments"
+            :show-popover="!isMobile"
           />
         </el-card>
 
