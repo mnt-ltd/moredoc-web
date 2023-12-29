@@ -152,7 +152,7 @@
     <el-main>
       <nuxt />
     </el-main>
-    <el-footer>
+    <el-footer height="auto">
       <div
         v-if="$route.path === '/' && friendlinks.length > 0"
         class="footer-friendlink"

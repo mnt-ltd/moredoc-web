@@ -7,15 +7,19 @@ export default {
       isPad: false,
       isPC: true,
       advertisementPositions,
-      advertisements:[], // 广告
+      advertisements: [], // 广告
+      footerTop: 0, // footer距离顶部的高度
     }
   },
   mounted() {
     this.handleScreenResize()
+    this.setFooterTop()
     window.addEventListener('resize', this.handleScreenResize)
+    window.addEventListener('scroll', this.setFooterTop)
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.handleScreenResize)
+    window.removeEventListener('scroll', this.setFooterTop)
   },
   methods: {
     handleScreenResize() {
@@ -35,20 +39,27 @@ export default {
       }
     },
     async getAdvertisements(page) {
-        const positions = []
-        this.advertisementPositions.map(item=>{
-          if(item.value===page){
-            (item.children || []).map(child=>{
-              positions.push(child.value)
-            })
-          }
-        })
-        const res = await getAdvertisementByPosition({
-          position: positions,
-        })
-        if(res.status===200){
-          this.advertisements = res.data.advertisement || []
+      const positions = []
+      this.advertisementPositions.map(item => {
+        if (item.value === page) {
+          (item.children || []).map(child => {
+            positions.push(child.value)
+          })
         }
+      })
+      const res = await getAdvertisementByPosition({
+        position: positions,
+      })
+      if (res.status === 200) {
+        this.advertisements = res.data.advertisement || []
       }
+    },
+    setFooterTop() {
+      try {
+        this.footerTop = document.querySelector('footer').getBoundingClientRect().top
+      } catch (error) {
+        console.log(error)
+      }
+    }
   },
 }

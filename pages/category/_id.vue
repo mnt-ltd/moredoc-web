@@ -170,7 +170,7 @@
               <el-col :span="8" class="header-title">关键词</el-col>
             </el-row>
           </div>
-          <div v-loading="loading">
+          <div v-loading="loading" :style="`max-height: ${footerTop - 188}px;overflow:auto`">
             <nuxt-link
               v-for="keyword in keywords"
               :key="'kw' + keyword"
@@ -532,7 +532,6 @@ export default {
   .keywords {
     .el-card__body {
       padding-bottom: 10px;
-      max-height: 480px;
       box-sizing: border-box;
       overflow: auto;
       /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
