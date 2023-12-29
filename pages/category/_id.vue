@@ -1,8 +1,11 @@
 <template>
   <div class="page page-category">
-
     <template v-for="item in advertisements">
-      <div :key="item.position+item.id" v-if="item.position=='list_nav_bottom'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'list_nav_bottom'"
+        v-html="item.content"
+      ></div>
     </template>
 
     <el-row>
@@ -109,7 +112,11 @@
     </el-row>
 
     <template v-for="item in advertisements">
-      <div :key="item.position+item.id" v-if="item.position=='list_document_top'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'list_document_top'"
+        v-html="item.content"
+      ></div>
     </template>
 
     <el-row :gutter="20" class="mgt-20px">
@@ -189,11 +196,14 @@
         </el-card>
       </el-col>
     </el-row>
-  
-    <template v-for="item in advertisements">
-      <div :key="item.position+item.id" v-if="item.position=='list_document_bottom'" v-html="item.content"></div>
-    </template>
 
+    <template v-for="item in advertisements">
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'list_document_bottom'"
+        v-html="item.content"
+      ></div>
+    </template>
   </div>
 </template>
 
@@ -316,10 +326,7 @@ export default {
     this.categoryChildren = categoryChildren
 
     this.setQuery()
-    Promise.all([
-      this.loadData(),
-      this.getAdvertisements('list'),
-    ])
+    Promise.all([this.loadData(), this.getAdvertisements('list')])
   },
   mounted() {
     this.$nextTick(() => {
@@ -479,30 +486,37 @@ export default {
 .page-category {
   .el-breadcrumb__inner {
     cursor: pointer !important;
+
     a {
       font-weight: normal;
     }
   }
+
   .item-row {
     display: flex;
+
     .item-name {
       width: 60px;
       font-size: 15px;
       color: #bbb;
     }
+
     .item-content {
       flex: 1;
     }
+
     a {
       display: inline-block;
       margin-right: 20px;
       margin-bottom: 20px;
       font-weight: normal;
     }
+
     &:last-of-type {
       margin-bottom: -20px;
     }
   }
+
   .category-description {
     border: 1px dashed #ddd;
     margin-bottom: 20px;
@@ -512,56 +526,69 @@ export default {
     color: #888;
     line-height: 180%;
   }
+
   .doc-list-data {
     min-height: 200px;
+
     .no-data {
       text-align: center;
       font-size: 14px;
       color: #aaa;
     }
   }
+
   .doc-list {
     .el-card__header {
       padding: 0 20px;
+
       .el-tabs__header {
         margin: 0;
       }
+
       .el-tabs__item {
         line-height: 57px;
         height: 57px;
       }
     }
+
     .el-tabs__nav-wrap::after {
       background-color: transparent;
     }
   }
+
   .keywords {
     .el-card__body {
       padding-bottom: 10px;
       max-height: 480px;
       box-sizing: border-box;
       overflow: auto;
+
       /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
       &::-webkit-scrollbar {
         background-color: transparent;
         width: 6px;
         height: 6px;
       }
+
       &:hover::-webkit-scrollbar {
         background-color: rgb(241, 241, 241);
       }
+
       /*定义滚动条轨道 内阴影+圆角*/
       &::-webkit-scrollbar-track {
         background-color: transparent;
       }
+
       /*定义滑块 内阴影+圆角*/
       &::-webkit-scrollbar-thumb {
         background-color: transparent;
         border-radius: 3px;
       }
+
       &:hover::-webkit-scrollbar-thumb {
         background-color: rgb(193, 193, 193);
       }
+
       &:hover::-webkit-scrollbar-thumb::hover {
         background-color: rgb(168, 168, 168);
       }
@@ -571,6 +598,7 @@ export default {
       margin-right: 10px;
       margin-bottom: 10px;
       display: inline-block;
+
       &:hover .el-tag--plain {
         background-color: #409eff;
         border-color: #409eff;
@@ -579,30 +607,37 @@ export default {
     }
   }
 }
+
 @media screen and (max-width: $mobile-width) {
   .page-category {
     .el-col-18 {
       width: 100% !important;
     }
+
     .item-row {
       padding-bottom: 7px;
+
       .item-name {
         width: 50px;
       }
+
       a {
         margin-right: 10px;
         margin-bottom: 10px;
       }
     }
+
     .doc-list {
       .el-card__header {
         padding: 0 10px;
+
         .el-tabs__item {
           line-height: 40px;
           height: 40px;
           padding: 0 10px;
         }
       }
+
       .el-rate__icon {
         font-size: 15px;
       }
@@ -623,13 +658,16 @@ export default {
     .doc-cover {
       width: 25%;
       padding-right: 5px !important;
+
       .el-image {
         border: 1px solid #efefef;
       }
     }
+
     .el-col-20 {
       width: 75%;
     }
+
     .doc-desc {
       // display: none;
       width: 100%;
@@ -639,11 +677,14 @@ export default {
       line-height: 160%;
       padding-top: 8px;
     }
+
     .doc-info {
       font-size: 12px;
+
       .el-rate {
         float: right;
       }
+
       .float-right {
         float: left;
       }

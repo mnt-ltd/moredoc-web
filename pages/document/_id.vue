@@ -7,7 +7,7 @@
           <div slot="header" class="clearfix">
             <h1>
               <img
-                v-if="document.id>0"
+                v-if="document.id > 0"
                 :src="`/static/images/${document.icon}_24.png`"
                 :alt="`${document.icon}文档`"
               />
@@ -23,7 +23,12 @@
                   class="vip-doc-icon"
                 />
               </el-tooltip>
-              <img v-if="document.recommend_at" class="icon-recommend" src="/static/images/recommend.png" alt="推荐">
+              <img
+                v-if="document.recommend_at"
+                class="icon-recommend"
+                src="/static/images/recommend.png"
+                alt="推荐"
+              />
               <el-popover
                 class="hidden-xs-only"
                 placement="bottom"
@@ -46,22 +51,61 @@
                 v-if="document.id > 0 && document.exist_wxacode"
               >
                 <div class="qrcode text-center">
-                  <div style="margin-bottom:10px">微信扫码，打开到小程序</div>
-                  <img class="wxacode" :src="`/view/wxacode/${document.attachment.hash}/${document.id}`"/>
+                  <div style="margin-bottom: 10px">微信扫码，打开到小程序</div>
+                  <img
+                    class="wxacode"
+                    :src="`/view/wxacode/${document.attachment.hash}/${document.id}`"
+                  />
                 </div>
                 <span slot="reference">
                   <span target="_blank" class="share-wechat">
-                    <img style="height: 22px;margin-left: 5px" src="/static/images/wxacode.png"/>
+                    <img
+                      style="height: 22px; margin-left: 5px"
+                      src="/static/images/wxacode.png"
+                    />
                   </span>
                 </span>
               </el-popover>
-              <div class="actions" v-if="user.id>0 && (accessDelete || accessRecommend || accessUpdate || accessForbiden)">
-                <el-button type="text" icon="el-icon-edit" v-if="accessUpdate" @click="showUpdateDocument">编辑文档</el-button>
-                <el-button type="text" icon="el-icon-delete" v-if="accessDelete" @click="deleteDocument">删除文档</el-button>
+              <div
+                class="actions"
+                v-if="
+                  user.id > 0 &&
+                  (accessDelete ||
+                    accessRecommend ||
+                    accessUpdate ||
+                    accessForbiden)
+                "
+              >
+                <el-button
+                  type="text"
+                  icon="el-icon-edit"
+                  v-if="accessUpdate"
+                  @click="showUpdateDocument"
+                  >编辑文档</el-button
+                >
+                <el-button
+                  type="text"
+                  icon="el-icon-delete"
+                  v-if="accessDelete"
+                  @click="deleteDocument"
+                  >删除文档</el-button
+                >
                 <template>
                   <!-- 管理员权限 -->
-                  <el-button type="text" icon="el-icon-no-smoking" v-if="accessForbiden" @click="forbiden">禁用文档</el-button>
-                  <el-button type="text" icon="el-icon-document-checked" v-if="accessRecommend" @click="setRecommend">推荐设置</el-button>
+                  <el-button
+                    type="text"
+                    icon="el-icon-no-smoking"
+                    v-if="accessForbiden"
+                    @click="forbiden"
+                    >禁用文档</el-button
+                  >
+                  <el-button
+                    type="text"
+                    icon="el-icon-document-checked"
+                    v-if="accessRecommend"
+                    @click="setRecommend"
+                    >推荐设置</el-button
+                  >
                 </template>
               </div>
             </h1>
@@ -143,7 +187,11 @@
           </template>
 
           <template v-for="item in advertisements">
-            <div :key="item.position+item.id" v-if="item.position=='document_top'" v-html="item.content"></div>
+            <div
+              :key="item.position + item.id"
+              v-if="item.position == 'document_top'"
+              v-html="item.content"
+            ></div>
           </template>
 
           <el-descriptions
@@ -190,7 +238,11 @@
                   }"
                 >
                 </el-image>
-                <div class="doc-page" v-if="randomAdvertisement()" v-html="randomAdvertisement().content"></div>
+                <div
+                  class="doc-page"
+                  v-if="randomAdvertisement()"
+                  v-html="randomAdvertisement().content"
+                ></div>
               </div>
             </div>
             <div v-else>
@@ -207,7 +259,11 @@
                   }"
                 >
                 </el-image>
-                <div class="doc-page" v-if="randomAdvertisement()" v-html="randomAdvertisement().content"></div>
+                <div
+                  class="doc-page"
+                  v-if="randomAdvertisement()"
+                  v-html="randomAdvertisement().content"
+                ></div>
               </div>
             </div>
           </div>
@@ -313,7 +369,11 @@
         </el-card>
 
         <template v-for="item in advertisements">
-          <div :key="item.position+item.id" v-if="item.position=='document_bottom'" v-html="item.content"></div>
+          <div
+            :key="item.position + item.id"
+            v-if="item.position == 'document_bottom'"
+            v-html="item.content"
+          ></div>
         </template>
 
         <el-card
@@ -518,11 +578,16 @@
         @onSuccess="loginSuccess"
       ></form-login>
     </el-dialog>
-    <el-dialog title="文档下载" 
-        :visible.sync="downloadVisible"
-        :width="isMobile ? '95%' : '520px'"
-      >
-      <form-download :document="document" :order_no="orderNO" @success="hideDownload"></form-download>
+    <el-dialog
+      title="文档下载"
+      :visible.sync="downloadVisible"
+      :width="isMobile ? '95%' : '520px'"
+    >
+      <form-download
+        :document="document"
+        :order_no="orderNO"
+        @success="hideDownload"
+      ></form-download>
     </el-dialog>
     <el-dialog
       title="编辑文档"
@@ -542,7 +607,10 @@
       :visible.sync="formDocumentRecommendVisible"
       :width="isMobile ? '95%' : '640px'"
     >
-      <FormDocumentRecommend :init-document="updateDocument" @success="setRecommendSuccess" />
+      <FormDocumentRecommend
+        :init-document="updateDocument"
+        @success="setRecommendSuccess"
+      />
     </el-dialog>
   </div>
 </template>
@@ -563,7 +631,12 @@ import {
 } from '~/api/document'
 import { getFavorite, createFavorite, deleteFavorite } from '~/api/favorite'
 import { documentStatusOptions, orderTypeBuyDocument } from '~/utils/enum'
-import { formatDatetime, formatBytes, getIcon, genPrevPage } from '~/utils/utils'
+import {
+  formatDatetime,
+  formatBytes,
+  getIcon,
+  genPrevPage,
+} from '~/utils/utils'
 import QRCode from 'qrcodejs2' // 引入qrcode
 import FormComment from '~/components/FormComment.vue'
 import CommentList from '~/components/CommentList.vue'
@@ -661,30 +734,43 @@ export default {
         ? '普通下载'
         : '下载文档'
     },
-    subDescription(){
+    subDescription() {
       try {
         return this.document.description.substring(0, 200)
       } catch (error) {
         return ''
       }
     },
-    accessUpdate(){
-      if(this.user.id === this.document.user_id){
+    accessUpdate() {
+      if (this.user.id === this.document.user_id) {
         return true
       }
-      return this.permissions.filter(item=>item.path.endsWith('UpdateDocument')).length>0
+      return (
+        this.permissions.filter((item) => item.path.endsWith('UpdateDocument'))
+          .length > 0
+      )
     },
-    accessDelete(){
-      if(this.user.id === this.document.user_id){
+    accessDelete() {
+      if (this.user.id === this.document.user_id) {
         return true
       }
-      return this.permissions.filter(item=>item.path.endsWith('DeleteDocument')).length>0
+      return (
+        this.permissions.filter((item) => item.path.endsWith('DeleteDocument'))
+          .length > 0
+      )
     },
-    accessRecommend(){
-      return this.permissions.filter(item=>item.path.endsWith('SetDocumentRecommend')).length>0
+    accessRecommend() {
+      return (
+        this.permissions.filter((item) =>
+          item.path.endsWith('SetDocumentRecommend')
+        ).length > 0
+      )
     },
-    accessForbiden(){
-      return this.permissions.filter(item=>item.path.endsWith('UpdateDocument')).length>0
+    accessForbiden() {
+      return (
+        this.permissions.filter((item) => item.path.endsWith('UpdateDocument'))
+          .length > 0
+      )
     },
   },
   created() {
@@ -694,7 +780,7 @@ export default {
       this.getDocumentScore(),
       this.getAdvertisements('document'),
     ]
-    if(this.user.id){
+    if (this.user.id) {
       requests.push(this.getFavorite())
     }
     Promise.all(requests)
@@ -729,20 +815,20 @@ export default {
     formatDatetime,
     formatBytes,
     ...mapActions('user', ['getUser', 'checkAndRefreshUser']),
-    hideDownload(){
-      this.downloadVisible=false
+    hideDownload() {
+      this.downloadVisible = false
     },
     updateDocumentSuccess() {
       this.updateDocumentVisible = false
       this.getDocument()
     },
-    showUpdateDocument(){
+    showUpdateDocument() {
       this.updateDocumentVisible = true
       let doc = { ...this.document }
       delete doc.icon
       this.updateDocument = doc
     },
-    forbiden(){
+    forbiden() {
       this.$confirm(`您确定要禁用文档《${this.document.title}》吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -750,7 +836,7 @@ export default {
       }).then(async () => {
         let doc = { ...this.document }
         delete doc.icon
-        doc.status=4 // 更新文档状态为禁用状态
+        doc.status = 4 // 更新文档状态为禁用状态
         const res = await updateDocument(doc)
         if (res.status === 200) {
           this.$message({
@@ -758,22 +844,22 @@ export default {
             message: '禁用成功!',
           })
           this.getDocument()
-        }else{
+        } else {
           this.$message.error(res.data.message)
         }
       })
     },
-    setRecommend(){
+    setRecommend() {
       let doc = { ...this.document }
       delete doc.icon
-      this.updateDocument=doc
+      this.updateDocument = doc
       this.formDocumentRecommendVisible = true
     },
-    setRecommendSuccess(){
+    setRecommendSuccess() {
       this.formDocumentRecommendVisible = false
       this.getDocument()
     },
-    deleteDocument(){
+    deleteDocument() {
       this.$confirm(`您确定要删除文档《${this.document.title}》吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -787,7 +873,7 @@ export default {
           })
           // 跳转到首页
           this.$router.push('/')
-        }else{
+        } else {
           this.$message.error(res.data.message)
         }
       })
@@ -819,7 +905,12 @@ export default {
       // 限定预览页数，拼装图片链接
       const pages = []
       for (let i = 1; i <= preview; i++) {
-        const src= genPrevPage(doc.attachment.hash, i, doc.preview_ext, doc.enable_gzip)
+        const src = genPrevPage(
+          doc.attachment.hash,
+          i,
+          doc.preview_ext,
+          doc.enable_gzip
+        )
         pages.push({
           lazySrc: src,
           src: src,
@@ -1021,11 +1112,10 @@ export default {
       if (res.status === 200) {
         // 订单状态为待支付，跳转到支付页面
         if (res.data.status === 1) {
-
           // 如果不显示订单，直接演出下载积分支付和下载页面
-          if(!this.settings.display.show_order){
-            this.downloadVisible=true
-            this.orderNO=res.data.order_no || ''
+          if (!this.settings.display.show_order) {
+            this.downloadVisible = true
+            this.orderNO = res.data.order_no || ''
             return
           }
 
@@ -1043,7 +1133,6 @@ export default {
       } else {
         this.$message.error(res.data.message)
       }
-
     },
     async getRelatedDocuments() {
       const res = await getRelatedDocuments({
@@ -1196,7 +1285,12 @@ export default {
       if (document.fullscreenElement) startLazyLoad = 5
       for (let i = this.pages.length + 1; i <= end; i++) {
         j += 1
-        const src= genPrevPage(this.document.attachment.hash, i, this.document.preview_ext, this.document.enable_gzip)
+        const src = genPrevPage(
+          this.document.attachment.hash,
+          i,
+          this.document.preview_ext,
+          this.document.enable_gzip
+        )
         this.pages.push({
           // 前两页，直接不要懒加载，如果非全屏
           src: j <= startLazyLoad ? src : this.loadingImage,
@@ -1252,14 +1346,16 @@ export default {
       this.loginVisible = false
       this.downloadDocument()
     },
-    randomAdvertisement(){
-      let advertisements = this.advertisements.filter(item => item.position == 'document_between')
-      if(advertisements.length > 0){
+    randomAdvertisement() {
+      let advertisements = this.advertisements.filter(
+        (item) => item.position == 'document_between'
+      )
+      if (advertisements.length > 0) {
         let index = Math.floor(Math.random() * advertisements.length)
         return advertisements[index]
       }
       return null
-    }
+    },
   },
 }
 </script>
@@ -1267,21 +1363,26 @@ export default {
 .viewer-canvas > img {
   background-color: #fff;
 }
+
 .page-document {
   .doc-main {
     overflow: auto;
   }
+
   .relate-docs {
     .el-card__body {
       padding-top: 10px;
     }
   }
+
   h1 {
     margin: 0;
+
     img {
       position: relative;
       top: 3px;
     }
+
     .fa-qrcode {
       color: #aaa;
       cursor: pointer;
@@ -1289,28 +1390,35 @@ export default {
       font-size: 26px;
       top: 2px;
       position: relative;
+
       &:hover {
         color: unset;
       }
     }
-    .actions{
+
+    .actions {
       margin-bottom: -8px;
     }
-    .icon-recommend{
+
+    .icon-recommend {
       height: 26px;
     }
   }
+
   .el-breadcrumb {
     font-weight: normal;
     margin-top: 12px;
     color: #565656;
+
     .el-breadcrumb__inner a,
     .el-breadcrumb__inner.is-link {
       font-weight: normal;
     }
+
     .el-breadcrumb__separator[class*='icon'] {
       margin: 0 3px;
     }
+
     .el-breadcrumb__inner {
       color: #666;
       white-space: nowrap;
@@ -1320,20 +1428,24 @@ export default {
       display: inline-block;
     }
   }
+
   .doc-info {
     font-weight: normal;
     position: relative;
     top: -16px;
     font-size: 14px;
     color: #bbb;
+
     & > span {
       margin-left: 8px;
     }
+
     .el-rate {
       position: relative;
       top: -2px;
     }
   }
+
   .doc-pages {
     .doc-page {
       display: block;
@@ -1341,31 +1453,38 @@ export default {
       box-sizing: border-box;
       border: 5px solid $background-grey-light;
       border-bottom: 0;
+
       &:last-child {
         border-bottom: 5px solid $background-grey-light;
       }
+
       img {
         width: 100%;
         background-color: #fff;
       }
+
       .el-image__error {
         min-height: 360px;
       }
     }
   }
+
   .doc-page-more {
     padding: 30px 0;
     border: 5px solid $background-grey-light;
     border-top: 0;
     color: #565656;
+
     .el-button {
       margin: 10px 0;
     }
   }
+
   .share-info {
     font-size: 15px;
     color: #666;
     margin: 15px 0;
+
     .el-link {
       top: -2px;
     }
@@ -1381,38 +1500,47 @@ export default {
     min-width: $min-width;
     background-color: #ecf0f1;
     height: 50px;
+
     [class*=' el-icon-'],
     [class^='el-icon-'] {
       font-weight: bold;
     }
+
     .el-card {
       border-radius: 0;
       background-color: transparent;
       width: $default-width;
       max-width: $max-width;
       margin: 0 auto;
+
       .el-card__body {
         padding: 0;
       }
+
       .el-button {
         border: 0;
         border-radius: 0;
         padding: 18px 15px;
       }
+
       .btn-comment {
         top: 1px;
         position: relative;
         background-color: transparent;
+
         &:hover {
           background-color: #ecf5ff;
         }
       }
+
       .btn-actions .el-button {
         background-color: transparent;
+
         &:hover {
           background-color: #ecf5ff;
         }
       }
+
       .btn-coin {
         background-color: transparent;
         color: #606266;
@@ -1420,6 +1548,7 @@ export default {
       }
     }
   }
+
   .score-tips {
     position: relative;
     top: 3px;
@@ -1430,16 +1559,19 @@ export default {
   .document-descriptions {
     margin-bottom: 20px;
   }
+
   .descriptions-label {
     width: 80px;
   }
 }
-.qrcode{
-    img{
-      width: 200px;
-      height: 200px;
-    }
+
+.qrcode {
+  img {
+    width: 200px;
+    height: 200px;
   }
+}
+
 @media screen and (max-width: $mobile-width) {
   .el-image-viewer__wrapper {
     .el-image-viewer__actions {
@@ -1449,10 +1581,12 @@ export default {
         display: none;
       }
     }
+
     .el-image-viewer__canvas {
       display: block;
       overflow: auto;
       padding-top: 20px;
+
       .el-image-viewer__img {
         transform-origin: 0 0 !important;
       }
@@ -1467,9 +1601,11 @@ export default {
     .doc-left {
       width: 100% !important;
     }
+
     .doc-info {
       float: left;
       margin-top: 40px;
+
       & > span {
         margin-left: 0;
         margin-right: 8px;
@@ -1477,33 +1613,41 @@ export default {
         margin-top: 5px;
       }
     }
+
     .doc-main {
       .el-card__body {
         padding-left: 0;
         padding-right: 0;
       }
     }
+
     .doc-pages {
       .doc-page {
         border-left: 0;
         border-right: 0;
       }
     }
+
     .doc-page-more {
       border-left: 0;
       border-right: 0;
     }
+
     .moreinfo {
       padding: 0 15px;
     }
+
     .fixed-buttons {
       min-width: 100%;
+
       .el-col-18 {
         width: 100% !important;
       }
+
       .btn-actions {
         padding-left: 5px;
       }
+
       .el-card .el-button {
         padding: 19px 15px;
       }

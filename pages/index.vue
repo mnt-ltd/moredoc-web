@@ -1,25 +1,53 @@
 <template>
   <div class="page page-index">
     <div class="searchbox">
-      <el-carousel :interval="3000" arrow="always" :height="isMobile ? '250px' : '360px'" @change="changeCarousel">
-        <a v-for="(banner, index) in banners" :key="'banner-' + banner.id"
-          :href="banner.url ? banner.url : 'javascript:;'" :target="banner.url ? '_blank' : ''" :title="banner.title">
-          <el-carousel-item :style="'background: url(' + (carouselIndexes.indexOf(index) > -1 ? banner.path : '') + ') center center no-repeat;'
-            "></el-carousel-item>
+      <el-carousel
+        :interval="3000"
+        arrow="always"
+        :height="isMobile ? '250px' : '360px'"
+        @change="changeCarousel"
+      >
+        <a
+          v-for="(banner, index) in banners"
+          :key="'banner-' + banner.id"
+          :href="banner.url ? banner.url : 'javascript:;'"
+          :target="banner.url ? '_blank' : ''"
+          :title="banner.title"
+        >
+          <el-carousel-item
+            :style="
+              'background: url(' +
+              (carouselIndexes.indexOf(index) > -1 ? banner.path : '') +
+              ') center center no-repeat;'
+            "
+          ></el-carousel-item>
         </a>
       </el-carousel>
       <el-form :model="search" class="search-form" @submit.native.prevent>
         <el-form-item>
-          <el-input v-model="search.wd" size="large" placeholder="搜索文档..." @keydown.native.enter="onSearch">
-            <i slot="suffix" @click="onSearch" class="el-input__icon el-icon-search btn-search"></i>
+          <el-input
+            v-model="search.wd"
+            size="large"
+            placeholder="搜索文档..."
+            @keydown.native.enter="onSearch"
+          >
+            <i
+              slot="suffix"
+              @click="onSearch"
+              class="el-input__icon el-icon-search btn-search"
+            ></i>
           </el-input>
         </el-form-item>
         <el-form-item v-if="settings.system.recommend_words">
           <span class="hidden-xs-only">大家在搜:</span>
-          <nuxt-link v-for="word in settings.system.recommend_words" :key="'kw-' + word" :to="{
-            path: '/search',
-            query: { wd: word },
-          }">
+          <nuxt-link
+            v-for="word in settings.system.recommend_words"
+            :key="'kw-' + word"
+            :to="{
+              path: '/search',
+              query: { wd: word },
+            }"
+          >
             <el-tag size="small">{{ word }}</el-tag>
           </nuxt-link>
         </el-form-item>
@@ -34,7 +62,11 @@
     </el-row>
 
     <template v-for="item in advertisements">
-      <div :key="item.position + item.id" v-if="item.position == 'index_banner_bottom'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'index_banner_bottom'"
+        v-html="item.content"
+      ></div>
     </template>
 
     <el-row :gutter="20" class="mgt-20px">
@@ -45,9 +77,7 @@
               <small>收录文档</small>
               <div>
                 <span class="el-link el-link--primary">
-                  {{
-                    stats.document_count || 0
-                  }}
+                  {{ stats.document_count || 0 }}
                 </span>
               </div>
             </el-col>
@@ -55,9 +85,7 @@
               <small>注册用户</small>
               <div>
                 <span class="el-link el-link--primary">
-                  {{
-                    stats.user_count || 0
-                  }}
+                  {{ stats.user_count || 0 }}
                 </span>
               </div>
             </el-col>
@@ -65,10 +93,16 @@
         </el-card>
         <el-card class="text-center mgt-20px hidden-xs-only" shadow="never">
           <nuxt-link to="/upload">
-            <el-button type="warning" class="btn-block" icon="el-icon-upload">上传文档</el-button>
+            <el-button type="warning" class="btn-block" icon="el-icon-upload"
+              >上传文档</el-button
+            >
           </nuxt-link>
         </el-card>
-        <el-card v-if="user.id > 0" class="box-card mgt-20px hidden-xs-only login-form" shadow="never">
+        <el-card
+          v-if="user.id > 0"
+          class="box-card mgt-20px hidden-xs-only login-form"
+          shadow="never"
+        >
           <el-row>
             <el-col :span="8">
               <nuxt-link :to="`/user/${user.id}`">
@@ -76,7 +110,10 @@
               </nuxt-link>
             </el-col>
             <el-col :span="16">
-              <nuxt-link class="el-link el-link--default" :to="`/user/${user.id}`">
+              <nuxt-link
+                class="el-link el-link--default"
+                :to="`/user/${user.id}`"
+              >
                 <h3>{{ user.username }}</h3>
               </nuxt-link>
               <div class="help-block login-tips">
@@ -108,20 +145,38 @@
               <span>{{ user.credit_count || 0 }}</span>
             </el-col>
           </el-row>
-          <el-button v-if="sign.id > 0" :key="'sign-' + sign.id" class="btn-block" type="success" disabled>
+          <el-button
+            v-if="sign.id > 0"
+            :key="'sign-' + sign.id"
+            class="btn-block"
+            type="success"
+            disabled
+          >
             <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
             今日已签到
           </el-button>
-          <el-button v-else :key="'sign-0'" class="btn-block" type="success" @click="signToday">
+          <el-button
+            v-else
+            :key="'sign-0'"
+            class="btn-block"
+            type="success"
+            @click="signToday"
+          >
             <i class="fa fa-calendar-plus-o"></i>
             每日签到
           </el-button>
           <div class="mgt-20px">
             <div>个性签名</div>
-            <div class="help-block user-signature">{{ user.signature || '暂无个性签名' }}</div>
+            <div class="help-block user-signature">
+              {{ user.signature || '暂无个性签名' }}
+            </div>
           </div>
         </el-card>
-        <el-card v-else class="box-card mgt-20px hidden-xs-only login-form" shadow="never">
+        <el-card
+          v-else
+          class="box-card mgt-20px hidden-xs-only login-form"
+          shadow="never"
+        >
           <el-row>
             <el-col :span="8">
               <nuxt-link to="/login">
@@ -167,14 +222,29 @@
         <el-card shadow="never">
           <div slot="header">最新推荐</div>
           <el-row :gutter="20">
-            <el-col v-for="(item, index) in recommends" :key="'recommend' + item.id" :span="4"
-              :class="isMobile && index > 7 ? 'hidden-xs-only' : ''">
-              <el-tooltip class="item" effect="dark" :content="item.title" placement="top">
+            <el-col
+              v-for="(item, index) in recommends"
+              :key="'recommend' + item.id"
+              :span="4"
+              :class="isMobile && index > 7 ? 'hidden-xs-only' : ''"
+            >
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="item.title"
+                placement="top"
+              >
                 <nuxt-link :to="`/document/${item.id}`">
-                  <el-image :src="item.attachment && item.attachment.hash
-                      ? `/view/cover/${item.attachment.hash}`
-                      : ''
-                    " lazy :alt="item.title" :class="item.is_vip && settings.vip.enable ? 'vip-doc' : ''">
+                  <el-image
+                    :src="
+                      item.attachment && item.attachment.hash
+                        ? `/view/cover/${item.attachment.hash}`
+                        : ''
+                    "
+                    lazy
+                    :alt="item.title"
+                    :class="item.is_vip && settings.vip.enable ? 'vip-doc' : ''"
+                  >
                     <div slot="error" class="image-slot">
                       <img src="/static/images/default-cover.png" />
                     </div>
@@ -189,23 +259,44 @@
     </el-row>
 
     <template v-for="item in advertisements">
-      <div :key="item.position + item.id" v-if="item.position == 'index_category_top'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'index_category_top'"
+        v-html="item.content"
+      ></div>
     </template>
 
-    <div class="categories mgt-20px" v-if="settings.display.show_index_categories">
+    <div
+      class="categories mgt-20px"
+      v-if="settings.display.show_index_categories"
+    >
       <el-row :gutter="20">
-        <div v-for="(category, index) in categoryTrees" :key="'tree-' + category.id">
+        <div
+          v-for="(category, index) in categoryTrees"
+          :key="'tree-' + category.id"
+        >
           <el-col v-if="index < 4" :span="6">
             <el-card class="box-card" shadow="never">
               <div slot="header" class="clearfix">
-                <nuxt-link class="el-link el-link--default" :to="`/category/${category.id}`">
-                  <img :src="category.icon || '/static/images/logo-icon.png'" :alt="category.title"
-                    class="category-icon" />
+                <nuxt-link
+                  class="el-link el-link--default"
+                  :to="`/category/${category.id}`"
+                >
+                  <img
+                    :src="category.icon || '/static/images/logo-icon.png'"
+                    :alt="category.title"
+                    class="category-icon"
+                  />
                   <strong>{{ category.title }}</strong>
                 </nuxt-link>
               </div>
-              <nuxt-link v-for="child in category.children" :key="'child-' + child.id" class="el-link el-link--default"
-                :to="`/category/${child.id}`">{{ child.title }}</nuxt-link>
+              <nuxt-link
+                v-for="child in category.children"
+                :key="'child-' + child.id"
+                class="el-link el-link--default"
+                :to="`/category/${child.id}`"
+                >{{ child.title }}</nuxt-link
+              >
             </el-card>
           </el-col>
         </div>
@@ -213,32 +304,56 @@
     </div>
 
     <template v-for="item in advertisements">
-      <div :key="item.position + item.id" v-if="item.position == 'index_category_bottom'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'index_category_bottom'"
+        v-html="item.content"
+      ></div>
     </template>
 
     <el-row :gutter="20" class="category-item">
-      <el-col v-for="item in documents" :key="'card-cate-' + item.category_id" :span="12">
+      <el-col
+        v-for="item in documents"
+        :key="'card-cate-' + item.category_id"
+        :span="12"
+      >
         <el-card class="box-card mgt-20px" shadow="never">
           <div slot="header" class="clearfix">
             <strong>{{ item.category_name }}</strong>
             <nuxt-link :to="`/category/${item.category_id}`">
-              <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+              <el-button style="float: right; padding: 3px 0" type="text"
+                >更多</el-button
+              >
             </nuxt-link>
           </div>
           <div>
             <div class="card-body-left hidden-xs-only">
               <nuxt-link :to="`/category/${item.category_id}`">
-                <el-image lazy class="category-cover" :src="item.category_cover">
+                <el-image
+                  lazy
+                  class="category-cover"
+                  :src="item.category_cover"
+                >
                   <div slot="error" class="image-slot">
-                    <img src="/static/images/default-category-cover.png" :alt="item.category_name" />
+                    <img
+                      src="/static/images/default-category-cover.png"
+                      :alt="item.category_name"
+                    />
                   </div>
                 </el-image>
               </nuxt-link>
             </div>
             <div class="card-body-right">
-              <nuxt-link v-for="doc in item.document" :key="'c-' + item.category_id + 'd' + doc.id"
-                class="el-link el-link--default" :to="`/document/${doc.id}`">
-                <img :src="`/static/images/${getIcon(doc.ext)}_24.png`" :alt="`${getIcon(doc.ext)}文档`" />
+              <nuxt-link
+                v-for="doc in item.document"
+                :key="'c-' + item.category_id + 'd' + doc.id"
+                class="el-link el-link--default"
+                :to="`/document/${doc.id}`"
+              >
+                <img
+                  :src="`/static/images/${getIcon(doc.ext)}_24.png`"
+                  :alt="`${getIcon(doc.ext)}文档`"
+                />
                 <span>{{ doc.title }}</span>
               </nuxt-link>
             </div>
@@ -248,7 +363,11 @@
     </el-row>
 
     <template v-for="item in advertisements">
-      <div :key="item.position + item.id" v-if="item.position == 'index_link_top'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'index_link_top'"
+        v-html="item.content"
+      ></div>
     </template>
   </div>
 </template>
@@ -371,7 +490,8 @@ export default {
         this.sign = sign
         this.getUser()
         this.$message.success(
-          `签到成功，获得 ${sign.award || 0} ${this.settings.system.credit_name || '魔豆'
+          `签到成功，获得 ${sign.award || 0} ${
+            this.settings.system.credit_name || '魔豆'
           }奖励`
         )
       } else {
@@ -475,7 +595,7 @@ export default {
     }
   }
 
-  &>.el-row {
+  & > .el-row {
     width: $default-width;
     max-width: $max-width;
     margin: 0 auto !important;
@@ -673,7 +793,7 @@ export default {
   }
 
   .category-item {
-    .el-card__body>div {
+    .el-card__body > div {
       display: flex;
       flex-direction: row;
       justify-content: space-between;

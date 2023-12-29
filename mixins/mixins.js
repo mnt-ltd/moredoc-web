@@ -7,7 +7,7 @@ export default {
       isPad: false,
       isPC: true,
       advertisementPositions,
-      advertisements:[], // 广告
+      advertisements: [], // 广告
     }
   },
   mounted() {
@@ -35,29 +35,29 @@ export default {
       }
     },
     async getAdvertisements(page) {
-        // 如果用户是VIP用户，则不获取广告
-        try {
-          if(this.$store.state.user.user.is_vip){
-            this.advertisements = []
-            return
-          }
-        } catch (error) {
-          
+      // 如果用户是VIP用户，则不获取广告
+      try {
+        if (this.$store.state.user.user.is_vip) {
+          this.advertisements = []
+          return
         }
-        const positions = []
-        this.advertisementPositions.map(item=>{
-          if(item.value===page){
-            (item.children || []).map(child=>{
-              positions.push(child.value)
-            })
-          }
-        })
-        const res = await getAdvertisementByPosition({
-          position: positions,
-        })
-        if(res.status===200){
-          this.advertisements = res.data.advertisement || []
-        }
+      } catch (error) {
+
       }
+      const positions = []
+      this.advertisementPositions.map(item => {
+        if (item.value === page) {
+          (item.children || []).map(child => {
+            positions.push(child.value)
+          })
+        }
+      })
+      const res = await getAdvertisementByPosition({
+        position: positions,
+      })
+      if (res.status === 200) {
+        this.advertisements = res.data.advertisement || []
+      }
+    }
   },
 }
