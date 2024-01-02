@@ -28,6 +28,10 @@ body {
   text-align: center;
 }
 
+.text-left{
+  text-align: left;
+}
+
 .text-warning {
   color: #f39c12;
 }

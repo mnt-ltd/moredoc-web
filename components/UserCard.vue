@@ -35,10 +35,19 @@
         {{ user.signature || '暂无个性签名' }}
       </div>
     </div>
+    <div v-if="latestDocuments.length > 0" class="mgt-20px latest-documents">
+      <div class="heading">
+        <small><strong>最近上传</strong> <i class="el-icon-time"></i></small>
+      </div>
+      <div class="help-block">
+        <document-simple-list :docs="latestDocuments" />
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { listDocument } from '~/api/document'
 // 用户信息卡片
 export default {
   name: 'UserCard',
@@ -67,18 +76,50 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      loading: false,
+      latestDocuments: [],
+    }
   },
-  async created() {},
   computed: {
     ...mapGetters('setting', ['settings']),
   },
-  methods: {},
+  watch: {
+    user: {
+      handler() {
+        this.getLatestDocuments()
+      },
+      immediate: true,
+    },
+  },
+  methods: {
+    // 获取最近上传的文档
+    async getLatestDocuments() {
+      if (this.user.id === 0 || this.loading || this.isMobile) return
+      this.loading = true
+      let res = await listDocument({
+        page: 1,
+        size: 5,
+        user_id: this.user.id,
+      })
+      this.loading = false
+      if (res.status === 200) {
+        this.latestDocuments = res.data.document || []
+      }
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>
 .com-user-card {
   text-align: center;
+  .latest-documents {
+    text-align: left;
+    margin-bottom: -10px;
+    .heading {
+      margin-bottom: 10px;
+    }
+  }
   .el-avatar {
     border: 2px solid #ddd;
     padding: 3px;

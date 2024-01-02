@@ -373,7 +373,7 @@
           <comment-list ref="commentList" :document-id="document.id" />
         </el-card>
       </el-col>
-      <el-col :span="24 - scaleSpan" class="hidden-xs-only">
+      <el-col :span="24 - scaleSpan" class="hidden-xs-only document-author">
         <el-card shadow="never">
           <div slot="header">分享用户</div>
           <user-card :hide-actions="true" :user="document.user" />
@@ -1192,6 +1192,7 @@ export default {
   .relate-docs {
     .el-card__body {
       padding-top: 10px;
+      padding-bottom: 10px;
     }
   }
   h1 {
