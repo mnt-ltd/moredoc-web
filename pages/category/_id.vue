@@ -120,7 +120,7 @@
     </template>
 
     <el-row :gutter="20" class="mgt-20px">
-      <el-col :span="18">
+      <el-col :span="settings.display.show_keywords_on_lists ? 18 : 24">
         <el-card shadow="never" ref="docList" class="doc-list">
           <div slot="header">
             <el-tabs v-model="query.sort" @tab-click="sortClick">
@@ -151,8 +151,12 @@
               </el-tab-pane>
             </el-tabs>
           </div>
-          <div v-loading="loading" class="doc-list-data">
-            <document-list v-if="documents.length > 0" :documents="documents" />
+          <div class="doc-list-data">
+            <document-list-skeleton v-if="loading"></document-list-skeleton>
+            <document-list
+              v-else-if="documents.length > 0"
+              :documents="documents"
+            />
             <div v-if="empty && documents.length === 0" class="no-data">
               <el-empty description="暂无数据"></el-empty>
             </div>
@@ -174,7 +178,11 @@
           </el-pagination>
         </el-card>
       </el-col>
-      <el-col :span="6" class="hidden-xs-only">
+      <el-col
+        :span="6"
+        class="hidden-xs-only"
+        v-if="settings.display.show_keywords_on_lists"
+      >
         <el-card shadow="never" class="keywords" ref="keywords">
           <div slot="header">
             <el-row>
