@@ -81,6 +81,7 @@ export default {
         this.activeDocument = this.documentMap[id]
         return
       }
+
       const res = await getDocument({ id: id, with_author: true })
       this.activeDocument = res.data
       this.documentMap[id] = res.data
@@ -88,7 +89,7 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .com-document-simple-list {
   ul,
   li {
@@ -110,6 +111,11 @@ export default {
         position: relative;
         top: 3px;
         margin-right: 5px;
+      }
+    }
+    &:last-of-type {
+      a {
+        border-bottom: none;
       }
     }
   }
