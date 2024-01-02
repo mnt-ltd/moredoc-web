@@ -218,8 +218,8 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="18" class="latest-recommend" keep-alive>
-        <el-card shadow="never">
+      <el-col :span="18" class="latest-recommend">
+        <el-card shadow="never" v-loading="loadingRecommend">
           <div slot="header">最新推荐</div>
           <el-row :gutter="20">
             <el-col
@@ -388,6 +388,7 @@ export default {
     return {
       banners: [],
       recommends: [],
+      loadingRecommend: false,
       documents: [],
       search: {
         wd: '',
@@ -499,12 +500,14 @@ export default {
       }
     },
     async getRecommendDocuments() {
+      this.loadingRecommend = true
       const res = await listDocument({
         field: ['id', 'title', 'is_vip'],
         is_recommend: true,
         order: 'recommend_at desc',
         limit: 12,
       })
+      this.loadingRecommend = false
       if (res.status === 200) {
         this.recommends = res.data.document || []
       }
@@ -749,6 +752,8 @@ export default {
   .latest-recommend {
     .el-card__body {
       padding-bottom: 0;
+      min-height: 476px;
+      box-sizing: border-box;
     }
 
     a {
@@ -884,6 +889,7 @@ export default {
       .el-card__body {
         padding: 15px;
         padding-bottom: 0;
+        min-height: auto;
       }
 
       .el-col-4 {
