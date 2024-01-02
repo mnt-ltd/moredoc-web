@@ -3,12 +3,19 @@
     <ul>
       <li v-for="doc in documents" :key="'doc-' + doc.id">
         <el-row :gutter="20">
-          <el-col :span="4" class="doc-cover">
+          <el-col
+            :span="settings.display.show_keywords_on_lists || isMobile ? 4 : 3"
+            class="doc-cover"
+          >
             <nuxt-link :to="`/document/${doc.id}`">
               <document-cover :document="doc" />
             </nuxt-link>
           </el-col>
-          <el-col :span="20">
+          <el-col
+            :span="
+              settings.display.show_keywords_on_lists || isMobile ? 20 : 21
+            "
+          >
             <h3>
               <nuxt-link
                 :to="`/document/${doc.id}`"
@@ -18,9 +25,12 @@
                   :alt="`${getIcon(doc.ext)} 文档`"
                 />
                 {{ doc.title }}
-                <img v-if="doc.recommend_at" src="/static/images/recommend.png" alt="推荐">
-                </nuxt-link
-              >
+                <img
+                  v-if="doc.recommend_at"
+                  src="/static/images/recommend.png"
+                  alt="推荐"
+                />
+              </nuxt-link>
             </h3>
             <div class="doc-info">
               <el-rate
