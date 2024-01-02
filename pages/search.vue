@@ -56,7 +56,12 @@
     </div>
     <el-row :gutter="20">
       <template v-for="item in advertisements">
-        <el-col :span="24" :key="item.position+item.id" v-if="item.position=='search_top'" v-html="item.content"></el-col>
+        <el-col
+          :span="24"
+          :key="item.position + item.id"
+          v-if="item.position == 'search_top'"
+          v-html="item.content"
+        ></el-col>
       </template>
       <el-col :span="18" class="search-main" ref="searchMain">
         <el-card v-loading="loading" shadow="never">
@@ -267,12 +272,20 @@
           </el-card> -->
         </div>
         <template v-for="item in advertisements">
-          <div :key="item.position+item.id" v-if="item.position=='search_right'" v-html="item.content"></div>
+          <div
+            :key="item.position + item.id"
+            v-if="item.position == 'search_right'"
+            v-html="item.content"
+          ></div>
         </template>
       </el-col>
     </el-row>
     <template v-for="item in advertisements">
-      <div :key="item.position+item.id" v-if="item.position=='search_bottom'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'search_bottom'"
+        v-html="item.content"
+      ></div>
     </template>
   </div>
 </template>
@@ -314,11 +327,11 @@ export default {
         { label: '默认排序', value: 'default' },
         { label: '最新排序', value: 'latest' },
         { label: '页数排序', value: 'pages' },
-        { label: '评分排序', value: 'score' },
+        // { label: '评分排序', value: 'score' },
         { label: '大小排序', value: 'size' },
-        { label: '下载排序', value: 'download_count' },
-        { label: '浏览排序', value: 'view_count' },
-        { label: '收藏排序', value: 'favorite_count' },
+        // { label: '下载排序', value: 'download_count' },
+        // { label: '浏览排序', value: 'view_count' },
+        // { label: '收藏排序', value: 'favorite_count' },
       ],
       durationOptions: [
         { label: '全部时间', value: 'all' },
@@ -405,10 +418,7 @@ export default {
       console.log(error)
     }
     this.query = query
-    Promise.all([
-      this.getStats(),
-      this.getAdvertisements('search'),
-    ])
+    Promise.all([this.getStats(), this.getAdvertisements('search')])
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
