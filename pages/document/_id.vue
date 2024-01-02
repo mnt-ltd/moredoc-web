@@ -4,9 +4,8 @@
       <el-col :span="scaleSpan" class="doc-left">
         <el-card ref="docMain" shadow="never" class="doc-main">
           <div slot="header" class="clearfix">
-            <h1>
+            <h1 v-if="document.id > 0">
               <img
-                v-if="document.id > 0"
                 :src="`/static/images/${document.icon}_24.png`"
                 :alt="`${document.icon}文档`"
               />
@@ -74,6 +73,11 @@
                 </template>
               </div>
             </h1>
+            <el-skeleton v-else animated>
+              <template slot="template"
+                ><el-skeleton-item variant="h1" style="width: 70%"
+              /></template>
+            </el-skeleton>
             <el-breadcrumb separator-class="el-icon-arrow-right">
               <el-breadcrumb-item>
                 <nuxt-link to="/">
@@ -186,6 +190,21 @@
             </el-descriptions-item>
           </el-descriptions>
           <div ref="docPages" class="doc-pages" @contextmenu.prevent>
+            <el-skeleton animated v-if="!document.id">
+              <template slot="template">
+                <div style="background-color: #f6f6f6; padding: 5px">
+                  <el-skeleton-item
+                    variant="image"
+                    style="width: 100%; height: 520px"
+                  />
+                  <div style="height: 5px"></div>
+                  <el-skeleton-item
+                    variant="image"
+                    style="width: 100%; height: 520px"
+                  />
+                </div>
+              </template>
+            </el-skeleton>
             <div v-if="isMobile" v-viewer>
               <div v-for="(page, index) in pages" :key="index + page.src">
                 <el-image
@@ -1167,6 +1186,7 @@ export default {
 }
 .page-document {
   .doc-main {
+    min-height: 90vh;
     overflow: auto;
   }
   .relate-docs {
@@ -1233,6 +1253,7 @@ export default {
     }
   }
   .doc-pages {
+    min-height: 640px;
     .doc-page {
       display: block;
       width: 100%;

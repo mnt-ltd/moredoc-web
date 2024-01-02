@@ -147,8 +147,12 @@
               </el-tab-pane>
             </el-tabs>
           </div>
-          <div v-loading="loading" class="doc-list-data">
-            <document-list v-if="documents.length > 0" :documents="documents" />
+          <div class="doc-list-data">
+            <document-list-skeleton v-if="loading"></document-list-skeleton>
+            <document-list
+              v-else-if="documents.length > 0"
+              :documents="documents"
+            />
             <div v-if="empty && documents.length === 0" class="no-data">
               <el-empty description="暂无数据"></el-empty>
             </div>
