@@ -121,6 +121,7 @@ export default {
   .doc-cover {
     .el-image {
       width: 100%;
+      min-height: 120px;
       border: 2px solid #efefef;
       border-radius: 5px;
       &:hover img {
