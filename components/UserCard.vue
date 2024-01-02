@@ -95,7 +95,13 @@ export default {
   methods: {
     // 获取最近上传的文档
     async getLatestDocuments() {
-      if (this.user.id === 0 || this.loading || this.isMobile) return
+      if (
+        this.user.id === 0 ||
+        this.loading ||
+        this.isMobile ||
+        !this.user.doc_count
+      )
+        return
       this.loading = true
       let res = await listDocument({
         page: 1,
