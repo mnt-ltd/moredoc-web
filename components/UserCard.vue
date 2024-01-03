@@ -74,6 +74,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideLatestDocuments: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -99,7 +103,8 @@ export default {
         this.user.id === 0 ||
         this.loading ||
         this.isMobile ||
-        !this.user.doc_count
+        !this.user.doc_count ||
+        this.hideLatestDocuments
       )
         return
       this.loading = true
