@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <el-col :span="6" class="part-left">
         <el-card shadow="never">
-          <user-card :user="user" />
+          <user-card :user="user" :hideLatestDocuments="true" />
           <nuxt-link to="/upload">
             <el-button
               type="primary"
