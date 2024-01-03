@@ -13,6 +13,12 @@ const cumstomPermissionMap = {
     children: [],
     pages: ['/admin/document', '/admin/document/recycle'],
   },
+  'api.v1.SearchRecordAPI': {
+    label: '搜索记录管理',
+    path: 'ListSearchRecord',
+    children: [],
+    pages: ['/admin/document', '/admin/document/searchrecord'],
+  },
   'api.v1.CategoryAPI': {
     label: '分类管理',
     path: 'ListCategory',
@@ -88,7 +94,7 @@ const cumstomPermissionMap = {
     label: '文章管理',
     path: 'ListArticle',
     children: [],
-    pages: ['/admin/article','/admin/article/set'],
+    pages: ['/admin/article', '/admin/article/set'],
   },
   'api.v1.CommentAPI': {
     label: '评论管理',
@@ -165,6 +171,11 @@ export const adminMenus = [
         page: '/admin/document/list',
         title: '文档列表',
         icon: 'el-icon-tickets',
+      },
+      {
+        page: '/admin/document/searchrecord',
+        title: '搜索记录',
+        icon: 'el-icon-search',
       },
       {
         page: '/admin/document/recycle',
@@ -260,7 +271,7 @@ export const adminMenus = [
         title: '底链配置',
         page: '/admin/config/footer',
         icon: 'el-icon-link',
-      },{
+      }, {
         title: '验证码配置',
         page: '/admin/config/captcha',
         icon: 'el-icon-postcard',
