@@ -1060,8 +1060,6 @@ export default {
         this.pages[currentPage].src = this.pages[currentPage].lazySrc
       }
 
-      console.log(this.footerTop)
-
       // 右侧相关文档固定
       try {
         const relateDocs = this.$refs.relateDocs.$el
@@ -1282,6 +1280,13 @@ export default {
     },
     // 添加收藏
     async createFavorite() {
+      await this.checkAndRefreshUser()
+      if (!this.user.id) {
+        // 未登录，显示登录
+        this.loginVisible = true
+        return
+      }
+
       const res = await createFavorite({
         document_id: this.documentId,
       })
