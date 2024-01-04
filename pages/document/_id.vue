@@ -205,7 +205,7 @@
             <el-descriptions-item
               v-for="item in descriptions"
               :key="'desc-' + item.label"
-              :span="item.name == 'description' ? 2 : 1"
+              :span="item.name == 'description' ? 4 : 1"
               label-class-name="descriptions-label"
             >
               <template slot="label">
@@ -222,6 +222,24 @@
                 ></el-rate>
               </span>
               <div v-else>{{ item.value }}</div>
+            </el-descriptions-item>
+            <el-descriptions-item
+              v-if="document.source"
+              :span="5"
+              label-class-name="descriptions-label"
+            >
+              <template slot="label">
+                <i class="el-icon-link"></i>
+                来源
+              </template>
+              <a
+                :href="`https://${document.source}`"
+                rel="nofollow"
+                target="_blank"
+                class="el-link el-link--default"
+              >
+                {{ document.source }}
+              </a>
             </el-descriptions-item>
           </el-descriptions>
           <div ref="docPages" class="doc-pages" @contextmenu.prevent>
