@@ -50,7 +50,7 @@ import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormCategory from '~/components/FormCategory.vue'
 import { categoryToTrees, parseQueryIntArray } from '~/utils/utils'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormCategory },
   layout: 'admin',
@@ -97,6 +97,7 @@ export default {
     this.initSearchForm()
   },
   methods: {
+    ...mapActions('category', ['getCategories']),
     async listCategory() {
       this.loading = true
       const res = await listCategory(this.search)
@@ -165,6 +166,7 @@ export default {
     },
     formCategorySuccess() {
       this.formVisible = false
+      this.getCategories()
       this.listCategory()
     },
     batchDelete() {
