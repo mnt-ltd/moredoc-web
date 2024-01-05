@@ -856,8 +856,9 @@ export default {
           name: 'description',
         },
       ]
-
-      this.genQrcode()
+      this.$nextTick(() => {
+        this.genQrcode()
+      })
     },
     handleResize() {
       this.calcPageSize()
