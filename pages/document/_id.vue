@@ -334,7 +334,8 @@
               >
             </el-button>
             <div v-if="document.preview - pages.length > 0">
-              还有 {{ document.preview - pages.length }} 页可预览，
+              共 {{ document.pages }} 页， 还有
+              {{ document.preview - pages.length }} 页可预览，
               <span class="el-link el-link--primary" @click="continueRead"
                 >继续阅读</span
               >
@@ -1020,8 +1021,9 @@ export default {
           name: 'description',
         },
       ]
-
-      this.genQrcode()
+      this.$nextTick(() => {
+        this.genQrcode()
+      })
     },
     handleResize() {
       this.calcPageSize()

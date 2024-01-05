@@ -7,7 +7,7 @@
             <el-row :gutter="20">
               <el-col
                 :span="
-                  settings.display.show_keywords_on_lists || isMobile ? 4 : 3
+                  !settings.display.hide_keywords_on_lists || isMobile ? 4 : 3
                 "
                 class="doc-cover"
               >
@@ -22,7 +22,7 @@
               </el-col>
               <el-col
                 :span="
-                  settings.display.show_keywords_on_lists || isMobile ? 20 : 21
+                  !settings.display.hide_keywords_on_lists || isMobile ? 20 : 21
                 "
               >
                 <el-skeleton-item variant="h1" style="width: 70%" />
