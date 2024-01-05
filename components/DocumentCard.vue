@@ -15,11 +15,7 @@
     <el-row :gutter="10">
       <el-col :span="7" class="doc-cover">
         <nuxt-link :to="`/document/${document.id}`">
-          <document-cover
-            :document="document"
-            :height="'184px'"
-            :lazy="false"
-          />
+          <document-cover :document="document" :lazy="false" />
         </nuxt-link>
       </el-col>
       <el-col :span="17">

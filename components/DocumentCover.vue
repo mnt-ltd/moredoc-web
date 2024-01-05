@@ -7,7 +7,7 @@
     "
     :lazy="lazy"
     :alt="document.title"
-    :style="{ height: height }"
+    ref="image"
   >
     <div slot="error" class="image-slot">
       <img src="/static/images/default-cover.png" />
@@ -37,6 +37,23 @@ export default {
   },
   computed: {
     ...mapGetters('setting', ['settings']),
+  },
+  mounted() {
+    this.resetImageHeight()
+    window.addEventListener('resize', this.resetImageHeight)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.resetImageHeight)
+  },
+  methods: {
+    resetImageHeight() {
+      // 210/297
+      // 重置封面高度：1. 读取封面宽度，2，根据宽高比计算高度
+      const image = this.$refs.image.$el
+      const width = image.offsetWidth
+      const height = (width * 297) / 210
+      image.style.height = `${this.isMobile ? height - 2 : height - 6}px`
+    },
   },
 }
 </script>
