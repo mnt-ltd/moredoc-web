@@ -393,6 +393,7 @@ export default {
           enum: enumStatus,
           editable: true,
         },
+        { prop: 'url_html', label: '文档链接', minWidth: 250, type: 'html' },
         {
           prop: 'title',
           label: '正式标题',
@@ -423,7 +424,6 @@ export default {
         { prop: 'content_type', label: 'ContentType', width: 150 },
         { prop: 'error', label: '错误信息', minWidth: 120 },
         { prop: 'save_path', label: '存储路径', minWidth: 250 },
-        { prop: 'url_html', label: '文档链接', minWidth: 250, type: 'html' },
         {
           prop: 'user_id',
           label: '发布到用户',

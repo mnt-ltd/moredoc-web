@@ -93,7 +93,7 @@ export default {
       users: [],
       prices: [],
       form: {
-        user_id: '',
+        user_id: localStorage.getItem('user_id') || '',
         category_id: [],
         status: 5, // 加入到发布队列
         price: 0, // 价格
@@ -116,6 +116,7 @@ export default {
               user_id: this.form.user_id,
               price: this.form.price || 0,
             }
+            localStorage.setItem('user_id', this.form.user_id)
             delete newItem.url_html
             delete newItem.editing
             return newItem
