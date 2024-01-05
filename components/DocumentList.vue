@@ -4,7 +4,7 @@
       <li v-for="doc in documents" :key="'doc-' + doc.id">
         <el-row :gutter="20">
           <el-col
-            :span="settings.display.show_keywords_on_lists || isMobile ? 4 : 3"
+            :span="!settings.display.hide_keywords_on_lists || isMobile ? 4 : 3"
             class="doc-cover"
           >
             <nuxt-link :to="`/document/${doc.id}`">
@@ -13,7 +13,7 @@
           </el-col>
           <el-col
             :span="
-              settings.display.show_keywords_on_lists || isMobile ? 20 : 21
+              !settings.display.hide_keywords_on_lists || isMobile ? 20 : 21
             "
           >
             <h3>

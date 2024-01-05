@@ -116,7 +116,7 @@
     </template>
 
     <el-row :gutter="20" class="mgt-20px">
-      <el-col :span="settings.display.show_keywords_on_lists ? 18 : 24">
+      <el-col :span="!settings.display.hide_keywords_on_lists ? 18 : 24">
         <el-card shadow="never" ref="docList" class="doc-list">
           <div slot="header">
             <el-tabs v-model="query.sort" @tab-click="sortClick">
@@ -177,7 +177,7 @@
       <el-col
         :span="6"
         class="hidden-xs-only"
-        v-if="settings.display.show_keywords_on_lists"
+        v-if="!settings.display.hide_keywords_on_lists"
       >
         <el-card shadow="never" class="keywords" ref="keywords">
           <div slot="header">
