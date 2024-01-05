@@ -1,15 +1,25 @@
 <template>
   <div class="com-document-card">
-    <nuxt-link :to="`/document/${document.id}`" class="el-link el-link--default">
+    <nuxt-link
+      :to="`/document/${document.id}`"
+      class="el-link el-link--default"
+    >
       <h3>
-        <img v-if="document.id>0" :src="`/static/images/${getIcon(document.ext)}_24.png`" />
+        <img
+          v-if="document.id > 0"
+          :src="`/static/images/${getIcon(document.ext)}_24.png`"
+        />
         {{ document.title }}
       </h3>
     </nuxt-link>
     <el-row :gutter="10">
       <el-col :span="7" class="doc-cover">
         <nuxt-link :to="`/document/${document.id}`">
-          <document-cover :document="document" :lazy="false" />
+          <document-cover
+            :document="document"
+            :height="'184px'"
+            :lazy="false"
+          />
         </nuxt-link>
       </el-col>
       <el-col :span="17">
@@ -22,28 +32,30 @@
             <nuxt-link
               :to="`/user/${document.user_id}`"
               class="el-link el-link--primary"
-            >{{ document.user && document.user.username }}</nuxt-link>
+              >{{ document.user && document.user.username }}</nuxt-link
+            >
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-coin"></i>
               价格
             </template>
-            {{document.price || 0}} {{ settings.system.credit_name || '魔豆' }}
+            {{ document.price || 0 }}
+            {{ settings.system.credit_name || '魔豆' }}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-news"></i>
               大小
             </template>
-            {{formatBytes(document.size)}}
+            {{ formatBytes(document.size) }}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-files"></i>
               页数
             </template>
-            {{document.pages || '-'}} 页
+            {{ document.pages || '-' }} 页
           </el-descriptions-item>
         </el-descriptions>
       </el-col>
@@ -76,68 +88,67 @@
     </el-row>
   </div>
 </template>
-  
-  <script>
-	import { formatBytes, getIcon } from '~/utils/utils'
-	import { mapGetters } from 'vuex'
-	export default {
-		name: 'DocumentCard',
-		props: {
-			document: {
-				type: Object,
-				default: () => ({}),
-			},
-		},
-		data() {
-			return {
-				score: 3,
-			}
-		},
-		watch: {
-			document: {
-				handler: function (val) {
-					this.score = val.score / 100 || 3
-				},
-				deep: true,
-			},
-		},
-		computed: {
-			...mapGetters('setting', ['settings']),
-		},
-		methods: {
-			formatBytes,
-			getIcon,
-		},
-	}
+
+<script>
+import { formatBytes, getIcon } from '~/utils/utils'
+import { mapGetters } from 'vuex'
+export default {
+  name: 'DocumentCard',
+  props: {
+    document: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  data() {
+    return {
+      score: 3,
+    }
+  },
+  watch: {
+    document: {
+      handler: function (val) {
+        this.score = val.score / 100 || 3
+      },
+      deep: true,
+    },
+  },
+  computed: {
+    ...mapGetters('setting', ['settings']),
+  },
+  methods: {
+    formatBytes,
+    getIcon,
+  },
+}
 </script>
-  
+
 <style lang="scss">
-	.com-document-card {
-		h3 {
-			margin-top: 0;
-			img {
-				height: 20px;
-				vertical-align: middle;
-				margin-top: -4px;
-			}
-		}
-		.el-descriptions-item__label.is-bordered-label {
-			width: 100px;
-		}
-		.doc-cover img {
-			max-width: 130px;
-		}
-		.mgt {
-			margin-top: 5px;
-		}
-		.description {
-			// 只显示3行
-			overflow: hidden;
-			text-overflow: ellipsis;
-			display: -webkit-box;
-			-webkit-line-clamp: 4;
-			-webkit-box-orient: vertical;
-		}
-	}
+.com-document-card {
+  h3 {
+    margin-top: 0;
+    img {
+      height: 20px;
+      vertical-align: middle;
+      margin-top: -4px;
+    }
+  }
+  .el-descriptions-item__label.is-bordered-label {
+    width: 100px;
+  }
+  .doc-cover img {
+    max-width: 130px;
+  }
+  .mgt {
+    margin-top: 5px;
+  }
+  .description {
+    // 只显示3行
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+  }
+}
 </style>
-  
