@@ -25,7 +25,7 @@
                     {{ item.title
                     }}<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
-                  <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-menu slot="dropdown" class="breadcrumb-dropdown">
                     <el-dropdown-item
                       v-for="ss in item.siblings"
                       :key="'s1-' + ss.id"

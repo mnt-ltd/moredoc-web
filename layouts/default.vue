@@ -1,7 +1,11 @@
 <template>
   <el-container class="layout-default">
     <template v-for="item in advertisements">
-      <div :key="item.position+item.id" v-if="item.position=='global_top'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'global_top'"
+        v-html="item.content"
+      ></div>
     </template>
     <el-header v-if="$route.name !== 'search' || isMobile">
       <div>
@@ -424,7 +428,11 @@
       </el-menu>
     </el-drawer>
     <template v-for="item in advertisements">
-      <div :key="item.position+item.id" v-if="item.position=='global_bottom'" v-html="item.content"></div>
+      <div
+        :key="item.position + item.id"
+        v-if="item.position == 'global_bottom'"
+        v-html="item.content"
+      ></div>
     </template>
   </el-container>
 </template>
@@ -988,6 +996,46 @@ export default {
   }
   .el-dialog__body {
     padding: 1px 15px;
+  }
+}
+
+.breadcrumb-dropdown {
+  max-height: 320px;
+  overflow-y: auto;
+  width: 360px;
+  box-sizing: border-box;
+  padding: 10px;
+  max-width: 100%;
+  .el-dropdown-menu__item {
+    display: inline-block;
+    padding: 0 10px;
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar {
+    background-color: transparent;
+    width: 6px;
+    height: 6px;
+  }
+
+  &:hover::-webkit-scrollbar {
+    background-color: rgb(241, 241, 241);
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 3px;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background-color: rgb(193, 193, 193);
+  }
+
+  &:hover::-webkit-scrollbar-thumb::hover {
+    background-color: rgb(168, 168, 168);
   }
 }
 </style>
