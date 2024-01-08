@@ -97,6 +97,7 @@
       title="发布选中文档"
       :visible.sync="showPublishing"
       width="640px"
+      :close-on-click-modal="false"
     >
       <FormPublishSpiderDocument
         v-if="showPublishing"

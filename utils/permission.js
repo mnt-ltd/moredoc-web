@@ -270,12 +270,12 @@ export const adminMenus = [
     children: [
       {
         page: '/admin/spider/url',
-        title: '采集链接',
+        title: '链接采集',
         icon: 'el-icon-link',
       },
       {
         page: '/admin/spider/document',
-        title: '采集文档',
+        title: '文档采集',
         icon: 'el-icon-tickets',
       },
     ],

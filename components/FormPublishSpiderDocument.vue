@@ -39,7 +39,23 @@
         <el-input-number v-model="form.price"></el-input-number>
       </el-form-item>
       <el-form-item label="文档清单" prop="documents">
+        <el-alert
+          type="warning"
+          title="只有【采集成功】且【标题不为空】的文档才能满足发布条件"
+          show-icon
+        ></el-alert>
         <el-table :data="documents" height="360">
+          <el-table-column prop="status" label="发布条件" width="80">
+            <template slot-scope="scope">
+              <i
+                class="el-icon-success el-link el-link--success"
+                v-if="scope.row.status && scope.row.title"
+              >
+                满足</i
+              >
+              <i v-else class="el-icon-error el-link el-link--danger">不满足</i>
+            </template>
+          </el-table-column>
           <el-table-column prop="id" label="ID" width="80"></el-table-column>
           <el-table-column prop="title" label="标题"></el-table-column>
           <!-- <el-table-column prop="price" label="价格" width="140">
@@ -69,6 +85,10 @@
           type="primary"
           class="btn-block"
           icon="el-icon-check"
+          :disabled="
+            documents.filter((item) => item.title && item.status === 3)
+              .length === 0
+          "
           @click="batchUpdateSpiderDocuments"
           >提交发布</el-button
         >
@@ -121,9 +141,23 @@ export default {
             delete newItem.editing
             return newItem
           })
+
+          // 标题为空的文档不发布
+          const newDocs = docs.filter((item) => item.title && item.status === 3)
+
+          if (newDocs.length === 0) {
+            this.$message.error('文档正式标题为空，无法发布')
+            return
+          }
+
+          if (newDocs.length !== docs.length) {
+            this.$message.warning('已跳过部分标题为空的文档')
+          }
+
           const res = await batchUpdateSpiderDocument({
-            spider_document: docs,
+            spider_document: newDocs,
           })
+
           if (res.status === 200) {
             this.$message.success('加入发布队列成功')
             this.$emit('success')

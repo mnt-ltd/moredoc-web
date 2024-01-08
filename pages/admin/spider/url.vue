@@ -48,6 +48,7 @@
       :title="spiderUrl.id ? '编辑链接' : '新增链接'"
       :visible.sync="formSpiderUrlVisible"
       width="640px"
+      :close-on-click-modal="false"
     >
       <FormSpiderUrl
         ref="spiderUrlForm"
