@@ -49,7 +49,7 @@
             <template slot-scope="scope">
               <i
                 class="el-icon-success el-link el-link--success"
-                v-if="scope.row.status && scope.row.title"
+                v-if="scope.row.status === 3 && scope.row.title"
               >
                 满足</i
               >
@@ -131,7 +131,7 @@ export default {
           const docs = this.documents.map((item) => {
             const newItem = {
               ...item,
-              status: 5, // 加入到发布队列
+              status: item.status === 3 ? 5 : item.status, // 加入到发布队列
               category_id: JSON.stringify(this.form.category_id),
               user_id: this.form.user_id,
               price: this.form.price || 0,
@@ -143,7 +143,7 @@ export default {
           })
 
           // 标题为空的文档不发布
-          const newDocs = docs.filter((item) => item.title && item.status === 3)
+          const newDocs = docs.filter((item) => item.title && item.status === 5)
 
           if (newDocs.length === 0) {
             this.$message.error('文档正式标题为空，无法发布')
