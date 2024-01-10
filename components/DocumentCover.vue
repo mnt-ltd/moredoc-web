@@ -49,7 +49,7 @@ export default {
       const image = this.$refs.image.$el
       const width = image.offsetWidth
       const height = (width * 297) / 210
-      image.style.height = `${this.isMobile ? height - 2 : height - 6}px`
+      image.style.height = `${this.isMobile ? height - 2 : height - 10}px`
     },
   },
 }

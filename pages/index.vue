@@ -235,7 +235,7 @@
                 placement="top"
               >
                 <nuxt-link :to="`/document/${item.id}`">
-                  <el-image
+                  <!-- <el-image
                     :src="
                       item.attachment && item.attachment.hash
                         ? `/view/cover/${item.attachment.hash}`
@@ -248,7 +248,8 @@
                     <div slot="error" class="image-slot">
                       <img src="/static/images/default-cover.png" />
                     </div>
-                  </el-image>
+                  </el-image> -->
+                  <document-cover :document="item"/>
                   <div class="el-link el-link--default">{{ item.title }}</div>
                 </nuxt-link>
               </el-tooltip>
