@@ -81,6 +81,22 @@
           scope.row.favorite_count || 0
         }}</template>
       </el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="70"
+        v-if="showPrivateData"
+      >
+        <template slot-scope="scope">
+          <el-tag
+            :type="filterStatus(scope.row.status).type"
+            size="mini"
+            effect="plain"
+          >
+            {{ filterStatus(scope.row.status).label }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="page" label="页数" width="70">
         <template slot-scope="scope">{{ scope.row.pages || '-' }}</template>
       </el-table-column>
@@ -166,7 +182,7 @@ import {
   formatRelativeTime,
   getIcon,
 } from '~/utils/utils'
-import { datetimePickerOptions } from '~/utils/enum'
+import { datetimePickerOptions, documentStatusOptions } from '~/utils/enum'
 
 export default {
   name: 'UserDocument',
@@ -179,6 +195,8 @@ export default {
   data() {
     return {
       datetimePickerOptions,
+      documentStatusOptions,
+      documentStatusOptionsMap: {},
       docs: [],
       total: 0,
       loading: false,
@@ -193,8 +211,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['user']),
+    ...mapGetters('user', ['user', 'permissions']),
     ...mapGetters('category', ['categoryTrees']),
+    showPrivateData() {
+      // 如果是用户自身或者是网站管理员则显示私有数据
+      return this.userId === this.user.id || this.permissions.length > 0
+    },
   },
   watch: {
     '$route.query': {
@@ -212,6 +234,11 @@ export default {
   },
   created() {
     console.log('created')
+    const statusMap = {}
+    this.documentStatusOptions.forEach((item) => {
+      statusMap[item.value] = item
+    })
+    this.documentStatusOptionsMap = statusMap
     this.getDocuments()
   },
   methods: {
@@ -292,6 +319,15 @@ export default {
           this.getDocuments()
         }
       })
+    },
+    filterStatus(status) {
+      return (
+        this.documentStatusOptionsMap[status] || {
+          value: status,
+          label: '未知',
+          type: 'info',
+        }
+      )
     },
   },
 }

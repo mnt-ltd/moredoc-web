@@ -24,7 +24,7 @@ export const documentStatusOptions = [
   { label: '转换失败', value: 3, type: 'warning' },
   { label: '已禁用', value: 4, type: 'danger' },
   { label: '重新转换', value: 5, type: 'info' },
-  { label: '待审核', value: 6, type: 'default' },
+  { label: '待审核', value: 6, type: 'warning' },
   { label: '审核拒绝', value: 7, type: 'danger' },
 ]
 
