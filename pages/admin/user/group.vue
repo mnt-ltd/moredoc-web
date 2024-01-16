@@ -29,13 +29,15 @@
         @permission="setGroupPermission"
       >
         <template slot="actions" slot-scope="scope">
-          <el-button
-            type="text"
-            icon="el-icon-coordinate"
-            size="small"
-            @click="setGroupPermission(scope.row)"
-            >后台授权</el-button
-          >
+          <el-tooltip content="网站管理后台管理功能授权" placement="top">
+            <el-button
+              type="text"
+              icon="el-icon-coordinate"
+              size="small"
+              @click="setGroupPermission(scope.row)"
+              >管理授权</el-button
+            >
+          </el-tooltip>
         </template>
       </TableList>
     </el-card>
@@ -64,7 +66,7 @@
       <FormGroup :init-group="group" @success="success" />
     </el-dialog>
     <el-drawer
-      :title="`【${group.title}】角色授权`"
+      :title="`【${group.title}】管理授权`"
       :visible.sync="formGroupPermissionVisible"
     >
       <div style="padding: 0 20px">
@@ -75,6 +77,14 @@
         />
       </div>
     </el-drawer>
+    <el-dialog
+      :close-on-click-modal="false"
+      :title="`【${group.title}】前台功能授权`"
+      :visible.sync="formGroupPermissionFrontVisible"
+      width="640px"
+    >
+      asd
+    </el-dialog>
   </div>
 </template>
 
@@ -160,11 +170,7 @@ export default {
       })
     },
     updateGroupPermissionSuccess() {
-      // 权限设置成功，需要：
-      // 1. 隐藏设置功能
       this.formGroupPermissionVisible = false
-      // 2. vuex重载用户权限
-      // 3. 刷新页面，以便使设置的权限生效
     },
     handlePageChange(val) {
       this.search.page = val
@@ -176,9 +182,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listGroup()
       } else {
@@ -284,11 +290,23 @@ export default {
         { prop: 'title', label: '名称', width: 150, fixed: 'left' },
         { prop: 'sort', label: '排序', width: 80, type: 'number' },
         { prop: 'user_count', label: '用户数', width: 80, type: 'number' },
-        { prop: 'color', label: '颜色', width: 120, type: 'color' },
-        { prop: 'is_default', label: '是否默认', width: 80, type: 'bool' },
+        // { prop: 'color', label: '颜色', width: 120, type: 'color' },
+        { prop: 'is_default', label: '默认组', width: 80, type: 'bool' },
         {
           prop: 'enable_upload',
           label: '允许上传文档',
+          width: 120,
+          type: 'bool',
+        },
+        {
+          prop: 'enable_document_review',
+          label: '文档需审核',
+          width: 120,
+          type: 'bool',
+        },
+        {
+          prop: 'enable_comment',
+          label: '允许评论',
           width: 120,
           type: 'bool',
         },
@@ -298,7 +316,7 @@ export default {
           width: 120,
           type: 'bool',
         },
-        { prop: 'is_display', label: '是否展示', width: 80, type: 'bool' },
+        // { prop: 'is_display', label: '是否展示', width: 80, type: 'bool' },
         { prop: 'description', label: '描述', width: 250 },
         { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
         { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },

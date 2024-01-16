@@ -6,19 +6,23 @@
       label-width="80px"
       :model="group"
     >
-      <el-form-item
-        label="名称"
-        prop="title"
-        :rules="[{ required: true, trigger: 'blur', message: '请输入名称' }]"
-      >
-        <el-input
-          v-model="group.title"
-          placeholder="请输入名称"
-          clearable
-        ></el-input>
-      </el-form-item>
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :span="16">
+          <el-form-item
+            label="名称"
+            prop="title"
+            :rules="[
+              { required: true, trigger: 'blur', message: '请输入名称' },
+            ]"
+          >
+            <el-input
+              v-model="group.title"
+              placeholder="请输入名称"
+              clearable
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="排序(值越大越靠前)">
             <el-input-number
               v-model.number="group.sort"
@@ -28,6 +32,8 @@
               placeholder="请输入排序值"
             ></el-input-number>
           </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="是否为默认用户组">
             <el-switch
               v-model="group.is_default"
@@ -39,6 +45,8 @@
             >
             </el-switch>
           </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="允许上传文档">
             <el-switch
               v-model="group.enable_upload"
@@ -50,7 +58,35 @@
             >
             </el-switch>
           </el-form-item>
-          <el-form-item label="评论需审核">
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="文档是否需要审核">
+            <el-switch
+              v-model="group.enable_document_review"
+              style="display: block"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="是"
+              inactive-text="否"
+            >
+            </el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="是否允许评论">
+            <el-switch
+              v-model="group.enable_comment"
+              style="display: block"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="是"
+              inactive-text="否"
+            >
+            </el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="评论是否需审核">
             <el-switch
               v-model="group.enable_comment_approval"
               style="display: block"
@@ -61,22 +97,7 @@
             >
             </el-switch>
           </el-form-item>
-          <el-form-item label="是否在用户名后展示">
-            <el-switch
-              v-model="group.is_display"
-              style="display: block"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-text="是"
-              inactive-text="否"
-            >
-            </el-switch>
-          </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="分组颜色">
-            <chrome-picker v-model="colors"></chrome-picker> </el-form-item
-        ></el-col>
       </el-row>
 
       <el-form-item label="描述">
