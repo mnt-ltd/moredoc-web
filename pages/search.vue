@@ -177,11 +177,7 @@
           <div class="search-tips">
             本次搜索耗时
             <span class="el-link el-link--danger">{{ spend || '0.000' }}</span>
-            秒，在
-            <span class="el-link el-link--primary">{{
-              stats.document_count || '0'
-            }}</span>
-            篇文档中为您找到相关结果约
+            秒，为您找到相关结果约
             <span class="el-link el-link--danger">{{ total || 0 }}</span> 个.
           </div>
           <!-- <div class="search-result-none">没有搜索到内容...</div> -->

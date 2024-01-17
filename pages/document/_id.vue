@@ -112,14 +112,19 @@
             </el-breadcrumb>
             <div class="float-right doc-info">
               <span>
+                <!-- 显示文档大小 -->
+                <i class="el-icon-document"></i>
+                {{ formatBytes(document.size) }}
+              </span>
+              <span>
                 <i class="el-icon-files"></i>
                 {{ document.pages || '-' }} 页
               </span>
-              <span>
+              <span v-if="settings.display.show_document_download_count">
                 <i class="el-icon-download"></i>
                 {{ document.download_count || 0 }} 下载
               </span>
-              <span>
+              <span v-if="settings.display.show_document_view_count">
                 <i class="el-icon-view"></i>
                 {{ document.view_count || 0 }} 浏览
               </span>
@@ -127,7 +132,7 @@
                 <i class="el-icon-chat-dot-square"></i>
                 {{ document.comment_count || 0 }} 评论
               </span>
-              <span>
+              <span v-if="settings.display.show_document_favorite_count">
                 <i class="el-icon-star-off"></i>
                 {{ document.favorite_count || 0 }} 收藏
               </span>

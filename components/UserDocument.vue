@@ -68,15 +68,30 @@
           ></el-rate>
         </template>
       </el-table-column>
-      <el-table-column prop="view_count" label="浏览" width="70">
+      <el-table-column
+        prop="view_count"
+        label="浏览"
+        width="70"
+        v-if="settings.display.show_document_view_count || showPrivateData"
+      >
         <template slot-scope="scope">{{ scope.row.view_count || 0 }}</template>
       </el-table-column>
-      <el-table-column prop="download_count" label="下载" width="70">
+      <el-table-column
+        prop="download_count"
+        label="下载"
+        width="70"
+        v-if="settings.display.show_document_download_count || showPrivateData"
+      >
         <template slot-scope="scope">{{
           scope.row.download_count || 0
         }}</template>
       </el-table-column>
-      <el-table-column prop="favorite_count" label="收藏" width="70">
+      <el-table-column
+        prop="favorite_count"
+        label="收藏"
+        width="70"
+        v-if="settings.display.show_document_favorite_count || showPrivateData"
+      >
         <template slot-scope="scope">{{
           scope.row.favorite_count || 0
         }}</template>
@@ -213,6 +228,7 @@ export default {
   computed: {
     ...mapGetters('user', ['user', 'permissions']),
     ...mapGetters('category', ['categoryTrees']),
+    ...mapGetters('setting', ['settings']),
     showPrivateData() {
       // 如果是用户自身或者是网站管理员则显示私有数据
       return this.userId === this.user.id || this.permissions.length > 0
