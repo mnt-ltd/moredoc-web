@@ -50,7 +50,7 @@
             target="_blank"
             :to="{
               name: 'document-id',
-              params: { id: scope.row.id },
+              params: { id: scope.row.uuid || scope.row.id },
             }"
             class="el-link el-link--default doc-title"
           >

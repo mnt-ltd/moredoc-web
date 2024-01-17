@@ -572,7 +572,10 @@ export default {
       score: null,
       disabledScore: false,
       downloading: false,
-      documentId: parseInt(this.$route.params.id) || 0,
+      documentId: isNaN(Number(this.$route.params.id))
+        ? 0
+        : parseInt(this.$route.params.id),
+      documentUUID: this.$route.params.id || '',
       pages: [],
       pagesPerRead: 10,
       pageHeight: 0,
@@ -653,9 +656,9 @@ export default {
       )
     },
   },
-  created() {
+  async created() {
+    await this.getDocument()
     const requests = [
-      this.getDocument(),
       this.getRelatedDocuments(),
       this.getDocumentScore(),
       this.getAdvertisements('document'),
@@ -756,8 +759,15 @@ export default {
       })
     },
     async getDocument() {
+      if (!this.documentId && !this.documentUUID) {
+        this.$message.error('文档不存在')
+        this.$router.replace('/404')
+        return
+      }
+
       const res = await getDocument({
         id: this.documentId,
+        uuid: this.documentUUID,
         with_author: true,
       })
 
@@ -958,7 +968,7 @@ export default {
 
       this.downloading = true
       const res = await downloadDocument({
-        id: this.documentId,
+        id: this.document.id,
       })
       if (res.status === 200) {
         this.getUser()
@@ -971,7 +981,7 @@ export default {
     },
     async getRelatedDocuments() {
       const res = await getRelatedDocuments({
-        id: this.documentId,
+        id: this.document.id,
       })
       if (res.status === 200) {
         this.relatedDocuments = res.data.document || []
@@ -1072,7 +1082,7 @@ export default {
     },
     async getFavorite() {
       const res = await getFavorite({
-        document_id: this.documentId,
+        document_id: this.document.id,
       })
       if (res.status === 200) {
         this.favorite = res.data || { id: 0 }
@@ -1091,7 +1101,7 @@ export default {
     // 添加收藏
     async createFavorite() {
       const res = await createFavorite({
-        document_id: this.documentId,
+        document_id: this.document.id,
       })
       if (res.status === 200) {
         this.$message.success('收藏成功')
@@ -1131,7 +1141,7 @@ export default {
         return
       }
       const res = await setDocumentScore({
-        document_id: this.documentId,
+        document_id: this.document.id,
         score: this.score * 100,
       })
       if (res.status === 200) {
@@ -1151,7 +1161,7 @@ export default {
         return
       }
       const res = await getDocumentScore({
-        document_id: this.documentId,
+        document_id: this.document.id,
       })
       if (res.status === 200) {
         const score = res.data.score / 100 || null

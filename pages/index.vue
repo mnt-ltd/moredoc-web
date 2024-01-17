@@ -269,7 +269,7 @@
                 :content="item.title"
                 placement="top"
               >
-                <nuxt-link :to="`/document/${item.id}`">
+                <nuxt-link :to="`/document/${item.uuid}`">
                   <document-cover :document="item" />
                   <div class="el-link el-link--default">{{ item.title }}</div>
                 </nuxt-link>
@@ -370,7 +370,7 @@
                 v-for="doc in item.document"
                 :key="'c-' + item.category_id + 'd' + doc.id"
                 class="el-link el-link--default"
-                :to="`/document/${doc.id}`"
+                :to="`/document/${doc.uuid}`"
               >
                 <img
                   :src="`/static/images/${getIcon(doc.ext)}_24.png`"
@@ -511,7 +511,7 @@ export default {
     async getRecommendDocuments() {
       this.loadingRecommend = true
       const res = await listDocument({
-        field: ['id', 'title'],
+        field: ['id', 'title', 'uuid'],
         is_recommend: true,
         order: 'recommend_at desc',
         limit: 12,
