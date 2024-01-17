@@ -143,3 +143,11 @@ export const setDocumentsCategory = (data) => {
     data,
   })
 }
+
+export const checkDocument = (data) => {
+  return service({
+    url: '/api/v1/document/check',
+    method: 'put',
+    data,
+  })
+}

@@ -29,6 +29,24 @@
             </el-tooltip>
           </el-form-item>
           <el-form-item>
+            <el-dropdown
+              :disabled="selectedRow.length === 0"
+              @command="checkDocument"
+            >
+              <el-button type="warning">
+                批量审批 <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <!-- 文档变为待转换 -->
+                <el-dropdown-item :command="0">审核通过</el-dropdown-item>
+                <!-- 文档状态变为拒绝 -->
+                <el-dropdown-item :command="7">审核拒绝</el-dropdown-item>
+                <!-- 文档状态变为待审核 -->
+                <el-dropdown-item :command="6">变为待审</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-form-item>
+          <el-form-item>
             <el-tooltip
               class="item"
               effect="dark"
@@ -157,6 +175,7 @@ import {
   getDocument,
   listDocument,
   setDocumentReconvert,
+  checkDocument,
 } from '~/api/document'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
@@ -299,9 +318,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listDocument()
       } else {
@@ -406,6 +425,31 @@ export default {
     },
     selectRow(rows) {
       this.selectedRow = rows
+    },
+    async checkDocument(cmd) {
+      console.log(cmd)
+      this.$confirm(
+        `您确定要将选中的【${this.selectedRow.length}个】文档状态变更为【${this.documentStatusOptions[cmd].label}】吗？请仔细检查，以免误操作。`,
+        '温馨提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(async () => {
+          const res = await checkDocument({
+            id: this.selectedRow.map((item) => item.id),
+            status: cmd,
+          })
+          if (res.status === 200) {
+            this.$message.success('审批成功')
+            this.listComment()
+            return
+          }
+          this.$message.error(res.data.message || '审批失败')
+        })
+        .catch(() => {})
     },
     initSearchForm() {
       this.searchFormFields = [

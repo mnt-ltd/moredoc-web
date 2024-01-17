@@ -12,6 +12,10 @@ body {
   width: 100%;
 }
 
+.el-dropdown [disabled] {
+  color: #eee;
+}
+
 .mgt-20px {
   margin-top: 20px;
 }
@@ -26,10 +30,6 @@ body {
 
 .text-center {
   text-align: center;
-}
-
-.text-left{
-  text-align: left;
 }
 
 .text-warning {
