@@ -43,7 +43,7 @@
             <nuxt-link
               class="el-link el-link--primary"
               target="_blank"
-              :to="`/document/${order.product_id}`"
+              :to="`/document/${order.product_uuid || order.product_id}`"
               >{{ order.product_name }}</nuxt-link
             >
           </template>
@@ -410,9 +410,9 @@ export default {
       if (res.data.order_status === 1) {
         // 微信支付，需要根据返回的链接生成二维码
         if (this.paymentType === 1) {
-          if(this.isMobile){
-            location.href=res.data.payment_url
-          }else{
+          if (this.isMobile) {
+            location.href = res.data.payment_url
+          } else {
             this.$nextTick(() => {
               this.$refs.qrcode.innerHTML = ''
               new QRCode(this.$refs.qrcode, {

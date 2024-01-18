@@ -43,7 +43,7 @@
           文档
         </template>
         <nuxt-link
-          :to="`/document/${document.id}`"
+          :to="`/document/${document.uuid || document.id}`"
           class="el-link el-link--primary"
           target="_blank"
           >{{ document.title }}{{ document.ext }}</nuxt-link
