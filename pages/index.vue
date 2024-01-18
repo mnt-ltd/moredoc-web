@@ -4,7 +4,7 @@
       <el-carousel
         :interval="3000"
         arrow="always"
-        :height="isMobile ? '250px' : '360px'"
+        :height="isMobile ? '250px' : '420px'"
         @change="changeCarousel"
       >
         <a
