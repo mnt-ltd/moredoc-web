@@ -101,7 +101,20 @@ export default {
       if (this.groupPermission.group_id > 0) {
         this.groupPermission.permission_id = [] // 重置授权信息
         const [resPermissions, resGroupPermissions] = await Promise.all([
-          listPermission(),
+          listPermission({
+            method: [
+              'grpc',
+              'get',
+              'post',
+              'put',
+              'delete',
+              'patch',
+              'options',
+              'head',
+              'trace',
+              'connect',
+            ],
+          }),
           getGroupPermission({ id: this.groupPermission.group_id }),
         ])
         if (resPermissions.status !== 200) {

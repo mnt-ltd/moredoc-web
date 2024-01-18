@@ -71,9 +71,24 @@
 
     <el-row :gutter="20" class="mgt-20px">
       <el-col :span="6" class="float-right right-at-recommend">
-        <el-card class="text-center stat-info" shadow="never">
+        <el-card
+          class="text-center stat-info"
+          shadow="never"
+          v-if="
+            settings.display.show_document_count ||
+            settings.display.show_register_user_count
+          "
+        >
           <el-row>
-            <el-col :span="settings.display.show_register_user_count ? 12 : 24">
+            <el-col
+              :span="
+                settings.display.show_document_count &&
+                settings.display.show_register_user_count
+                  ? 12
+                  : 24
+              "
+              v-if="settings.display.show_document_count"
+            >
               <small>收录文档</small>
               <div>
                 <span class="el-link el-link--primary">
@@ -81,7 +96,15 @@
                 </span>
               </div>
             </el-col>
-            <el-col :span="12" v-if="settings.display.show_register_user_count">
+            <el-col
+              :span="
+                settings.display.show_document_count &&
+                settings.display.show_register_user_count
+                  ? 12
+                  : 24
+              "
+              v-if="settings.display.show_register_user_count"
+            >
               <small>注册用户</small>
               <div>
                 <span class="el-link el-link--primary">
@@ -91,11 +114,30 @@
             </el-col>
           </el-row>
         </el-card>
-        <el-card class="text-center mgt-20px hidden-xs-only" shadow="never">
+        <el-card
+          class="text-center mgt-20px hidden-xs-only"
+          v-if="
+            settings.display.show_document_count ||
+            settings.display.show_register_user_count
+          "
+          shadow="never"
+        >
           <nuxt-link to="/upload">
             <el-button type="warning" class="btn-block" icon="el-icon-upload"
               >上传文档</el-button
             >
+          </nuxt-link>
+        </el-card>
+        <el-card
+          class="text-center hidden-xs-only upload-box"
+          v-else
+          shadow="never"
+        >
+          <nuxt-link to="/upload">
+            <div>
+              <i class="el-icon-upload"></i>
+              <div>分享文档，共建知识库</div>
+            </div>
           </nuxt-link>
         </el-card>
         <el-card
@@ -234,22 +276,8 @@
                 :content="item.title"
                 placement="top"
               >
-                <nuxt-link :to="`/document/${item.id}`">
-                  <!-- <el-image
-                    :src="
-                      item.attachment && item.attachment.hash
-                        ? `/view/cover/${item.attachment.hash}`
-                        : ''
-                    "
-                    lazy
-                    :alt="item.title"
-                    :class="item.is_vip && settings.vip.enable ? 'vip-doc' : ''"
-                  >
-                    <div slot="error" class="image-slot">
-                      <img src="/static/images/default-cover.png" />
-                    </div>
-                  </el-image> -->
-                  <document-cover :document="item"/>
+                <nuxt-link :to="`/document/${item.uuid}`">
+                  <document-cover :document="item" />
                   <div class="el-link el-link--default">{{ item.title }}</div>
                 </nuxt-link>
               </el-tooltip>
@@ -349,7 +377,7 @@
                 v-for="doc in item.document"
                 :key="'c-' + item.category_id + 'd' + doc.id"
                 class="el-link el-link--default"
-                :to="`/document/${doc.id}`"
+                :to="`/document/${doc.uuid}`"
               >
                 <img
                   :src="`/static/images/${getIcon(doc.ext)}_24.png`"
@@ -503,7 +531,7 @@ export default {
     async getRecommendDocuments() {
       this.loadingRecommend = true
       const res = await listDocument({
-        field: ['id', 'title', 'is_vip'],
+        field: ['id', 'title', 'is_vip', 'uuid'],
         is_recommend: true,
         order: 'recommend_at desc',
         limit: 12,
@@ -546,6 +574,21 @@ export default {
   width: 100%;
   max-width: 100%;
   margin-top: -20px;
+
+  .upload-box a {
+    border: 1px dashed #ddd;
+    border-radius: 4px;
+    color: #666;
+    text-decoration: none !important;
+    font-size: 13px;
+    display: block;
+    padding: 20px 0;
+    i {
+      font-size: 55px;
+      margin-bottom: 20px;
+      color: #c0c4cc;
+    }
+  }
 
   .searchbox {
     position: relative;

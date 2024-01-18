@@ -1,7 +1,7 @@
 <template>
   <div class="com-document-card">
     <nuxt-link
-      :to="`/document/${document.id}`"
+      :to="`/document/${document.uuid || document.id}`"
       class="el-link el-link--default"
     >
       <h3>
@@ -14,7 +14,7 @@
     </nuxt-link>
     <el-row :gutter="10">
       <el-col :span="7" class="doc-cover">
-        <nuxt-link :to="`/document/${document.id}`">
+        <nuxt-link :to="`/document/${document.uuid || document.id}`">
           <document-cover :document="document" :lazy="false" />
         </nuxt-link>
       </el-col>

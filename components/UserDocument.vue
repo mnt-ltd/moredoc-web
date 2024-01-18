@@ -50,7 +50,7 @@
             target="_blank"
             :to="{
               name: 'document-id',
-              params: { id: scope.row.id },
+              params: { id: scope.row.uuid || scope.row.id },
             }"
             class="el-link el-link--default doc-title"
           >
@@ -69,18 +69,49 @@
           ></el-rate>
         </template>
       </el-table-column>
-      <el-table-column prop="view_count" label="浏览" width="70">
+      <el-table-column
+        prop="view_count"
+        label="浏览"
+        width="70"
+        v-if="settings.display.show_document_view_count || showPrivateData"
+      >
         <template slot-scope="scope">{{ scope.row.view_count || 0 }}</template>
       </el-table-column>
-      <el-table-column prop="download_count" label="下载" width="70">
+      <el-table-column
+        prop="download_count"
+        label="下载"
+        width="70"
+        v-if="settings.display.show_document_download_count || showPrivateData"
+      >
         <template slot-scope="scope">{{
           scope.row.download_count || 0
         }}</template>
       </el-table-column>
-      <el-table-column prop="favorite_count" label="收藏" width="70">
+      <el-table-column
+        prop="favorite_count"
+        label="收藏"
+        width="70"
+        v-if="settings.display.show_document_favorite_count || showPrivateData"
+      >
         <template slot-scope="scope">{{
           scope.row.favorite_count || 0
         }}</template>
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="70"
+        v-if="showPrivateData"
+      >
+        <template slot-scope="scope">
+          <el-tag
+            :type="filterStatus(scope.row.status).type"
+            size="mini"
+            effect="plain"
+          >
+            {{ filterStatus(scope.row.status).label }}
+          </el-tag>
+        </template>
       </el-table-column>
       <el-table-column prop="page" label="页数" width="70">
         <template slot-scope="scope">{{ scope.row.pages || '-' }}</template>
@@ -167,7 +198,7 @@ import {
   formatRelativeTime,
   getIcon,
 } from '~/utils/utils'
-import { datetimePickerOptions } from '~/utils/enum'
+import { datetimePickerOptions, documentStatusOptions } from '~/utils/enum'
 
 export default {
   name: 'UserDocument',
@@ -180,6 +211,8 @@ export default {
   data() {
     return {
       datetimePickerOptions,
+      documentStatusOptions,
+      documentStatusOptionsMap: {},
       docs: [],
       total: 0,
       loading: false,
@@ -195,8 +228,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['user']),
+    ...mapGetters('user', ['user', 'permissions']),
     ...mapGetters('category', ['categoryTrees']),
+    ...mapGetters('setting', ['settings']),
+    showPrivateData() {
+      // 如果是用户自身或者是网站管理员则显示私有数据
+      return this.userId === this.user.id || this.permissions.length > 0
+    },
   },
   watch: {
     '$route.query': {
@@ -213,6 +251,11 @@ export default {
   },
   created() {
     console.log('created')
+    const statusMap = {}
+    this.documentStatusOptions.forEach((item) => {
+      statusMap[item.value] = item
+    })
+    this.documentStatusOptionsMap = statusMap
     this.getDocuments()
   },
   methods: {
@@ -293,6 +336,15 @@ export default {
           this.getDocuments()
         }
       })
+    },
+    filterStatus(status) {
+      return (
+        this.documentStatusOptionsMap[status] || {
+          value: status,
+          label: '未知',
+          type: 'info',
+        }
+      )
     },
   },
 }

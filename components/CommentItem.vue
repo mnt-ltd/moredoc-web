@@ -22,7 +22,10 @@
           >{{ comment.user.username }}</nuxt-link
         >
       </div>
-      <div class="comment-content">
+      <div
+        class="comment-content"
+        :class="'comment-status-' + (comment.status || 0)"
+      >
         <!-- eslint-disable-next-line vue/no-v-html -->
         <span v-html="comment.reply_user" />
         {{ comment.content }}
@@ -129,6 +132,11 @@ export default {
   .username a {
     font-weight: 400;
     font-size: 1.2em;
+  }
+  .comment-status-0::before {
+    content: '(待审核)';
+    color: red;
+    margin-left: -10px;
   }
 }
 .com-comment-item-small {

@@ -147,14 +147,19 @@
             </el-breadcrumb>
             <div class="float-right doc-info">
               <span>
+                <!-- 显示文档大小 -->
+                <i class="el-icon-document"></i>
+                {{ formatBytes(document.size) }}
+              </span>
+              <span>
                 <i class="el-icon-files"></i>
                 {{ document.pages || '-' }} 页
               </span>
-              <span>
+              <span v-if="settings.display.show_document_download_count">
                 <i class="el-icon-download"></i>
                 {{ document.download_count || 0 }} 下载
               </span>
-              <span>
+              <span v-if="settings.display.show_document_view_count">
                 <i class="el-icon-view"></i>
                 {{ document.view_count || 0 }} 浏览
               </span>
@@ -162,7 +167,7 @@
                 <i class="el-icon-chat-dot-square"></i>
                 {{ document.comment_count || 0 }} 评论
               </span>
-              <span>
+              <span v-if="settings.display.show_document_favorite_count">
                 <i class="el-icon-star-off"></i>
                 {{ document.favorite_count || 0 }} 收藏
               </span>
@@ -697,7 +702,10 @@ export default {
       score: null,
       disabledScore: false,
       downloading: false,
-      documentId: parseInt(this.$route.params.id) || 0,
+      documentId: isNaN(Number(this.$route.params.id))
+        ? 0
+        : parseInt(this.$route.params.id),
+      documentUUID: this.$route.params.id || '',
       pages: [],
       pagesPerRead: 10,
       pageHeight: 0,
@@ -809,9 +817,9 @@ export default {
       )
     },
   },
-  created() {
+  async created() {
+    await this.getDocument()
     const requests = [
-      this.getDocument(),
       this.getRelatedDocuments(),
       this.getDocumentScore(),
       this.getAdvertisements('document'),
@@ -915,8 +923,15 @@ export default {
       })
     },
     async getDocument() {
+      if (!this.documentId && !this.documentUUID) {
+        this.$message.error('文档不存在')
+        this.$router.replace('/404')
+        return
+      }
+
       const res = await getDocument({
         id: this.documentId,
+        uuid: this.documentUUID,
         with_author: true,
       })
 
@@ -988,7 +1003,7 @@ export default {
         // 2 为文档已转换成功，不需要展示提示
         this.documentStatusOptions.map((item) => {
           if (item.value === doc.status) {
-            this.tips = `当前文档【${item.label}】，可能暂时无法正常提供预览，建议您下载到本地进行阅读。`
+            this.tips = `当前文档【${item.label}】，暂时无法正常提供预览，建议您下载到本地进行阅读。`
           }
         })
       }
@@ -1173,7 +1188,7 @@ export default {
     },
     async getRelatedDocuments() {
       const res = await getRelatedDocuments({
-        id: this.documentId,
+        id: this.document.id,
       })
       if (res.status === 200) {
         this.relatedDocuments = res.data.document || []
@@ -1282,7 +1297,7 @@ export default {
     },
     async getFavorite() {
       const res = await getFavorite({
-        document_id: this.documentId,
+        document_id: this.document.id,
       })
       if (res.status === 200) {
         this.favorite = res.data || { id: 0 }
@@ -1308,7 +1323,7 @@ export default {
       }
 
       const res = await createFavorite({
-        document_id: this.documentId,
+        document_id: this.document.id,
       })
       if (res.status === 200) {
         this.$message.success('收藏成功')
@@ -1348,7 +1363,7 @@ export default {
         return
       }
       const res = await setDocumentScore({
-        document_id: this.documentId,
+        document_id: this.document.id,
         score: this.score * 100,
       })
       if (res.status === 200) {
@@ -1363,7 +1378,7 @@ export default {
         return
       }
       const res = await getDocumentScore({
-        document_id: this.documentId,
+        document_id: this.document.id,
       })
       if (res.status === 200) {
         const score = res.data.score / 100 || null

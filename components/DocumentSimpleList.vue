@@ -12,7 +12,7 @@
           <document-card :document="activeDocument" />
           <nuxt-link
             :target="target"
-            :to="`/document/${doc.id}`"
+            :to="`/document/${doc.uuid || doc.id}`"
             class="el-link el-link--default"
             slot="reference"
           >
@@ -25,7 +25,7 @@
         </el-popover>
         <nuxt-link
           :target="target"
-          :to="`/document/${doc.id}`"
+          :to="`/document/${doc.uuid || doc.id}`"
           class="el-link el-link--default"
           v-else
         >

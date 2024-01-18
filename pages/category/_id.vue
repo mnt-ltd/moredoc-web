@@ -463,6 +463,7 @@ export default {
           'score',
           'is_vip',
           'recommend_at',
+          'uuid',
         ],
         fee_type: this.$route.query.fee_type,
       })
