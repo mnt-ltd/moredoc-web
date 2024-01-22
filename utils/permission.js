@@ -107,6 +107,7 @@ const cumstomPermissionMap = {
       '/admin/config/email',
       '/admin/config/captcha',
       '/admin/config/pay',
+      '/admin/config/search',
       '/admin/config/vip',
       '/admin/config/miniprogram',
       '/admin/config/oauth',
@@ -195,7 +196,6 @@ export const permissionsToTree = (permissions) => {
   })
   return tree
 }
-
 
 // 管理员菜单
 export const adminMenus = [
@@ -347,23 +347,26 @@ export const adminMenus = [
         icon: 'el-icon-s-order',
       },
       {
+        title: '全文搜索配置',
+        page: '/admin/config/search',
+        icon: 'el-icon-search',
+      },
+      {
         title: 'VIP配置',
         page: '/admin/config/vip',
         icon: 'el-icon-milk-tea',
-      }, {
+      },
+      {
         title: '小程序配置',
         page: '/admin/config/miniprogram',
-        icon: 'el-icon-goods'
-      }, {
+        icon: 'el-icon-goods',
+      },
+      {
         title: 'Oauth配置',
         page: '/admin/config/oauth',
         icon: 'el-icon-connection',
       },
       {
-        title: '底链配置',
-        page: '/admin/config/footer',
-        icon: 'el-icon-link',
-      }, {
         title: '验证码配置',
         page: '/admin/config/captcha',
         icon: 'el-icon-postcard',
