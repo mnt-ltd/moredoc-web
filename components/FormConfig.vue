@@ -90,6 +90,7 @@
           @click="onSubmit"
           >提交</el-button
         >
+        <slot name="buttons"></slot>
       </el-form-item>
     </el-form>
   </div>
