@@ -22,8 +22,8 @@
             >
               <el-button
                 type="warning"
-                @click="reconvertDocument"
                 icon="el-icon-refresh"
+                @click="reconvertDocument"
                 >失败重转</el-button
               >
             </el-tooltip>
@@ -55,9 +55,9 @@
             >
               <el-button
                 type="success"
-                @click="batchUpdateDocumentsCategory"
                 :disabled="selectedRow.length === 0"
                 icon="el-icon-edit"
+                @click="batchUpdateDocumentsCategory"
                 >批量分类</el-button
               >
             </el-tooltip>
@@ -71,9 +71,9 @@
             >
               <el-button
                 type="warning"
-                @click="batchUpdateDocumentsVIP"
                 :disabled="selectedRow.length === 0"
                 icon="el-icon-edit"
+                @click="batchUpdateDocumentsVIP"
                 >批量VIP</el-button
               >
             </el-tooltip>
@@ -197,6 +197,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { listCategory } from '~/api/category'
 import {
   deleteDocument,
@@ -215,7 +216,6 @@ import {
 } from '~/utils/utils'
 import { documentStatusOptions, boolOptions } from '~/utils/enum'
 import FormUpdateDocument from '~/components/FormUpdateDocument.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormUpdateDocument },
   layout: 'admin',
@@ -255,7 +255,7 @@ export default {
     '$route.query': {
       immediate: true,
       async handler() {
-        let search = { ...this.search, ...this.$route.query }
+        const search = { ...this.search, ...this.$route.query }
         search.page = parseInt(this.$route.query.page) || 1
         search.size = parseInt(this.$route.query.size) || 10
         search.wd = this.$route.query.wd || ''
@@ -460,8 +460,7 @@ export default {
     selectRow(rows) {
       this.selectedRow = rows
     },
-    async checkDocument(cmd) {
-      console.log(cmd)
+    checkDocument(cmd) {
       this.$confirm(
         `您确定要将选中的【${this.selectedRow.length}个】文档状态变更为【${this.documentStatusOptions[cmd].label}】吗？请仔细检查，以免误操作。`,
         '温馨提示',
@@ -478,7 +477,7 @@ export default {
           })
           if (res.status === 200) {
             this.$message.success('审批成功')
-            this.listComment()
+            this.listDocument()
             return
           }
           this.$message.error(res.data.message || '审批失败')
