@@ -4,13 +4,13 @@
       <div slot="header">服务器状态</div>
       <el-row :gutter="20" class="gauges">
         <el-col
+          v-for="(gauge, index) in gauges"
+          :key="'gauge' + index"
           :span="6"
           :xs="12"
           :sm="8"
           :md="6"
           :lg="6"
-          v-for="(gauge, index) in gauges"
-          :key="'gauge' + index"
         >
           <v-chart class="chart" autoresize :option="gauge" />
           <div class="text-center">
@@ -100,12 +100,12 @@
         <span>数据统计</span>
         <el-button
           style="float: right; padding: 3px 0"
-          @click="updateDocumentIndexes"
           :loading="loading"
           icon="el-icon-refresh"
           type="text"
+          @click="updateDocumentIndexes"
         >
-          更新全文索引</el-button
+          更新全量全文索引</el-button
         >
       </div>
       <el-descriptions class="margin-top" :column="3" border>
@@ -191,12 +191,13 @@
         </a>
       </div>
       <el-table
+        v-loading="envLoading"
         :data="envs"
         style="width: 100%"
         empty-text="您暂无权限查看环境依赖情况"
-        v-loading="envLoading"
       >
-        <el-table-column prop="name" label="名称" width="120"> </el-table-column>
+        <el-table-column prop="name" label="名称" width="120">
+        </el-table-column>
         <el-table-column prop="is_required" label="是否必须" width="100">
           <template slot-scope="scope">
             <el-tag
@@ -206,7 +207,7 @@
               size="small"
               >必须安装</el-tag
             >
-            <el-tag effect="dark" type="info" size="small" v-else
+            <el-tag v-else effect="dark" type="info" size="small"
               >非必须</el-tag
             >
           </template>
@@ -220,14 +221,14 @@
               size="small"
               >已安装</el-tag
             >
-            <el-tag effect="dark" type="warning" size="small" v-else
+            <el-tag v-else effect="dark" type="warning" size="small"
               >未安装</el-tag
             >
           </template>
         </el-table-column>
         <el-table-column prop="version" label="版本" min-width="100">
           <template slot-scope="scope">
-            {{ scope.row.version || '-'  }}
+            {{ scope.row.version || '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="description" min-width="200" label="用途">
@@ -250,10 +251,10 @@
         <span>系统信息</span>
         <el-button
           style="float: right; padding: 3px 0"
-          @click="updateSitemap"
           :loading="loading"
           icon="el-icon-refresh"
           type="text"
+          @click="updateSitemap"
         >
           更新站点地图</el-button
         >
@@ -359,15 +360,6 @@
 </template>
 
 <script>
-import { formatDatetime, formatBytes, formatDate } from '~/utils/utils'
-import { updateDocumentIndexes } from '~/api/document'
-import {
-  getStats,
-  getEnvs,
-  updateSitemap,
-  getLicense,
-  getDevice,
-} from '~/api/config'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { PieChart, GaugeChart } from 'echarts/charts'
@@ -379,6 +371,15 @@ import {
   GridComponent,
 } from 'echarts/components'
 import VChart from 'vue-echarts'
+import {
+  getStats,
+  getEnvs,
+  updateSitemap,
+  getLicense,
+  getDevice,
+} from '~/api/config'
+import { updateDocumentIndexes } from '~/api/document'
+import { formatDatetime, formatBytes, formatDate } from '~/utils/utils'
 
 use([
   CanvasRenderer,
@@ -392,15 +393,10 @@ use([
 ])
 
 export default {
-  layout: 'admin',
-  head() {
-    return {
-      title: `面板 - ${this.settings.system.sitename}`,
-    }
-  },
   components: {
     VChart,
   },
+  layout: 'admin',
   data() {
     return {
       stats: {
@@ -444,6 +440,11 @@ export default {
       timeouter: null,
     }
   },
+  head() {
+    return {
+      title: `面板 - ${this.settings.system.sitename}`,
+    }
+  },
   computed: {
     settings() {
       return this.$store.state.setting.settings
@@ -469,9 +470,9 @@ export default {
     formatDatetime,
     formatBytes,
     // 计算授权
-    calcLicenseExpiredAt(expiredAt){
+    calcLicenseExpiredAt(expiredAt) {
       try {
-        const expiredYear =  new Date(expiredAt).getFullYear()     
+        const expiredYear = new Date(expiredAt).getFullYear()
         const currentYear = new Date().getFullYear()
         if (expiredYear - currentYear > 3) {
           return '永久授权'
@@ -640,7 +641,7 @@ export default {
             ],
           },
         ]
-        for (let disk of res.data.disk || []) {
+        for (const disk of res.data.disk || []) {
           gauges.push({
             ...this.getGaugeOption(
               '磁盘 ' + disk.disk_name,
@@ -716,7 +717,7 @@ export default {
             data: [
               {
                 value: percent,
-                name: name,
+                name,
                 fontSize: 14,
               },
             ],
