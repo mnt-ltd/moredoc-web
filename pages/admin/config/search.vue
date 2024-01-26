@@ -3,13 +3,6 @@
     <FormConfig v-if="configs.length > 0" :init-configs="configs">
       <template slot="buttons">
         <el-button
-          type="success"
-          icon="el-icon-connection"
-          :loading="testing"
-          @click="TestFulltextSearch"
-          >测试连通性</el-button
-        >
-        <el-button
           type="primary"
           icon="el-icon-refresh"
           :loading="testing"
@@ -65,11 +58,6 @@ export default {
         this.$message.error(res.data.message)
       }
       this.loading = false
-    },
-    TestFulltextSearch() {
-      this.testing = true
-
-      // this.testing = false
     },
     async updateDocumentIndexes() {
       this.updateIndexLoading = true
