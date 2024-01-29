@@ -17,7 +17,7 @@
           <el-menu-item class="logo" index="/">
             <nuxt-link to="/"
               ><img
-                :src="settings.system.logo || '/static/images/logo.png'"
+                :src="settings.system.logo || '/static/images/logo-empty.png'"
                 :alt="settings.system.sitename"
             /></nuxt-link>
           </el-menu-item>

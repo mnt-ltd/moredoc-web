@@ -32,7 +32,7 @@
         <el-col :span="4" class="logo hidden-xs-only">
           <nuxt-link to="/" :title="settings.system.sitename"
             ><img
-              :src="settings.system.logo"
+              :src="settings.system.logo || '/static/images/logo-empty.png'"
               style="max-width: 100%"
               :alt="settings.system.sitename"
           /></nuxt-link>
