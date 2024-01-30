@@ -108,11 +108,18 @@
             @click="recommendDocument(scope.row)"
             >推荐</el-button
           >
-          <!-- <nuxt-link :to="`/document/${scope.row.id}`" target="_blank"
-            ><el-button type="text" icon="el-icon-view" size="small"
-              >查看</el-button
-            ></nuxt-link
-          > -->
+          <el-button
+            type="text"
+            @click="download2review(scope.row)"
+            v-if="
+              scope.row.status === 6 ||
+              scope.row.status === 7 ||
+              scope.row.status === 4
+            "
+            icon="el-icon-download"
+            class="text-warning"
+            >下载审核</el-button
+          >
         </template>
       </TableList>
     </el-card>
@@ -176,6 +183,7 @@ import {
   listDocument,
   setDocumentReconvert,
   checkDocument,
+  downloadDocumentToBeReviewed,
 } from '~/api/document'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
@@ -484,6 +492,14 @@ export default {
           trees: this.trees,
         },
       ]
+    },
+    async download2review(row) {
+      const res = await downloadDocumentToBeReviewed({ id: row.id })
+      if (res.status === 200) {
+        location.href = res.data.url
+      } else {
+        this.$message.error(res.data.message)
+      }
     },
     initTableListFields() {
       const statusMap = {}
