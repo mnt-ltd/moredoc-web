@@ -183,3 +183,11 @@ export const checkDocument = (data) => {
     data,
   })
 }
+
+export const downloadDocumentToBeReviewed = (params) => {
+  return service({
+    url: '/api/v1/document/download/bereviewed',
+    method: 'get',
+    params,
+  })
+}
