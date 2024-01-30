@@ -58,3 +58,11 @@ export const getDevice = () => {
     method: 'get',
   })
 }
+
+// 获取微信支付平台证书
+export const getWechatPayCert = () => {
+  return service({
+    url: '/api/v1/wechatpay/cert',
+    method: 'get',
+  })
+}

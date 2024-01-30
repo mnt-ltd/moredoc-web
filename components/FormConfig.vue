@@ -88,7 +88,7 @@
           icon="el-icon-check"
           :loading="loading"
           @click="onSubmit"
-          >提交</el-button
+          >保存设置</el-button
         >
         <slot name="buttons"></slot>
       </el-form-item>
