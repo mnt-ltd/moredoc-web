@@ -1069,7 +1069,7 @@ export default {
         return
       }
       this.downloading = true
-      const res = await downloadVIPDocument({ id: this.documentId })
+      const res = await downloadVIPDocument({ id: this.document.id })
       if (res.status === 200) {
         location.href = res.data.url
       } else {
@@ -1195,7 +1195,7 @@ export default {
       }
     },
     async execDownload() {
-      const res = await downloadDocument({ id: this.documentId })
+      const res = await downloadDocument({ id: this.document.id})
       if (res.status === 200) {
         location.href = res.data.url
       } else {
