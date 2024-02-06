@@ -36,7 +36,7 @@
               </template>
               <el-menu-item
                 v-for="child in menu.children"
-                v-show="allowPages.includes(child.page)  || menu.is_public"
+                v-show="allowPages.includes(child.page) || menu.is_public"
                 :key="child.page"
                 :index="child.page"
               >
@@ -305,5 +305,11 @@ export default {
       }
     }
   }
+}
+.layout-admin-menu .fa {
+  font-size: 18px;
+  width: 24px;
+  margin-right: 5px;
+  text-align: center;
 }
 </style>

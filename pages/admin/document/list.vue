@@ -185,6 +185,7 @@ import {
   checkDocument,
   downloadDocumentToBeReviewed,
 } from '~/api/document'
+import { listLanguage } from '~/api/language'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import {
@@ -255,9 +256,18 @@ export default {
   },
   async created() {
     this.initSearchForm()
+    await this.listLanguage()
     this.initTableListFields()
   },
   methods: {
+    async listLanguage() {
+      const res = await listLanguage({ field: ['language', 'code'] })
+      if (res.status === 200) {
+        this.languages = res.data.language || []
+      } else {
+        this.$message.error(res.data.message)
+      }
+    },
     async listCategory() {
       const res = await listCategory({ field: ['id', 'parent_id', 'title'] })
       if (res.status === 200) {

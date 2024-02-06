@@ -19,6 +19,12 @@ const cumstomPermissionMap = {
     children: [],
     pages: ['/admin/document', '/admin/document/searchrecord'],
   },
+  'api.v1.LanguageAPI': {
+    label: '语言管理',
+    path: 'ListLanguage',
+    children: [],
+    pages: ['/admin/document', '/admin/document/language'],
+  },
   'api.v1.CategoryAPI': {
     label: '分类管理',
     path: 'ListCategory',
@@ -154,7 +160,6 @@ export const permissionsToTree = (permissions) => {
   return tree
 }
 
-
 // 管理员菜单
 export const adminMenus = [
   {
@@ -171,6 +176,11 @@ export const adminMenus = [
         page: '/admin/document/list',
         title: '文档列表',
         icon: 'el-icon-tickets',
+      },
+      {
+        page: '/admin/document/language',
+        title: '语言管理',
+        icon: 'fa fa-language',
       },
       {
         page: '/admin/document/searchrecord',
@@ -271,7 +281,8 @@ export const adminMenus = [
         title: '底链配置',
         page: '/admin/config/footer',
         icon: 'el-icon-link',
-      }, {
+      },
+      {
         title: '验证码配置',
         page: '/admin/config/captcha',
         icon: 'el-icon-postcard',
@@ -300,7 +311,7 @@ export const adminMenus = [
         title: '邮箱配置',
         page: '/admin/config/email',
         icon: 'el-icon-message',
-      }
+      },
     ],
   },
 ]
