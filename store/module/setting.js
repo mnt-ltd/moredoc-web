@@ -7,6 +7,7 @@ export const setting = {
       footer: {},
       security: {},
       display: {},
+      language: [],
     },
   },
   mutations: {

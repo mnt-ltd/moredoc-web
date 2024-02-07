@@ -7,7 +7,7 @@
             <strong>上传文档</strong>
           </div>
           <el-row :gutter="40">
-            <el-col :span="14" class="part-left">
+            <el-col :span="fileList.length == 0 ? 14 : 24" class="part-left">
               <el-form
                 ref="form"
                 :model="document"
@@ -39,20 +39,43 @@
                     placeholder="请选择文档分类"
                   ></el-cascader>
                 </el-form-item>
-                <el-form-item
-                  :label="`默认售价（${
-                    settings.system.credit_name || '魔豆'
-                  }）`"
-                  prop="price"
-                >
-                  <el-input-number
-                    v-model="document.price"
-                    :min="0"
-                    :step="1"
-                    :disabled="loading"
-                  ></el-input-number>
-                </el-form-item>
-                <el-form-item>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <el-form-item
+                      :label="`默认售价（${
+                        settings.system.credit_name || '魔豆'
+                      }）`"
+                      prop="price"
+                    >
+                      <el-input-number
+                        v-model="document.price"
+                        :min="0"
+                        :step="1"
+                        :disabled="loading"
+                      ></el-input-number>
+                    </el-form-item>
+                  </el-col>
+                  <el-col
+                    :span="12"
+                    v-if="(settings.language || []).length > 0"
+                  >
+                    <el-form-item label="默认语言" prop="language">
+                      <el-select
+                        v-model="document.language"
+                        filterable
+                        clearable
+                      >
+                        <el-option
+                          v-for="item in settings.language"
+                          :key="item.code"
+                          :label="item.language"
+                          :value="item.code"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-form-item label="文档选择">
                   <el-upload
                     ref="upload"
                     drag
@@ -77,11 +100,28 @@
                     max-height="480"
                     stripe
                     border="inner"
-                    :column-config="{resizable: true}"
+                    :column-config="{ resizable: true }"
                   >
                     <vxe-column type="seq" width="60"></vxe-column>
+                    <vxe-column
+                      v-if="(settings.language || []).length > 0"
+                      field="language"
+                      title="语言"
+                      :width="150"
+                    >
+                      <template #default="{ row }">
+                        <el-select v-model="row.language" filterable clearable>
+                          <el-option
+                            v-for="item in settings.language"
+                            :key="item.code"
+                            :label="item.language"
+                            :value="item.code"
+                          ></el-option>
+                        </el-select>
+                      </template>
+                    </vxe-column>
                     <vxe-column field="title" title="文件" min-width="180">
-                      <template #default="{row}">
+                      <template #default="{ row }">
                         <el-input v-model="row.title" :disabled="loading">
                           <template slot="append">{{
                             row.ext
@@ -104,12 +144,17 @@
                       </template>
                     </vxe-column>
                     <vxe-column field="size" title="大小" width="100" sortable>
-                      <template #default="{row}">
+                      <template #default="{ row }">
                         <span>{{ formatBytes(row.size) }}</span>
                       </template>
                     </vxe-column>
-                    <vxe-column field="price" :title="`售价(${settings.system.credit_name || '魔豆'})`" :width="130" sortable>
-                      <template #default="{row}">
+                    <vxe-column
+                      field="price"
+                      :title="`售价(${settings.system.credit_name || '魔豆'})`"
+                      :width="130"
+                      sortable
+                    >
+                      <template #default="{ row }">
                         <el-input-number
                           v-model="row.price"
                           :min="0"
@@ -129,7 +174,7 @@
                           >清空</el-button
                         >)
                       </template>
-                      <template #default="{rowIndex}">
+                      <template #default="{ rowIndex }">
                         <el-button
                           size="mini"
                           type="text"
@@ -167,7 +212,11 @@
                 </el-form-item>
               </el-form>
             </el-col>
-            <el-col :span="10" class="upload-tips part-right">
+            <el-col
+              v-if="fileList.length == 0"
+              :span="10"
+              class="upload-tips part-right"
+            >
               <div><strong>温馨提示</strong></div>
               <div class="help-block">
                 <ul>
@@ -395,6 +444,7 @@ export default {
           title: file.name.substring(0, file.name.lastIndexOf('.')),
           ext,
           price: this.document.price || 0,
+          language: this.document.language || '',
           progressStatus: 'success',
           error: '',
           percentage: 0,
@@ -506,6 +556,7 @@ export default {
             title: doc.title,
             price: doc.price,
             attachment_id: doc.attachment_id,
+            language: doc.language,
           },
         ],
       }
@@ -533,12 +584,12 @@ export default {
 </script>
 <style lang="scss">
 .page-upload {
-  .vxe-table{
-    .el-input-number{
+  .vxe-table {
+    .el-input-number {
       width: 100%;
     }
-    .vxe-header--column{
-      .vxe-cell{
+    .vxe-header--column {
+      .vxe-cell {
         white-space: normal;
       }
     }
