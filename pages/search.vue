@@ -60,8 +60,9 @@
           :span="24"
           :key="item.position + item.id"
           v-if="item.position == 'search_top'"
-          v-html="item.content"
-        ></el-col>
+        >
+          <div v-html="item.content"></div>
+        </el-col>
       </template>
       <el-col :span="18" class="search-main" ref="searchMain">
         <el-card v-loading="loading" shadow="never">
@@ -90,6 +91,32 @@
                         query: { ...$route.query, category_id: item.id },
                       }"
                       >{{ item.title }}</nuxt-link
+                    >
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <el-dropdown :show-timeout="showTimeout">
+                <el-button type="text" :size="filterSize">
+                  全部语言 <i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="item in [
+                      { code: '', language: '全部语言' },
+                      ...(settings.language || []),
+                    ]"
+                    :key="'lang-' + item.code"
+                    :value="item.code"
+                  >
+                    <nuxt-link
+                      class="el-link el-link--default"
+                      :class="
+                        item.code == query.language ? 'el-link--primary' : ''
+                      "
+                      :to="{
+                        query: { ...$route.query, language: item.code },
+                      }"
+                      >{{ item.language }}</nuxt-link
                     >
                   </el-dropdown-item>
                 </el-dropdown-menu>

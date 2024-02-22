@@ -59,6 +59,18 @@
           </nuxt-link>
         </template>
       </el-table-column>
+      <el-table-column prop="language" label="语言" width="110">
+        <template slot-scope="scope">
+          <el-tag
+            size="mini"
+            effect="plain"
+            v-if="filterLanguage(scope.row.language).language"
+          >
+            {{ filterLanguage(scope.row.language).language }}
+          </el-tag>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="score" label="评分" width="110">
         <template slot-scope="scope">
           <el-rate
@@ -212,6 +224,7 @@ export default {
       datetimePickerOptions,
       documentStatusOptions,
       documentStatusOptionsMap: {},
+      languageMap: {},
       docs: [],
       total: 0,
       loading: false,
@@ -255,6 +268,12 @@ export default {
       statusMap[item.value] = item
     })
     this.documentStatusOptionsMap = statusMap
+
+    const languageMap = {}
+    ;(this.settings.language || []).forEach((item) => {
+      languageMap[item.code] = item
+    })
+    this.languageMap = languageMap
     this.getDocuments()
   },
   methods: {
@@ -341,6 +360,15 @@ export default {
         this.documentStatusOptionsMap[status] || {
           value: status,
           label: '未知',
+          type: 'info',
+        }
+      )
+    },
+    filterLanguage(lang) {
+      return (
+        this.languageMap[lang] || {
+          value: lang || '-',
+          label: lang || '-',
           type: 'info',
         }
       )

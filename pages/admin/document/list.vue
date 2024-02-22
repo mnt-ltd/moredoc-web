@@ -62,6 +62,22 @@
               >
             </el-tooltip>
           </el-form-item>
+          <el-form-item>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="批量更新文档所属语言"
+              placement="top"
+            >
+              <el-button
+                type="primary"
+                @click="batchUpdateDocumentsLanguage"
+                :disabled="selectedRow.length === 0"
+                icon="el-icon-edit"
+                >批量语言</el-button
+              >
+            </el-tooltip>
+          </el-form-item>
         </template>
       </FormSearch>
     </el-card>
@@ -166,6 +182,18 @@
     </el-dialog>
     <el-dialog
       :close-on-click-modal="false"
+      title="批量设置语言"
+      width="640px"
+      :visible.sync="formDocumentsLanguageVisible"
+    >
+      <FormUpdateDocumentsLanguage
+        v-if="formDocumentsLanguageVisible"
+        :documents="languageDocuments"
+        @success="formSuccess"
+      />
+    </el-dialog>
+    <el-dialog
+      :close-on-click-modal="false"
       title="推荐设置"
       :visible.sync="formDocumentRecommendVisible"
       width="640px"
@@ -221,6 +249,8 @@ export default {
       document: { id: 0 },
       formDocumentsCategoryVisible: false,
       categoryDocuments: [],
+      formDocumentsLanguageVisible: false,
+      languageDocuments: [],
     }
   },
   head() {
@@ -255,8 +285,8 @@ export default {
     },
   },
   async created() {
-    this.initSearchForm()
     await this.listLanguage()
+    this.initSearchForm()
     this.initTableListFields()
   },
   methods: {
@@ -392,6 +422,7 @@ export default {
       this.formVisible = false
       this.formDocumentRecommendVisible = false
       this.formDocumentsCategoryVisible = false
+      this.formDocumentsLanguageVisible = false
       this.listDocument()
     },
     batchDelete() {
@@ -419,6 +450,10 @@ export default {
     batchUpdateDocumentsCategory() {
       this.categoryDocuments = this.selectedRow
       this.formDocumentsCategoryVisible = true
+    },
+    batchUpdateDocumentsLanguage() {
+      this.languageDocuments = this.selectedRow
+      this.formDocumentsLanguageVisible = true
     },
     deleteRow(row) {
       this.$confirm(
@@ -470,6 +505,10 @@ export default {
         .catch(() => {})
     },
     initSearchForm() {
+      const languageOptions = []
+      ;(this.languages || []).map((item) => {
+        languageOptions.push({ label: item.language, value: item.code })
+      })
       this.searchFormFields = [
         {
           type: 'text',
@@ -484,6 +523,14 @@ export default {
           placeholder: '请选择状态',
           multiple: true,
           options: documentStatusOptions,
+        },
+        {
+          type: 'select',
+          label: '语言',
+          name: 'language',
+          placeholder: '请选择语言',
+          multiple: true,
+          options: languageOptions,
         },
         {
           type: 'select',
@@ -516,6 +563,12 @@ export default {
       this.documentStatusOptions.forEach((item) => {
         statusMap[item.value] = item
       })
+
+      const languageMap = {}
+      this.settings.language.forEach((item) => {
+        languageMap[item.code] = { label: item.language, value: item.code }
+      })
+
       this.tableListFields = [
         { prop: 'id', label: 'ID', width: 80, type: 'number', fixed: 'left' },
         {
@@ -533,6 +586,13 @@ export default {
           width: 120,
           type: 'enum',
           enum: statusMap,
+        },
+        {
+          prop: 'language',
+          label: '语言',
+          width: 120,
+          type: 'enum',
+          enum: languageMap,
         },
         {
           prop: 'category_name',

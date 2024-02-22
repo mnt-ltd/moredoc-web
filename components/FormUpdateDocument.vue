@@ -56,29 +56,48 @@
             ></el-input-number> </el-form-item
         ></el-col>
       </el-row>
-      <el-form-item
-        v-if="isAdmin"
-        label="状态"
-        prop="status"
-        :rules="[
-          { required: true, message: '请选择文档状态', trigger: 'change' },
-        ]"
-      >
-        <el-select
-          v-model="document.status"
-          filterable
-          placeholder="请选择文档状态"
-        >
-          <el-option
-            v-for="item in documentStatusOptions"
-            :key="'status-' + item.value"
-            :value="item.value"
-            :label="item.label"
-            :disabled="item.disabled"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-
+      <el-row :gutter="20">
+        <el-col :span="12" v-if="isAdmin">
+          <el-form-item
+            label="状态"
+            prop="status"
+            :rules="[
+              { required: true, message: '请选择文档状态', trigger: 'change' },
+            ]"
+          >
+            <el-select
+              v-model="document.status"
+              filterable
+              placeholder="请选择文档状态"
+            >
+              <el-option
+                v-for="item in documentStatusOptions"
+                :key="'status-' + item.value"
+                :value="item.value"
+                :label="item.label"
+                :disabled="item.disabled"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="语言" prop="language">
+            <el-select
+              v-model="document.language"
+              filterable
+              clearable
+              placeholder="请选择文档语言"
+            >
+              <el-option
+                v-for="item in settings.language || []"
+                :key="'language-' + item.code"
+                :value="item.code"
+                :label="item.language"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="关键字">
         <el-input
           v-model="document.keywords"
