@@ -59,7 +59,12 @@
           </nuxt-link>
         </template>
       </el-table-column>
-      <el-table-column prop="language" label="语言" width="110">
+      <el-table-column
+        prop="language"
+        v-if="(settings.language || []).length > 0"
+        label="语言"
+        width="110"
+      >
         <template slot-scope="scope">
           <el-tag
             size="mini"
