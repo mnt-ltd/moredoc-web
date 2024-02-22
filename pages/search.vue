@@ -95,9 +95,13 @@
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <el-dropdown :show-timeout="showTimeout">
+              <el-dropdown
+                :show-timeout="showTimeout"
+                v-if="(settings.language || []).length > 0"
+              >
                 <el-button type="text" :size="filterSize">
-                  全部语言 <i class="el-icon-arrow-down el-icon--right"></i>
+                  {{ filterLanguageName(query.language) }}
+                  <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -578,6 +582,12 @@ export default {
     filterCategoryName(id) {
       const category = this.categoryTrees.find((item) => item.id === id)
       return category ? category.title : '全部分类'
+    },
+    filterLanguageName(code) {
+      const item = (this.settings.language || []).find(
+        (item) => item.code === code
+      )
+      return item ? item.language : '全部语言'
     },
     filterSortName(value) {
       const sort = this.searchSorts.find((item) => item.value === value)
