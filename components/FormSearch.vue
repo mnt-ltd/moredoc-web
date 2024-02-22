@@ -123,7 +123,7 @@ export default {
   },
   methods: {
     onSearch() {
-      this.$emit('onSearch', this.search)
+      this.$emit('onSearch', { ...this.search, _t: Date.now().toString() })
     },
     onCreate() {
       this.$emit('onCreate')

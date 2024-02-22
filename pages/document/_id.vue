@@ -1010,13 +1010,29 @@ export default {
 
       let description = (doc.description || '-').trim()
       if (description) description = description + '...'
+      ;(this.settings.language || []).map((item) => {
+        console.log(item, doc.language)
+        if (item.code === doc.language) {
+          doc.language = item.language
+        }
+      })
+
+      const item = doc.language
+        ? {
+            label: '语言',
+            value: doc.language,
+            icon: 'fa fa-language',
+            name: 'language',
+          }
+        : {
+            label: '上传',
+            value: doc.user.username,
+            icon: 'el-icon-user',
+            name: 'username',
+          }
+
       this.descriptions = [
-        {
-          label: '上传',
-          value: doc.user.username,
-          icon: 'el-icon-user',
-          name: 'username',
-        },
+        item,
         {
           label: '格式',
           value: doc.ext,
@@ -1195,7 +1211,7 @@ export default {
       }
     },
     async execDownload() {
-      const res = await downloadDocument({ id: this.document.id})
+      const res = await downloadDocument({ id: this.document.id })
       if (res.status === 200) {
         location.href = res.data.url
       } else {

@@ -1,4 +1,4 @@
-import { advertisementPositions } from "~/utils/enum"
+import { advertisementPositions } from '~/utils/enum'
 import { getAdvertisementByPosition } from '~/api/advertisement'
 export default {
   data() {
@@ -49,9 +49,9 @@ export default {
 
       }
       const positions = []
-      this.advertisementPositions.map(item => {
+      this.advertisementPositions.map((item) => {
         if (item.value === page) {
-          (item.children || []).map(child => {
+          ;(item.children || []).map((child) => {
             positions.push(child.value)
           })
         }
@@ -65,10 +65,12 @@ export default {
     },
     setFooterTop() {
       try {
-        this.footerTop = document.querySelector('footer').getBoundingClientRect().top
+        this.footerTop = document
+          .querySelector('footer')
+          .getBoundingClientRect().top
       } catch (error) {
         console.log(error)
       }
-    }
+    },
   },
 }

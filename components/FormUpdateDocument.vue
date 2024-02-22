@@ -68,9 +68,8 @@
             ></el-switch>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" v-if="isAdmin">
           <el-form-item
-            v-if="isAdmin"
             label="状态"
             prop="status"
             :rules="[
@@ -92,8 +91,24 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="语言" prop="language">
+            <el-select
+              v-model="document.language"
+              filterable
+              clearable
+              placeholder="请选择文档语言"
+            >
+              <el-option
+                v-for="item in settings.language || []"
+                :key="'language-' + item.code"
+                :value="item.code"
+                :label="item.language"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
       </el-row>
-
       <el-form-item label="关键字">
         <el-input
           v-model="document.keywords"
@@ -123,7 +138,7 @@
   </div>
 </template>
 <script>
-import { updateDocument,getDocument } from '~/api/document'
+import { updateDocument, getDocument } from '~/api/document'
 import { documentStatusOptions } from '~/utils/enum'
 import { mapGetters } from 'vuex'
 export default {
@@ -158,7 +173,7 @@ export default {
   watch: {
     initDocument: {
       async handler(val) {
-        if(val.id){
+        if (val.id) {
           this.getDocument(val.id)
         }
       },
@@ -209,14 +224,14 @@ export default {
         }
       })
     },
-    async getDocument(documentId){
-      this.loading=true
-      const res = await getDocument({id: documentId})
+    async getDocument(documentId) {
+      this.loading = true
+      const res = await getDocument({ id: documentId })
       if (res.status === 200) {
         this.document = res.data
       }
-      this.loading=false
-    }
+      this.loading = false
+    },
   },
 }
 </script>

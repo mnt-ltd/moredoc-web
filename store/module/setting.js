@@ -14,6 +14,7 @@ export const setting = {
         enable: false,
         icon: '',
       },
+      language: [],
     },
   },
   mutations: {

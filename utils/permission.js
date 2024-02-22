@@ -19,6 +19,12 @@ const cumstomPermissionMap = {
     children: [],
     pages: ['/admin/document', '/admin/document/searchrecord'],
   },
+  'api.v1.LanguageAPI': {
+    label: '语言管理',
+    path: 'ListLanguage',
+    children: [],
+    pages: ['/admin/document', '/admin/document/language'],
+  },
   'api.v1.CategoryAPI': {
     label: '分类管理',
     path: 'ListCategory',
@@ -213,6 +219,11 @@ export const adminMenus = [
         page: '/admin/document/list',
         title: '文档列表',
         icon: 'el-icon-tickets',
+      },
+      {
+        page: '/admin/document/language',
+        title: '语言管理',
+        icon: 'fa fa-language',
       },
       {
         page: '/admin/document/searchrecord',

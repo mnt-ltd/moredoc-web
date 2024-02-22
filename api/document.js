@@ -191,3 +191,11 @@ export const downloadDocumentToBeReviewed = (params) => {
     params,
   })
 }
+
+export const setDocumentsLanguage = (data) => {
+  return service({
+    url: '/api/v1/document/language',
+    method: 'put',
+    data,
+  })
+}

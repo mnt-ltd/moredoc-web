@@ -115,8 +115,12 @@
                   >
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">
-                      <template v-if="isDir">点击选择需要上传的<em>文件夹</em></template>
-                      <template v-else>将文件拖到此处，或<em>点击上传</em></template>
+                      <template v-if="isDir"
+                        >点击选择需要上传的<em>文件夹</em></template
+                      >
+                      <template v-else
+                        >将文件拖到此处，或<em>点击上传</em></template
+                      >
                     </div>
                   </el-upload>
                   <vxe-table
@@ -126,14 +130,13 @@
                     max-height="480"
                     stripe
                     border="inner"
-                    :column-config="{resizable: true}"
-                    :row-config="{height: 110}"
+                    :column-config="{ resizable: true }"
+                    :row-config="{ height: 110 }"
                   >
                     <vxe-column type="seq" width="60"></vxe-column>
                     <vxe-column field="title" title="文档" min-width="180">
                       <template #header>
-                        文档
-                        (<el-button
+                        文档 (<el-button
                           type="text"
                           size="mini"
                           :disabled="loading"
@@ -141,7 +144,7 @@
                           >清空</el-button
                         >)
                       </template>
-                      <template #default="{row, rowIndex}">
+                      <template #default="{ row, rowIndex }">
                         <el-input v-model="row.title" :disabled="loading">
                           <template slot="append">{{
                             row.ext
@@ -167,7 +170,9 @@
                             v-model="row.is_vip"
                             :disabled="loading"
                             >加入VIP文档</el-checkbox
-                          > &nbsp; <el-button
+                          >
+                          &nbsp;
+                          <el-button
                             size="mini"
                             type="text"
                             icon="el-icon-delete"
@@ -179,12 +184,17 @@
                       </template>
                     </vxe-column>
                     <vxe-column field="size" title="大小" width="100" sortable>
-                      <template #default="{row}">
+                      <template #default="{ row }">
                         <span>{{ formatBytes(row.size) }}</span>
                       </template>
                     </vxe-column>
-                    <vxe-column field="price" :title="`售价(${settings.system.credit_name || '魔豆'})`" :width="130" sortable>
-                      <template #default="{row}">
+                    <vxe-column
+                      field="price"
+                      :title="`售价(${settings.system.credit_name || '魔豆'})`"
+                      :width="130"
+                      sortable
+                    >
+                      <template #default="{ row }">
                         <el-input-number
                           v-model="row.price"
                           :min="0"
@@ -196,7 +206,7 @@
                     </vxe-column>
                     <template v-if="setKeywordsAndDescription">
                       <vxe-column field="keywords" title="关键字" width="250">
-                        <template #default="{row}">
+                        <template #default="{ row }">
                           <el-input
                             v-model="row.keywords"
                             :disabled="loading"
@@ -207,7 +217,7 @@
                         </template>
                       </vxe-column>
                       <vxe-column field="description" title="摘要" width="250">
-                        <template #default="{row}">
+                        <template #default="{ row }">
                           <el-input
                             v-model="row.description"
                             :disabled="loading"
@@ -222,8 +232,15 @@
                 </el-form-item>
                 <el-alert
                   title="告警提示"
-                  type="warning" class="tips-alert" :closable="false" v-if="fileMessages.length>0">
-                  <div v-for="(message, index) in fileMessages" :key="'msg-'+index">
+                  type="warning"
+                  class="tips-alert"
+                  :closable="false"
+                  v-if="fileMessages.length > 0"
+                >
+                  <div
+                    v-for="(message, index) in fileMessages"
+                    :key="'msg-' + index"
+                  >
                     {{ message }}
                   </div>
                 </el-alert>
@@ -464,10 +481,10 @@ export default {
     // 设置是否允许选择文件夹上传
     changeDir() {
       const upload = this.$refs.upload.$el.querySelector('input[type=file]')
-      if(this.isDir){
+      if (this.isDir) {
         upload.setAttribute('webkitdirectory', 'webkitdirectory')
         upload.setAttribute('directory', 'directory')
-      }else{
+      } else {
         upload.removeAttribute('webkitdirectory')
         upload.removeAttribute('directory')
       }
@@ -481,7 +498,11 @@ export default {
       }
 
       if (file.size > this.maxDocumentSize) {
-        this.fileMessages.unshift(`${file.name} 文件大小${formatBytes(file.size)} 超过限制（最大${formatBytes(this.maxDocumentSize)}），已忽略该文件`)
+        this.fileMessages.unshift(
+          `${file.name} 文件大小${formatBytes(
+            file.size
+          )} 超过限制（最大${formatBytes(this.maxDocumentSize)}），已忽略该文件`
+        )
         return
       }
 
@@ -497,6 +518,7 @@ export default {
           ext,
           price: this.document.price || 0,
           is_vip: this.isVIP || false,
+          language: this.document.language || '',
           progressStatus: 'success',
           error: '',
           percentage: 0,
@@ -638,6 +660,7 @@ export default {
             keywords: doc.keywords,
             description: doc.description,
             attachment_id: doc.attachment_id,
+            language: doc.language,
           },
         ],
       }
@@ -672,23 +695,23 @@ export default {
 </script>
 <style lang="scss">
 .page-upload {
-  .tips-alert{
+  .tips-alert {
     margin-bottom: 20px;
-    .el-alert__content{
+    .el-alert__content {
       width: 100%;
-      .el-alert__description{
+      .el-alert__description {
         width: 100%;
         max-height: 200px;
         overflow: auto;
       }
     }
   }
-  .vxe-table{
-    .el-input-number{
+  .vxe-table {
+    .el-input-number {
       width: 100%;
     }
-    .vxe-header--column{
-      .vxe-cell{
+    .vxe-header--column {
+      .vxe-cell {
         white-space: normal;
       }
     }

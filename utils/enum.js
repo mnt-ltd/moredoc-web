@@ -332,7 +332,7 @@ export const advertisementPositions = [
     value: 'global',
     description: '网站全局广告，所有页面都会显示',
     children: [
-      { 
+      {
         label: '全局底部',
         value: 'global_bottom',
         description: '网站全局底部，所有页面都会显示',
@@ -342,13 +342,13 @@ export const advertisementPositions = [
         value: 'global_top',
         description: '网站全局顶部，所有页面都会显示',
       },
-    ]
+    ],
   },
   {
     label: '首页',
     value: 'index',
     description: '网站首页，只有首页会显示',
-    children:[
+    children: [
       {
         label: '首页轮播图下方',
         value: 'index_banner_bottom',
@@ -369,13 +369,13 @@ export const advertisementPositions = [
         value: 'index_link_top',
         description: '网站首页友链上方，只有首页会显示',
       },
-    ]
+    ],
   },
   {
     label: '列表页',
     value: 'list',
     description: '网站列表页，只有列表页会显示',
-    children:[
+    children: [
       {
         label: '列表页导航下方',
         value: 'list_nav_bottom',
@@ -391,7 +391,7 @@ export const advertisementPositions = [
         value: 'list_document_bottom',
         description: '网站列表页文档列表内容下方，只有列表页会显示',
       },
-    ]
+    ],
   },
   {
     label: '文档浏览页',
@@ -402,16 +402,18 @@ export const advertisementPositions = [
         label: '文档浏览页顶部',
         value: 'document_top',
         description: '网站文档浏览页顶部，只有文档浏览页会显示',
-      },{
+      },
+      {
         label: '文档浏览页评论顶部',
         value: 'document_bottom',
         description: '文档浏览页评论顶部，只有文档浏览页会显示',
-      },{
+      },
+      {
         label: '文档浏览页页间',
         value: 'document_between',
         description: '网站文档浏览页页间，只有文档浏览页会显示',
-      }
-    ]
+      },
+    ],
   },
   {
     label: '个人主页',
@@ -422,12 +424,13 @@ export const advertisementPositions = [
         label: '个人主页顶部',
         value: 'user_top',
         description: '网站个人主页顶部，只有个人主页会显示',
-      },{
+      },
+      {
         label: '个人主页文档列表顶部',
         value: 'user_document_top',
         description: '网站个人主页文档列表顶部，只有个人主页会显示',
-      }
-    ]
+      },
+    ],
   },
   {
     label: '搜索结果页',
@@ -438,15 +441,17 @@ export const advertisementPositions = [
         label: '搜索结果页顶部',
         value: 'search_top',
         description: '网站搜索结果页顶部，只有搜索结果页会显示',
-      },{
+      },
+      {
         label: '搜索结果页底部',
         value: 'search_bottom',
         description: '网站搜索结果页底部，只有搜索结果页会显示',
-      },{
+      },
+      {
         label: '搜索结果页右侧',
         value: 'search_right',
         description: '网站搜索结果页右侧，只有搜索结果页会显示',
-      }
-    ]
-  }
+      },
+    ],
+  },
 ]

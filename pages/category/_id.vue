@@ -107,6 +107,34 @@
               >
             </div>
           </div>
+          <div class="item-row" v-if="(settings.language || []).length > 0">
+            <div class="item-name">语言</div>
+            <div class="item-content">
+              <nuxt-link
+                :to="{ query: { ...$route.query, language: '' } }"
+                class="el-link"
+                :class="
+                  !$route.query.language
+                    ? 'el-link--primary'
+                    : 'el-link--default'
+                "
+                >不限</nuxt-link
+              >
+              <nuxt-link
+                v-for="item in settings.language"
+                :key="item.code"
+                :to="{ query: { ...$route.query, language: item.code } }"
+                class="el-link"
+                :class="
+                  item.code === $route.query.language ||
+                  (!item.code && !$route.query.language)
+                    ? 'el-link--primary'
+                    : 'el-link--default'
+                "
+                >{{ item.language }}</nuxt-link
+              >
+            </div>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -466,6 +494,7 @@ export default {
           'uuid',
         ],
         fee_type: this.$route.query.fee_type,
+        language: this.$route.query.language,
       })
       if (res.status === 200) {
         this.total = res.data.total
