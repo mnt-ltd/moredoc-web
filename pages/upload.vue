@@ -23,7 +23,7 @@
                 label-width="80px"
               >
                 <el-row :gutter="20">
-                  <el-col :span="12">
+                  <el-col :span="8">
                     <el-form-item
                       label="文档分类"
                       prop="category_id"
@@ -50,7 +50,29 @@
                       ></el-cascader>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="12">
+                  <el-col :span="8" v-if="(settings.language || []).length > 0">
+                    <el-form-item label="默认语言" prop="language">
+                      <template slot="label">
+                        <span>默认语言</span>
+                        <ToolTip
+                          content="如果您不想为每个文档单独设置语言，可以在此处设置默认的文档语言"
+                        />
+                      </template>
+                      <el-select
+                        v-model="document.language"
+                        filterable
+                        clearable
+                      >
+                        <el-option
+                          v-for="item in settings.language"
+                          :key="item.code"
+                          :label="item.language"
+                          :value="item.code"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
                     <el-form-item prop="price">
                       <template slot="label">
                         <span>{{
@@ -146,6 +168,22 @@
                       </template>
                       <template #default="{ row, rowIndex }">
                         <el-input v-model="row.title" :disabled="loading">
+                          <el-select
+                            v-model="row.language"
+                            slot="prepend"
+                            placeholder="请选择语言"
+                            clearable
+                            filterable
+                            class="language-select"
+                            v-if="(settings.language || []).length > 0"
+                          >
+                            <el-option
+                              v-for="item in settings.language || []"
+                              :label="item.language"
+                              :value="item.code"
+                              :key="item.code"
+                            ></el-option>
+                          </el-select>
                           <template slot="append">{{
                             row.ext
                           }}</template></el-input
@@ -165,13 +203,14 @@
                           :percentage="row.percentage"
                         ></el-progress>
                         <div class="table-action">
+                          <span>{{ formatBytes(row.size) }}</span>
                           <el-checkbox
+                            class="is-vip-checkbox"
                             v-if="settings.vip.enable"
                             v-model="row.is_vip"
                             :disabled="loading"
                             >加入VIP文档</el-checkbox
                           >
-                          &nbsp;
                           <el-button
                             size="mini"
                             type="text"
@@ -181,11 +220,6 @@
                             >移除文档</el-button
                           >
                         </div>
-                      </template>
-                    </vxe-column>
-                    <vxe-column field="size" title="大小" width="100" sortable>
-                      <template #default="{ row }">
-                        <span>{{ formatBytes(row.size) }}</span>
                       </template>
                     </vxe-column>
                     <vxe-column
@@ -706,9 +740,19 @@ export default {
       }
     }
   }
+  .language-select .el-input {
+    width: 110px;
+  }
+  .is-vip-checkbox {
+    margin: 0 10px;
+    .el-checkbox__label {
+      padding-left: 5px;
+    }
+  }
   .vxe-table {
     .el-input-number {
       width: 100%;
+      top: -18px;
     }
     .vxe-header--column {
       .vxe-cell {
@@ -764,6 +808,9 @@ export default {
       display: inline-block;
       margin: 0 8px;
       color: #999;
+    }
+    .el-button--text {
+      color: red;
     }
   }
 }
