@@ -66,3 +66,11 @@ export const getWechatPayCert = () => {
     method: 'get',
   })
 }
+
+export const setSQLMode = (data) => {
+  return service({
+    url: '/api/v1/sqlmode',
+    method: 'put',
+    data,
+  })
+}

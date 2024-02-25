@@ -1,5 +1,40 @@
 <template>
   <div class="page-admin-dashboard">
+    <el-alert
+      v-if="mysqlGroupBy.error"
+      type="error"
+      show-icon
+      style="margin-bottom: 20px"
+      :closable="false"
+    >
+      <span slot="title">告警提示</span>
+      <div>
+        <div v-html="mysqlGroupBy.error"></div>
+      </div>
+      <div style="margin-top: 10px">
+        <div>当然，您也可以通过下述方式进行设置。</div>
+        <br />
+        <el-tooltip
+          content="通过SQL临时设置全局sql_mode，但当MySQL服务重启后，该设置会失效"
+        >
+          <el-button
+            type="warn"
+            size="mini"
+            icon="el-icon-setting"
+            @click="setSQLMode"
+            >临时设置</el-button
+          >
+        </el-tooltip>
+        <a
+          href="https://www.bookstack.cn/read/moredoc/only_full_group_by.md"
+          target="_blank"
+        >
+          <el-button type="primary" size="mini" icon="el-icon-link"
+            >永久设置</el-button
+          >
+        </a>
+      </div>
+    </el-alert>
     <el-card shadow="never">
       <div slot="header">服务器状态</div>
       <el-row :gutter="20" class="gauges">
@@ -377,6 +412,7 @@ import {
   updateSitemap,
   getLicense,
   getDevice,
+  setSQLMode,
 } from '~/api/config'
 import { updateDocumentIndexes } from '~/api/document'
 import { formatDatetime, formatBytes, formatDate } from '~/utils/utils'
@@ -424,13 +460,6 @@ export default {
         addr: '-',
         expired_at: '',
       },
-      license: {
-        type: 0,
-        max_users: '-',
-        max_docs: '-',
-        addr: '-',
-        expired_at: '',
-      },
       envs: [],
       loading: false,
       loadingLicense: false,
@@ -438,6 +467,7 @@ export default {
       gauges: [],
       devices: [],
       timeouter: null,
+      mysqlGroupBy: {},
     }
   },
   head() {
@@ -458,9 +488,6 @@ export default {
       this.getLicense(),
       this.loopGetDevice(),
     ])
-  },
-  beforeDestroy() {
-    clearTimeout(this.timeouter)
   },
   beforeDestroy() {
     clearTimeout(this.timeouter)
@@ -503,7 +530,9 @@ export default {
       const res = await getEnvs()
       this.envLoading = false
       if (res.status === 200) {
-        this.envs = res.data.envs
+        const envs = res.data.envs || []
+        this.envs = envs.filter((env) => env.name !== 'GroupBy')
+        this.mysqlGroupBy = envs.find((env) => env.name === 'GroupBy') || {}
       }
     },
     async updateSitemap() {
@@ -591,6 +620,28 @@ export default {
         ],
       })
       this.gauges = gauges
+    },
+    setSQLMode() {
+      // 弹出确认框
+      this.$confirm(
+        '您确定要通过当前方式进行临时设置吗？临时设置成功之后，当前提示将不再显示。',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(async () => {
+          const res = await setSQLMode(this.mysqlGroupBy.value)
+          if (res.status === 200) {
+            this.$message.success('设置成功')
+            this.mysqlGroupBy = {}
+            return
+          }
+          this.$message.error(res.data.message || '设置失败')
+        })
+        .catch(() => {})
     },
     async getDevice() {
       const res = await getDevice()
