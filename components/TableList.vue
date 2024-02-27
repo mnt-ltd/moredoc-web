@@ -56,7 +56,7 @@
             >
               {{ item.enum[scope.row[item.prop] || 0].label }}
             </el-tag>
-            <span v-else>-</span>
+            <span v-else>{{ scope.row[item.prop] || '-' }}</span>
           </span>
           <span v-else-if="item.type === 'datetime'">
             {{ formatDatetime(scope.row[item.prop]) || '0000-00-00 00:00:00' }}
@@ -91,7 +91,7 @@
                 >{{ value }}</el-tag
               >
             </template>
-            <template v-else>-</template>
+            <template v-else>{{ scope.row[item.prop] || '-' }}</template>
           </span>
           <!-- 有层级的，用breadcrumb -->
           <span v-else-if="item.type === 'breadcrumb'">
@@ -104,10 +104,10 @@
                 >
               </el-breadcrumb>
             </template>
-            <template v-else>-</template>
+            <template v-else>{{ scope.row[item.prop] || '-' }}</template>
           </span>
           <!-- 字符串。更多，则需要继续扩展 -->
-          <span v-else-if="item.type==='html'">
+          <span v-else-if="item.type === 'html'">
             <span v-html="scope.row[item.prop]"></span>
           </span>
           <span v-else>{{ scope.row[item.prop] || '-' }}</span>
