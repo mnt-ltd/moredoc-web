@@ -133,15 +133,28 @@
     <el-card shadow="never" class="mgt-20px">
       <div slot="header">
         <span>数据统计</span>
-        <el-button
-          style="float: right; padding: 3px 0"
-          :loading="loading"
-          icon="el-icon-refresh"
-          type="text"
-          @click="updateDocumentIndexes"
-        >
-          更新全量全文索引</el-button
-        >
+        <div style="float: right; padding: 3px 0">
+          <el-button
+            :loading="loading"
+            icon="el-icon-refresh"
+            type="text"
+            @click="updateDocumentIndexes"
+          >
+            更新全量索引</el-button
+          >
+          <el-tooltip
+            content="重建全文索引，将会删除当前的索引数据，并重新全量更新索引内容"
+          >
+            <el-button
+              :loading="loading"
+              icon="el-icon-refresh"
+              type="text"
+              @click="renewDocumentIndex"
+            >
+              重建全文索引</el-button
+            >
+          </el-tooltip>
+        </div>
       </div>
       <el-descriptions class="margin-top" :column="3" border>
         <el-descriptions-item>
@@ -413,6 +426,7 @@ import {
   getLicense,
   getDevice,
   setSQLMode,
+  renewDocumentIndex,
 } from '~/api/config'
 import { updateDocumentIndexes } from '~/api/document'
 import { formatDatetime, formatBytes, formatDate } from '~/utils/utils'
@@ -620,6 +634,27 @@ export default {
         ],
       })
       this.gauges = gauges
+    },
+    renewDocumentIndex() {
+      // 弹出确认框
+      this.$confirm(
+        '您确定要重建全文索引吗？重建全文索引将会删除当前的索引数据，并重新全量更新索引内容。',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(async () => {
+          const res = await renewDocumentIndex()
+          if (res.status === 200) {
+            this.$message.success('操作成功')
+            return
+          }
+          this.$message.error(res.data.message || '提交失败')
+        })
+        .catch(() => {})
     },
     setSQLMode() {
       // 弹出确认框

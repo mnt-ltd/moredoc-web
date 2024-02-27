@@ -74,3 +74,11 @@ export const setSQLMode = (data) => {
     data,
   })
 }
+
+export const renewDocumentIndex = (data) => {
+  return service({
+    url: '/api/v1/renew/document/index',
+    method: 'put',
+    data,
+  })
+}
