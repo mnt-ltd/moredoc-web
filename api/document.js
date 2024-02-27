@@ -199,3 +199,11 @@ export const setDocumentsLanguage = (data) => {
     data,
   })
 }
+
+export const detectDocumentLanguage = (data) => {
+  return service({
+    url: '/api/v1/document/detect/language',
+    method: 'put',
+    data,
+  })
+}

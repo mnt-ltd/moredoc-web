@@ -1,28 +1,67 @@
 <template>
   <div class="com-form-update-documents-language">
     <el-form ref="form" label-position="top" label-width="80px" :model="form">
-      <el-form-item
-        label="文档语言"
-        prop="language"
-        :rules="[
-          { required: true, trigger: 'blur', message: '请选择新的文档语言' },
-        ]"
-      >
-        <el-select
-          v-model="form.language"
-          filterable
-          placeholder="请选择新的文档语言"
-        >
-          <el-option
-            v-for="item in settings.language"
-            :key="item.code"
-            :label="item.language"
-            :value="item.code"
-          ></el-option>
-        </el-select>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="批量默认文档语言" prop="language">
+            <el-select
+              v-model="form.language"
+              filterable
+              placeholder="请选择新的文档语言"
+              @change="changeLanguage"
+            >
+              <el-option
+                v-for="item in settings.language"
+                :key="item.code"
+                :label="item.language"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="检测文档语言">
+            <el-button
+              type="primary"
+              class="btn-block"
+              icon="el-icon-refresh"
+              :loading="detecting"
+              @click="detectDocumentLanguage"
+              >检测文档语言</el-button
+            >
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="文档列表" class="document-list">
-        <DocumentSimpleList :target="'_blank'" :docs="documents" />
+        <el-table :data="docs" style="width: 100%" :max-height="420">
+          <el-table-column
+            prop="title"
+            label="文档标题"
+            min-width="300"
+          ></el-table-column>
+          <el-table-column
+            prop="language"
+            label="文档语言"
+            width="200"
+            fixed="right"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.language"
+                filterable
+                clearable
+                size="medium"
+              >
+                <el-option
+                  v-for="item in settings.language"
+                  :key="item.code"
+                  :label="item.language"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -30,14 +69,14 @@
           class="btn-block"
           icon="el-icon-check"
           @click="setDocumentsLanguage"
-          >提交</el-button
+          >提交设置</el-button
         >
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
-import { setDocumentsLanguage } from '~/api/document'
+import { setDocumentsLanguage, detectDocumentLanguage } from '~/api/document'
 import { mapGetters } from 'vuex'
 export default {
   name: 'FormUpdateDocumentsLanguage',
@@ -51,16 +90,32 @@ export default {
   },
   data() {
     return {
+      detecting: false,
       form: {
         language: '',
         document_id: [],
       },
+      docs: [],
     }
   },
   computed: {
     ...mapGetters('setting', ['settings']),
   },
   created() {},
+  watch: {
+    documents: {
+      handler(val) {
+        this.docs = val.map((item) => {
+          return {
+            id: item.id,
+            title: item.title,
+            language: item.language || '',
+          }
+        })
+      },
+      immediate: true,
+    },
+  },
   methods: {
     async setDocumentsLanguage() {
       this.$refs.form.validate(async (valid) => {
@@ -71,8 +126,7 @@ export default {
             type: 'warning',
           })
             .then(async () => {
-              this.form.document_id = this.documents.map((item) => item.id)
-              const res = await setDocumentsLanguage(this.form)
+              const res = await setDocumentsLanguage({ document: this.docs })
               if (res.status === 200) {
                 this.$message.success('修改成功')
                 this.$emit('success', res.data)
@@ -80,6 +134,29 @@ export default {
             })
             .catch(() => {})
         }
+      })
+    },
+    async detectDocumentLanguage() {
+      let ids = []
+      this.documents.forEach((item) => {
+        ids.push(item.id)
+      })
+      this.detecting = true
+      const res = await detectDocumentLanguage({ document_id: ids })
+      this.detecting = false
+      if (res.status === 200) {
+        this.docs = (res.data.document || []).map((item) => {
+          return {
+            id: item.id,
+            title: item.title,
+            language: item.language || '',
+          }
+        })
+      }
+    },
+    changeLanguage() {
+      this.docs.forEach((item) => {
+        item.language = this.form.language
       })
     },
   },
