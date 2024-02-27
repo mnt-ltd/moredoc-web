@@ -2,42 +2,71 @@
   <div class="com-form-publish-spider-document">
     <!-- 发布文档 -->
     <el-form ref="form" :model="form" label-position="top">
-      <el-form-item
-        label="用户ID"
-        prop="user_id"
-        :rules="[{ required: true, message: '请输入用户ID', trigger: 'blur' }]"
-      >
-        <el-input-number v-model="form.user_id"></el-input-number>
-      </el-form-item>
-      <el-form-item
-        label="发布到分类"
-        prop="category_id"
-        :rules="[
-          {
-            required: true,
-            message: '请选择发布到文档的分类',
-            trigger: 'blur',
-          },
-        ]"
-      >
-        <el-cascader
-          v-model="form.category_id"
-          :options="categoryTrees"
-          :props="{
-            checkStrictly: true,
-            expandTrigger: 'hover',
-            label: 'title',
-            value: 'id',
-          }"
-          clearable
-          filterable
-          placeholder="请选择发布到文档的分类"
-        ></el-cascader>
-      </el-form-item>
-      <!-- 价格 -->
-      <el-form-item label="价格" prop="price">
-        <el-input-number v-model="form.price"></el-input-number>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item
+            label="用户ID"
+            prop="user_id"
+            :rules="[
+              { required: true, message: '请输入用户ID', trigger: 'blur' },
+            ]"
+          >
+            <el-input-number v-model="form.user_id"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="发布到分类"
+            prop="category_id"
+            :rules="[
+              {
+                required: true,
+                message: '请选择发布到文档的分类',
+                trigger: 'blur',
+              },
+            ]"
+          >
+            <el-cascader
+              v-model="form.category_id"
+              :options="categoryTrees"
+              :props="{
+                checkStrictly: true,
+                expandTrigger: 'hover',
+                label: 'title',
+                value: 'id',
+              }"
+              clearable
+              filterable
+              placeholder="请选择发布到文档的分类"
+            ></el-cascader>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <!-- 价格 -->
+          <el-form-item label="文档价格" prop="price">
+            <el-input-number v-model="form.price"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <!-- 文档语言 -->
+          <el-form-item label="文档语言" prop="language">
+            <el-select
+              v-model="form.language"
+              filterable
+              clearable
+              placeholder="请选择文档语言"
+            >
+              <el-option
+                v-for="item in settings.language"
+                :key="item.code"
+                :label="item.language"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-form-item label="文档清单" prop="documents">
         <el-alert
           type="warning"
@@ -117,11 +146,13 @@ export default {
         category_id: [],
         status: 5, // 加入到发布队列
         price: 0, // 价格
+        language: '',
       },
     }
   },
   computed: {
     ...mapGetters('category', ['categoryTrees']),
+    ...mapGetters('setting', ['settings']),
   },
   methods: {
     formatBytes,
@@ -135,6 +166,7 @@ export default {
               category_id: JSON.stringify(this.form.category_id),
               user_id: this.form.user_id,
               price: this.form.price || 0,
+              language: this.form.language,
             }
             localStorage.setItem('user_id', this.form.user_id)
             delete newItem.url_html
