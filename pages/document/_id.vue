@@ -17,11 +17,11 @@
                 alt="推荐"
               />
               <el-popover
+                v-show="document.id > 0"
                 class="hidden-xs-only"
                 placement="bottom"
                 width="200"
                 trigger="hover"
-                v-show="document.id > 0"
               >
                 <div id="qrcode" ref="qrcode" class="qrcode text-center"></div>
                 <span slot="reference">
@@ -31,7 +31,6 @@
                 </span>
               </el-popover>
               <div
-                class="actions"
                 v-if="
                   user.id > 0 &&
                   (accessDelete ||
@@ -39,34 +38,35 @@
                     accessUpdate ||
                     accessForbiden)
                 "
+                class="actions"
               >
                 <el-button
+                  v-if="accessUpdate"
                   type="text"
                   icon="el-icon-edit"
-                  v-if="accessUpdate"
                   @click="showUpdateDocument"
                   >编辑文档</el-button
                 >
                 <el-button
+                  v-if="accessDelete"
                   type="text"
                   icon="el-icon-delete"
-                  v-if="accessDelete"
                   @click="deleteDocument"
                   >删除文档</el-button
                 >
                 <template>
                   <!-- 管理员权限 -->
                   <el-button
+                    v-if="accessForbiden"
                     type="text"
                     icon="el-icon-no-smoking"
-                    v-if="accessForbiden"
                     @click="forbiden"
                     >禁用文档</el-button
                   >
                   <el-button
+                    v-if="accessRecommend"
                     type="text"
                     icon="el-icon-document-checked"
-                    v-if="accessRecommend"
                     @click="setRecommend"
                     >推荐设置</el-button
                   >
@@ -160,8 +160,8 @@
 
           <template v-for="item in advertisements">
             <div
-              :key="item.position + item.id"
               v-if="item.position == 'document_top'"
+              :key="item.position + item.id"
               v-html="item.content"
             ></div>
           </template>
@@ -195,7 +195,7 @@
             </el-descriptions-item>
           </el-descriptions>
           <div ref="docPages" class="doc-pages" @contextmenu.prevent>
-            <el-skeleton animated v-if="!document.id">
+            <el-skeleton v-if="!document.id" animated>
               <template slot="template">
                 <div style="background-color: #f6f6f6; padding: 5px">
                   <el-skeleton-item
@@ -224,8 +224,8 @@
                   }"
                 ></el-image>
                 <div
-                  class="doc-page"
                   v-if="randomAdvertisement()"
+                  class="doc-page"
                   v-html="randomAdvertisement().content"
                 ></div>
               </div>
@@ -244,8 +244,8 @@
                   }"
                 ></el-image>
                 <div
-                  class="doc-page"
                   v-if="randomAdvertisement()"
+                  class="doc-page"
                   v-html="randomAdvertisement().content"
                 ></div>
               </div>
@@ -293,10 +293,10 @@
             <div class="btn-actions">
               <el-button
                 type="primary"
-                @click="showReport"
                 :size="isMobile ? 'medium' : ''"
                 plain
                 icon="el-icon-warning-outline"
+                @click="showReport"
                 >举报</el-button
               >
               <!-- <el-button
@@ -329,9 +329,9 @@
           </div>
         </el-card>
         <el-card
+          v-if="isMobile && relatedDocuments.length > 0"
           shadow="never"
           class="mgt-20px relate-docs"
-          v-if="isMobile && relatedDocuments.length > 0"
         >
           <div slot="header">相关文档</div>
           <document-simple-list
@@ -342,8 +342,8 @@
 
         <template v-for="item in advertisements">
           <div
-            :key="item.position + item.id"
             v-if="item.position == 'document_bottom'"
+            :key="item.position + item.id"
             v-html="item.content"
           ></div>
         </template>
@@ -355,13 +355,12 @@
           class="mgt-20px"
         >
           <div>
-            <span class="score-tips" v-if="disabledScore">我的评分</span>
-            <span class="score-tips" v-else>文档评分</span>
+            <span v-if="disabledScore" class="score-tips">我的评分</span>
+            <span v-else class="score-tips">文档评分</span>
             <el-rate
-              :disabled="disabledScore"
               v-model="score"
+              :disabled="disabledScore"
               show-text
-              @change="setDocumentScore"
               :texts="[
                 '该文档令人失望',
                 '该文档不怎么样',
@@ -369,12 +368,13 @@
                 '该文档很让我满意',
                 '该文档非常棒',
               ]"
+              @change="setDocumentScore"
             ></el-rate>
           </div>
           <FormComment
             :document-id="document.id"
-            @success="commentSuccess"
             class="mgt-20px"
+            @success="commentSuccess"
           />
           <comment-list ref="commentList" :document-id="document.id" />
         </el-card>
@@ -385,10 +385,10 @@
           <user-card :hide-actions="true" :user="document.user" />
         </el-card>
         <el-card
+          v-if="relatedDocuments.length > 0"
+          ref="relateDocs"
           shadow="never"
           class="mgt-20px relate-docs"
-          ref="relateDocs"
-          v-if="relatedDocuments.length > 0"
         >
           <div slot="header">相关文档</div>
           <div :style="`max-height: ${footerTop - 188}px;overflow-y: auto;`">
@@ -402,7 +402,7 @@
         <el-row>
           <el-col :span="18">
             <el-button-group class="btn-actions">
-              <el-tooltip content="文档点评" v-if="isMobile">
+              <el-tooltip v-if="isMobile" content="文档点评">
                 <el-button
                   icon="el-icon-chat-dot-square"
                   @click="gotoComment"
@@ -530,6 +530,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import QRCode from 'qrcodejs2' // 引入qrcode
 import DocumentSimpleList from '~/components/DocumentSimpleList.vue'
 import {
   getDocument,
@@ -548,7 +549,6 @@ import {
   genPrevPage,
 } from '~/utils/utils'
 import { documentStatusOptions } from '~/utils/enum'
-import QRCode from 'qrcodejs2' // 引入qrcode
 import FormComment from '~/components/FormComment.vue'
 import CommentList from '~/components/CommentList.vue'
 import DocumentCard from '~/components/DocumentCard.vue'
@@ -704,7 +704,7 @@ export default {
     },
     showUpdateDocument() {
       this.updateDocumentVisible = true
-      let doc = { ...this.document }
+      const doc = { ...this.document }
       delete doc.icon
       this.updateDocument = doc
     },
@@ -714,7 +714,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
       }).then(async () => {
-        let doc = { ...this.document }
+        const doc = { ...this.document }
         delete doc.icon
         doc.status = 4 // 更新文档状态为禁用状态
         const res = await updateDocument(doc)
@@ -730,7 +730,7 @@ export default {
       })
     },
     setRecommend() {
-      let doc = { ...this.document }
+      const doc = { ...this.document }
       delete doc.icon
       this.updateDocument = doc
       this.formDocumentRecommendVisible = true
@@ -800,24 +800,24 @@ export default {
         )
         pages.push({
           lazySrc: src,
-          src: src,
+          src,
           alt: `${doc.title} 第${i + 1}页`,
         })
       }
 
-      let breadcrumbs = []
-      let tmpBreadcrumbs = (doc.category_id || []).map((id) => {
-        let breadcrumb = this.categoryMap[id]
+      const breadcrumbs = []
+      const tmpBreadcrumbs = (doc.category_id || []).map((id) => {
+        const breadcrumb = this.categoryMap[id]
         if (!breadcrumb.parent_id) {
           breadcrumbs.push(breadcrumb)
         }
         return breadcrumb
       })
 
-      let length = tmpBreadcrumbs.length
+      const length = tmpBreadcrumbs.length
       for (let j = 0; j < length; j++) {
         for (let i = 0; i < tmpBreadcrumbs.length; i++) {
-          let breadcrumb = tmpBreadcrumbs[i]
+          const breadcrumb = tmpBreadcrumbs[i]
           if (breadcrumb.parent_id === breadcrumbs[breadcrumbs.length - 1].id) {
             breadcrumbs.push(breadcrumb)
             tmpBreadcrumbs.splice(i, 1)
@@ -1127,7 +1127,7 @@ export default {
       }
     },
     continueRead() {
-      let pagesPerRead =
+      const pagesPerRead =
         this.settings.display.pages_per_read || this.pagesPerRead
       let end = this.pages.length + pagesPerRead
       if (end > this.document.preview) {
@@ -1201,11 +1201,11 @@ export default {
       })
     },
     randomAdvertisement() {
-      let advertisements = this.advertisements.filter(
+      const advertisements = this.advertisements.filter(
         (item) => item.position == 'document_between'
       )
       if (advertisements.length > 0) {
-        let index = Math.floor(Math.random() * advertisements.length)
+        const index = Math.floor(Math.random() * advertisements.length)
         return advertisements[index]
       }
       return null
@@ -1294,9 +1294,6 @@ export default {
       box-sizing: border-box;
       border: 5px solid $background-grey-light;
       border-bottom: 0;
-      &:last-child {
-        border-bottom: 5px solid $background-grey-light;
-      }
       img {
         width: 100%;
         background-color: #fff;
@@ -1309,7 +1306,6 @@ export default {
   .doc-page-more {
     padding: 30px 0;
     border: 5px solid $background-grey-light;
-    border-top: 0;
     color: #565656;
     .el-button {
       margin: 10px 0;
