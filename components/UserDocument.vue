@@ -74,7 +74,7 @@
           >
             {{ filterLanguage(scope.row.language).language }}
           </el-tag>
-          <span v-else>-</span>
+          <span v-else>{{ scope.row.language }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="score" label="评分" width="110">
