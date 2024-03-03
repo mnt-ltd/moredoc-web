@@ -33,8 +33,8 @@
           >
             <i
               slot="suffix"
-              @click="onSearch"
               class="el-input__icon el-icon-search btn-search"
+              @click="onSearch"
             ></i>
           </el-input>
         </el-form-item>
@@ -56,8 +56,8 @@
 
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'index_banner_bottom'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
@@ -65,22 +65,22 @@
     <el-row :gutter="20" class="mgt-20px">
       <el-col :span="6" class="float-right right-at-recommend">
         <el-card
-          class="text-center stat-info"
-          shadow="never"
           v-if="
             settings.display.show_document_count ||
             settings.display.show_register_user_count
           "
+          class="text-center stat-info"
+          shadow="never"
         >
           <el-row>
             <el-col
+              v-if="settings.display.show_document_count"
               :span="
                 settings.display.show_document_count &&
                 settings.display.show_register_user_count
                   ? 12
                   : 24
               "
-              v-if="settings.display.show_document_count"
             >
               <small>收录文档</small>
               <div>
@@ -90,13 +90,13 @@
               </div>
             </el-col>
             <el-col
+              v-if="settings.display.show_register_user_count"
               :span="
                 settings.display.show_document_count &&
                 settings.display.show_register_user_count
                   ? 12
                   : 24
               "
-              v-if="settings.display.show_register_user_count"
             >
               <small>注册用户</small>
               <div>
@@ -108,11 +108,11 @@
           </el-row>
         </el-card>
         <el-card
-          class="text-center mgt-20px hidden-xs-only"
           v-if="
             settings.display.show_document_count ||
             settings.display.show_register_user_count
           "
+          class="text-center mgt-20px hidden-xs-only"
           shadow="never"
         >
           <nuxt-link to="/upload">
@@ -122,8 +122,8 @@
           </nuxt-link>
         </el-card>
         <el-card
-          class="text-center hidden-xs-only upload-box"
           v-else
+          class="text-center hidden-xs-only upload-box"
           shadow="never"
         >
           <nuxt-link to="/upload">
@@ -254,7 +254,7 @@
         </el-card>
       </el-col>
       <el-col :span="18" class="latest-recommend">
-        <el-card shadow="never" v-loading="loadingRecommend">
+        <el-card v-loading="loadingRecommend" shadow="never">
           <div slot="header">最新推荐</div>
           <el-row :gutter="20">
             <el-col
@@ -282,19 +282,19 @@
 
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'index_category_top'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
 
     <div
-      class="categories mgt-20px"
       v-if="settings.display.show_index_categories"
+      class="categories mgt-20px"
     >
       <el-row :gutter="20">
         <div
-          v-for="(category, index) in categoryTrees"
+          v-for="(category, index) in categoryTreesV2"
           :key="'tree-' + category.id"
         >
           <el-col v-if="index < 4" :span="6">
@@ -327,8 +327,8 @@
 
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'index_category_bottom'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
@@ -386,8 +386,8 @@
 
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'index_link_top'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
@@ -446,6 +446,26 @@ export default {
     ...mapGetters('category', ['categoryTrees']),
     ...mapGetters('user', ['user']),
     ...mapGetters('setting', ['settings']),
+    categoryTreesV2() {
+      const trees = this.categoryTrees.filter((item) => {
+        if (this.settings.display.hide_category_without_document) {
+          return item.doc_count > 0 && item.enable
+        }
+        return item.enable
+      })
+
+      // 过滤二级分类
+      trees.forEach((item) => {
+        item.children = item.children.filter((child) => {
+          if (this.settings.display.hide_category_without_document) {
+            return child.doc_count > 0 && child.enable
+          }
+          return child.enable
+        })
+      })
+
+      return trees
+    },
   },
   async created() {
     const requests = [
@@ -477,7 +497,6 @@ export default {
     onSearch() {
       if (this.search.wd) {
         location.href = '/search?wd=' + encodeURIComponent(this.search.wd)
-        return
       }
     },
     async getSignedToday() {
@@ -540,8 +559,8 @@ export default {
       this.$router.push('/login')
     },
     changeCarousel(index) {
-      let carouselIndexes = this.carouselIndexes
-      if (carouselIndexes.indexOf(index) === -1) {
+      const carouselIndexes = this.carouselIndexes
+      if (!carouselIndexes.includes(index)) {
         carouselIndexes.push(index)
       }
       this.carouselIndexes = carouselIndexes

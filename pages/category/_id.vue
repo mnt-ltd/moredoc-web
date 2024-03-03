@@ -2,15 +2,15 @@
   <div class="page page-category">
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'list_nav_bottom'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
 
     <el-row>
       <el-col :span="24">
-        <el-card shadow="never" ref="breadcrumb">
+        <el-card ref="breadcrumb" shadow="never">
           <div slot="header" class="clearfix">
             <el-breadcrumb separator="/">
               <el-breadcrumb-item>
@@ -54,7 +54,7 @@
           >
             {{ breadcrumbs[breadcrumbs.length - 1].description }}
           </div>
-          <div class="item-row" v-if="categoryChildren.length > 0">
+          <div v-if="categoryChildren.length > 0" class="item-row">
             <div class="item-name">分类</div>
             <div class="item-content">
               <nuxt-link
@@ -103,7 +103,7 @@
               >
             </div>
           </div>
-          <div class="item-row" v-if="(settings.language || []).length > 0">
+          <div v-if="(settings.language || []).length > 0" class="item-row">
             <div class="item-name">语言</div>
             <div class="item-content">
               <nuxt-link
@@ -137,15 +137,15 @@
 
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'list_document_top'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
 
     <el-row :gutter="20" class="mgt-20px">
       <el-col :span="!settings.display.hide_keywords_on_lists ? 18 : 24">
-        <el-card shadow="never" ref="docList" class="doc-list">
+        <el-card ref="docList" shadow="never" class="doc-list">
           <div slot="header">
             <el-tabs v-model="query.sort" @tab-click="sortClick">
               <el-tab-pane name="default">
@@ -203,11 +203,11 @@
         </el-card>
       </el-col>
       <el-col
+        v-if="!settings.display.hide_keywords_on_lists"
         :span="6"
         class="hidden-xs-only"
-        v-if="!settings.display.hide_keywords_on_lists"
       >
-        <el-card shadow="never" class="keywords" ref="keywords">
+        <el-card ref="keywords" shadow="never" class="keywords">
           <div slot="header">
             <el-row>
               <el-col :span="8" class="header-title">关键词</el-col>
@@ -234,8 +234,8 @@
 
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'list_document_bottom'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
@@ -329,20 +329,35 @@ export default {
     let category = { siblings: [], ...this.categoryMap[this.categoryId] }
     if (category.id) {
       category.siblings =
-        this.categories.filter((x) => x.parent_id === category.parent_id) || []
+        this.categories.filter((x) => {
+          if (
+            this.settings.display &&
+            this.settings.display.hide_category_without_document
+          ) {
+            return x.parent_id === category.parent_id && x.doc_count > 0
+          }
+          return x.parent_id === category.parent_id
+        }) || []
       breadcrumbs.push(category)
       while (category.parent_id) {
         category = { siblings: [], ...this.categoryMap[category.parent_id] }
         if (category.id) {
           category.siblings =
-            this.categories.filter((x) => x.parent_id === category.parent_id) ||
-            []
+            this.categories.filter((x) => {
+              if (
+                this.settings.display &&
+                this.settings.display.hide_category_without_document
+              ) {
+                return x.parent_id === category.parent_id && x.doc_count > 0
+              }
+              return x.parent_id === category.parent_id
+            }) || []
           breadcrumbs.splice(0, 0, category)
         }
       }
     }
 
-    var titles = []
+    const titles = []
     breadcrumbs.forEach((x) => {
       titles.push(x.title)
     })
@@ -353,9 +368,18 @@ export default {
     // 查找当前最后一个面包屑导航的子分类
     let categoryChildren = []
     if (breadcrumbs.length > 0) {
-      categoryChildren = this.categories.filter(
-        (x) => x.parent_id === breadcrumbs[breadcrumbs.length - 1].id
-      )
+      categoryChildren = this.categories.filter((x) => {
+        if (
+          this.settings.display &&
+          this.settings.display.hide_category_without_document
+        ) {
+          return (
+            x.parent_id === breadcrumbs[breadcrumbs.length - 1].id &&
+            x.doc_count > 0
+          )
+        }
+        return x.parent_id === breadcrumbs[breadcrumbs.length - 1].id
+      })
     }
     this.categoryChildren = categoryChildren
 

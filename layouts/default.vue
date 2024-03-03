@@ -2,8 +2,8 @@
   <el-container class="layout-default">
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'global_top'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
@@ -25,9 +25,9 @@
             <nuxt-link to="/">首页</nuxt-link>
           </el-menu-item>
           <el-submenu
+            v-show="$route.path !== '/' || navigations.length > 0"
             index="channel"
             class="hidden-xs-only"
-            v-show="$route.path !== '/' || navigations.length > 0"
           >
             <template slot="title">频道分类</template>
             <el-menu-item
@@ -46,9 +46,9 @@
           <template v-if="navigations.length === 0">
             <el-menu-item
               v-for="(item, index) in categoryTrees"
+              v-show="$route.path === '/' && index < 6"
               :key="'c-' + item.id"
               :index="`/category/${item.id}`"
-              v-show="$route.path === '/' && index < 6"
               class="hidden-xs-only"
             >
               <nuxt-link :to="`/category/${item.id}`">{{
@@ -59,32 +59,32 @@
           <template v-else>
             <template v-for="item in navigations">
               <el-submenu
+                v-if="item.children && item.children.length > 0"
                 :key="'nav-' + item.id"
                 :index="`nav-${item.id}`"
-                v-if="item.children && item.children.length > 0"
                 class="hidden-xs-only"
               >
                 <template slot="title">{{ item.title }}</template>
                 <NavigationLink
-                  :hiddenXS="true"
                   v-for="child in item.children || []"
                   :key="'child-' + child.id"
+                  :hidden-x-s="true"
                   :navigation="child"
                 />
               </el-submenu>
               <NavigationLink
                 v-else
-                :navigation="item"
                 :key="'nav-' + item.id"
-                :hiddenXS="true"
+                :navigation="item"
+                :hidden-x-s="true"
               />
             </template>
           </template>
           <el-menu-item
+            v-show="$route.path !== '/'"
             index="searchbox"
             class="nav-searchbox hidden-xs-only"
             :class="navigations.length <= 2 ? 'nav-searchbox-large' : ''"
-            v-show="$route.path !== '/'"
           >
             <el-input
               v-model="search.wd"
@@ -94,9 +94,9 @@
               @keyup.enter.native="onSearch"
             >
               <i
+                slot="suffix"
                 class="el-icon-search el-input__icon"
                 @click="onSearch"
-                slot="suffix"
               >
               </i>
             </el-input>
@@ -249,8 +249,8 @@
         </div>
         <div v-if="settings.system.icp || settings.system.sec_icp">
           <el-link
-            :underline="false"
             v-if="settings.system.icp"
+            :underline="false"
             type="white"
             target="_blank"
             :title="settings.system.icp"
@@ -258,8 +258,8 @@
             >{{ settings.system.icp }}</el-link
           >
           <el-link
-            :underline="false"
             v-if="settings.system.sec_icp"
+            :underline="false"
             type="white"
             target="_blank"
             :title="settings.system.sec_icp"
@@ -306,17 +306,17 @@
         @keyup.enter.native="onSearch"
       >
         <i
+          slot="suffix"
           class="el-icon-search el-input__icon"
           @click="onSearch"
-          slot="suffix"
         >
         </i>
       </el-input>
       <ul class="navs">
         <li>
           <div
-            @click="goToLink('/login')"
             class="el-link el-link--default login-link"
+            @click="goToLink('/login')"
           >
             <user-avatar :size="38" :user="user" class="user-avatar" />
             <span v-if="user.id > 0">{{ user.username }}</span>
@@ -350,8 +350,8 @@
           </li>
           <li>
             <div
-              @click="goToLink(`/user/${user.id}`)"
               class="el-link el-link--default"
+              @click="goToLink(`/user/${user.id}`)"
             >
               <i class="fa fa-home"></i> &nbsp;个人主页
             </div>
@@ -362,7 +362,7 @@
             </div>
           </li>
           <li>
-            <div @click="goToLink(`/upload`)" class="el-link el-link--default">
+            <div class="el-link el-link--default" @click="goToLink(`/upload`)">
               <i class="el-icon-upload2"></i> 上传文档
             </div>
           </li>
@@ -401,9 +401,9 @@
       <el-menu :default-active="$route.path" class="el-menu-mobile">
         <template v-for="item in navigations">
           <el-submenu
+            v-if="item.children && item.children.length > 0"
             :key="'nav-' + item.id"
             :index="`nav-${item.id}`"
-            v-if="item.children && item.children.length > 0"
           >
             <template slot="title">{{ item.title }}</template>
             <NavigationLink
@@ -412,14 +412,14 @@
               :navigation="child"
             />
           </el-submenu>
-          <NavigationLink v-else :navigation="item" :key="'nav-' + item.id" />
+          <NavigationLink v-else :key="'nav-' + item.id" :navigation="item" />
         </template>
       </el-menu>
     </el-drawer>
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'global_bottom'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
@@ -482,14 +482,19 @@ export default {
       this.getAdvertisements('global'),
     ])
 
-    this.categoryTrees = categoryToTrees(this.categories).filter(
-      (item) => item.enable
-    )
+    this.categoryTrees = categoryToTrees(this.categories).filter((item) => {
+      if (
+        this.settings.display &&
+        this.settings.display.hide_category_without_document
+      ) {
+        return item.enable && item.doc_count > 0
+      }
+      return item.enable
+    })
 
     this.loopUpdate()
     if (requireLogin(this.settings, this.user, this.$route, this.permissions)) {
       this.$router.push('/login')
-      return
     }
   },
   methods: {
@@ -545,11 +550,11 @@ export default {
     onSearch() {
       if (!this.search.wd) return
       this.menuDrawerVisible = false
-      let wd = this.search.wd
+      const wd = this.search.wd
       this.$router.push({
         path: '/search',
         query: {
-          wd: wd,
+          wd,
         },
       })
       this.search.wd = ''
