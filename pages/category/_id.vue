@@ -57,14 +57,32 @@
           <div v-if="categoryChildren.length > 0" class="item-row">
             <div class="item-name">分类</div>
             <div class="item-content">
-              <nuxt-link
+              <!-- <nuxt-link
                 v-for="child in categoryChildren"
                 :key="'tree-' + child.id"
                 :to="`/category/${child.id}`"
                 :title="child.title"
                 class="el-link el-link--default"
                 >{{ child.title }}</nuxt-link
+              > -->
+              <el-popover
+                v-for="child in categoryChildren"
+                :key="'tree-pop-' + child.id"
+                placement="top-start"
+                :title="child.title"
+                width="200"
+                trigger="hover"
+                :disabled="!child.description"
+                :content="child.description"
               >
+                <nuxt-link
+                  slot="reference"
+                  :to="`/category/${child.id}`"
+                  :title="child.title"
+                  class="el-link el-link--default"
+                  >{{ child.title }}</nuxt-link
+                >
+              </el-popover>
             </div>
           </div>
           <div class="item-row">
@@ -551,6 +569,7 @@ export default {
   }
   .item-row {
     display: flex;
+    margin-bottom: 10px;
     .item-name {
       width: 60px;
       font-size: 15px;
@@ -562,11 +581,11 @@ export default {
     a {
       display: inline-block;
       margin-right: 20px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       font-weight: normal;
     }
     &:last-of-type {
-      margin-bottom: -20px;
+      margin-bottom: -10px;
     }
   }
   .category-description {
