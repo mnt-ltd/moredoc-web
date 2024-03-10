@@ -456,7 +456,7 @@ export default {
 
       // 过滤二级分类
       trees.forEach((item) => {
-        item.children = item.children.filter((child) => {
+        item.children = (item.children || []).filter((child) => {
           if (this.settings.display.hide_category_without_document) {
             return child.doc_count > 0 && child.enable
           }

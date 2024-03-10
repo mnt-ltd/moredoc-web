@@ -223,7 +223,7 @@ export default {
       })
     },
     onCancel() {
-      this.$router.push('/admin/article')
+      this.$router.push('/admin/article/list')
     },
   },
 }
