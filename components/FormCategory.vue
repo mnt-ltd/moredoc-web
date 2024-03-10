@@ -167,6 +167,11 @@ export default {
         return []
       },
     },
+    type: {
+      // 0: 文档分类 1: 文章分类
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -202,7 +207,7 @@ export default {
           return
         }
         this.loading = true
-        const category = { ...this.category }
+        const category = { ...this.category, type: this.type }
         if (category.parent_id) {
           if (typeof category.parent_id === 'object') {
             category.parent_id =

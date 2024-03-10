@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-admin-article">
     <el-card shadow="never" class="search-card">
       <FormSearch
         :fields="searchFormFields"
@@ -7,6 +7,7 @@
         :show-create="true"
         :show-delete="true"
         :disabled-delete="selectedRow.length === 0"
+        :default-search="search"
         @onSearch="onSearch"
         @onCreate="onCreate"
         @onDelete="batchDelete"
@@ -14,67 +15,88 @@
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <TableList
-        :table-data="trees"
         :loading="loading"
+        :table-data="articles"
         :fields="tableListFields"
         :show-actions="true"
         :show-view="false"
         :show-edit="true"
         :show-delete="true"
         :show-select="true"
-        :tree-props="{ children: 'children' }"
         @selectRow="selectRow"
         @editRow="editRow"
         @deleteRow="deleteRow"
-      />
+      >
+      </TableList>
     </el-card>
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="category.id ? '编辑分类' : '新增分类'"
-      :visible.sync="formVisible"
-      :width="'640px'"
+    <el-card shadow="never" class="mgt-20px">
+      <div class="text-right">
+        <el-pagination
+          background
+          :current-page="search.page"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="search.size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handlePageChange"
+        >
+        </el-pagination>
+      </div>
+    </el-card>
+    <el-drawer
+      :title="article.id ? '编辑文章' : '新增文章'"
+      :visible.sync="formArticleVisible"
+      :size="'80%'"
+      :wrapper-closable="true"
     >
-      <FormCategory
-        ref="categoryForm"
-        :init-category="category"
-        :trees="trees"
-        @success="formCategorySuccess"
+      <FormArticle
+        ref="articleForm"
+        :init-article="article"
+        @success="formSuccess"
       />
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { listCategory, deleteCategory, getCategory } from '~/api/category'
+import { mapGetters } from 'vuex'
+import { listArticle, deleteArticle } from '~/api/article'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
-import FormCategory from '~/components/FormCategory.vue'
-import { categoryToTrees, parseQueryIntArray } from '~/utils/utils'
+import FormArticle from '~/components/FormArticle.vue'
+import { genLinkHTML } from '~/utils/utils'
 export default {
-  components: { TableList, FormSearch, FormCategory },
+  components: { TableList, FormSearch, FormArticle },
   layout: 'admin',
   data() {
     return {
       loading: false,
-      formVisible: false,
+      formArticleVisible: false,
       search: {
         wd: '',
+        page: 1,
         status: [],
+        size: 10,
       },
-      categories: [],
-      trees: [],
+      articles: [],
       total: 0,
       searchFormFields: [],
       tableListFields: [],
       selectedRow: [],
-      category: { id: 0, title: '', cover: '', sort: '', icon: '' },
-      categoryTypeDocument: [0],
+      article: {
+        id: 0,
+        title: '',
+        identifier: '',
+        keywords: '',
+        description: '',
+        content: '',
+      },
     }
   },
   head() {
     return {
-      title: `文档分类 - ${this.settings.system.sitename}`,
+      title: `文章管理 - ${this.settings.system.sitename}`,
     }
   },
   computed: {
@@ -83,37 +105,35 @@ export default {
   watch: {
     '$route.query': {
       immediate: true,
-      async handler() {
+      handler() {
         this.search = {
           ...this.search,
           ...this.$route.query,
-          ...parseQueryIntArray(this.$route.query, ['enable']),
+          page: parseInt(this.$route.query.page) || 1,
+          size: parseInt(this.$route.query.size) || 10,
         }
-        await this.initTableListFields()
-        this.listCategory()
+        this.listArticle()
       },
     },
   },
   created() {
     this.initSearchForm()
+    this.initTableListFields()
+    // await this.listArticle()
   },
   methods: {
-    ...mapActions('category', ['getCategories']),
-    async listCategory() {
+    async listArticle() {
       this.loading = true
-      const res = await listCategory({
-        ...this.search,
-        type: this.categoryTypeDocument,
-      })
+      const res = await listArticle(this.search)
       if (res.status === 200) {
-        let categories = res.data.category || []
-        categories = categories.map((item) => {
-          item.disable_delete = item.doc_count > 0
-          return item
+        const articles = res.data.article || []
+        articles.map((item) => {
+          item.title_html = genLinkHTML(
+            item.title,
+            `/article/${item.identifier}`
+          )
         })
-        this.categories = categories
-
-        this.trees = categoryToTrees(categories)
+        this.articles = articles
         this.total = res.data.total
       } else {
         this.$message.error(res.data.message)
@@ -125,12 +145,14 @@ export default {
       this.$router.push({
         query: this.search,
       })
+      // this.listArticle()
     },
     handlePageChange(val) {
       this.search.page = val
       this.$router.push({
         query: this.search,
       })
+      // this.listArticle()
     },
     onSearch(search) {
       this.search = { ...this.search, ...search, page: 1 }
@@ -140,7 +162,7 @@ export default {
           query: this.search,
         }).href
       ) {
-        this.listCategory()
+        this.listArticle()
       } else {
         this.$router.push({
           query: this.search,
@@ -148,34 +170,18 @@ export default {
       }
     },
     onCreate() {
-      this.category = {
-        id: 0,
-        enable: true,
-        title: '',
-        cover: '',
-        icon: '',
-        parent_id: 0,
-        sort: 0,
-      }
-      this.formVisible = true
+      this.$router.push('/admin/article/set')
     },
     async editRow(row) {
-      const res = await getCategory({ id: row.id })
-      if (res.status === 200) {
-        this.category = { cover: '', icon: '', ...res.data }
-        this.formVisible = true
-      } else {
-        this.$message.error(res.data.message || '查询失败')
-      }
+      this.$router.push(`/admin/article/set?id=${row.id}`)
     },
-    formCategorySuccess() {
-      this.formVisible = false
-      this.getCategories()
-      this.listCategory()
+    formSuccess() {
+      this.formArticleVisible = false
+      this.listArticle()
     },
     batchDelete() {
       this.$confirm(
-        `您确定要删除选中的【${this.selectedRow.length}个】分类吗？本次删除会连同子分类一起删除，删除之后不可恢复！`,
+        `您确定要删除选中的【${this.selectedRow.length}篇】文章吗？删除之后不可恢复！`,
         '温馨提示',
         {
           confirmButtonText: '确定',
@@ -185,10 +191,10 @@ export default {
       )
         .then(async () => {
           const ids = this.selectedRow.map((item) => item.id)
-          const res = await deleteCategory({ id: ids })
+          const res = await deleteArticle({ id: ids })
           if (res.status === 200) {
             this.$message.success('删除成功')
-            this.listCategory()
+            this.listArticle()
           } else {
             this.$message.error(res.data.message)
           }
@@ -197,7 +203,7 @@ export default {
     },
     deleteRow(row) {
       this.$confirm(
-        `您确定要删除分类【${row.title}】吗？本次删除会连同子分类一起删除，删除之后不可恢复！`,
+        `您确定要删除文章【${row.title}】吗？删除之后不可恢复！`,
         '温馨提示',
         {
           confirmButtonText: '确定',
@@ -206,10 +212,10 @@ export default {
         }
       )
         .then(async () => {
-          const res = await deleteCategory({ id: row.id })
+          const res = await deleteArticle({ id: row.id })
           if (res.status === 200) {
             this.$message.success('删除成功')
-            this.listCategory()
+            this.listArticle()
           } else {
             this.$message.error(res.data.message)
           }
@@ -227,48 +233,22 @@ export default {
           name: 'wd',
           placeholder: '请输入关键字',
         },
-        {
-          type: 'select',
-          label: '状态',
-          name: 'enable',
-          placeholder: '请选择状态',
-          multiple: true,
-          options: [
-            { label: '启用', value: 1 },
-            { label: '禁用', value: 0 },
-          ],
-        },
       ]
     },
     initTableListFields() {
-      if (this.tableListFields.length > 0) {
-        return
-      }
       this.tableListFields = [
-        { prop: 'title', label: '名称', minWidth: 120, fixed: 'left' },
         { prop: 'id', label: 'ID', width: 80, type: 'number', fixed: 'left' },
         {
-          prop: 'enable',
-          label: '是否启用',
-          width: 80,
-          type: 'bool',
+          prop: 'title_html',
+          label: '标题',
+          minWidth: 150,
+          fixed: 'left',
+          type: 'html',
         },
-        {
-          prop: 'show_description',
-          label: '显示描述',
-          width: 80,
-          type: 'bool',
-        },
-        {
-          prop: 'sort',
-          label: '排序',
-          width: 80,
-          type: 'number',
-        },
-        { prop: 'icon', label: '图标', width: 48, type: 'image' },
-        { prop: 'cover', label: '封面', width: 100, type: 'image' },
-        { prop: 'doc_count', label: '文档数', width: 80, type: 'number' },
-        { prop: 'description', label: '分类描述', minWidth: 200 },
+        { prop: 'identifier', label: '标识', width: 200 },
+        { prop: 'view_count', label: '浏览', width: 80, type: 'number' },
+        { prop: 'keywords', label: '关键字', width: 200 },
+        { prop: 'description', label: '摘要', minWidth: 200 },
         { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
         { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
       ]
@@ -276,4 +256,10 @@ export default {
   },
 }
 </script>
-<style></style>
+<style lang="scss">
+.page-admin-article {
+  .el-drawer__body {
+    padding: 0 20px;
+  }
+}
+</style>

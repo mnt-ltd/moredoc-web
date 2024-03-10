@@ -38,6 +38,7 @@
         ref="categoryForm"
         :init-category="category"
         :trees="trees"
+        :type="1"
         @success="formCategorySuccess"
       />
     </el-dialog>
@@ -69,12 +70,12 @@ export default {
       tableListFields: [],
       selectedRow: [],
       category: { id: 0, title: '', cover: '', sort: '', icon: '' },
-      categoryTypeDocument: [0],
+      categoryTypeArticle: [1],
     }
   },
   head() {
     return {
-      title: `文档分类 - ${this.settings.system.sitename}`,
+      title: `文章分类 - ${this.settings.system.sitename}`,
     }
   },
   computed: {
@@ -103,7 +104,7 @@ export default {
       this.loading = true
       const res = await listCategory({
         ...this.search,
-        type: this.categoryTypeDocument,
+        type: this.categoryTypeArticle,
       })
       if (res.status === 200) {
         let categories = res.data.category || []
@@ -267,7 +268,7 @@ export default {
         },
         { prop: 'icon', label: '图标', width: 48, type: 'image' },
         { prop: 'cover', label: '封面', width: 100, type: 'image' },
-        { prop: 'doc_count', label: '文档数', width: 80, type: 'number' },
+        { prop: 'doc_count', label: '文章数', width: 80, type: 'number' },
         { prop: 'description', label: '分类描述', minWidth: 200 },
         { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
         { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },

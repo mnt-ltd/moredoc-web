@@ -29,7 +29,11 @@ const cumstomPermissionMap = {
     label: '分类管理',
     path: 'ListCategory',
     children: [],
-    pages: ['/admin/document', '/admin/document/category'],
+    pages: [
+      '/admin/document',
+      '/admin/document/category',
+      '/admin/article/category',
+    ],
   },
   'api.v1.UserAPI': {
     label: '用户管理',
@@ -100,7 +104,12 @@ const cumstomPermissionMap = {
     label: '文章管理',
     path: 'ListArticle',
     children: [],
-    pages: ['/admin/article', '/admin/article/set'],
+    pages: [
+      '/admin/article',
+      '/admin/article/set',
+      '/admin/article/list',
+      '/admin/article/recycle',
+    ],
   },
   'api.v1.CommentAPI': {
     label: '评论管理',
@@ -169,7 +178,7 @@ export const adminMenus = [
     children: [
       {
         page: '/admin/document/category',
-        title: '分类管理',
+        title: '文档分类',
         icon: 'el-icon-s-grid',
       },
       {
@@ -189,6 +198,28 @@ export const adminMenus = [
       },
       {
         page: '/admin/document/recycle',
+        title: '回收站',
+        icon: 'el-icon-delete',
+      },
+    ],
+  },
+  {
+    page: '/admin/article',
+    title: '文章管理',
+    icon: 'el-icon-discover',
+    children: [
+      {
+        page: '/admin/article/category',
+        title: '文章分类',
+        icon: 'el-icon-s-grid',
+      },
+      {
+        page: '/admin/article/list',
+        title: '文章列表',
+        icon: 'el-icon-tickets',
+      },
+      {
+        page: '/admin/article/recycle',
         title: '回收站',
         icon: 'el-icon-delete',
       },
@@ -231,11 +262,6 @@ export const adminMenus = [
     title: '导航管理',
     icon: 'el-icon-monitor',
     is_public: true,
-  },
-  {
-    page: '/admin/article',
-    title: '文章管理',
-    icon: 'el-icon-discover',
   },
   {
     page: '/admin/friendlink',

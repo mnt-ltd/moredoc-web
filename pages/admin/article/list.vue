@@ -74,12 +74,12 @@
 </template>
 
 <script>
-import { listArticle, deleteArticle, getArticle } from '~/api/article'
+import { mapGetters } from 'vuex'
+import { listArticle, deleteArticle } from '~/api/article'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormArticle from '~/components/FormArticle.vue'
 import { genLinkHTML } from '~/utils/utils'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormArticle },
   layout: 'admin',
@@ -140,7 +140,7 @@ export default {
       this.loading = true
       const res = await listArticle(this.search)
       if (res.status === 200) {
-        let articles = res.data.article || []
+        const articles = res.data.article || []
         articles.map((item) => {
           item.title_html = genLinkHTML(
             item.title,
