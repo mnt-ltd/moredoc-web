@@ -6,43 +6,7 @@
     :model="article"
   >
     <el-row :gutter="20">
-      <el-col :span="10">
-        <el-form-item
-          label="标题"
-          prop="title"
-          :rules="[
-            { required: true, trigger: 'blur', message: '请输入文章标题' },
-          ]"
-        >
-          <el-input
-            v-model="article.title"
-            placeholder="请输入文章标题"
-            clearable
-          ></el-input>
-        </el-form-item>
-      </el-col>
-      <el-col :span="7">
-        <el-form-item
-          label="标识"
-          prop="identifier"
-          :rules="[
-            {
-              required: true,
-              trigger: 'blur',
-              message: '请输入文章标识，建议为字母和数字组合',
-            },
-          ]"
-        >
-          <!-- 如果是编辑文章，不允许修改文章标识 -->
-          <el-input
-            v-model="article.identifier"
-            placeholder="请输入文章标识，建议为字母和数字组合"
-            :disabled="article.id > 0"
-            clearable
-          ></el-input>
-        </el-form-item>
-      </el-col>
-      <el-col :span="7">
+      <el-col :span="6">
         <el-form-item
           label="分类"
           prop="category_id"
@@ -63,6 +27,33 @@
             clearable
             placeholder="请选择文章分类"
           ></el-cascader>
+        </el-form-item>
+      </el-col>
+      <el-col :span="11">
+        <el-form-item
+          label="标题"
+          prop="title"
+          :rules="[
+            { required: true, trigger: 'blur', message: '请输入文章标题' },
+          ]"
+        >
+          <el-input
+            v-model="article.title"
+            placeholder="请输入文章标题"
+            clearable
+          >
+          </el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="7">
+        <el-form-item label="标识" prop="identifier">
+          <!-- 如果是编辑文章，不允许修改文章标识 -->
+          <el-input
+            v-model="article.identifier"
+            placeholder="请输入文章标识，建议为字母和数字组合"
+            :disabled="article.id > 0"
+            clearable
+          ></el-input>
         </el-form-item>
       </el-col>
     </el-row>
