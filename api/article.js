@@ -40,4 +40,34 @@ export const listArticle = (params) => {
   })
 }
 
+export const listRecycleArticle = (params) => {
+  return service({
+    url: '/api/v1/article/recycle/list',
+    method: 'get',
+    params,
+  })
+}
 
+export const restoreRecycleArticle = (data) => {
+  return service({
+    url: '/api/v1/article/recycle/restore',
+    method: 'post',
+    data,
+  })
+}
+
+export const deleteRecycleArticle = (params) => {
+  return service({
+    url: '/api/v1/article/recycle',
+    method: 'delete',
+    params,
+  })
+}
+
+export const emptyRecycleArticle = (params) => {
+  return service({
+    url: '/api/v1/article/recycle/empty',
+    method: 'delete',
+    params,
+  })
+}

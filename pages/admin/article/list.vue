@@ -11,7 +11,26 @@
         @onSearch="onSearch"
         @onCreate="onCreate"
         @onDelete="batchDelete"
-      />
+      >
+        <template slot="buttons">
+          <el-form-item>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="批量修改选中的文档分类"
+              placement="top"
+            >
+              <el-button
+                type="success"
+                @click="batchUpdateDocumentsCategory"
+                :disabled="selectedRow.length === 0"
+                icon="el-icon-edit"
+                >批量分类</el-button
+              >
+            </el-tooltip>
+          </el-form-item>
+        </template>
+      </FormSearch>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <TableList
@@ -76,10 +95,16 @@
 <script>
 import { mapGetters } from 'vuex'
 import { listArticle, deleteArticle } from '~/api/article'
+import { listCategory } from '~/api/category'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormArticle from '~/components/FormArticle.vue'
-import { genLinkHTML } from '~/utils/utils'
+import {
+  genLinkHTML,
+  categoryToTrees,
+  parseQueryIntArray,
+  parseQueryBoolArray,
+} from '~/utils/utils'
 export default {
   components: { TableList, FormSearch, FormArticle },
   layout: 'admin',
@@ -95,6 +120,8 @@ export default {
       },
       articles: [],
       total: 0,
+      trees: [],
+      categoryMap: {},
       searchFormFields: [],
       tableListFields: [],
       selectedRow: [],
@@ -106,6 +133,8 @@ export default {
         description: '',
         content: '',
       },
+      formArticlesCategoryVisible: false,
+      categoryArticles: [],
     }
   },
   head() {
@@ -119,23 +148,50 @@ export default {
   watch: {
     '$route.query': {
       immediate: true,
-      handler() {
+      async handler() {
         this.search = {
           ...this.search,
           ...this.$route.query,
           page: parseInt(this.$route.query.page) || 1,
           size: parseInt(this.$route.query.size) || 10,
         }
+        // 需要先加载分类数据
+        if (this.trees.length === 0) {
+          await this.listCategory()
+        }
         this.listArticle()
       },
     },
   },
   async created() {
-    this.initSearchForm()
+    await this.initSearchForm()
     this.initTableListFields()
-    // await this.listArticle()
   },
   methods: {
+    async listCategory() {
+      const res = await listCategory({
+        field: ['id', 'parent_id', 'title'],
+        type: [1], // 筛选文章分类
+      })
+      if (res.status === 200) {
+        let categories = res.data.category || []
+        categories = categories.map((item) => {
+          item.disable_delete = item.doc_count > 0
+          return item
+        })
+
+        const categoryMap = {}
+        categories.forEach((item) => {
+          categoryMap[item.id] = item
+        })
+        this.categoryMap = categoryMap
+        this.trees = categoryToTrees(categories, false)
+        this.total = res.data.total
+        await this.initSearchForm()
+      } else {
+        this.$message.error(res.data.message)
+      }
+    },
     async listArticle() {
       this.loading = true
       const res = await listArticle(this.search)
@@ -247,6 +303,22 @@ export default {
           name: 'wd',
           placeholder: '请输入关键字',
         },
+        // {
+        //   type: 'select',
+        //   label: '状态',
+        //   name: 'status',
+        //   placeholder: '请选择状态',
+        //   multiple: true,
+        //   options: documentStatusOptions,
+        // },
+        // 级联
+        {
+          type: 'cascader',
+          label: '分类',
+          name: 'category_id',
+          placeholder: '请选择分类',
+          trees: this.trees,
+        },
       ]
     },
     initTableListFields() {
@@ -261,11 +333,15 @@ export default {
         },
         { prop: 'identifier', label: '标识', width: 200 },
         { prop: 'view_count', label: '浏览', width: 80, type: 'number' },
-        { prop: 'keywords', label: '关键字', width: 200 },
-        { prop: 'description', label: '摘要', minWidth: 200 },
+        // { prop: 'keywords', label: '关键字', width: 200 },
+        // { prop: 'description', label: '摘要', minWidth: 200 },
         { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
         { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
       ]
+    },
+    batchUpdateArticlesCategory() {
+      this.categoryArticles = this.selectedRow
+      this.formArticlesCategoryVisible = true
     },
   },
 }

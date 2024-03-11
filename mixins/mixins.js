@@ -60,7 +60,7 @@ export default {
           .querySelector('footer')
           .getBoundingClientRect().top
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
     },
   },

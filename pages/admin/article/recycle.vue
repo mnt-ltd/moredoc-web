@@ -61,7 +61,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { listArticle, deleteArticle } from '~/api/article'
+import { listRecycleArticle, deleteArticle } from '~/api/article'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormArticle from '~/components/FormArticle.vue'
@@ -96,7 +96,7 @@ export default {
   },
   head() {
     return {
-      title: `文章管理 - ${this.settings.system.sitename}`,
+      title: `文章回收站 - ${this.settings.system.sitename}`,
     }
   },
   computed: {
@@ -124,7 +124,7 @@ export default {
   methods: {
     async listArticle() {
       this.loading = true
-      const res = await listArticle(this.search)
+      const res = await listRecycleArticle(this.search)
       if (res.status === 200) {
         const articles = res.data.article || []
         articles.map((item) => {

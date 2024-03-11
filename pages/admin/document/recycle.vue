@@ -183,7 +183,9 @@ export default {
         documents.forEach((item) => {
           ;(item.category_id || (item.category_id = [])).forEach((id) => {
             ;(item.category_name || (item.category_name = [])).push(
-              this.categoryMap[id].title || '-' // 有可能分类已经被删除
+              this.categoryMap[id] && this.categoryMap[id].title
+                ? this.categoryMap[id].title
+                : '-'
             )
           })
           item.title_html = genLinkHTML(item.title, `/document/${item.id}`)
@@ -215,9 +217,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listDocument()
       } else {

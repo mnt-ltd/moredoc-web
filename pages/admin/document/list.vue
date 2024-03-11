@@ -333,7 +333,9 @@ export default {
           item.disable_delete = item.status === 1
           ;(item.category_id || (item.category_id = [])).forEach((id) => {
             ;(item.category_name || (item.category_name = [])).push(
-              this.categoryMap[id].title
+              this.categoryMap[id] && this.categoryMap[id].title
+                ? this.categoryMap[id].title
+                : '-'
             )
           })
           item.title_html = genLinkHTML(item.title, `/document/${item.id}`)
