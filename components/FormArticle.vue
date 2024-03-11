@@ -43,40 +43,48 @@
         </el-form-item>
       </el-col>
       <el-col :span="7">
+        <el-form-item
+          label="分类"
+          prop="category_id"
+          :rules="[
+            { required: true, trigger: 'blur', message: '请选择文章分类' },
+          ]"
+        >
+          <el-cascader
+            v-model="article.category_id"
+            :options="categoryTrees"
+            :filterable="true"
+            :props="{
+              checkStrictly: true,
+              expandTrigger: 'hover',
+              label: 'title',
+              value: 'id',
+            }"
+            clearable
+            placeholder="请选择文章分类"
+          ></el-cascader>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="17">
+        <el-form-item label="关键字">
+          <el-input
+            v-model="article.keywords"
+            placeholder="请输入文章关键字，多个关键字用英文逗号分隔"
+          ></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="7">
         <el-form-item label="作者">
           <el-input
             v-model="article.author"
-            placeholder="请输入文章作者，可为空，默认为当前登录用户"
+            placeholder="请输入文章作者，默认为当前登录用户"
           ></el-input>
         </el-form-item>
       </el-col>
     </el-row>
-    <el-form-item
-      label="分类"
-      prop="category_id"
-      :rules="[{ required: true, trigger: 'blur', message: '请选择文章分类' }]"
-    >
-      <el-cascader
-        v-model="article.category_id"
-        :options="categoryTrees"
-        :filterable="true"
-        :props="{
-          checkStrictly: true,
-          expandTrigger: 'hover',
-          label: 'title',
-          value: 'id',
-          multiple: true,
-        }"
-        clearable
-        placeholder="请选择文章分类"
-      ></el-cascader>
-    </el-form-item>
-    <el-form-item label="关键字">
-      <el-input
-        v-model="article.keywords"
-        placeholder="请输入文章关键字，多个关键字用英文逗号分隔"
-      ></el-input>
-    </el-form-item>
+
     <el-form-item label="描述">
       <el-input
         v-model="article.description"
@@ -219,11 +227,6 @@ export default {
         }
         this.loading = true
         const article = { ...this.article }
-        const categoryId = []
-        article.category_id.forEach((item) => {
-          categoryId.push(...item)
-        })
-        article.category_id = categoryId || []
         if (this.article.id > 0) {
           const res = await updateArticle(article)
           if (res.status === 200) {

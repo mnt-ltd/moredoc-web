@@ -57,7 +57,7 @@
         ></el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="12" v-if="isAdmin">
+        <el-col v-if="isAdmin" :span="12">
           <el-form-item
             label="状态"
             prop="status"
@@ -126,9 +126,9 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { updateDocument } from '~/api/document'
 import { documentStatusOptions } from '~/utils/enum'
-import { mapGetters } from 'vuex'
 export default {
   name: 'FormUpdateDocument',
   props: {
