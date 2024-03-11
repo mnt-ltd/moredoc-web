@@ -48,8 +48,8 @@
   </div>
 </template>
 <script>
-import { formatDatetime, formatRelativeTime } from '~/utils/utils'
 import { mapGetters } from 'vuex'
+import { formatDatetime, formatRelativeTime } from '~/utils/utils'
 export default {
   props: {
     articles: {

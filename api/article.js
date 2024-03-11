@@ -71,3 +71,11 @@ export const emptyRecycleArticle = (params) => {
     params,
   })
 }
+
+export const setArticlesCategory = (data) => {
+  return service({
+    url: '/api/v1/article/category',
+    method: 'put',
+    data,
+  })
+}

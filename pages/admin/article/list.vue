@@ -89,6 +89,19 @@
         @success="formSuccess"
       />
     </el-drawer>
+    <el-dialog
+      :close-on-click-modal="false"
+      title="批量分类"
+      width="640px"
+      :visible.sync="formArticlesCategoryVisible"
+    >
+      <FormUpdateArticlesCategory
+        v-if="formArticlesCategoryVisible"
+        :category-trees="trees"
+        :articles="categoryArticles"
+        @success="formSuccess"
+      />
+    </el-dialog>
   </div>
 </template>
 
@@ -198,6 +211,13 @@ export default {
       if (res.status === 200) {
         const articles = res.data.article || []
         articles.map((item) => {
+          ;(item.category_id || (item.category_id = [])).forEach((id) => {
+            ;(item.category_name || (item.category_name = [])).push(
+              this.categoryMap[id] && this.categoryMap[id].title
+                ? this.categoryMap[id].title
+                : '-'
+            )
+          })
           item.title_html = genLinkHTML(
             item.title,
             `/article/${item.identifier}`
@@ -248,6 +268,7 @@ export default {
     },
     formSuccess() {
       this.formArticleVisible = false
+      this.formArticlesCategoryVisible = false
       this.listArticle()
     },
     batchDelete() {
@@ -304,15 +325,6 @@ export default {
           name: 'wd',
           placeholder: '请输入关键字',
         },
-        // {
-        //   type: 'select',
-        //   label: '状态',
-        //   name: 'status',
-        //   placeholder: '请选择状态',
-        //   multiple: true,
-        //   options: documentStatusOptions,
-        // },
-        // 级联
         {
           type: 'cascader',
           label: '分类',
@@ -334,6 +346,12 @@ export default {
         },
         { prop: 'identifier', label: '标识', width: 200 },
         { prop: 'view_count', label: '浏览', width: 80, type: 'number' },
+        {
+          prop: 'category_name',
+          label: '分类',
+          minWidth: 180,
+          type: 'breadcrumb',
+        },
         // { prop: 'keywords', label: '关键字', width: 200 },
         // { prop: 'description', label: '摘要', minWidth: 200 },
         { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
@@ -342,6 +360,7 @@ export default {
     },
     batchUpdateArticlesCategory() {
       this.categoryArticles = this.selectedRow
+      console.log('this.categoryArticles', this.categoryArticles)
       this.formArticlesCategoryVisible = true
     },
   },
