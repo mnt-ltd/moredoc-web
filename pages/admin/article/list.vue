@@ -360,7 +360,6 @@ export default {
     },
     batchUpdateArticlesCategory() {
       this.categoryArticles = this.selectedRow
-      console.log('this.categoryArticles', this.categoryArticles)
       this.formArticlesCategoryVisible = true
     },
   },

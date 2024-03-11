@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { listCategory } from '~/api/category'
 import {
   clearRecycleDocument,
@@ -93,7 +94,6 @@ import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import { categoryToTrees, parseQueryIntArray, genLinkHTML } from '~/utils/utils'
 import { documentStatusOptions } from '~/utils/enum'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch },
   layout: 'admin',
@@ -229,7 +229,7 @@ export default {
       }
     },
     recoverRow(row) {
-      this.$confirm(`您确定要要恢复【${row.title}】吗？`, '温馨提示', {
+      this.$confirm(`您确定要恢复文档【${row.title}】吗？`, '温馨提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info',
