@@ -22,9 +22,9 @@
             >
               <el-button
                 type="success"
-                @click="batchUpdateDocumentsCategory"
                 :disabled="selectedRow.length === 0"
                 icon="el-icon-edit"
+                @click="batchUpdateArticlesCategory"
                 >批量分类</el-button
               >
             </el-tooltip>
@@ -202,6 +202,7 @@ export default {
             item.title,
             `/article/${item.identifier}`
           )
+          return item
         })
         this.articles = articles
         this.total = res.data.total
@@ -242,7 +243,7 @@ export default {
     onCreate() {
       this.$router.push('/admin/article/set')
     },
-    async editRow(row) {
+    editRow(row) {
       this.$router.push(`/admin/article/set?id=${row.id}`)
     },
     formSuccess() {
@@ -251,7 +252,7 @@ export default {
     },
     batchDelete() {
       this.$confirm(
-        `您确定要删除选中的【${this.selectedRow.length}篇】文章吗？删除之后不可恢复！`,
+        `您确定要删除选中的【${this.selectedRow.length}篇】文章吗？删除之后将会在回收站！`,
         '温馨提示',
         {
           confirmButtonText: '确定',
