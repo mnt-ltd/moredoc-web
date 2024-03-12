@@ -1,5 +1,6 @@
 import { listCategory } from '~/api/category'
 import { categoryToTrees } from '~/utils/utils'
+import { categoryTypeOptions } from '~/utils/enum'
 export const category = {
   namespaced: true,
   state: {
@@ -24,6 +25,7 @@ export const category = {
   },
   actions: {
     async getCategories({ commit }) {
+      const types = categoryTypeOptions.map((item) => item.value)
       const res = await listCategory({
         field: [
           'id',
@@ -35,7 +37,9 @@ export const category = {
           'enable',
           'description',
           'show_description',
+          'type',
         ],
+        type: types,
       })
       if (res.status === 200) {
         commit('setCategories', res.data.category || [])
@@ -48,6 +52,9 @@ export const category = {
   getters: {
     categories(state) {
       return state.categories
+    },
+    documentCategories(state) {
+      return state.categories.filter((item) => !item.type)
     },
     categoryTrees(state) {
       return state.categoryTrees

@@ -328,30 +328,14 @@ export default {
     const breadcrumbs = []
     let category = { siblings: [], ...this.categoryMap[this.categoryId] }
     if (category.id) {
-      category.siblings =
-        this.categories.filter((x) => {
-          if (
-            this.settings.display &&
-            this.settings.display.hide_category_without_document
-          ) {
-            return x.parent_id === category.parent_id && x.doc_count > 0
-          }
-          return x.parent_id === category.parent_id
-        }) || []
+      // 查询当前分类的兄弟分类
+      category.siblings = this.filterCategorySiblings(category)
       breadcrumbs.push(category)
       while (category.parent_id) {
+        // 查询当前分类的父级分类的兄弟分类
         category = { siblings: [], ...this.categoryMap[category.parent_id] }
         if (category.id) {
-          category.siblings =
-            this.categories.filter((x) => {
-              if (
-                this.settings.display &&
-                this.settings.display.hide_category_without_document
-              ) {
-                return x.parent_id === category.parent_id && x.doc_count > 0
-              }
-              return x.parent_id === category.parent_id
-            }) || []
+          category.siblings = this.filterCategorySiblings(category)
           breadcrumbs.splice(0, 0, category)
         }
       }
@@ -375,7 +359,8 @@ export default {
         ) {
           return (
             x.parent_id === breadcrumbs[breadcrumbs.length - 1].id &&
-            x.doc_count > 0
+            x.doc_count > 0 &&
+            !x.type
           )
         }
         return x.parent_id === breadcrumbs[breadcrumbs.length - 1].id
@@ -407,6 +392,20 @@ export default {
       this.$router.push({
         path: '/category/' + category.id,
       })
+    },
+    filterCategorySiblings(category) {
+      try {
+        return this.categories.filter((x) => {
+          if (
+            this.settings.display &&
+            this.settings.display.hide_category_without_document
+          ) {
+            return x.parent_id === category.parent_id && x.doc_count > 0
+          }
+          return x.parent_id === category.parent_id
+        })
+      } catch (error) {}
+      return []
     },
     setQuery() {
       this.query.id = parseInt(this.$route.params.id) || 0

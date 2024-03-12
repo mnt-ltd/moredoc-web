@@ -29,9 +29,9 @@
             index="channel"
             class="hidden-xs-only"
           >
-            <template slot="title">频道分类</template>
+            <template slot="title">文档分类</template>
             <el-menu-item
-              v-for="item in categoryTrees"
+              v-for="item in categoryTrees.filter((item) => !item.type)"
               :key="'sub-cate-' + item.id"
               class="channel-category"
               :index="`/category/${item.id}`"
@@ -45,7 +45,9 @@
           </el-submenu>
           <template v-if="navigations.length === 0">
             <el-menu-item
-              v-for="(item, index) in categoryTrees"
+              v-for="(item, index) in categoryTrees.filter(
+                (item) => !item.type
+              )"
               v-show="$route.path === '/' && index < 6"
               :key="'c-' + item.id"
               :index="`/category/${item.id}`"
@@ -381,11 +383,11 @@
       <el-collapse v-model="activeCollapse">
         <el-collapse-item name="categories">
           <template slot="title"
-            ><i class="el-icon-menu"></i> &nbsp; <span>频道分类</span>
+            ><i class="el-icon-menu"></i> &nbsp; <span>文档分类</span>
           </template>
           <ul>
             <li
-              v-for="item in categoryTrees"
+              v-for="item in categoryTrees.filter((item) => !item.type)"
               :key="'collapse-sub-cate-' + item.id"
             >
               <div

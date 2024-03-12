@@ -180,6 +180,7 @@ export const datetimePickerPunishmentOptions = {
     {
       text: '半年',
       onClick(picker) {
+        const start = new Date()
         const end = new Date()
         end.setTime(end.getTime() + 3600 * 1000 * 24 * 183)
         picker.$emit('pick', [start, end])
@@ -188,6 +189,7 @@ export const datetimePickerPunishmentOptions = {
     {
       text: '1年',
       onClick(picker) {
+        const start = new Date()
         const end = new Date()
         end.setTime(end.getTime() + 3600 * 1000 * 24 * 365)
         picker.$emit('pick', [start, end])
@@ -333,4 +335,12 @@ export const advertisementPositions = [
       },
     ],
   },
+]
+
+export const categoryTypeDocument = 0
+export const categoryTypeArticle = 1
+
+export const categoryTypeOptions = [
+  { label: '文档', value: categoryTypeDocument },
+  { label: '文章', value: categoryTypeArticle },
 ]

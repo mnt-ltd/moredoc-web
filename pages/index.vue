@@ -294,7 +294,9 @@
     >
       <el-row :gutter="20">
         <div
-          v-for="(category, index) in categoryTreesV2"
+          v-for="(category, index) in categoryTreesV2.filter(
+            (item) => !item.type
+          )"
           :key="'tree-' + category.id"
         >
           <el-col v-if="index < 4" :span="6">
