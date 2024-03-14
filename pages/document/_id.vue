@@ -284,7 +284,8 @@
                 :to="`/user/${document.user_id}`"
                 class="el-link el-link--primary"
                 >{{ document.user.username || '匿名用户' }}</nuxt-link
-              >于
+              >
+              于
               <span class="text-muted">
                 {{ formatDatetime(document.created_at) }}
               </span>

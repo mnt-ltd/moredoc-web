@@ -21,13 +21,13 @@
             class="el-link el-link--default"
             >会员中心</nuxt-link
           >
-          <nuxt-link class="el-link el-link--default" v-else to="/login"
+          <nuxt-link v-else class="el-link el-link--default" to="/login"
             >登录账户</nuxt-link
           >
         </span>
       </el-col>
     </el-row>
-    <div class="search-box" ref="searchBox">
+    <div ref="searchBox" class="search-box">
       <el-row :gutter="20">
         <el-col :span="4" class="logo hidden-xs-only">
           <nuxt-link to="/" :title="settings.system.sitename"
@@ -47,8 +47,8 @@
           >
             <i
               slot="suffix"
-              @click="onSearch"
               class="el-input__icon el-icon-search btn-search"
+              @click="onSearch"
             ></i>
           </el-input>
         </el-col>
@@ -57,14 +57,14 @@
     <el-row :gutter="20">
       <template v-for="item in advertisements">
         <el-col
-          :span="24"
-          :key="item.position + item.id"
           v-if="item.position == 'search_top'"
+          :key="item.position + item.id"
+          :span="24"
         >
           <div v-html="item.content"></div>
         </el-col>
       </template>
-      <el-col :span="18" class="search-main" ref="searchMain">
+      <el-col ref="searchMain" :span="18" class="search-main">
         <el-card v-loading="loading" shadow="never">
           <div slot="header">
             <div class="search-filter">
@@ -77,7 +77,7 @@
                   <el-dropdown-item
                     v-for="item in [
                       { id: 0, title: '全部分类' },
-                      ...categoryTrees,
+                      ...categoryTrees.filter((item) => !item.type),
                     ]"
                     :key="'cate-' + item.id"
                     :value="item.id"
@@ -96,8 +96,8 @@
                 </el-dropdown-menu>
               </el-dropdown>
               <el-dropdown
-                :show-timeout="showTimeout"
                 v-if="(settings.language || []).length > 0"
+                :show-timeout="showTimeout"
               >
                 <el-button type="text" :size="filterSize">
                   {{ filterLanguageName(query.language) }}
@@ -300,8 +300,8 @@
         </div>
         <template v-for="item in advertisements">
           <div
-            :key="item.position + item.id"
             v-if="item.position == 'search_right'"
+            :key="item.position + item.id"
             v-html="item.content"
           ></div>
         </template>
@@ -309,8 +309,8 @@
     </el-row>
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'search_bottom'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
@@ -414,7 +414,7 @@ export default {
   watch: {
     '$route.query': {
       handler(val) {
-        let query = {
+        const query = {
           page: 1,
           size: 10,
           sort: 'default',
@@ -436,7 +436,7 @@ export default {
     },
   },
   created() {
-    let query = { ...this.query, ...this.$route.query }
+    const query = { ...this.query, ...this.$route.query }
     query.page = parseInt(query.page) || 1
     query.size = parseInt(query.size) || 10
     try {
@@ -542,7 +542,7 @@ export default {
       if (!query.category_id) {
         delete query.category_id
       }
-      query['created_at'] = genTimeDuration(query.duration)
+      query.created_at = genTimeDuration(query.duration)
       delete query.duration
 
       const res = await searchDocument(query)

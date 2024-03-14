@@ -27,7 +27,7 @@
                   </span>
                   <el-dropdown-menu slot="dropdown" class="breadcrumb-dropdown">
                     <el-dropdown-item
-                      v-for="ss in item.siblings"
+                      v-for="ss in item.siblings.filter((x) => !x.type)"
                       :key="'s1-' + ss.id"
                     >
                       <nuxt-link
