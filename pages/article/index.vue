@@ -1,15 +1,29 @@
 <template>
   <div class="page page-article-index">
     <el-row :gutter="20">
-      <el-col :span="18">
+      <el-col :span="4">
+        <article-navbar :active-id="activeId" />
+      </el-col>
+      <el-col :span="14">
         <el-card shadow="never">
-          <div slot="header">
-            <el-breadcrumb separator="/">
-              <el-breadcrumb-item>
-                <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
-              </el-breadcrumb-item>
-              <el-breadcrumb-item>文章列表</el-breadcrumb-item>
-            </el-breadcrumb>
+          <div slot="header" class="header-tabs">
+            <nuxt-link
+              class="el-link el-link--default el-link--primary"
+              :to="`?category_id=${$route.query.category_id}&tab=latest`"
+              >最新</nuxt-link
+            >
+            <nuxt-link
+              class="el-link el-link--default"
+              :to="`?category_id=${$route.query.category_id}&tab=popular`"
+              >热门</nuxt-link
+            >
+            <el-button
+              size="small"
+              type="primary"
+              style="float: right"
+              icon="el-icon-plus"
+              >发布文章</el-button
+            >
           </div>
           <article-list :articles="articles" />
           <el-pagination
@@ -31,12 +45,12 @@
       </el-col>
       <el-col :span="6">
         <el-card shadow="never" class="popular">
-          <div slot="header">热门</div>
+          <div slot="header">推荐</div>
           <div v-if="populars.length > 0">
             <nuxt-link
-              :to="`/article/${article.identifier}`"
               v-for="article in populars"
               :key="'article-' + article.id"
+              :to="`/article/${article.identifier}`"
               :title="article.title"
               class="el-link el-link--default"
               >{{ article.title }}</nuxt-link
@@ -51,8 +65,11 @@
 <script>
 import { mapGetters } from 'vuex'
 import { listArticle } from '~/api/article'
+import ArticleNavbar from '~/components/ArticleNavbar.vue'
 export default {
   name: 'PageArticleIndex',
+  components: { ArticleNavbar },
+  layout: 'article',
   data() {
     return {
       total: 0,
@@ -70,7 +87,7 @@ export default {
   watch: {
     $route: {
       handler() {
-        let page = this.$route.query.page || 1
+        const page = this.$route.query.page || 1
         this.query.page = parseInt(page) || 1
         this.getArticles()
       },

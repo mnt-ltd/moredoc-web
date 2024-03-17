@@ -1,20 +1,26 @@
 <template>
-  <el-container class="layout-default">
-    <global-navbar />
+  <el-container class="layout-article">
+    <GlobalNavbar />
     <el-main>
       <nuxt />
     </el-main>
-    <global-footer />
+    <GlobalFooter />
+    <template v-for="item in advertisements">
+      <div
+        v-if="item.position == 'global_bottom'"
+        :key="item.position + item.id"
+        v-html="item.content"
+      ></div>
+    </template>
   </el-container>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { listFriendlink } from '~/api/friendlink'
-import { listNavigation } from '~/api/navigation'
-import { categoryToTrees, requireLogin } from '~/utils/utils'
-import { getSignedToday, signToday } from '~/api/user'
 import GlobalNavbar from '~/components/GlobalNavbar.vue'
 import GlobalFooter from '~/components/GlobalFooter.vue'
+import { listFriendlink } from '~/api/friendlink'
+import { categoryToTrees, requireLogin } from '~/utils/utils'
+import { getSignedToday, signToday } from '~/api/user'
 
 export default {
   components: { GlobalNavbar, GlobalFooter },
@@ -59,9 +65,7 @@ export default {
     await Promise.all([
       this.getCategories(),
       this.getSettings(),
-      this.listNavigation(),
       this.listFriendlink(),
-      this.getAdvertisements('global'),
     ])
 
     this.categoryTrees = categoryToTrees(this.categories).filter((item) => {
@@ -121,14 +125,6 @@ export default {
         this.$message.error(res.message || res.data.message)
       }
     },
-    async listNavigation() {
-      const res = await listNavigation({ page: 1, size: 10000 })
-      if (res.status === 200) {
-        let navigations = res.data.navigation || []
-        navigations = categoryToTrees(navigations).filter((item) => item.enable)
-        this.navigations = navigations
-      }
-    },
     onSearch() {
       if (!this.search.wd) return
       this.menuDrawerVisible = false
@@ -157,7 +153,8 @@ export default {
       console.log('handleDropdown', command)
       switch (command) {
         case 'logout':
-          await this.logout()
+          const res = await this.logout()
+          console.log(res)
           location.reload()
           break
         case 'upload':
@@ -180,7 +177,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.layout-default {
+.layout-article {
   background-color: $background-grey-light;
   min-width: $min-width !important;
   .el-table th {
@@ -231,6 +228,99 @@ export default {
     border-radius: 5px;
     border: 0;
   }
+  .el-header {
+    padding: 0;
+    background: #fff;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    overflow: hidden;
+    border-bottom: 1px solid $background-grey-light;
+    .logo {
+      &.is-active {
+        border-color: transparent !important;
+      }
+      img {
+        margin-top: -4px;
+        height: 42px;
+      }
+    }
+    & > div {
+      margin: 0 auto;
+      width: $default-width;
+      max-width: $max-width;
+    }
+    .el-menu--horizontal > .el-submenu .el-submenu__title {
+      padding-top: 1px;
+    }
+    .el-menu.el-menu--horizontal {
+      border-bottom: 0;
+      width: $default-width;
+      max-width: $max-width;
+      min-width: $min-width;
+      .float-right {
+        float: right;
+        a {
+          padding: 0 15px;
+        }
+      }
+    }
+    .menu-drawer {
+      display: none;
+    }
+    .nav-searchbox {
+      padding: 0 25px !important;
+      top: -2px;
+      &.nav-searchbox-large {
+        .el-input {
+          width: 300px;
+        }
+      }
+      &.is-active {
+        border-color: transparent;
+      }
+      .el-input {
+        width: 200px;
+      }
+    }
+    a {
+      text-decoration: none;
+      height: 60px;
+      line-height: 60px;
+      display: inline-block;
+      // padding: 0 20px;
+      padding: 0 15px;
+    }
+    .el-menu-item {
+      padding: 0;
+      [class^='el-icon-'] {
+        font-size: 15px;
+        margin-right: 2px;
+      }
+    }
+  }
+
+  .nav-ucenter {
+    &.is-active {
+      border-color: transparent !important;
+    }
+    .el-dropdown-link {
+      line-height: 60px;
+      display: inline-block;
+      font-weight: 400;
+      font-size: 1.2em;
+      margin-top: -8px;
+      .nav-user-avatar {
+        position: relative;
+        top: -2px;
+      }
+    }
+  }
+}
+.dropdown-upload {
+  font-size: 17px;
+  margin-left: -2px;
 }
 .page {
   width: $default-width;
