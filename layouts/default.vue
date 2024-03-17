@@ -177,47 +177,61 @@
         </el-card>
       </div>
       <div class="footer-links">
-        <div>
-          <el-link
-            v-if="settings.footer.about"
-            :underline="false"
-            type="white"
-            target="_blank"
-            :href="settings.footer.about"
-            >关于我们</el-link
-          >
-          <el-link
-            v-if="settings.footer.agreement"
-            :href="settings.footer.agreement"
-            :underline="false"
-            target="_blank"
-            type="white"
-            >文库协议</el-link
-          >
-          <el-link
-            v-if="settings.footer.contact"
-            :underline="false"
-            type="white"
-            target="_blank"
-            :href="settings.footer.contact"
-            >联系我们</el-link
-          >
-          <el-link
-            v-if="settings.footer.feedback"
-            :underline="false"
-            type="white"
-            :href="settings.footer.feedback"
-            target="_blank"
-            >意见反馈</el-link
-          >
-          <el-link
-            v-if="settings.footer.copyright"
-            :underline="false"
-            type="white"
-            :href="settings.footer.copyright"
-            target="_blank"
-            >免责声明</el-link
-          >
+        <div class="links-logo">
+          <nuxt-link to="/">
+            <img
+              :src="settings.system.logo || '/static/images/logo-empty.png'"
+              :alt="settings.system.sitename"
+            />
+          </nuxt-link>
+          <div>
+            <el-link
+              v-if="settings.footer.about"
+              :underline="false"
+              type="white"
+              target="_blank"
+              :href="settings.footer.about"
+              >关于我们</el-link
+            >
+            <el-link
+              v-if="settings.footer.agreement"
+              :href="settings.footer.agreement"
+              :underline="false"
+              target="_blank"
+              type="white"
+              >文库协议</el-link
+            >
+            <el-link
+              v-if="settings.footer.contact"
+              :underline="false"
+              type="white"
+              target="_blank"
+              :href="settings.footer.contact"
+              >联系我们</el-link
+            >
+            <el-link
+              v-if="settings.footer.feedback"
+              :underline="false"
+              type="white"
+              :href="settings.footer.feedback"
+              target="_blank"
+              >意见反馈</el-link
+            >
+            <el-link
+              v-if="settings.footer.copyright"
+              :underline="false"
+              type="white"
+              :href="settings.footer.copyright"
+              target="_blank"
+              >免责声明</el-link
+            >
+          </div>
+        </div>
+        <div v-if="settings.display.copyright_statement">
+          <div
+            class="el-link el-link--default copyright-statement"
+            v-html="settings.display.copyright_statement"
+          ></div>
         </div>
         <div>
           <el-link
@@ -246,8 +260,6 @@
             href="/sitemap.xml"
             >站点地图</el-link
           >
-        </div>
-        <div v-if="settings.system.icp || settings.system.sec_icp">
           <el-link
             v-if="settings.system.icp"
             :underline="false"
@@ -269,26 +281,19 @@
             )}`"
             >{{ settings.system.sec_icp }}</el-link
           >
-        </div>
-        <div v-if="settings.display.copyright_statement">
-          <div
-            class="el-link el-link--default"
-            v-html="settings.display.copyright_statement"
-          ></div>
-        </div>
-        <div>
-          Powered By
-          <el-link
-            :underline="false"
-            type="primary"
-            target="_blank"
-            href="https://mnt.ltd/#services"
-            title="MOREDOC"
-            class="powered-by"
-            >MOREDOC</el-link
-          >
-          CE
-          <span>{{ settings.system.version }}</span>
+          <div class="powered-by">
+            Powered By
+            <el-link
+              :underline="false"
+              type="primary"
+              target="_blank"
+              href="https://mnt.ltd/#services"
+              title="MOREDOC"
+              >MOREDOC</el-link
+            >
+            CE
+            <span>{{ settings.system.version }}</span>
+          </div>
         </div>
       </div>
     </el-footer>
@@ -501,7 +506,7 @@ export default {
     ...mapActions('category', ['getCategories']),
     ...mapActions('setting', ['getSettings']),
     ...mapActions('user', ['logout', 'getUser', 'checkAndRefreshUser']),
-    async showMenuDrawer() {
+    showMenuDrawer() {
       this.getSignedToday()
       this.menuDrawerVisible = true
     },
@@ -735,36 +740,63 @@ export default {
       }
     }
     .footer-links {
-      background-color: #666;
-      color: #fff;
-      padding: 40px 0;
+      background-color: #1c2b40;
+      color: #a4acb7;
+      padding: 30px 0;
+      .links-logo {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+        img {
+          margin-right: 10px;
+          height: 30px;
+          filter: brightness(0) invert(0.73);
+        }
+        div {
+          flex: 1;
+        }
+      }
       & > div {
         margin: 0 auto;
         width: $default-width;
         max-width: $max-width;
-        text-align: center;
+        box-sizing: border-box;
+        padding: 0 20px;
+        // text-align: center;
       }
       .el-link {
-        color: #fff;
-        margin: 10px 5px;
+        color: #a4acb7;
+        margin: 5px;
+        font-size: 13px;
+        font-weight: normal;
         .el-link--primary {
           color: #409eff;
         }
+        &:hover {
+          color: #409eff;
+        }
+        &.copyright-statement {
+          color: #a4acb7;
+          cursor: auto;
+        }
       }
       .copyright-year {
-        font-size: 15px;
+        font-size: 13px;
         position: relative;
         top: 1px;
         margin-left: -5px;
         margin-right: 5px;
       }
       .powered-by {
-        font-size: 15px;
-        position: relative;
-        top: -2px;
-        color: #409eff !important;
+        float: right;
+        font-size: 13px !important;
         margin-left: 0;
         margin-right: 0;
+        .el-link {
+          position: relative;
+          top: -1px;
+          color: #409eff;
+        }
       }
     }
   }
@@ -936,7 +968,7 @@ export default {
     .el-footer {
       .footer-links {
         font-size: 13px !important;
-        padding: 30px 0;
+        padding: 20px 0;
         .el-link {
           font-size: 13px;
         }
