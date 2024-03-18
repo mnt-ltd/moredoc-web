@@ -449,7 +449,7 @@ export default {
     ...mapGetters('user', ['user']),
     ...mapGetters('setting', ['settings']),
     categoryTreesV2() {
-      const trees = this.categoryTrees.filter((item) => {
+      const trees = (this.categoryTrees || []).filter((item) => {
         if (this.settings.display.hide_category_without_document) {
           return item.doc_count > 0 && item.enable
         }
