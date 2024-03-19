@@ -4,14 +4,14 @@
     <el-main>
       <nuxt />
     </el-main>
-    <global-footer />
+    <el-footer height="auto">
+      <global-footer />
+    </el-footer>
   </el-container>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { listFriendlink } from '~/api/friendlink'
-import { listNavigation } from '~/api/navigation'
-import { categoryToTrees, requireLogin } from '~/utils/utils'
+import { requireLogin } from '~/utils/utils'
 import { getSignedToday, signToday } from '~/api/user'
 import GlobalNavbar from '~/components/GlobalNavbar.vue'
 import GlobalFooter from '~/components/GlobalFooter.vue'
@@ -27,7 +27,6 @@ export default {
       friendlinks: [],
       timeouter: null,
       currentYear: new Date().getFullYear(),
-      categoryTrees: [],
       menuDrawerVisible: false,
       sign: { id: 0 },
       activeCollapse: 'categories',
@@ -56,24 +55,7 @@ export default {
     ...mapGetters('category', ['categories']),
   },
   async created() {
-    await Promise.all([
-      this.getCategories(),
-      this.getSettings(),
-      this.listNavigation(),
-      this.listFriendlink(),
-      this.getAdvertisements('global'),
-    ])
-
-    this.categoryTrees = categoryToTrees(this.categories).filter((item) => {
-      if (
-        this.settings.display &&
-        this.settings.display.hide_category_without_document
-      ) {
-        return item.enable && item.doc_count > 0
-      }
-      return item.enable
-    })
-
+    await Promise.all([this.getCategories(), this.getSettings()])
     this.loopUpdate()
     if (requireLogin(this.settings, this.user, this.$route, this.permissions)) {
       this.$router.push('/login')
@@ -83,64 +65,6 @@ export default {
     ...mapActions('category', ['getCategories']),
     ...mapActions('setting', ['getSettings']),
     ...mapActions('user', ['logout', 'getUser', 'checkAndRefreshUser']),
-    showMenuDrawer() {
-      this.getSignedToday()
-      this.menuDrawerVisible = true
-    },
-    goToLink(link) {
-      this.menuDrawerVisible = false
-      this.$router.push(link)
-    },
-    async getSignedToday() {
-      const res = await getSignedToday()
-      if (res.status === 200) {
-        this.sign = res.data || this.sign
-      }
-    },
-    async listFriendlink() {
-      const res = await listFriendlink({
-        enable: true,
-        field: ['id', 'title', 'link'],
-      })
-      if (res.status === 200) {
-        this.friendlinks = res.data.friendlink || []
-      }
-    },
-    async signToday() {
-      const res = await signToday()
-      if (res.status === 200) {
-        const sign = res.data || { id: 1 }
-        this.sign = sign
-        this.getUser()
-        this.$message.success(
-          `签到成功，获得 ${sign.award || 0} ${
-            this.settings.system.credit_name || '魔豆'
-          }奖励`
-        )
-      } else {
-        this.$message.error(res.message || res.data.message)
-      }
-    },
-    async listNavigation() {
-      const res = await listNavigation({ page: 1, size: 10000 })
-      if (res.status === 200) {
-        let navigations = res.data.navigation || []
-        navigations = categoryToTrees(navigations).filter((item) => item.enable)
-        this.navigations = navigations
-      }
-    },
-    onSearch() {
-      if (!this.search.wd) return
-      this.menuDrawerVisible = false
-      const wd = this.search.wd
-      this.$router.push({
-        path: '/search',
-        query: {
-          wd,
-        },
-      })
-      this.search.wd = ''
-    },
     loopUpdate() {
       clearTimeout(this.timeouter)
       this.timeouter = setTimeout(() => {
@@ -152,29 +76,6 @@ export default {
         // 递归
         this.loopUpdate()
       }, 1000 * 60) // 每分钟更新一次
-    },
-    async handleDropdown(command) {
-      console.log('handleDropdown', command)
-      switch (command) {
-        case 'logout':
-          await this.logout()
-          location.reload()
-          break
-        case 'upload':
-          this.$router.push('/upload')
-          break
-        case 'ucenter':
-          this.$router.push(`/user/${this.user.id}`)
-          break
-        case 'me':
-          this.$router.push(`/me`)
-          break
-        case 'admin':
-          this.$router.push('/admin')
-          break
-        default:
-          break
-      }
     },
   },
 }
@@ -203,12 +104,6 @@ export default {
     padding-left: 0;
     padding-right: 0;
   }
-  .nav-search-form {
-    margin-top: 10px;
-    .el-form-item {
-      margin-right: 20px;
-    }
-  }
   .el-link {
     font-size: 15px;
   }
@@ -231,6 +126,31 @@ export default {
     border-radius: 5px;
     border: 0;
   }
+  .el-footer {
+    padding: 0;
+    background-color: #fff;
+  }
+
+  .nav-ucenter {
+    &.is-active {
+      border-color: transparent !important;
+    }
+    .el-dropdown-link {
+      line-height: 60px;
+      display: inline-block;
+      font-weight: 400;
+      font-size: 1.2em;
+      margin-top: -8px;
+      .nav-user-avatar {
+        position: relative;
+        top: -2px;
+      }
+    }
+  }
+}
+.dropdown-upload {
+  font-size: 17px;
+  margin-left: -2px;
 }
 .page {
   width: $default-width;
@@ -372,18 +292,6 @@ export default {
         }
         .el-icon-s-operation {
           font-size: 22px;
-        }
-      }
-    }
-    .el-footer {
-      .footer-links {
-        font-size: 13px !important;
-        padding: 30px 0;
-        .el-link {
-          font-size: 13px;
-        }
-        .copyright-year {
-          font-size: 13px;
         }
       }
     }

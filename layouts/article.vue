@@ -4,7 +4,9 @@
     <el-main>
       <nuxt />
     </el-main>
-    <GlobalFooter />
+    <el-footer height="auto">
+      <GlobalFooter />
+    </el-footer>
     <template v-for="item in advertisements">
       <div
         v-if="item.position == 'global_bottom'"

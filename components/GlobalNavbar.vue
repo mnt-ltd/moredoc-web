@@ -509,6 +509,7 @@ export default {
       display: inline-block;
       // padding: 0 20px;
       padding: 0 15px;
+      font-weight: normal;
     }
     .el-menu-item {
       padding: 0;
