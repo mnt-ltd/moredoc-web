@@ -12,7 +12,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { requireLogin } from '~/utils/utils'
-import { getSignedToday, signToday } from '~/api/user'
 import GlobalNavbar from '~/components/GlobalNavbar.vue'
 import GlobalFooter from '~/components/GlobalFooter.vue'
 
