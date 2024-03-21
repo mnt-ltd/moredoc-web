@@ -31,6 +31,10 @@ body{
 .block{
     display: block;
 }
+.el-footer {
+    padding: 0;
+    background-color: #fff;
+}
 @media screen and (max-width: 768px) {
     .mgt-20px{
         margin-top: 15px;

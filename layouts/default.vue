@@ -125,11 +125,6 @@ export default {
     border-radius: 5px;
     border: 0;
   }
-  .el-footer {
-    padding: 0;
-    background-color: #fff;
-  }
-
   .nav-ucenter {
     &.is-active {
       border-color: transparent !important;

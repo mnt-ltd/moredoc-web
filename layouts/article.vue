@@ -7,13 +7,6 @@
     <el-footer height="auto">
       <GlobalFooter />
     </el-footer>
-    <template v-for="item in advertisements">
-      <div
-        v-if="item.position == 'global_bottom'"
-        :key="item.position + item.id"
-        v-html="item.content"
-      ></div>
-    </template>
   </el-container>
 </template>
 <script>
