@@ -4,7 +4,7 @@
     <el-main>
       <nuxt />
     </el-main>
-    <el-footer height="auto">
+    <el-footer v-if="$route.path != '/article'" height="auto">
       <GlobalFooter />
     </el-footer>
   </el-container>

@@ -1,54 +1,42 @@
 <template>
   <div class="com-article-list">
     <ul v-if="articles.length > 0">
-      <li v-for="article in articles" :key="'a' + article.id">
-        <nuxt-link
-          :to="`/article/${article.identifier}`"
-          class="el-link el-link--default"
-          :title="article.title"
-        >
-          <span v-if="withHtml" v-html="article.title"></span>
-          <template v-else>{{ article.title }}</template>
-        </nuxt-link>
-        <div v-if="withDescription" class="description">
-          <span v-if="withHtml" v-html="article.description"></span>
-          <template v-else>{{ article.description }}</template>
+      <li v-for="article in articles" :key="'article-' + article.id">
+        <h3>
+          <nuxt-link
+            :to="`/article/${article.identifier}`"
+            class="el-link el-link--default"
+            >{{ article.title }}</nuxt-link
+          >
+        </h3>
+        <div class="author">
+          <nuxt-link
+            :to="`/user/${article.user_id}`"
+            class="el-link el-link--default"
+            ><span
+              ><i class="fa fa-user-o"></i> {{ article.author }}管理员</span
+            ></nuxt-link
+          >
+          •
+          <span> &nbsp;2小时前</span>
+          <span>分类1 - 分类2</span>
         </div>
-        <div class="help-block">
-          <el-tooltip
-            :content="'发布时间:' + formatDatetime(article.created_at)"
-          >
-            <span title="发布时间">
-              <i class="el-icon-time"></i>
-              {{ formatRelativeTime(article.created_at) }}
-            </span>
-          </el-tooltip>
-          <span
-            ><i class="el-icon-view"></i>
-            {{ article.view_count || 0 }} 浏览</span
-          >
-          <span
-            ><i class="el-icon-user"></i>
-            {{ article.autor || settings.system.sitename || '-' }}</span
-          >
-          <!-- <span
-            ><i class="el-icon-chat-dot-square"></i>
-            {{ article.comment_count || 0 }} 评论</span
-          >
-          <span
-            ><i class="el-icon-star-off"></i>
-            {{ article.favorite_count || 0 }} 收藏</span
-          > -->
+        <div class="desc">
+          {{ article.description }}
+        </div>
+        <div class="info">
+          <span><i class="el-icon-view"></i> 0</span>
+          <span><i class="el-icon-star-off"></i> 0</span>
+          <span><i class="el-icon-chat-dot-square"></i> 0</span>
         </div>
       </li>
     </ul>
     <div v-else>
-      <el-empty description="暂无数据"></el-empty>
+      <el-empty></el-empty>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import { formatDatetime, formatRelativeTime } from '~/utils/utils'
 export default {
   props: {
@@ -65,9 +53,6 @@ export default {
       default: false,
     },
   },
-  computed: {
-    ...mapGetters('setting', ['settings']),
-  },
   methods: {
     formatRelativeTime,
     formatDatetime,
@@ -76,6 +61,7 @@ export default {
 </script>
 <style lang="scss">
 .com-article-list {
+  padding: 15px 0;
   mark {
     background-color: transparent;
     color: red;
@@ -86,51 +72,66 @@ export default {
 .com-article-list {
   ul,
   li {
-    margin: 0;
     padding: 0;
+    margin: 0;
     list-style: none;
   }
-  li {
-    border-bottom: 1px dashed #efefef;
-    padding: 20px 0;
-    &:last-child {
-      border-bottom: none;
+  h3 {
+    margin: 0;
+    a {
+      color: #000;
+      font-size: 16px;
+      font-weight: 400;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+      line-height: 40px;
     }
-    .help-block {
-      color: #999;
-      font-size: 13px;
-      margin-top: 10px;
-      span {
-        margin-right: 20px;
+  }
+  .author {
+    color: #999;
+    font-size: 12px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    .el-link {
+      font-size: 12px;
+      margin-top: -4px;
+      font-weight: normal;
+    }
+    span {
+      margin-right: 5px;
+    }
+  }
+  .desc {
+    color: #666;
+    font-size: 13px;
+    margin: 10px 0;
+    line-height: 1.8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .info {
+    color: #999;
+    font-size: 12px;
+    span {
+      margin-right: 10px;
+      i {
+        margin-right: 5px;
       }
     }
-    a {
-      font-size: 18px;
-      color: #222;
-      display: inline-block;
-      max-width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  }
+  li {
+    border-bottom: 1px solid #f6f6f6;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
   }
   .no-articles {
     text-align: center;
     font-size: 15px;
     color: #ccc;
     padding: 40px 0;
-  }
-  .description {
-    margin-top: 10px;
-    color: #777;
-    font-size: 15px;
-    line-height: 24px;
-    max-height: 72px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
   }
 }
 </style>

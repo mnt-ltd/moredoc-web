@@ -16,7 +16,9 @@
         </nuxt-link>
       </li>
       <li
-        v-for="cate in categories.filter((item) => item.type === 1)"
+        v-for="cate in categories.filter(
+          (item) => item.type === 1 && !item.parent_id
+        )"
         :key="'cate-' + cate.id"
       >
         <nuxt-link
@@ -38,14 +40,21 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  props: {
-    activeId: {
-      type: Number,
-      default: 0,
-    },
+  data() {
+    return {
+      activeId: parseInt(this.$route.query.category_id) || 0,
+    }
   },
   computed: {
     ...mapGetters('category', ['categories']),
+  },
+  watch: {
+    $route: {
+      handler() {
+        this.activeId = parseInt(this.$route.query.category_id) || 0
+      },
+      immediate: true,
+    },
   },
 }
 </script>
@@ -59,9 +68,10 @@ li {
 ul {
   justify-content: space-between;
   li {
+    margin-bottom: 5px;
     .icon {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       margin-right: 5px;
       border-radius: 4px;
       vertical-align: middle;
@@ -76,11 +86,12 @@ ul {
   font-weight: normal;
   padding: 0 10px;
   border-radius: 3px;
-  &:hover,
+  &:hover {
+    background-color: #21293c14;
+  }
   &.active {
-    background-color: #eee;
+    background-color: #fff;
     color: #409eff;
-    font-weight: bold;
   }
 }
 </style>
