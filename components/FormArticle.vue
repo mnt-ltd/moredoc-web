@@ -18,6 +18,7 @@
             v-model="article.title"
             placeholder="请输入文章标题"
             clearable
+            :disabled="!canIPublish"
           >
           </el-input>
         </el-form-item>
@@ -33,6 +34,7 @@
           <el-cascader
             v-model="article.category_id"
             :options="categoryTrees"
+            :disabled="!canIPublish"
             :filterable="true"
             :props="{
               checkStrictly: true,
@@ -45,7 +47,7 @@
           ></el-cascader>
         </el-form-item>
       </el-col>
-      <el-col :span="7">
+      <el-col v-if="isAdmin" :span="7">
         <el-form-item label="标识" prop="identifier">
           <!-- 管理员才有权限设置标识 -->
           <el-input
@@ -62,40 +64,86 @@
         <el-form-item label="关键字">
           <el-input
             v-model="article.keywords"
+            :disabled="!canIPublish"
             placeholder="请输入文章关键字，多个关键字用英文逗号分隔"
           ></el-input>
         </el-form-item>
       </el-col>
-      <el-col :span="7">
-        <!-- 推荐 -->
-        <el-form-item label="推荐">
-          <el-switch
-            v-model="article.is_recommend"
-            active-text="是"
-            inactive-text="否"
-          ></el-switch>
-        </el-form-item>
-      </el-col>
+      <template v-if="isAdmin">
+        <el-col :span="6">
+          <!-- 审核状态 -->
+          <el-form-item label="审核状态">
+            <el-select v-model="article.status">
+              <el-option
+                v-for="item in articleStatusOptions"
+                :key="'s-' + item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <!-- 推荐 -->
+          <el-form-item label="推荐">
+            <el-switch
+              v-model="article.is_recommend"
+              active-text="是"
+              inactive-text="否"
+            ></el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <!-- 如果是审核拒绝，则填写拒绝原因 -->
+          <el-form-item
+            v-if="article.status === 2"
+            label="拒绝原因"
+            prop="reject_reason"
+          >
+            <el-input
+              v-model="article.reject_reason"
+              placeholder="请输入拒绝原因"
+              type="textarea"
+              rows="3"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </template>
     </el-row>
     <el-form-item label="描述">
       <el-input
         v-model="article.description"
         placeholder="请输入文章描述，可为空"
         type="textarea"
+        :disabled="!canIPublish"
         rows="5"
       ></el-input>
     </el-form-item>
     <el-form-item label="内容" class="editor-item">
-      <Editor v-model="article.content" :init="init"></Editor>
+      <Editor
+        v-if="canIPublish"
+        v-model="article.content"
+        :init="init"
+      ></Editor>
+      <div v-else>
+        <el-input
+          v-model="article.content"
+          type="textarea"
+          rows="10"
+          :disabled="true"
+          placeholder="你未登录或没有权限发布文章"
+        ></el-input>
+      </div>
     </el-form-item>
     <el-form-item>
       <el-button
         type="primary"
         class="btn-block"
         icon="el-icon-check"
+        :disabled="!canIPublish"
         :loading="loading"
         @click="onSubmit"
-        >提交</el-button
+        >{{ canIPublish ? '提交' : '你未登录或没有权限发布文章' }}</el-button
       >
     </el-form-item>
   </el-form>
@@ -105,11 +153,20 @@
 import tinymce from 'tinymce/tinymce'
 import Editor from '@tinymce/tinymce-vue'
 import { createArticle, updateArticle } from '~/api/article'
+import { articleStatusOptions } from '~/utils/enum'
 export default {
   components: {
     Editor,
   },
   props: {
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    canIPublish: {
+      type: Boolean,
+      default: false,
+    },
     initArticle: {
       type: Object,
       default: () => {
@@ -121,6 +178,7 @@ export default {
           content: '',
           id: 0,
           category_id: [],
+          status: 0,
         }
       },
     },
@@ -133,6 +191,7 @@ export default {
   },
   data() {
     return {
+      articleStatusOptions,
       init: {
         base_url: '/static/tinymce',
         language_url: '/static/tinymce/langs/zh-Hans.js', // 语言包的路径
@@ -157,12 +216,16 @@ export default {
         content: '',
         id: 0,
         category_id: [],
+        status: 0,
       },
     }
   },
   watch: {
     initArticle: {
       handler(val) {
+        if (val.recommend_at) {
+          val.is_recommend = true
+        }
         this.article = { ...val }
       },
       immediate: true,

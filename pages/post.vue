@@ -14,8 +14,10 @@
         </div>
       </template>
       <FormArticle
+        v-loading="loading"
         :init-article="article"
         :category-trees="trees"
+        :can-i-publish="canIPublish"
         @success="back"
       ></FormArticle>
     </el-card>
@@ -24,9 +26,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getArticle } from '~/api/article'
+import { canIPublishArticle } from '~/api/user'
 export default {
   data() {
     return {
+      canIPublish: false,
+      loading: false,
       article: {
         title: '',
         identifier: '',
@@ -47,9 +52,21 @@ export default {
     },
   },
   created() {
-    this.getArticle()
+    this.canIPublishArticle()
   },
   methods: {
+    async canIPublishArticle() {
+      if (!this.token) {
+        return
+      }
+      this.loading = true
+      const res = await canIPublishArticle()
+      if (res.status === 200) {
+        this.canIPublish = true
+        this.getArticle()
+      }
+      this.loading = false
+    },
     async getArticle() {
       const identifier = this.$route.query.identifier
       if (!identifier) {

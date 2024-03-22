@@ -89,12 +89,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { listGroup, deleteGroup, getGroup } from '~/api/group'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormGroup from '~/components/FormGroup.vue'
 import FormGroupPermission from '~/components/FormGroupPermission.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormGroup, FormGroupPermission },
   layout: 'admin',
@@ -138,7 +138,7 @@ export default {
       },
     },
   },
-  async created() {
+  created() {
     this.initGroup()
     this.initSearchForm()
     this.initTableListFields()
@@ -300,7 +300,7 @@ export default {
         },
         {
           prop: 'enable_document_review',
-          label: '文档需审核',
+          label: '文档需要审核',
           width: 120,
           type: 'bool',
         },
@@ -313,6 +313,18 @@ export default {
         {
           prop: 'enable_comment_approval',
           label: '评论需审核',
+          width: 120,
+          type: 'bool',
+        },
+        {
+          prop: 'enable_article',
+          label: '允许发布文章',
+          width: 120,
+          type: 'bool',
+        },
+        {
+          prop: 'enable_article_approval',
+          label: '评论需要审核',
           width: 120,
           type: 'bool',
         },

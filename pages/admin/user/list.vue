@@ -85,6 +85,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { deleteUser, getUser, listUser } from '~/api/user'
 import { listGroup } from '~/api/group'
 import { userStatusOptions } from '~/utils/enum'
@@ -92,7 +93,6 @@ import { parseQueryIntArray, genLinkHTML } from '~/utils/utils'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormUser from '~/components/FormUser.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormUser },
   layout: 'admin',
@@ -157,14 +157,15 @@ export default {
       this.loading = true
       const res = await listUser(this.search)
       if (res.status === 200) {
-        let users = res.data.user || []
+        const users = res.data.user || []
         users.map((item) => {
           item.username_html = genLinkHTML(item.username, `/user/${item.id}`)
-          let groups = (item.group_id || []).map((id) => {
-            let group = this.groups.find((group) => group.id === id)
+          const groups = (item.group_id || []).map((id) => {
+            const group = this.groups.find((group) => group.id === id)
             return group ? group.title : ''
           })
           item.group = groups.join(', ')
+          return item
         })
         this.users = users
         this.total = res.data.total
@@ -197,9 +198,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listUser()
       } else {

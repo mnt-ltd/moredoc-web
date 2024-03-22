@@ -17,6 +17,8 @@
       <FormArticle
         :init-article="article"
         :category-trees="trees"
+        :is-admin="true"
+        :can-i-publish="true"
       ></FormArticle>
     </el-card>
   </div>

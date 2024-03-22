@@ -265,7 +265,7 @@ export default {
       this.$router.push('/admin/article/set')
     },
     editRow(row) {
-      this.$router.push(`/post?identifier=${row.identifier}`)
+      this.$router.push(`/admin/article/set?id=${row.id}`)
     },
     formSuccess() {
       this.formArticleVisible = false
