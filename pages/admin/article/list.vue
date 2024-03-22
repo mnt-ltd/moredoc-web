@@ -60,20 +60,6 @@
         @editRow="editRow"
         @deleteRow="deleteRow"
       >
-        <!-- 查看文章 -->
-        <!-- <template slot="actions" slot-scope="scope">
-          <nuxt-link
-            target="_blank"
-            :to="{
-              name: 'article-id',
-              params: { id: scope.row.identifier },
-            }"
-          >
-            <el-button type="text" size="mini" icon="el-icon-view"
-              >查看</el-button
-            >
-          </nuxt-link>
-        </template> -->
       </TableList>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
@@ -91,18 +77,6 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-drawer
-      :title="article.id ? '编辑文章' : '新增文章'"
-      :visible.sync="formArticleVisible"
-      :size="'80%'"
-      :wrapper-closable="true"
-    >
-      <FormArticle
-        ref="articleForm"
-        :init-article="article"
-        @success="formSuccess"
-      />
-    </el-drawer>
     <el-dialog
       :close-on-click-modal="false"
       title="批量分类"
@@ -291,7 +265,7 @@ export default {
       this.$router.push('/admin/article/set')
     },
     editRow(row) {
-      this.$router.push(`/admin/article/set?id=${row.id}`)
+      this.$router.push(`/post?identifier=${row.identifier}`)
     },
     formSuccess() {
       this.formArticleVisible = false

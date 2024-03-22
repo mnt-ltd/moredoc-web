@@ -6,6 +6,22 @@
     :model="article"
   >
     <el-row :gutter="20">
+      <el-col :span="11">
+        <el-form-item
+          label="标题"
+          prop="title"
+          :rules="[
+            { required: true, trigger: 'blur', message: '请输入文章标题' },
+          ]"
+        >
+          <el-input
+            v-model="article.title"
+            placeholder="请输入文章标题"
+            clearable
+          >
+          </el-input>
+        </el-form-item>
+      </el-col>
       <el-col :span="6">
         <el-form-item
           label="分类"
@@ -29,25 +45,9 @@
           ></el-cascader>
         </el-form-item>
       </el-col>
-      <el-col :span="11">
-        <el-form-item
-          label="标题"
-          prop="title"
-          :rules="[
-            { required: true, trigger: 'blur', message: '请输入文章标题' },
-          ]"
-        >
-          <el-input
-            v-model="article.title"
-            placeholder="请输入文章标题"
-            clearable
-          >
-          </el-input>
-        </el-form-item>
-      </el-col>
       <el-col :span="7">
         <el-form-item label="标识" prop="identifier">
-          <!-- 如果是编辑文章，不允许修改文章标识 -->
+          <!-- 管理员才有权限设置标识 -->
           <el-input
             v-model="article.identifier"
             placeholder="请输入文章标识，建议为字母和数字组合"
@@ -58,14 +58,6 @@
       </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col :span="6">
-        <el-form-item label="作者">
-          <el-input
-            v-model="article.author"
-            placeholder="请输入文章作者，默认为当前登录用户"
-          ></el-input>
-        </el-form-item>
-      </el-col>
       <el-col :span="11">
         <el-form-item label="关键字">
           <el-input
@@ -231,6 +223,7 @@ export default {
           const res = await updateArticle(article)
           if (res.status === 200) {
             this.$message.success('修改成功')
+            this.$emit('success', res.data)
           } else {
             this.$message.error(res.data.message)
           }
@@ -238,6 +231,7 @@ export default {
           const res = await createArticle(article)
           if (res.status === 200) {
             this.$message.success('新增成功')
+            this.$emit('success', res.data)
             this.article = res.data
           } else {
             this.$message.error(res.data.message)

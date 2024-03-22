@@ -2,7 +2,7 @@
   <div class="page page-article-index">
     <el-row :gutter="20">
       <el-col :span="4">
-        <article-navbar class="fixed-left" :active-id="activeId" />
+        <article-navbar class="fixed-left" />
         <div>&nbsp;</div>
       </el-col>
       <el-col :span="14" class="main-list">
@@ -25,13 +25,15 @@
               :to="`?category_id=${$route.query.category_id || ''}&tab=popular`"
               >热门</nuxt-link
             >
-            <el-button
-              size="small"
-              type="primary"
-              style="float: right; margin-top: -4px"
-              icon="el-icon-plus"
-              >发布文章</el-button
-            >
+            <nuxt-link to="/post">
+              <el-button
+                size="small"
+                type="primary"
+                style="float: right; margin-top: -4px"
+                icon="el-icon-plus"
+                >发布文章</el-button
+              >
+            </nuxt-link>
           </template>
           <article-list :articles="articles" />
           <el-pagination

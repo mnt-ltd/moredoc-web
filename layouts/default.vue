@@ -60,6 +60,9 @@ export default {
       this.$router.push('/login')
     }
   },
+  beforeDestroy() {
+    clearTimeout(this.timeouter)
+  },
   methods: {
     ...mapActions('category', ['getCategories']),
     ...mapActions('setting', ['getSettings']),
