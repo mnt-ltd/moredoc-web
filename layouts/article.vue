@@ -145,11 +145,9 @@ export default {
       }, 1000 * 60) // 每分钟更新一次
     },
     async handleDropdown(command) {
-      console.log('handleDropdown', command)
       switch (command) {
         case 'logout':
-          const res = await this.logout()
-          console.log(res)
+          await this.logout()
           location.reload()
           break
         case 'upload':
@@ -175,6 +173,7 @@ export default {
 .layout-article {
   background-color: $background-grey-light;
   min-width: $min-width !important;
+  min-height: 100vh;
   .el-table th {
     height: 45px;
     line-height: 45px;

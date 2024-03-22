@@ -7,7 +7,7 @@
           class="el-link el-link--default"
           :class="!activeId ? 'active' : ''"
         >
-          <el-image :src="'/static/favicon.ico'" class="icon">
+          <el-image :src="'/static/images/all.png'" class="icon">
             <div slot="error" class="image-slot">
               <i class="el-icon-picture-outline"></i>
             </div>

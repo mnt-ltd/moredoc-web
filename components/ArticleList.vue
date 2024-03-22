@@ -25,9 +25,17 @@
           {{ article.description }}
         </div>
         <div class="info">
-          <span><i class="el-icon-view"></i> 0</span>
-          <span><i class="el-icon-star-off"></i> 0</span>
-          <span><i class="el-icon-chat-dot-square"></i> 0</span>
+          <span
+            ><i class="el-icon-view"></i> {{ article.view_count || 0 }}</span
+          >
+          <span
+            ><i class="el-icon-star-off"></i>
+            {{ article.favorite_count || 0 }}</span
+          >
+          <span
+            ><i class="el-icon-chat-dot-square"></i>
+            {{ article.comment_count || 0 }}</span
+          >
         </div>
       </li>
     </ul>
@@ -126,6 +134,11 @@ export default {
     border-bottom: 1px solid #f6f6f6;
     padding-bottom: 20px;
     margin-bottom: 10px;
+    &:last-of-type {
+      border-bottom: 0;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
   }
   .no-articles {
     text-align: center;

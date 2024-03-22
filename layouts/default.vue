@@ -83,6 +83,7 @@ export default {
 .layout-default {
   background-color: $background-grey-light;
   min-width: $min-width !important;
+  min-height: 100vh;
   .el-table th {
     height: 45px;
     line-height: 45px;

@@ -414,6 +414,9 @@ export default {
   }
   .powered-by {
     color: #898989;
+    .el-link {
+      margin-right: 0;
+    }
   }
   .copyright-year {
     position: relative;

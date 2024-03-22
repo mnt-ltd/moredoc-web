@@ -2,7 +2,8 @@
   <div class="page page-article-index">
     <el-row :gutter="20">
       <el-col :span="4">
-        <article-navbar :active-id="activeId" />
+        <article-navbar class="fixed-left" :active-id="activeId" />
+        <div>&nbsp;</div>
       </el-col>
       <el-col :span="14" class="main-list">
         <el-card shadow="never">
@@ -58,24 +59,26 @@
             </el-carousel-item>
           </el-carousel>
         </el-card> -->
-        <el-card shadow="never" class="popular">
-          <div slot="header">推荐</div>
-          <div v-if="populars.length > 0">
-            <nuxt-link
-              v-for="article in populars"
-              :key="'article-' + article.id"
-              :to="`/article/${article.identifier}`"
-              :title="article.title"
-              class="el-link el-link--default"
-              >{{ article.title }}</nuxt-link
-            >
-            <el-button icon="el-icon-refresh" type="text" class="mgb-5px"
-              >换一批</el-button
-            >
-          </div>
-          <el-empty v-else> </el-empty>
-        </el-card>
-        <ArticleFooter class="mgt-20px" />
+        <div class="fixed-right">
+          <el-card shadow="never" class="popular">
+            <div slot="header">推荐</div>
+            <div v-if="populars.length > 0">
+              <nuxt-link
+                v-for="article in populars"
+                :key="'article-' + article.id"
+                :to="`/article/${article.identifier}`"
+                :title="article.title"
+                class="el-link el-link--default"
+                >{{ article.title }}</nuxt-link
+              >
+              <el-button icon="el-icon-refresh" type="text" class="mgb-5px"
+                >换一批</el-button
+              >
+            </div>
+            <el-empty v-else> </el-empty>
+          </el-card>
+          <ArticleFooter class="mgt-20px" />
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -190,6 +193,15 @@ export default {
         margin-right: 20px;
       }
     }
+  }
+  .fixed-left {
+    width: 185px;
+    position: fixed;
+  }
+
+  .fixed-right {
+    position: fixed;
+    width: 285px;
   }
 }
 
