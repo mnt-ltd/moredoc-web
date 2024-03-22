@@ -79,3 +79,11 @@ export const setArticlesCategory = (data) => {
     data,
   })
 }
+
+export const recommendArticles = (data) => {
+  return service({
+    url: '/api/v1/article/recommend',
+    method: 'put',
+    data,
+  })
+}

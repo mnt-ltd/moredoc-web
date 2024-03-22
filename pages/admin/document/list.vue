@@ -22,8 +22,8 @@
             >
               <el-button
                 type="warning"
-                @click="reconvertDocument"
                 icon="el-icon-refresh"
+                @click="reconvertDocument"
                 >失败重转</el-button
               >
             </el-tooltip>
@@ -33,7 +33,7 @@
               :disabled="selectedRow.length === 0"
               @command="checkDocument"
             >
-              <el-button type="warning">
+              <el-button type="warning" icon="el-icon-s-check">
                 批量审批 <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
@@ -55,9 +55,9 @@
             >
               <el-button
                 type="success"
-                @click="batchUpdateDocumentsCategory"
                 :disabled="selectedRow.length === 0"
                 icon="el-icon-edit"
+                @click="batchUpdateDocumentsCategory"
                 >批量分类</el-button
               >
             </el-tooltip>
@@ -71,9 +71,9 @@
             >
               <el-button
                 type="primary"
-                @click="batchUpdateDocumentsLanguage"
                 :disabled="selectedRow.length === 0"
                 icon="el-icon-edit"
+                @click="batchUpdateDocumentsLanguage"
                 >批量语言</el-button
               >
             </el-tooltip>
@@ -125,15 +125,15 @@
             >推荐</el-button
           >
           <el-button
-            type="text"
-            @click="download2review(scope.row)"
             v-if="
               scope.row.status === 6 ||
               scope.row.status === 7 ||
               scope.row.status === 4
             "
+            type="text"
             icon="el-icon-download"
             class="text-warning"
+            @click="download2review(scope.row)"
             >下载审核</el-button
           >
         </template>
@@ -204,6 +204,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { listCategory } from '~/api/category'
 import {
   deleteDocument,
@@ -224,7 +225,6 @@ import {
 } from '~/utils/utils'
 import { documentStatusOptions, boolOptions } from '~/utils/enum'
 import FormUpdateDocument from '~/components/FormUpdateDocument.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormUpdateDocument },
   layout: 'admin',
@@ -265,7 +265,7 @@ export default {
     '$route.query': {
       immediate: true,
       async handler() {
-        let search = { ...this.search, ...this.$route.query }
+        const search = { ...this.search, ...this.$route.query }
         search.page = parseInt(this.$route.query.page) || 1
         search.size = parseInt(this.$route.query.size) || 10
         search.wd = this.$route.query.wd || ''

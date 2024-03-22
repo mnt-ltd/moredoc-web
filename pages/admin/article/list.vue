@@ -29,6 +29,20 @@
               >
             </el-tooltip>
           </el-form-item>
+          <el-form-item>
+            <el-dropdown
+              :disabled="selectedRow.length === 0"
+              @command="batchRecommend"
+            >
+              <el-button type="primary" icon="el-icon-s-check">
+                批量推荐 <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="true">推荐选中</el-dropdown-item>
+                <el-dropdown-item :command="false">取消推荐</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-form-item>
         </template>
       </FormSearch>
     </el-card>
@@ -107,7 +121,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { listArticle, deleteArticle } from '~/api/article'
+import { listArticle, deleteArticle, recommendArticles } from '~/api/article'
 import { listCategory } from '~/api/category'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
@@ -181,6 +195,19 @@ export default {
     this.initTableListFields()
   },
   methods: {
+    async batchRecommend(command) {
+      const ids = this.selectedRow.map((item) => item.id)
+      const res = await recommendArticles({
+        article_id: ids,
+        is_recommend: command,
+      })
+      if (res.status === 200) {
+        this.$message.success('操作成功')
+        this.listArticle()
+      } else {
+        this.$message.error(res.data.message)
+      }
+    },
     async listCategory() {
       const res = await listCategory({
         field: ['id', 'parent_id', 'title'],

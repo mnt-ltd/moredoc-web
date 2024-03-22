@@ -25,13 +25,13 @@
               :to="`?category_id=${$route.query.category_id || ''}&tab=popular`"
               >热门</nuxt-link
             >
-            <!-- <el-button
+            <el-button
               size="small"
               type="primary"
-              style="float: right"
+              style="float: right; margin-top: -4px"
               icon="el-icon-plus"
               >发布文章</el-button
-            > -->
+            >
           </template>
           <article-list :articles="articles" />
           <el-pagination
@@ -52,26 +52,20 @@
         </el-card>
       </el-col>
       <el-col :span="6">
-        <!-- <el-card shadow="never" class="mgb-20px carousel">
-          <el-carousel height="150px">
-            <el-carousel-item v-for="item in 4" :key="item">
-              <h3 class="small">{{ item }}</h3>
-            </el-carousel-item>
-          </el-carousel>
-        </el-card> -->
         <div class="fixed-right">
-          <el-card shadow="never" class="popular">
+          <el-card shadow="never" class="recommend">
             <div slot="header">推荐</div>
-            <div v-if="populars.length > 0">
-              <nuxt-link
-                v-for="article in populars"
-                :key="'article-' + article.id"
-                :to="`/article/${article.identifier}`"
-                :title="article.title"
-                class="el-link el-link--default"
-                >{{ article.title }}</nuxt-link
-              >
-              <el-button icon="el-icon-refresh" type="text" class="mgb-5px"
+            <div v-if="recommendArticles.length > 0">
+              <ArticleSimpleList
+                v-loading="recommend.loading"
+                :articles="recommendArticles"
+              ></ArticleSimpleList>
+              <el-button
+                v-if="recommend.totalPage > 1"
+                icon="el-icon-refresh"
+                type="text"
+                class="mgb-5px"
+                @click="getRecommendArticles"
                 >换一批</el-button
               >
             </div>
@@ -99,7 +93,13 @@ export default {
       query: {
         page: 1,
       },
-      populars: [],
+      recommend: {
+        page: 1,
+        size: 10,
+        totalPage: 1,
+        loading: false,
+      },
+      recommendArticles: [],
       articles: [],
     }
   },
@@ -117,7 +117,7 @@ export default {
     },
   },
   async created() {
-    await Promise.all([this.getPopulars()])
+    await Promise.all([this.getRecommendArticles()])
   },
   methods: {
     pageChange(page) {
@@ -128,7 +128,12 @@ export default {
       })
     },
     async getArticles() {
-      const res = await listArticle({ size: this.size, page: this.query.page })
+      const res = await listArticle({
+        size: this.size,
+        page: this.query.page,
+        category_id: this.$route.query.category_id || undefined,
+        order: this.$route.query.tab === 'popular' ? 'view_count desc' : '',
+      })
       if (res.status !== 200) {
         this.$message.error(res.data.message || '获取文章列表失败')
         return
@@ -136,17 +141,26 @@ export default {
       this.articles = res.data.article || []
       this.total = res.data.total || 0
     },
-    async getPopulars() {
+    async getRecommendArticles() {
+      this.loading = true
       const res = await listArticle({
-        page: 1,
-        size: 10,
-        order: 'view_count desc',
+        page: this.recommend.page,
+        size: this.recommend.size,
+        is_recommend: true,
       })
+      this.loading = false
       if (res.status !== 200) {
-        this.$message.error(res.data.message || '获取热门文章失败')
+        this.$message.error(res.data.message || '获取推荐文章失败')
         return
       }
-      this.populars = res.data.article || []
+      const nextPage = this.recommend.page + 1
+      this.recommend.totalPage = Math.ceil(res.data.total / this.recommend.size)
+      if (nextPage > this.recommend.totalPage) {
+        this.recommend.page = 1
+      } else {
+        this.recommend.page = nextPage
+      }
+      this.recommendArticles = res.data.article || []
     },
   },
 }
