@@ -9,33 +9,15 @@
             >{{ article.title }}</nuxt-link
           >
         </h3>
-        <div class="author">
-          <nuxt-link
-            :to="`/user/${article.user_id}`"
-            class="el-link el-link--default"
-            ><span
-              ><i class="fa fa-user-o"></i> {{ article.author }}管理员</span
-            ></nuxt-link
-          >
-          •
-          <span> &nbsp;2小时前</span>
-          <span>分类1 - 分类2</span>
-        </div>
-        <div class="desc">
-          {{ article.description }}
-        </div>
         <div class="info">
+          <span><i class="el-icon-truck"></i>分类1 - 分类2</span>
+          <span><i class="el-icon-time"></i>2小时前</span>
           <span
             ><i class="el-icon-view"></i> {{ article.view_count || 0 }}</span
           >
-          <span
-            ><i class="el-icon-star-off"></i>
-            {{ article.favorite_count || 0 }}</span
-          >
-          <span
-            ><i class="el-icon-chat-dot-square"></i>
-            {{ article.comment_count || 0 }}</span
-          >
+        </div>
+        <div class="desc">
+          {{ article.description }}
         </div>
       </li>
     </ul>
@@ -132,7 +114,7 @@ export default {
   }
   li {
     border-bottom: 1px solid #f6f6f6;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     margin-bottom: 10px;
     &:last-of-type {
       border-bottom: 0;

@@ -58,7 +58,15 @@
       </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col :span="17">
+      <el-col :span="6">
+        <el-form-item label="作者">
+          <el-input
+            v-model="article.author"
+            placeholder="请输入文章作者，默认为当前登录用户"
+          ></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="11">
         <el-form-item label="关键字">
           <el-input
             v-model="article.keywords"
@@ -67,15 +75,16 @@
         </el-form-item>
       </el-col>
       <el-col :span="7">
-        <el-form-item label="作者">
-          <el-input
-            v-model="article.author"
-            placeholder="请输入文章作者，默认为当前登录用户"
-          ></el-input>
+        <!-- 推荐 -->
+        <el-form-item label="推荐">
+          <el-switch
+            v-model="article.is_recommend"
+            active-text="是"
+            inactive-text="否"
+          ></el-switch>
         </el-form-item>
       </el-col>
     </el-row>
-
     <el-form-item label="描述">
       <el-input
         v-model="article.description"

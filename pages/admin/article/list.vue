@@ -354,6 +354,12 @@ export default {
         },
         // { prop: 'keywords', label: '关键字', width: 200 },
         // { prop: 'description', label: '摘要', minWidth: 200 },
+        {
+          prop: 'recommend_at',
+          label: '推荐时间',
+          width: 160,
+          type: 'datetime',
+        },
         { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
         { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
       ]
