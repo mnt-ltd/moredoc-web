@@ -103,16 +103,31 @@ export default {
       },
       recommendArticles: [],
       articles: [],
+      title: '全部文章',
+    }
+  },
+  head() {
+    return {
+      title: this.title + ' - ' + this.settings.system.sitename,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.settings.system.description,
+        },
+      ],
     }
   },
   computed: {
     ...mapGetters('setting', ['settings']),
+    ...mapGetters('category', ['categoryMap', 'categoryTrees']),
   },
   watch: {
     $route: {
       handler() {
         const page = this.$route.query.page || 1
         this.query.page = parseInt(page) || 1
+        this.setActiveCate()
         this.getArticles()
       },
       immediate: true,
@@ -122,6 +137,14 @@ export default {
     await Promise.all([this.getRecommendArticles()])
   },
   methods: {
+    setActiveCate() {
+      const cateId = this.$route.query.category_id || undefined
+      let activeCate = { title: '全部文章' }
+      if (cateId) {
+        activeCate = this.categoryMap[cateId] || activeCate
+      }
+      this.title = activeCate.title
+    },
     pageChange(page) {
       this.query.page = page
       this.$router.push({

@@ -51,9 +51,23 @@ export default {
   watch: {
     $route: {
       handler() {
-        this.activeId = parseInt(this.$route.query.category_id) || 0
+        const cateId = parseInt(this.$route.query.category_id) || 0
+        if (cateId > 0) {
+          this.activeId = this.findParentId(cateId)
+        } else {
+          this.activeId = 0
+        }
       },
       immediate: true,
+    },
+  },
+  methods: {
+    findParentId(id) {
+      const cate = this.categories.find((item) => item.id === id)
+      if (cate && cate.parent_id) {
+        return this.findParentId(cate.parent_id)
+      }
+      return id
     },
   },
 }

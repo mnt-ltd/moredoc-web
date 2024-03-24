@@ -43,6 +43,23 @@ export default {
       },
     }
   },
+  head() {
+    return {
+      title: `发布文章 - ${this.settings.system.sitename}`,
+      meta: [
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: `发布文章,${this.settings.system.sitename},${this.settings.system.keywords}`,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: `${this.settings.system.description}`,
+        },
+      ],
+    }
+  },
   computed: {
     ...mapGetters('user', ['token', 'user']),
     ...mapGetters('category', ['categoryTrees']),

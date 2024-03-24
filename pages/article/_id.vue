@@ -5,6 +5,41 @@
         <el-card shadow="never">
           <div slot="header">
             <h1>{{ article.title }}</h1>
+            <el-breadcrumb separator="/">
+              <el-breadcrumb-item>
+                <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
+              </el-breadcrumb-item>
+              <el-breadcrumb-item>
+                <nuxt-link to="/article">文章</nuxt-link>
+              </el-breadcrumb-item>
+              <template v-if="breadcrumbs.length < 3">
+                <el-breadcrumb-item
+                  v-for="breadcrumb in breadcrumbs"
+                  :key="'bread-' + breadcrumb.id"
+                >
+                  <nuxt-link :to="`/article?category_id=${breadcrumb.id}`">
+                    {{ breadcrumb.title }}
+                  </nuxt-link>
+                </el-breadcrumb-item>
+              </template>
+              <template v-else>
+                <el-breadcrumb-item>
+                  <nuxt-link :to="`/article?category_id=${breadcrumbs[0].id}`">
+                    {{ breadcrumbs[0].title }}
+                  </nuxt-link>
+                </el-breadcrumb-item>
+                <el-breadcrumb-item>...</el-breadcrumb-item>
+                <el-breadcrumb-item>
+                  <nuxt-link
+                    :to="`/article?category_id=${
+                      breadcrumbs[breadcrumbs.length - 1].id
+                    }`"
+                    >{{ breadcrumbs[breadcrumbs.length - 1].title }}</nuxt-link
+                  >
+                </el-breadcrumb-item>
+              </template>
+              <el-breadcrumb-item>文章详情</el-breadcrumb-item>
+            </el-breadcrumb>
           </div>
           <div class="help-block text-muted article-info">
             <span
@@ -115,6 +150,7 @@ export default {
       favorite: {
         id: 0,
       },
+      breadcrumbs: [],
     }
   },
   head() {
@@ -136,6 +172,7 @@ export default {
   },
   computed: {
     ...mapGetters('setting', ['settings']),
+    ...mapGetters('category', ['categoryMap', 'categoryTrees']),
     ...mapGetters('user', ['user']),
   },
   async created() {
@@ -146,15 +183,39 @@ export default {
     formatRelativeTime,
     async getArticle() {
       const res = await getArticle({ identifier: this.$route.params.id })
-      if (res.status === 200) {
-        this.article = {
-          favorite_count: 0,
-          ...res.data,
-        }
-      } else {
+      if (res.status !== 200) {
         this.$message.error(res.data.message || '查询失败')
         this.$router.push('/404')
+        return
       }
+      const article = {
+        favorite_count: 0,
+        ...res.data,
+      }
+
+      const breadcrumbs = []
+      const tmpBreadcrumbs = (article.category_id || []).map((id) => {
+        const breadcrumb = this.categoryMap[id]
+        if (!breadcrumb.parent_id) {
+          breadcrumbs.push(breadcrumb)
+        }
+        return breadcrumb
+      })
+
+      const length = tmpBreadcrumbs.length
+      for (let j = 0; j < length; j++) {
+        for (let i = 0; i < tmpBreadcrumbs.length; i++) {
+          const breadcrumb = tmpBreadcrumbs[i]
+          if (breadcrumb.parent_id === breadcrumbs[breadcrumbs.length - 1].id) {
+            breadcrumbs.push(breadcrumb)
+            tmpBreadcrumbs.splice(i, 1)
+            break
+          }
+        }
+      }
+
+      this.breadcrumbs = breadcrumbs
+      this.article = article
     },
     async getFavorite() {
       if (!this.user.id) {
