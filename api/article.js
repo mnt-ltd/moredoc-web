@@ -87,3 +87,11 @@ export const recommendArticles = (data) => {
     data,
   })
 }
+
+export const checkArticles = (data) => {
+  return service({
+    url: '/api/v1/article/check',
+    method: 'put',
+    data,
+  })
+}

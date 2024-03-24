@@ -43,6 +43,24 @@
               </el-dropdown-menu>
             </el-dropdown>
           </el-form-item>
+          <el-form-item>
+            <el-dropdown
+              :disabled="selectedRow.length === 0"
+              @command="batchCheeck"
+            >
+              <el-button type="warning" icon="el-icon-s-check">
+                批量审核 <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="status in articleStatusOptions"
+                  :key="'status-' + status.value"
+                  :command="status.value"
+                  >设为{{ status.label }}</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-form-item>
         </template>
       </FormSearch>
     </el-card>
@@ -95,19 +113,24 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { listArticle, deleteArticle, recommendArticles } from '~/api/article'
+import {
+  listArticle,
+  deleteArticle,
+  recommendArticles,
+  checkArticles,
+} from '~/api/article'
 import { listCategory } from '~/api/category'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
-import FormArticle from '~/components/FormArticle.vue'
+import { articleStatusOptions } from '~/utils/enum'
 import {
   genLinkHTML,
   categoryToTrees,
   parseQueryIntArray,
-  parseQueryBoolArray,
+  // parseQueryBoolArray,
 } from '~/utils/utils'
 export default {
-  components: { TableList, FormSearch, FormArticle },
+  components: { TableList, FormSearch },
   layout: 'admin',
   data() {
     return {
@@ -119,6 +142,7 @@ export default {
         status: [],
         size: 10,
       },
+      articleStatusOptions,
       articles: [],
       total: 0,
       trees: [],
@@ -153,6 +177,7 @@ export default {
         this.search = {
           ...this.search,
           ...this.$route.query,
+          ...parseQueryIntArray(this.$route.query, ['status']),
           page: parseInt(this.$route.query.page) || 1,
           size: parseInt(this.$route.query.size) || 10,
         }
@@ -174,6 +199,19 @@ export default {
       const res = await recommendArticles({
         article_id: ids,
         is_recommend: command,
+      })
+      if (res.status === 200) {
+        this.$message.success('操作成功')
+        this.listArticle()
+      } else {
+        this.$message.error(res.data.message)
+      }
+    },
+    async batchCheeck(command) {
+      const ids = this.selectedRow.map((item) => item.id)
+      const res = await checkArticles({
+        article_id: ids,
+        status: command,
       })
       if (res.status === 200) {
         this.$message.success('操作成功')
@@ -327,6 +365,14 @@ export default {
           placeholder: '请输入关键字',
         },
         {
+          type: 'select',
+          label: '状态',
+          name: 'status',
+          multiple: true,
+          placeholder: '请选择状态',
+          options: this.articleStatusOptions,
+        },
+        {
           type: 'cascader',
           label: '分类',
           name: 'category_id',
@@ -336,6 +382,10 @@ export default {
       ]
     },
     initTableListFields() {
+      const statusEnum = {}
+      this.articleStatusOptions.forEach((item) => {
+        statusEnum[item.value] = item
+      })
       this.tableListFields = [
         { prop: 'id', label: 'ID', width: 80, type: 'number', fixed: 'left' },
         {
@@ -353,8 +403,13 @@ export default {
           minWidth: 180,
           type: 'breadcrumb',
         },
-        // { prop: 'keywords', label: '关键字', width: 200 },
-        // { prop: 'description', label: '摘要', minWidth: 200 },
+        {
+          prop: 'status',
+          label: '状态',
+          width: 100,
+          type: 'enum',
+          enum: statusEnum,
+        },
         {
           prop: 'recommend_at',
           label: '推荐时间',

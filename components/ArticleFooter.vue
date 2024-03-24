@@ -1,5 +1,5 @@
 <template>
-  <div class="com-global-footer">
+  <div class="com-article-footer">
     <div>
       <el-link
         v-if="settings.footer.about"
@@ -399,7 +399,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.com-global-footer {
+.com-article-footer {
   font-size: 14px;
 
   & > div {

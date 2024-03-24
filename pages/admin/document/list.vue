@@ -481,7 +481,7 @@ export default {
     selectRow(rows) {
       this.selectedRow = rows
     },
-    async checkDocument(cmd) {
+    checkDocument(cmd) {
       console.log(cmd)
       this.$confirm(
         `您确定要将选中的【${this.selectedRow.length}个】文档状态变更为【${this.documentStatusOptions[cmd].label}】吗？请仔细检查，以免误操作。`,

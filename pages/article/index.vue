@@ -97,7 +97,7 @@ export default {
       },
       recommend: {
         page: 1,
-        size: 10,
+        size: 6,
         totalPage: 1,
         loading: false,
       },

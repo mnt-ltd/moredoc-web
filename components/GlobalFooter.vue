@@ -416,7 +416,6 @@ export default {
       }, 1000 * 60) // 每分钟更新一次
     },
     async handleDropdown(command) {
-      console.log('handleDropdown', command)
       switch (command) {
         case 'logout':
           await this.logout()
