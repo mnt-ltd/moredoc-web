@@ -17,8 +17,8 @@
             >
             <span class="float-right"
               ><i class="el-icon-time"></i>
-              <span class="hidden-xs-only">最后更新:</span>
-              {{ formatRelativeTime(article.updated_at) }}
+              <span class="hidden-xs-only">发布:</span
+              >{{ formatRelativeTime(article.created_at) }}
             </span>
           </div>
           <article class="mgt-20px markdown-body">
@@ -30,7 +30,18 @@
               <share-box :title="article.title" />
             </el-col>
             <el-col :span="12" class="text-right">
-              <el-button type="primary" icon="el-icon-star-off"
+              <el-button
+                v-if="favorite.id > 0"
+                type="primary"
+                icon="el-icon-star-on"
+                @click="deleteFavorite"
+                >取消收藏</el-button
+              >
+              <el-button
+                v-else
+                type="primary"
+                icon="el-icon-star-off"
+                @click="createFavorite"
                 >收藏文章</el-button
               >
             </el-col>
@@ -79,6 +90,7 @@
 import { mapGetters } from 'vuex'
 import { getArticle } from '~/api/article'
 import ShareBox from '~/components/ShareBox.vue'
+import { getFavorite, createFavorite, deleteFavorite } from '~/api/favorite'
 import { formatRelativeTime } from '~/utils/utils'
 export default {
   components: { ShareBox },
@@ -89,6 +101,9 @@ export default {
       editor: null,
       editorConfig: {
         readOnly: true,
+      },
+      favorite: {
+        id: 0,
       },
     }
   },
@@ -111,26 +126,65 @@ export default {
   },
   computed: {
     ...mapGetters('setting', ['settings']),
+    ...mapGetters('user', ['user']),
   },
   async created() {
-    const res = await getArticle({ identifier: this.$route.params.id })
-    if (res.status === 200) {
-      this.article = res.data
-    } else {
-      this.$message.error(res.data.message || '查询失败')
-      this.$router.push('/404')
-    }
+    await this.getArticle()
+    await this.getFavorite()
   },
   methods: {
     formatRelativeTime,
-    onCreated(editor) {
-      this.editor = Object.seal(editor) // 一定要用 Object.seal() ，否则会报错
-      this.editor.on('fullScreen', () => {
-        this.isEditorFullScreen = true
+    async getArticle() {
+      const res = await getArticle({ identifier: this.$route.params.id })
+      if (res.status === 200) {
+        this.article = {
+          favorite_count: 0,
+          ...res.data,
+        }
+      } else {
+        this.$message.error(res.data.message || '查询失败')
+        this.$router.push('/404')
+      }
+    },
+    async getFavorite() {
+      if (!this.user.id) {
+        return
+      }
+      const res = await getFavorite({ document_id: this.article.id, type: 1 })
+      if (res.status === 200) {
+        this.favorite = res.data
+      }
+    },
+    async createFavorite() {
+      if (!this.user.id) {
+        this.$message.error('请先登录')
+        return
+      }
+      const res = await createFavorite({
+        document_id: this.article.id,
+        type: 1,
       })
-      this.editor.on('unFullScreen', () => {
-        this.isEditorFullScreen = false
-      })
+      if (res.status === 200) {
+        this.favorite = res.data
+        this.article.favorite_count++
+        this.$message.success('收藏成功')
+      } else {
+        this.$message.error(res.data.message || '收藏失败')
+      }
+    },
+    async deleteFavorite() {
+      if (!this.user.id) {
+        this.$message.error('请先登录')
+        return
+      }
+      const res = await deleteFavorite({ id: this.favorite.id })
+      if (res.status === 200) {
+        this.favorite = { id: 0 }
+        this.article.favorite_count--
+        this.$message.success('取消收藏成功')
+      } else {
+        this.$message.error(res.data.message || '取消收藏失败')
+      }
     },
   },
 }

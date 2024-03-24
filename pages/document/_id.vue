@@ -1111,6 +1111,7 @@ export default {
       if (res.status === 200) {
         this.$message.success('取消收藏成功')
         this.favorite = { id: 0 }
+        this.document.favorite_count--
       } else {
         this.$message.error(res.data.message)
       }
@@ -1123,6 +1124,7 @@ export default {
       if (res.status === 200) {
         this.$message.success('收藏成功')
         this.favorite = res.data
+        this.document.favorite_count++
       } else {
         this.$message.error(res.data.message)
       }

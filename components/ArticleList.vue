@@ -10,11 +10,26 @@
           >
         </h3>
         <div class="info">
-          <span><i class="el-icon-truck"></i>分类1 - 分类2</span>
-          <span><i class="el-icon-time"></i>2小时前</span>
+          <!-- 早期文章没有发布的作者 -->
+          <span v-if="article.user_id">
+            <i class="el-icon-user"></i>
+            <nuxt-link
+              :to="`/user/${article.user_id}`"
+              class="el-link el-link--default font-normal author"
+              >{{ article.user.username }}</nuxt-link
+            >
+          </span>
+          <span
+            ><i class="el-icon-time"></i
+            >{{ formatRelativeTime(article.created_at) }}</span
+          >
           <span
             ><i class="el-icon-view"></i> {{ article.view_count || 0 }}</span
           >
+          <span>
+            <!-- 收藏 -->
+            <i class="el-icon-star-off"></i> {{ article.favorite_count || 0 }}
+          </span>
         </div>
         <div class="desc">
           {{ article.description }}
@@ -77,20 +92,6 @@ export default {
       line-height: 40px;
     }
   }
-  .author {
-    color: #999;
-    font-size: 12px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    .el-link {
-      font-size: 12px;
-      margin-top: -4px;
-      font-weight: normal;
-    }
-    span {
-      margin-right: 5px;
-    }
-  }
   .desc {
     color: #666;
     font-size: 13px;
@@ -127,6 +128,10 @@ export default {
     font-size: 15px;
     color: #ccc;
     padding: 40px 0;
+  }
+  .author {
+    position: relative;
+    top: -2px;
   }
 }
 </style>

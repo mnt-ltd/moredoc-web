@@ -15,7 +15,7 @@
                   $route.query.tab === 'latest' || !$route.query.tab,
               }"
               :to="`?category_id=${$route.query.category_id || ''}&tab=latest`"
-              >最新</nuxt-link
+              >最新发布</nuxt-link
             >
             <nuxt-link
               class="el-link el-link--default"
@@ -23,7 +23,7 @@
                 'el-link--primary': $route.query.tab === 'popular',
               }"
               :to="`?category_id=${$route.query.category_id || ''}&tab=popular`"
-              >热门</nuxt-link
+              >热门文章</nuxt-link
             >
             <nuxt-link to="/post">
               <el-button
@@ -135,6 +135,7 @@ export default {
         page: this.query.page,
         category_id: this.$route.query.category_id || undefined,
         order: this.$route.query.tab === 'popular' ? 'view_count desc' : '',
+        status: 1, // 审核通过的文章
       })
       if (res.status !== 200) {
         this.$message.error(res.data.message || '获取文章列表失败')
@@ -149,6 +150,7 @@ export default {
         page: this.recommend.page,
         size: this.recommend.size,
         is_recommend: true,
+        status: 1, // 审核通过的文章
       })
       this.loading = false
       if (res.status !== 200) {
