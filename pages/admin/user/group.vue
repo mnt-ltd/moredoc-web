@@ -324,7 +324,7 @@ export default {
         },
         {
           prop: 'enable_article_approval',
-          label: '评论需要审核',
+          label: '文章需要审核',
           width: 120,
           type: 'bool',
         },

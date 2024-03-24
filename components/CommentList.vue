@@ -34,6 +34,10 @@ export default {
       type: Number,
       default: 0,
     },
+    type: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -70,6 +74,7 @@ export default {
       if (!this.req.document_id) return
       const res = await listComment({
         document_id: this.documentId,
+        type: this.type,
         order: 'id asc',
       })
       if (res.status === 200) {

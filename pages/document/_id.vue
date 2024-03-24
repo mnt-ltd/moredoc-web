@@ -552,9 +552,8 @@ import {
 import { documentStatusOptions } from '~/utils/enum'
 import FormComment from '~/components/FormComment.vue'
 import CommentList from '~/components/CommentList.vue'
-import DocumentCard from '~/components/DocumentCard.vue'
 export default {
-  components: { DocumentSimpleList, FormComment, CommentList, DocumentCard },
+  components: { DocumentSimpleList, FormComment, CommentList },
   data() {
     return {
       documentStatusOptions,

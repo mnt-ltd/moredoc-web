@@ -86,9 +86,9 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { getUserCaptcha } from '~/api/user'
 import { createComment } from '~/api/comment'
-import { mapGetters } from 'vuex'
 export default {
   name: 'FormComment',
   props: {
@@ -104,6 +104,10 @@ export default {
       type: String,
       default: '请输入评论内容',
     },
+    type: {
+      type: Number,
+      default: 0, // 0 文档，1 文章
+    },
   },
   data() {
     return {
@@ -113,6 +117,7 @@ export default {
         content: '',
         captcha: '',
         captcha_id: '',
+        type: this.type,
       },
       captcha: {
         enable: false,
@@ -145,7 +150,7 @@ export default {
   },
   created() {
     // this.loadCaptcha()
-    if(this.settings.security.enable_captcha_comment){
+    if (this.settings.security.enable_captcha_comment) {
       this.captcha.enable = true
     }
   },

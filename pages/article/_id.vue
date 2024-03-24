@@ -17,7 +17,7 @@
             >
             <span
               ><i class="el-icon-chat-dot-square"></i>
-              {{ article.favorite_count || 0 }} 评论</span
+              {{ article.comment_count || 0 }} 评论</span
             >
             <span class="float-right"
               ><i class="el-icon-time"></i>
@@ -54,10 +54,16 @@
         <el-card shadow="never" class="mgt-20px">
           <FormComment
             :document-id="article.id"
+            :type="1"
             class="mgt-20px"
             @success="commentSuccess"
           />
-          <comment-list ref="commentList" :document-id="article.id" />
+          <comment-list
+            v-if="article.id > 0"
+            ref="commentList"
+            :document-id="article.id"
+            :type="1"
+          />
         </el-card>
       </el-col>
       <el-col :span="6" class="article-list">
@@ -175,6 +181,9 @@ export default {
       } else {
         this.$message.error(res.data.message || '收藏失败')
       }
+    },
+    commentSuccess() {
+      this.$refs.commentList.getComments()
     },
     async deleteFavorite() {
       if (!this.user.id) {

@@ -342,8 +342,8 @@ export const categoryTypeDocument = 0
 export const categoryTypeArticle = 1
 
 export const categoryTypeOptions = [
-  { label: '文档', value: categoryTypeDocument },
-  { label: '文章', value: categoryTypeArticle },
+  { label: '文档', value: categoryTypeDocument, type: 'primary' },
+  { label: '文章', value: categoryTypeArticle, type: 'success' },
 ]
 
 export const articleStatusOptions = [

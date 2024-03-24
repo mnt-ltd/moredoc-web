@@ -59,6 +59,7 @@
         :document-id="comment.document_id"
         :parent-id="comment.id"
         :placeholder="`回复 ${comment.user.username}`"
+        :type="comment.type"
         @success="commentSuccess"
       />
       <slot></slot>
