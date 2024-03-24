@@ -10,29 +10,41 @@
           >
         </h3>
         <div class="info">
-          <!-- 早期文章没有发布的作者 -->
-          <span v-if="article.user_id">
-            <i class="el-icon-user"></i>
+          <span v-if="article.user_id" class="author">
             <nuxt-link
               :to="`/user/${article.user_id}`"
               class="el-link el-link--default font-normal author"
+              ><el-avatar
+                :size="16"
+                class="avatar"
+                :src="article.user.avatar"
+              ></el-avatar
               >{{ article.user.username }}</nuxt-link
             >
           </span>
+          <span class="text-muted">·</span>
           <span
             ><i class="el-icon-time"></i
             >{{ formatRelativeTime(article.created_at) }}</span
           >
-          <span
-            ><i class="el-icon-view"></i> {{ article.view_count || 0 }}</span
-          >
-          <span>
-            <!-- 收藏 -->
-            <i class="el-icon-star-off"></i> {{ article.favorite_count || 0 }}
-          </span>
         </div>
         <div class="desc">
           {{ article.description }}
+        </div>
+        <div class="info">
+          <span
+            ><i class="el-icon-view"></i>
+            {{ article.view_count || 0 }} 阅读</span
+          >
+          <span>
+            <!-- 收藏 -->
+            <i class="el-icon-star-off"></i>
+            {{ article.favorite_count || 0 }} 收藏
+          </span>
+          <span>
+            <i class="el-icon-chat-dot-square"></i>
+            {{ article.comment_count || 0 }} 评论
+          </span>
         </div>
       </li>
     </ul>
@@ -115,7 +127,7 @@ export default {
   }
   li {
     border-bottom: 1px solid #f6f6f6;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
     margin-bottom: 10px;
     &:last-of-type {
       border-bottom: 0;
@@ -131,7 +143,16 @@ export default {
   }
   .author {
     position: relative;
-    top: -2px;
+    top: -1px;
+    :deep(.el-link--default) {
+      color: #787878;
+      font-weight: normal;
+    }
+    .avatar {
+      vertical-align: middle;
+      margin-top: 2px;
+      margin-right: 6px;
+    }
   }
 }
 </style>

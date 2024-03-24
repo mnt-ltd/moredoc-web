@@ -12,8 +12,12 @@
               {{ article.view_count || 0 }} 阅读</span
             >
             <span
-              ><i class="el-icon-view"></i>
+              ><i class="el-icon-star-off"></i>
               {{ article.favorite_count || 0 }} 收藏</span
+            >
+            <span
+              ><i class="el-icon-chat-dot-square"></i>
+              {{ article.favorite_count || 0 }} 评论</span
             >
             <span class="float-right"
               ><i class="el-icon-time"></i>
