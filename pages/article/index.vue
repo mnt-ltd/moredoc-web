@@ -6,7 +6,42 @@
         <div>&nbsp;</div>
       </el-col>
       <el-col :span="14" class="main-list">
-        <el-card shadow="never">
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item>
+            <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
+          </el-breadcrumb-item>
+          <el-breadcrumb-item>
+            <nuxt-link to="/article">全部文章</nuxt-link>
+          </el-breadcrumb-item>
+          <el-breadcrumb-item
+            v-for="item in breadcrumbs"
+            :key="'bread1-' + item.id"
+          >
+            <el-dropdown v-if="item.children.length > 0">
+              <span class="el-dropdown-link">
+                {{ item.title
+                }}<i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown" class="breadcrumb-dropdown">
+                <el-dropdown-item
+                  v-for="ss in item.children.filter((x) => x.type)"
+                  :key="'s1-' + ss.id"
+                >
+                  <nuxt-link
+                    class="el-link el-link--default block"
+                    :class="{
+                      'el-link--primary': ss.id === item.id,
+                    }"
+                    :to="`/article?category_id=${ss.id}`"
+                    >{{ ss.title }}</nuxt-link
+                  ></el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </el-dropdown>
+            <span v-else>{{ item.title }}</span>
+          </el-breadcrumb-item>
+        </el-breadcrumb>
+        <el-card shadow="never" style="margin-top: 10px">
           <template slot="header">
             <nuxt-link
               class="el-link el-link--default"
@@ -35,6 +70,16 @@
               >
             </nuxt-link>
           </template>
+          <div
+            v-if="
+              activeCate.description &&
+              activeCate.show_description &&
+              (query.page === 1 || !query.page)
+            "
+            class="cate-description"
+          >
+            {{ activeCate.description }}
+          </div>
           <article-list :articles="articles" />
           <el-pagination
             v-if="total > 0"
@@ -97,12 +142,14 @@ export default {
       },
       recommend: {
         page: 1,
-        size: 6,
+        size: 5,
         totalPage: 1,
         loading: false,
       },
       recommendArticles: [],
       articles: [],
+      breadcrumbs: [],
+      activeCate: { id: 0, title: '全部文章', description: '' },
       title: '全部文章',
     }
   },
@@ -113,14 +160,15 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.settings.system.description,
+          content:
+            this.activeCate.description || this.settings.system.description,
         },
       ],
     }
   },
   computed: {
     ...mapGetters('setting', ['settings']),
-    ...mapGetters('category', ['categoryMap', 'categoryTrees']),
+    ...mapGetters('category', ['categoryMap', 'categoryTrees', 'categories']),
   },
   watch: {
     $route: {
@@ -139,18 +187,52 @@ export default {
   methods: {
     setActiveCate() {
       const cateId = this.$route.query.category_id || undefined
-      let activeCate = { title: '全部文章' }
+      let activeCate = { title: '全部文章', id: 0 }
       if (cateId) {
         activeCate = this.categoryMap[cateId] || activeCate
       }
-      this.title = activeCate.title
+      this.activeCate = activeCate
+      this.setBreadcrumbs()
     },
     pageChange(page) {
       this.query.page = page
       this.$router.push({
         path: this.$route.path,
-        query: this.query,
+        query: {
+          ...this.$route.query,
+          ...this.query,
+        },
       })
+    },
+    setBreadcrumbs() {
+      const breadcrumbs = []
+      let category = { children: [], ...this.categoryMap[this.activeCate.id] }
+      if (category.id) {
+        // 查询当前分类的兄弟分类
+        category.children = this.filterCategoryChildren(category)
+        breadcrumbs.push(category)
+        while (category.parent_id) {
+          category = { children: [], ...this.categoryMap[category.parent_id] }
+          if (category.id) {
+            category.children = this.filterCategoryChildren(category)
+            breadcrumbs.splice(0, 0, category)
+          }
+        }
+      }
+      const titles = []
+      breadcrumbs.forEach((x) => {
+        titles.push(x.title)
+      })
+      this.title = titles.join(' · ')
+      this.breadcrumbs = breadcrumbs
+    },
+    filterCategoryChildren(category) {
+      try {
+        return this.categories.filter((x) => {
+          return x.parent_id === category.id && x.type === 1
+        })
+      } catch (error) {}
+      return []
     },
     async getArticles() {
       const res = await listArticle({
@@ -208,6 +290,19 @@ export default {
       border-top: 1px dashed #efefef;
     }
   }
+
+  .cate-description {
+    padding: 10px 0;
+    color: #909399;
+    line-height: 170%;
+    font-size: 13px;
+    word-break: break-all;
+    border: 1px dashed #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px -10px 0;
+  }
+
   .popular {
     .el-card__body {
       padding-top: 10px;

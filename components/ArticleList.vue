@@ -97,7 +97,7 @@ export default {
     margin: 0;
     a {
       color: #000;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 400;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
         'Helvetica Neue', Arial, 'Noto Sans', sans-serif;

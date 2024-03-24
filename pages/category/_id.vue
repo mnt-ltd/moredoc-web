@@ -57,14 +57,6 @@
           <div v-if="categoryChildren.length > 0" class="item-row">
             <div class="item-name">分类</div>
             <div class="item-content">
-              <!-- <nuxt-link
-                v-for="child in categoryChildren"
-                :key="'tree-' + child.id"
-                :to="`/category/${child.id}`"
-                :title="child.title"
-                class="el-link el-link--default"
-                >{{ child.title }}</nuxt-link
-              > -->
               <el-popover
                 v-for="child in categoryChildren"
                 :key="'tree-pop-' + child.id"
