@@ -94,7 +94,11 @@
               v-model="search.wd"
               class="search-input"
               size="large"
-              placeholder="搜索文档..."
+              :placeholder="
+                $route.path.startsWith('/article')
+                  ? '搜索文章...'
+                  : '搜索文档...'
+              "
               @keyup.enter.native="onSearch"
             >
               <i
@@ -298,6 +302,7 @@ export default {
     return {
       search: {
         wd: '',
+        type: this.$route.path.startsWith('/article') ? 1 : 0,
       },
       friendlinks: [],
       timeouter: null,
@@ -387,6 +392,7 @@ export default {
         path: '/search',
         query: {
           wd,
+          type: this.search.type,
         },
       })
       this.search.wd = ''

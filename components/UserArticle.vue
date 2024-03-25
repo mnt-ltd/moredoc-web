@@ -1,6 +1,6 @@
 <template>
   <div class="com-user-article">
-    <!-- 文档搜索表单 -->
+    <!-- 文章搜索表单 -->
     <el-form
       :inline="true"
       :model="query"
@@ -17,6 +17,20 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
+        <el-date-picker
+          v-model="query.created_at"
+          type="datetimerange"
+          :picker-options="datetimePickerOptions"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          align="right"
+          size="medium"
+          value-format="yyyy-MM-dd HH:mm:ss"
+        >
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item>
         <el-button
           type="primary"
           size="medium"
@@ -28,82 +42,26 @@
         </el-button>
       </el-form-item>
     </el-form>
-
-    <el-table v-loading="loading" :data="docs" style="width: 100%">
-      <el-table-column prop="title" label="名称" min-width="300">
+    <el-table v-loading="loading" :data="articles" style="width: 100%">
+      <el-table-column prop="title" label="标题" min-width="300">
         <template slot-scope="scope">
           <nuxt-link
             target="_blank"
             :to="{
-              name: 'document-id',
-              params: { id: scope.row.uuid || scope.row.id },
+              name: 'article-id',
+              params: { id: scope.row.identifier },
             }"
             class="el-link el-link--default doc-title"
           >
-            <img :src="`/static/images/${scope.row.icon}_24.png`" alt="" />
             {{ scope.row.title }}
           </nuxt-link>
         </template>
       </el-table-column>
       <el-table-column
-        v-if="(settings.language || []).length > 0"
-        prop="language"
-        label="语言"
-        width="110"
-      >
-        <template slot-scope="scope">
-          <el-tag
-            v-if="filterLanguage(scope.row.language).language"
-            size="mini"
-            effect="plain"
-          >
-            {{ filterLanguage(scope.row.language).language }}
-          </el-tag>
-          <span v-else>{{ scope.row.language }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="score" label="评分" width="110">
-        <template slot-scope="scope">
-          <el-rate
-            :value="scope.row.score || 0.0"
-            disabled
-            score-template="{value}"
-          ></el-rate>
-        </template>
-      </el-table-column>
-      <el-table-column
-        v-if="settings.display.show_document_view_count || showPrivateData"
-        prop="view_count"
-        label="浏览"
-        width="70"
-      >
-        <template slot-scope="scope">{{ scope.row.view_count || 0 }}</template>
-      </el-table-column>
-      <el-table-column
-        v-if="settings.display.show_document_download_count || showPrivateData"
-        prop="download_count"
-        label="下载"
-        width="70"
-      >
-        <template slot-scope="scope">{{
-          scope.row.download_count || 0
-        }}</template>
-      </el-table-column>
-      <el-table-column
-        v-if="settings.display.show_document_favorite_count || showPrivateData"
-        prop="favorite_count"
-        label="收藏"
-        width="70"
-      >
-        <template slot-scope="scope">{{
-          scope.row.favorite_count || 0
-        }}</template>
-      </el-table-column>
-      <el-table-column
         v-if="showPrivateData"
         prop="status"
         label="状态"
-        width="70"
+        width="100"
       >
         <template slot-scope="scope">
           <el-tag
@@ -115,18 +73,21 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="page" label="页数" width="70">
-        <template slot-scope="scope">{{ scope.row.pages || '-' }}</template>
+      <el-table-column prop="view_count" label="阅读" width="100">
+        <template slot-scope="scope">{{ scope.row.view_count || 0 }}</template>
       </el-table-column>
-      <el-table-column prop="page" label="价格" width="70">
-        <template slot-scope="scope">{{ scope.row.price || '0' }}</template>
-      </el-table-column>
-      <el-table-column prop="size" label="大小" width="100">
+      <el-table-column prop="comment_count" label="评论" width="100">
         <template slot-scope="scope">{{
-          formatBytes(scope.row.size)
+          scope.row.comment_count || 0
         }}</template>
       </el-table-column>
-      <el-table-column prop="created_at" label="上传" width="100">
+      <el-table-column prop="favorite_count" label="收藏" width="100">
+        <template slot-scope="scope">{{
+          scope.row.favorite_count || 0
+        }}</template>
+      </el-table-column>
+
+      <el-table-column prop="created_at" label="发布" width="100">
         <template slot-scope="scope">
           <el-tooltip
             :content="formatDatetime(scope.row.created_at)"
@@ -143,18 +104,18 @@
         fixed="right"
       >
         <template slot-scope="scope">
-          <el-tooltip content="编辑文档" placement="top">
+          <el-tooltip content="编辑文章" placement="top">
             <el-button
               type="text"
               icon="el-icon-edit"
-              @click="updateDocument(scope.row)"
+              @click="updateArticle(scope.row)"
             ></el-button>
           </el-tooltip>
-          <el-tooltip content="删除文档" placement="top">
+          <el-tooltip content="删除文章" placement="top">
             <el-button
               type="text"
               icon="el-icon-delete"
-              @click="deleteDocument(scope.row)"
+              @click="deleteArticle(scope.row)"
             ></el-button>
           </el-tooltip>
         </template>
@@ -176,34 +137,22 @@
       @current-change="pageChange"
     >
     </el-pagination>
-    <el-dialog
-      title="编辑文档"
-      :visible.sync="updateDocumentVisible"
-      :width="isMobile ? '95%' : '640px'"
-    >
-      <FormUpdateDocument
-        :category-trees="categoryTrees"
-        :init-document="document"
-        :is-admin="false"
-        @success="updateDocumentSuccess"
-      />
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { deleteDocument, listDocument, searchDocument } from '~/api/document'
+import { listArticle, searchArticle, deleteArticle } from '~/api/article'
 import {
   formatBytes,
   formatDatetime,
   formatRelativeTime,
   getIcon,
 } from '~/utils/utils'
-import { datetimePickerOptions, documentStatusOptions } from '~/utils/enum'
+import { datetimePickerOptions, articleStatusOptions } from '~/utils/enum'
 
 export default {
-  name: 'UserDocument',
+  name: 'UserArticle',
   props: {
     userId: {
       type: Number,
@@ -213,10 +162,10 @@ export default {
   data() {
     return {
       datetimePickerOptions,
-      documentStatusOptions,
-      documentStatusOptionsMap: {},
+      articleStatusOptions,
+      articleStatusOptionsMap: {},
       languageMap: {},
-      docs: [],
+      articles: [],
       total: 0,
       loading: false,
       query: {
@@ -225,8 +174,7 @@ export default {
         wd: '',
         created_at: [],
       },
-      updateDocumentVisible: false,
-      document: { id: 0 },
+      article: { id: 0 },
     }
   },
   computed: {
@@ -253,10 +201,10 @@ export default {
   },
   created() {
     const statusMap = {}
-    this.documentStatusOptions.forEach((item) => {
+    this.articleStatusOptions.forEach((item) => {
       statusMap[item.value] = item
     })
-    this.documentStatusOptionsMap = statusMap
+    this.articleStatusOptionsMap = statusMap
 
     const languageMap = {}
     ;(this.settings.language || []).forEach((item) => {
@@ -269,15 +217,11 @@ export default {
     formatBytes,
     formatDatetime,
     formatRelativeTime,
-    updateDocument(row) {
-      this.updateDocumentVisible = true
-      const doc = { ...row }
-      delete doc.icon
-      this.document = doc
-    },
-    updateDocumentSuccess() {
-      this.updateDocumentVisible = false
-      this.getArticles()
+    updateArticle(row) {
+      this.$router.push({
+        path: '/post',
+        query: { identifier: row.identifier },
+      })
     },
     tabClick(tab) {
       this.activeTab = tab.name
@@ -294,31 +238,19 @@ export default {
       this.loading = true
       let res
       if (this.query.wd) {
-        res = await searchDocument({
+        res = await searchArticle({
           ...this.query,
           user_id: this.userId,
         })
       } else {
-        res = await listDocument({
+        res = await listArticle({
           ...this.query,
           user_id: this.userId,
         })
       }
 
-      console.log(res)
-
       if (res.status === 200) {
-        const docs = res.data.document || []
-        docs.map((item) => {
-          item.score = item.score / 100 || 0.0
-          try {
-            item.icon = getIcon(item.ext)
-          } catch (e) {
-            console.log(e)
-          }
-          return item
-        })
-        this.docs = docs
+        this.articles = res.data.article || []
         this.total = res.data.total || 0
       }
       this.loading = false
@@ -328,13 +260,13 @@ export default {
         query: { ...this.query, page },
       })
     },
-    deleteDocument(row) {
-      this.$confirm(`您确定要删除文档《${row.title}》吗？`, '提示', {
+    deleteArticle(row) {
+      this.$confirm(`您确定要删除文章《${row.title}》吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(async () => {
-        const res = await deleteDocument({ id: row.id })
+        const res = await deleteArticle({ id: row.id })
         if (res.status === 200) {
           this.$message({
             type: 'success',
@@ -346,9 +278,9 @@ export default {
     },
     filterStatus(status) {
       return (
-        this.documentStatusOptionsMap[status] || {
+        this.articleStatusOptionsMap[status || 0] || {
           value: status,
-          label: '未知',
+          label: '待审核',
           type: 'info',
         }
       )
@@ -367,7 +299,7 @@ export default {
 </script>
 
 <style lang="scss">
-.com-user-document {
+.com-user-article {
   .doc-title {
     display: block;
     white-space: nowrap;

@@ -71,19 +71,6 @@
       </el-col>
       <template v-if="isAdmin">
         <el-col :span="6">
-          <!-- 审核状态 -->
-          <el-form-item label="审核状态">
-            <el-select v-model="article.status">
-              <el-option
-                v-for="item in articleStatusOptions"
-                :key="'s-' + item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
           <!-- 推荐 -->
           <el-form-item label="推荐">
             <el-switch
