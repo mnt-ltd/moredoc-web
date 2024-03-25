@@ -375,7 +375,7 @@ export default {
 // 移动端样式
 // =======================
 @media screen and (max-width: $mobile-width) {
-  .layout-default {
+  .layout-article {
     min-width: 0 !important;
     .el-card {
       border-radius: 0;

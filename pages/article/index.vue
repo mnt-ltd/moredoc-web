@@ -1,15 +1,16 @@
 <template>
   <div class="page page-article-index">
     <el-row :gutter="20">
-      <el-col :span="4">
+      <el-col class="hidden-xs-only" :span="4">
         <article-navbar class="fixed-left" />
         <div>&nbsp;</div>
       </el-col>
-      <el-col :span="14" class="main-list">
+      <el-col :span="14" :xs="24" class="main-list">
         <el-breadcrumb
           v-if="activeCate.id"
           style="margin-bottom: 10px"
           separator="/"
+          class="hidden-xs-only"
         >
           <el-breadcrumb-item>
             <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
@@ -45,6 +46,20 @@
             <span v-else>{{ item.title }}</span>
           </el-breadcrumb-item>
         </el-breadcrumb>
+        <el-tabs
+          v-model="activeCate.idStr"
+          type="border-card"
+          class="hidden-sm-and-up"
+          @tab-click="changeTabs"
+        >
+          <el-tab-pane label="全部文章" name=""></el-tab-pane>
+          <el-tab-pane
+            v-for="cate in categoryTrees.filter((item) => item.type === 1)"
+            :key="'pane-' + cate.id"
+            :label="cate.title"
+            :name="`${cate.id}`"
+          ></el-tab-pane>
+        </el-tabs>
         <el-card shadow="never">
           <template slot="header">
             <nuxt-link
@@ -102,7 +117,7 @@
           </el-pagination>
         </el-card>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="6" class="hidden-xs-only">
         <div class="fixed-right">
           <el-card shadow="never" class="recommend">
             <div slot="header">推荐</div>
@@ -153,7 +168,7 @@ export default {
       recommendArticles: [],
       articles: [],
       breadcrumbs: [],
-      activeCate: { id: 0, title: '全部文章', description: '' },
+      activeCate: { id: 0, title: '全部文章', description: '', idStr: '' },
       title: '全部文章',
     }
   },
@@ -195,6 +210,7 @@ export default {
       if (cateId) {
         activeCate = this.categoryMap[cateId] || activeCate
       }
+      activeCate.idStr = activeCate.id.toString()
       this.activeCate = activeCate
       this.setBreadcrumbs()
     },
@@ -275,6 +291,16 @@ export default {
       }
       this.recommendArticles = res.data.article || []
     },
+    changeTabs(tab) {
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          category_id: tab.name,
+          page: 1,
+        },
+      })
+    },
   },
 }
 </script>
@@ -352,6 +378,12 @@ export default {
     }
     .popular {
       margin-top: 15px;
+    }
+  }
+  .el-tabs--border-card {
+    border: 0;
+    .el-tabs__content {
+      display: none;
     }
   }
 }

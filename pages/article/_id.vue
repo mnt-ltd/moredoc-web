@@ -1,17 +1,19 @@
 <template>
   <div class="page page-article">
     <el-row :gutter="20">
-      <el-col :span="18">
+      <el-col :span="18" :xs="24">
         <el-card shadow="never">
           <div slot="header">
             <h1>
-              <template v-if="article.status != 1">
-                (
-                <span v-if="article.status == 2" class="text-danger"
-                  >审核拒绝</span
-                >
-                <span v-else class="text-warning">待审核</span>
-                )
+              <template v-if="article.id > 0">
+                <template v-if="article.status != 1">
+                  (
+                  <span v-if="article.status == 2" class="text-danger"
+                    >审核拒绝</span
+                  >
+                  <span v-else class="text-warning">待审核</span>
+                  )
+                </template>
               </template>
               {{ article.title }}
             </h1>
@@ -51,7 +53,7 @@
               <el-breadcrumb-item>文章详情</el-breadcrumb-item>
             </el-breadcrumb>
           </div>
-          <div class="help-block text-muted article-info">
+          <div class="help-block text-muted article-info hidden-xs-only">
             <span
               ><i class="el-icon-view"></i>
               {{ article.view_count || 0 }} 阅读</span
@@ -69,6 +71,43 @@
               <span class="hidden-xs-only">发布:</span
               >{{ formatRelativeTime(article.created_at) }}
             </span>
+          </div>
+          <div v-if="article.id > 0" class="hidden-sm-and-up">
+            <!-- 展示文章作者信息 -->
+            <div class="m-userinfo">
+              <div>
+                <nuxt-link :to="'/user/' + article.user_id">
+                  <UserAvatar :size="32" :user="article.user" />
+                </nuxt-link>
+              </div>
+              <div class="user-profile">
+                <nuxt-link
+                  class="el-link el-link--default"
+                  :to="'/user/' + article.user_id"
+                >
+                  <strong>{{ article.user.username }}</strong>
+                </nuxt-link>
+                <div>
+                  <small class="help-block">
+                    发布于 {{ formatRelativeTime(article.created_at) }}
+                  </small>
+                </div>
+              </div>
+              <div class="article-info">
+                <span
+                  ><i class="el-icon-view"></i>
+                  {{ article.view_count || 0 }}</span
+                >
+                <span>
+                  <i class="el-icon-star-off"></i>
+                  {{ article.favorite_count || 0 }}
+                </span>
+                <span>
+                  <i class="el-icon-chat-dot-square"></i>
+                  {{ article.comment_count || 0 }}
+                </span>
+              </div>
+            </div>
           </div>
           <article class="mgt-20px markdown-body">
             <el-alert
@@ -96,6 +135,7 @@
               <el-button
                 v-else
                 type="primary"
+                :size="isMobile ? 'medium' : 'large'"
                 icon="el-icon-star-off"
                 @click="createFavorite"
                 >收藏文章</el-button
@@ -118,8 +158,8 @@
           />
         </el-card>
       </el-col>
-      <el-col :span="6" class="article-right">
-        <el-card shadow="never">
+      <el-col :span="6" :xs="24" class="article-right">
+        <el-card shadow="never" class="hidden-xs-only">
           <div slot="header">分享用户</div>
           <user-card
             :hide-actions="true"
@@ -279,8 +319,6 @@ export default {
     handleScroll() {
       const scrollTop =
         document.documentElement.scrollTop || document.body.scrollTop
-      console.log('scrollTop', scrollTop)
-      // 右侧相关文档固定
       try {
         const relArt = this.$refs.relArt.$el
         if (relArt) {
@@ -384,6 +422,30 @@ export default {
       color: #777;
       font-size: 0.95em;
       background-color: #f6f8fa;
+    }
+  }
+  .m-userinfo {
+    display: flex;
+    align-items: center;
+    color: #999;
+    .user-profile {
+      margin-left: 10px;
+      position: relative;
+      top: -4px;
+    }
+    small {
+      font-size: 12px;
+    }
+    .article-info {
+      margin-top: 15px;
+      color: #999;
+      font-size: 12px;
+      flex: 1;
+      text-align: right;
+      span {
+        margin-right: 0;
+        margin-left: 10px;
+      }
     }
   }
 }

@@ -101,7 +101,8 @@ export default {
       font-weight: 400;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
         'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-      line-height: 40px;
+      line-height: 30px;
+      margin-bottom: 10px;
     }
   }
   .desc {
