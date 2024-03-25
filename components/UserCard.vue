@@ -16,9 +16,9 @@
           <div class="el-link el-link--primary">{{ user.doc_count || 0 }}</div>
         </el-col>
         <el-col :span="8">
-          <div>收藏</div>
+          <div>文章</div>
           <div class="el-link el-link--primary">
-            {{ user.favorite_count || 0 }}
+            {{ user.article_count || 0 }}
           </div>
         </el-col>
         <el-col :span="8"
@@ -35,18 +35,37 @@
         {{ user.signature || '暂无个性签名' }}
       </div>
     </div>
-    <div v-if="latestDocuments.length > 0" class="mgt-20px latest-documents">
-      <div class="heading">
-        <small><strong>最近上传</strong> <i class="el-icon-time"></i></small>
-      </div>
-      <div class="help-block">
-        <document-simple-list :docs="latestDocuments" />
-      </div>
-    </div>
+    <template v-if="!hideLatest">
+      <template v-if="type === 'default'">
+        <div v-if="latestDocuments.length > 0" class="mgt-20px latest">
+          <div class="heading">
+            <small
+              ><strong>最近上传</strong> <i class="el-icon-time"></i
+            ></small>
+          </div>
+          <div class="help-block">
+            <document-simple-list :docs="latestDocuments" />
+          </div>
+        </div>
+      </template>
+      <template v-else-if="type === 'article'">
+        <div v-if="latestArticles.length > 0" class="mgt-20px latest">
+          <div class="heading">
+            <small
+              ><strong>最近发布</strong> <i class="el-icon-time"></i
+            ></small>
+          </div>
+          <div class="help-block">
+            <article-simple-list :articles="latestArticles" />
+          </div>
+        </div>
+      </template>
+    </template>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { listArticle } from '~/api/article'
 import { listDocument } from '~/api/document'
 // 用户信息卡片
 export default {
@@ -74,15 +93,20 @@ export default {
       type: Boolean,
       default: false,
     },
-    hideLatestDocuments: {
+    hideLatest: {
       type: Boolean,
       default: false,
+    },
+    type: {
+      type: String,
+      default: 'default',
     },
   },
   data() {
     return {
       loading: false,
       latestDocuments: [],
+      latestArticles: [],
     }
   },
   computed: {
@@ -91,7 +115,11 @@ export default {
   watch: {
     user: {
       handler() {
-        this.getLatestDocuments()
+        if (this.type === 'article') {
+          this.getLatestArticles()
+        } else {
+          this.getLatestDocuments()
+        }
       },
       immediate: true,
     },
@@ -104,11 +132,11 @@ export default {
         this.loading ||
         this.isMobile ||
         !this.user.doc_count ||
-        this.hideLatestDocuments
+        this.hideLatest
       )
         return
       this.loading = true
-      let res = await listDocument({
+      const res = await listDocument({
         page: 1,
         size: 5,
         user_id: this.user.id,
@@ -118,13 +146,35 @@ export default {
         this.latestDocuments = res.data.document || []
       }
     },
+    async getLatestArticles() {
+      if (
+        this.user.id === 0 ||
+        this.loading ||
+        this.isMobile ||
+        !this.user.article_count ||
+        this.hideLatest
+      )
+        return
+      this.loading = true
+      const res = await listArticle({
+        page: 1,
+        size: 5,
+        user_id: this.user.id,
+        type: 1,
+        status: 1,
+      })
+      this.loading = false
+      if (res.status === 200) {
+        this.latestArticles = res.data.article || []
+      }
+    },
   },
 }
 </script>
 <style lang="scss" scoped>
 .com-user-card {
   text-align: center;
-  .latest-documents {
+  .latest {
     text-align: left;
     margin-bottom: -10px;
     .heading {

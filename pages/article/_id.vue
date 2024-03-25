@@ -101,21 +101,17 @@
           />
         </el-card>
       </el-col>
-      <el-col :span="6" class="article-list">
+      <el-col :span="6" class="article-right">
         <el-card shadow="never">
-          <div slot="header">相关文章</div>
-          <nuxt-link to="/" class="el-link el-link--default"
-            >关于我们</nuxt-link
-          >
-          <nuxt-link to="/" class="el-link el-link--default"
-            >联系我们</nuxt-link
-          >
-          <nuxt-link to="/" class="el-link el-link--default"
-            >免责声明</nuxt-link
-          >
+          <div slot="header">分享用户</div>
+          <user-card
+            :hide-actions="true"
+            :type="'article'"
+            :user="article.user"
+          />
         </el-card>
-        <el-card shadow="never" class="mgt-20px">
-          <div slot="header">最新推荐</div>
+        <el-card shadow="never" class="mgt-20px article-list">
+          <div slot="header">相关文档</div>
           <nuxt-link to="/" class="el-link el-link--default"
             >关于我们</nuxt-link
           >

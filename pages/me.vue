@@ -3,13 +3,13 @@
     <el-row :gutter="20">
       <el-col :span="6" class="part-left">
         <el-card shadow="never">
-          <user-card :user="user" :hideLatestDocuments="true" />
+          <user-card :user="user" :hide-latest="true" />
           <nuxt-link to="/upload">
             <el-button
+              v-if="!isMobile"
               type="primary"
               icon="el-icon-upload2"
               class="btn-block mgt-20px"
-              v-if="!isMobile"
               >上传文档</el-button
             >
           </nuxt-link>
