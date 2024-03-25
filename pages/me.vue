@@ -63,10 +63,6 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'PageMe',
-  computed: {
-    ...mapGetters('user', ['user']),
-    ...mapGetters('setting', ['settings']),
-  },
   data() {
     return {
       defaultActive: {
@@ -83,6 +79,11 @@ export default {
           label: '我的上传',
           value: '/me/document',
           icon: 'el-icon-document',
+        },
+        {
+          label: '我的文章',
+          value: '/me/article',
+          icon: 'el-icon-tickets',
         },
         {
           label: '我的收藏',
@@ -106,6 +107,10 @@ export default {
     return {
       title: `${this.defaultActive.label} - ${this.user.username} - ${this.settings.system.sitename}`,
     }
+  },
+  computed: {
+    ...mapGetters('user', ['user']),
+    ...mapGetters('setting', ['settings']),
   },
   watch: {
     '$route.path': {
