@@ -925,9 +925,6 @@ export default {
         // 多加载一页
         this.pages[currentPage].src = this.pages[currentPage].lazySrc
       }
-
-      console.log(this.footerTop)
-
       // 右侧相关文档固定
       try {
         const relateDocs = this.$refs.relateDocs.$el

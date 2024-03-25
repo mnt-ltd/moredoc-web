@@ -95,3 +95,19 @@ export const checkArticles = (data) => {
     data,
   })
 }
+
+export const getRelatedArticles = (params) => {
+  return service({
+    url: '/api/v1/article/related',
+    method: 'get',
+    params,
+  })
+}
+
+export const searchArticle = (params) => {
+  return service({
+    url: '/api/v1/article/search',
+    method: 'get',
+    params,
+  })
+}

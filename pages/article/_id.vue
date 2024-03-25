@@ -110,17 +110,16 @@
             :user="article.user"
           />
         </el-card>
-        <el-card shadow="never" class="mgt-20px article-list">
-          <div slot="header">相关文档</div>
-          <nuxt-link to="/" class="el-link el-link--default"
-            >关于我们</nuxt-link
-          >
-          <nuxt-link to="/" class="el-link el-link--default"
-            >联系我们</nuxt-link
-          >
-          <nuxt-link to="/" class="el-link el-link--default"
-            >免责声明</nuxt-link
-          >
+        <el-card
+          v-if="relatedArticles.length > 0"
+          ref="relArt"
+          shadow="never"
+          class="mgt-20px article-list"
+        >
+          <div slot="header">相关文章</div>
+          <article-simple-list
+            :articles="relatedArticles"
+          ></article-simple-list>
         </el-card>
       </el-col>
     </el-row>
@@ -129,7 +128,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getArticle } from '~/api/article'
+import { getArticle, getRelatedArticles } from '~/api/article'
 import ShareBox from '~/components/ShareBox.vue'
 import { getFavorite, createFavorite, deleteFavorite } from '~/api/favorite'
 import { formatRelativeTime } from '~/utils/utils'
@@ -147,6 +146,9 @@ export default {
         id: 0,
       },
       breadcrumbs: [],
+      relatedArticles: [],
+      cardWidth: 0,
+      cardOffsetTop: 0,
     }
   },
   head() {
@@ -174,6 +176,12 @@ export default {
   async created() {
     await this.getArticle()
     await this.getFavorite()
+  },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
     formatRelativeTime,
@@ -212,6 +220,15 @@ export default {
 
       this.breadcrumbs = breadcrumbs
       this.article = article
+      this.getRelatedArticles()
+    },
+    async getRelatedArticles() {
+      const res = await getRelatedArticles({
+        identifier: this.article.identifier,
+      })
+      if (res.status === 200) {
+        this.relatedArticles = res.data.article || []
+      }
     },
     async getFavorite() {
       if (!this.user.id) {
@@ -241,6 +258,32 @@ export default {
     },
     commentSuccess() {
       this.$refs.commentList.getComments()
+    },
+    handleScroll() {
+      const scrollTop =
+        document.documentElement.scrollTop || document.body.scrollTop
+      console.log('scrollTop', scrollTop)
+      // 右侧相关文档固定
+      try {
+        const relArt = this.$refs.relArt.$el
+        if (relArt) {
+          if (this.cardWidth === 0) {
+            this.cardWidth = relArt.offsetWidth
+            this.cardOffsetTop = relArt.offsetTop
+          }
+
+          if (scrollTop > this.cardOffsetTop) {
+            relArt.style.position = 'fixed'
+            relArt.style.top = '60px'
+            relArt.style.zIndex = '999'
+            relArt.style.width = `${this.cardWidth}px`
+          } else {
+            relArt.style = null
+          }
+        }
+      } catch (error) {
+        console.log('handleScroll relArt', error)
+      }
     },
     async deleteFavorite() {
       if (!this.user.id) {

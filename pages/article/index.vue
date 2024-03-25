@@ -6,7 +6,11 @@
         <div>&nbsp;</div>
       </el-col>
       <el-col :span="14" class="main-list">
-        <el-breadcrumb separator="/">
+        <el-breadcrumb
+          v-if="activeCate.id"
+          style="margin-bottom: 10px"
+          separator="/"
+        >
           <el-breadcrumb-item>
             <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
           </el-breadcrumb-item>
@@ -41,7 +45,7 @@
             <span v-else>{{ item.title }}</span>
           </el-breadcrumb-item>
         </el-breadcrumb>
-        <el-card shadow="never" style="margin-top: 10px">
+        <el-card shadow="never">
           <template slot="header">
             <nuxt-link
               class="el-link el-link--default"

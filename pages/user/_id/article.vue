@@ -1,6 +1,6 @@
 <template>
   <div>
-    <user-document :user-id="userId" />
+    <user-article :user-id="userId" />
   </div>
 </template>
 
