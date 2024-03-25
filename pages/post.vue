@@ -18,7 +18,7 @@
         :init-article="article"
         :category-trees="trees"
         :can-i-publish="canIPublish"
-        @success="back"
+        @success="success"
       ></FormArticle>
     </el-card>
   </div>
@@ -95,6 +95,10 @@ export default {
         return
       }
       this.article = res.data
+    },
+    success(article) {
+      this.$message.success('发布成功')
+      this.$router.push(`/article/${article.identifier}`)
     },
     back() {
       if (history.length > 1) {

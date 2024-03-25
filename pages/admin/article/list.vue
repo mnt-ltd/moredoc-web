@@ -261,6 +261,11 @@ export default {
             item.title,
             `/article/${item.identifier}`
           )
+
+          item.user_html = genLinkHTML(
+            item.user.username,
+            `/user/${item.user_id}`
+          )
           return item
         })
         this.articles = articles
@@ -393,6 +398,12 @@ export default {
           label: '标题',
           minWidth: 150,
           fixed: 'left',
+          type: 'html',
+        },
+        {
+          prop: 'user_html',
+          label: '作者',
+          minWidth: 100,
           type: 'html',
         },
         { prop: 'identifier', label: '标识', width: 200 },

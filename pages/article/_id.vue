@@ -4,7 +4,17 @@
       <el-col :span="18">
         <el-card shadow="never">
           <div slot="header">
-            <h1>{{ article.title }}</h1>
+            <h1>
+              <template v-if="article.status != 1">
+                (
+                <span v-if="article.status == 2" class="text-danger"
+                  >审核拒绝</span
+                >
+                <span v-else class="text-warning">待审核</span>
+                )
+              </template>
+              {{ article.title }}
+            </h1>
             <el-breadcrumb separator="/">
               <el-breadcrumb-item>
                 <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
@@ -61,6 +71,13 @@
             </span>
           </div>
           <article class="mgt-20px markdown-body">
+            <el-alert
+              v-if="article.status === 2 && article.reject_reason"
+              title="审核拒绝原因"
+              type="error"
+            >
+              {{ article.reject_reason }}
+            </el-alert>
             <!-- eslint-disable-next-line vue/no-v-html -->
             <div data-slate-editor v-html="article.content"></div>
           </article>

@@ -134,6 +134,9 @@
                   ><i class="el-icon-upload2 dropdown-upload"></i
                   >上传文档</el-dropdown-item
                 >
+                <el-dropdown-item command="post"
+                  ><i class="el-icon-plus"></i>发布文章</el-dropdown-item
+                >
                 <el-dropdown-item v-if="allowPages.length > 0" command="admin">
                   <i class="el-icon-box"></i> 管理后台</el-dropdown-item
                 >
@@ -417,6 +420,9 @@ export default {
           break
         case 'upload':
           this.$router.push('/upload')
+          break
+        case 'post':
+          this.$router.push('/post')
           break
         case 'ucenter':
           this.$router.push(`/user/${this.user.id}`)
