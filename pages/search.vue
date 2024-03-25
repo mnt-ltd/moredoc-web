@@ -633,15 +633,15 @@ export default {
     }
   }
 }
-.el-select .el-input {
-  width: 90px;
-  padding: 0 15px;
-  .el-input__suffix {
-    right: 0;
-    right: 25px;
-  }
-}
 .page-search {
+  .el-select .el-input {
+    width: 90px;
+    padding: 0 15px;
+    .el-input__suffix {
+      right: 0;
+      right: 25px;
+    }
+  }
   width: $max-width;
   & > .el-row {
     width: $default-width;
