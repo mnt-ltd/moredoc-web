@@ -1,5 +1,5 @@
 <template>
-  <div class="com-header-navbar">
+  <div class="com-global-header">
     <template v-if="advertisements.length > 0">
       <div v-for="item in advertisements" :key="'header-ad-' + item.id">
         <div
@@ -239,6 +239,11 @@
             </div>
           </li>
           <li>
+            <div class="el-link el-link--default" @click="goToLink(`/post`)">
+              <i class="el-icon-plus"></i> &nbsp;发布文章
+            </div>
+          </li>
+          <li>
             <nuxt-link to="/admin" class="el-link el-link--default"
               ><i class="el-icon-box"></i> &nbsp;管理后台</nuxt-link
             >
@@ -284,7 +289,7 @@
               :navigation="child"
             />
           </el-submenu>
-          <NavigationLink v-else :key="'nav2-' + item.id" :navigation="item" />
+          <NavigationLink v-else :key="'nav-' + item.id" :navigation="item" />
         </template>
       </el-menu>
     </el-drawer>
@@ -441,7 +446,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.com-header-navbar {
+.com-global-header {
   .el-header {
     padding: 0;
     background: #fff;

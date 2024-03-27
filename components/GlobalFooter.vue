@@ -139,130 +139,6 @@
         </div>
       </div>
     </div>
-    <el-drawer
-      :visible.sync="menuDrawerVisible"
-      size="60%"
-      :with-header="false"
-      class="menu-drawer-box"
-    >
-      <el-input
-        v-model="search.wd"
-        class="search-input"
-        size="large"
-        placeholder="搜索文档..."
-        @keyup.enter.native="onSearch"
-      >
-        <i
-          slot="suffix"
-          class="el-icon-search el-input__icon"
-          @click="onSearch"
-        >
-        </i>
-      </el-input>
-      <ul class="navs">
-        <li>
-          <div
-            class="el-link el-link--default login-link"
-            @click="goToLink('/login')"
-          >
-            <user-avatar :size="38" :user="user" class="user-avatar" />
-            <span v-if="user.id > 0">{{ user.username }}</span>
-            <span v-else>登录注册</span>
-          </div>
-        </li>
-        <template v-if="user.id > 0">
-          <li cass="mgt-20px">
-            <el-button
-              v-if="sign.id > 0"
-              :key="'sign-' + sign.id"
-              class="btn-block"
-              type="success"
-              size="medium"
-              disabled
-            >
-              <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
-              今日已签到
-            </el-button>
-            <el-button
-              v-else
-              :key="'sign-0'"
-              class="btn-block"
-              type="success"
-              size="medium"
-              @click="signToday"
-            >
-              <i class="fa fa-calendar-plus-o"></i>
-              每日签到</el-button
-            >
-          </li>
-          <li>
-            <div
-              class="el-link el-link--default"
-              @click="goToLink(`/user/${user.id}`)"
-            >
-              <i class="fa fa-home"></i> &nbsp;个人主页
-            </div>
-          </li>
-          <li>
-            <div class="el-link el-link--default" @click="goToLink(`/me`)">
-              <i class="fa fa-user-o"></i> &nbsp;个人中心
-            </div>
-          </li>
-          <li>
-            <div class="el-link el-link--default" @click="goToLink(`/upload`)">
-              <i class="el-icon-upload2"></i> 上传文档
-            </div>
-          </li>
-          <li>
-            <nuxt-link to="/admin" class="el-link el-link--default"
-              ><i class="el-icon-box"></i> &nbsp;管理后台</nuxt-link
-            >
-          </li>
-          <li>
-            <div class="el-link el-link--default" @click="logout">
-              <i class="fa fa-sign-out"></i> &nbsp;退出登录
-            </div>
-          </li></template
-        >
-      </ul>
-      <el-collapse v-model="activeCollapse">
-        <el-collapse-item name="categories">
-          <template slot="title"
-            ><i class="el-icon-menu"></i> &nbsp; <span>文档分类</span>
-          </template>
-          <ul>
-            <li
-              v-for="item in categoryTrees.filter((item) => !item.type)"
-              :key="'collapse-sub-cate-' + item.id"
-            >
-              <div
-                class="el-link el-link--default"
-                @click="goToLink(`/category/${item.id}`)"
-              >
-                {{ item.title }}
-              </div>
-            </li>
-          </ul>
-        </el-collapse-item>
-      </el-collapse>
-      <el-menu :default-active="$route.path" class="el-menu-mobile">
-        <template v-for="item in navigations">
-          <el-submenu
-            v-if="item.children && item.children.length > 0"
-            :key="'nav-' + item.id"
-            :index="`nav-${item.id}`"
-          >
-            <template slot="title">{{ item.title }}</template>
-            <NavigationLink
-              v-for="child in item.children || []"
-              :key="'child-' + child.id"
-              :navigation="child"
-            />
-          </el-submenu>
-          <NavigationLink v-else :key="'nav-' + item.id" :navigation="item" />
-        </template>
-      </el-menu>
-    </el-drawer>
     <template v-for="item in advertisements">
       <div
         v-if="item.position == 'global_bottom'"
@@ -276,7 +152,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { listFriendlink } from '~/api/friendlink'
 import { listNavigation } from '~/api/navigation'
-import { categoryToTrees, requireLogin } from '~/utils/utils'
+import { categoryToTrees } from '~/utils/utils'
 import { getSignedToday, signToday } from '~/api/user'
 
 export default {
@@ -290,7 +166,6 @@ export default {
       timeouter: null,
       currentYear: new Date().getFullYear(),
       categoryTrees: [],
-      menuDrawerVisible: false,
       sign: { id: 0 },
       activeCollapse: 'categories',
       navigations: [],
@@ -319,24 +194,11 @@ export default {
       }
       return item.enable
     })
-
-    this.loopUpdate()
-    if (requireLogin(this.settings, this.user, this.$route, this.permissions)) {
-      this.$router.push('/login')
-    }
   },
   methods: {
     ...mapActions('category', ['getCategories']),
     ...mapActions('setting', ['getSettings']),
     ...mapActions('user', ['logout', 'getUser', 'checkAndRefreshUser']),
-    showMenuDrawer() {
-      this.getSignedToday()
-      this.menuDrawerVisible = true
-    },
-    goToLink(link) {
-      this.menuDrawerVisible = false
-      this.$router.push(link)
-    },
     async getSignedToday() {
       const res = await getSignedToday()
       if (res.status === 200) {
@@ -374,30 +236,6 @@ export default {
         navigations = categoryToTrees(navigations).filter((item) => item.enable)
         this.navigations = navigations
       }
-    },
-    onSearch() {
-      if (!this.search.wd) return
-      this.menuDrawerVisible = false
-      const wd = this.search.wd
-      this.$router.push({
-        path: '/search',
-        query: {
-          wd,
-        },
-      })
-      this.search.wd = ''
-    },
-    loopUpdate() {
-      clearTimeout(this.timeouter)
-      this.timeouter = setTimeout(() => {
-        this.checkAndRefreshUser()
-        // 更新系统配置信息
-        this.getSettings()
-        // 更新分类信息
-        this.getCategories()
-        // 递归
-        this.loopUpdate()
-      }, 1000 * 60) // 每分钟更新一次
     },
     async handleDropdown(command) {
       switch (command) {
@@ -503,6 +341,19 @@ export default {
     }
     .copyright-year {
       font-size: 13px;
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  .com-global-footer {
+    .footer-links {
+      & > div {
+        padding: 0 10px;
+      }
+      .powered-by {
+        padding: 0 5px;
+        float: unset;
+      }
     }
   }
 }

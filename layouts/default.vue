@@ -1,6 +1,6 @@
 <template>
   <el-container class="layout-default">
-    <global-navbar />
+    <global-header />
     <el-main>
       <nuxt />
     </el-main>
@@ -10,76 +10,11 @@
   </el-container>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { requireLogin } from '~/utils/utils'
-import GlobalNavbar from '~/components/GlobalNavbar.vue'
+import GlobalHeader from '~/components/GlobalHeader.vue'
 import GlobalFooter from '~/components/GlobalFooter.vue'
 
 export default {
-  components: { GlobalNavbar, GlobalFooter },
-  middleware: ['checkFront', 'analytic'],
-  data() {
-    return {
-      search: {
-        wd: '',
-      },
-      friendlinks: [],
-      timeouter: null,
-      currentYear: new Date().getFullYear(),
-      menuDrawerVisible: false,
-      sign: { id: 0 },
-      activeCollapse: 'categories',
-      navigations: [],
-    }
-  },
-  head() {
-    return {
-      title:
-        this.settings.system.title || this.settings.system.sitename || '文库',
-      keywords: this.settings.system.keywords,
-      description: this.settings.system.description,
-      // favicon
-      link: [
-        {
-          rel: 'icon',
-          type: 'image/x-icon',
-          href: this.settings.system.favicon,
-        },
-      ],
-    }
-  },
-  computed: {
-    ...mapGetters('user', ['user', 'token', 'allowPages', 'permissions']),
-    ...mapGetters('setting', ['settings']),
-    ...mapGetters('category', ['categories']),
-  },
-  async created() {
-    await Promise.all([this.getCategories(), this.getSettings()])
-    this.loopUpdate()
-    if (requireLogin(this.settings, this.user, this.$route, this.permissions)) {
-      this.$router.push('/login')
-    }
-  },
-  beforeDestroy() {
-    clearTimeout(this.timeouter)
-  },
-  methods: {
-    ...mapActions('category', ['getCategories']),
-    ...mapActions('setting', ['getSettings']),
-    ...mapActions('user', ['logout', 'getUser', 'checkAndRefreshUser']),
-    loopUpdate() {
-      clearTimeout(this.timeouter)
-      this.timeouter = setTimeout(() => {
-        this.checkAndRefreshUser()
-        // 更新系统配置信息
-        this.getSettings()
-        // 更新分类信息
-        this.getCategories()
-        // 递归
-        this.loopUpdate()
-      }, 1000 * 60) // 每分钟更新一次
-    },
-  },
+  components: { GlobalHeader, GlobalFooter },
 }
 </script>
 <style lang="scss">
