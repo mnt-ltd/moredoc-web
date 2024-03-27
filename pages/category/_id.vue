@@ -377,7 +377,8 @@ export default {
       })
     }
 
-    if (categoryChildren.length === 0) {
+    if (categoryChildren.length === 0 && !this.$route.params.id) {
+      this.title = '全部文档'
       categoryChildren = this.categories.filter((x) => {
         if (
           this.settings.display &&

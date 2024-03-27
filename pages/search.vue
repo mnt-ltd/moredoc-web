@@ -2,21 +2,33 @@
   <div class="page page-search">
     <el-row class="header-links hidden-xs-only">
       <el-col :span="24">
-        <nuxt-link to="/" class="el-link el-link--default">首页</nuxt-link>
-        <nuxt-link to="/article" class="el-link el-link--default"
-          >文章</nuxt-link
+        <nuxt-link to="/" class="el-link el-link--default"
+          ><i class="fa fa-home"></i> &nbsp;首页</nuxt-link
         >
-        <nuxt-link
-          v-for="category in categoryTrees.filter((x) => !x.type)"
-          v-show="category.enable"
-          :key="'cate-' + category.id"
-          :to="`/category/${category.id}`"
-          class="el-link el-link--default"
-          >{{ category.title }}</nuxt-link
-        >
+        <el-popover width="520" trigger="hover">
+          <CategoryCard :type="0"></CategoryCard>
+          <nuxt-link
+            slot="reference"
+            class="el-link el-link--default"
+            to="/category"
+            >文档文库</nuxt-link
+          >
+        </el-popover>
+        <el-popover width="520" trigger="hover">
+          <CategoryCard :type="1"></CategoryCard>
+          <nuxt-link
+            slot="reference"
+            class="el-link el-link--default"
+            to="/article"
+            >文章资讯</nuxt-link
+          >
+        </el-popover>
         <span class="float-right">
           <nuxt-link to="/upload" class="el-link el-link--default"
             >上传文档</nuxt-link
+          >
+          <nuxt-link to="/upload" class="el-link el-link--default"
+            >发布文章</nuxt-link
           >
           <nuxt-link
             v-if="user.id > 0"

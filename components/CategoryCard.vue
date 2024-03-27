@@ -16,7 +16,8 @@
               : `/category/${cate.id}`
           "
         >
-          {{ cate.title }}
+          <el-avatar :size="20" :src="cate.icon"></el-avatar>
+          <span>{{ cate.title }}</span>
         </nuxt-link>
       </div>
       <div class="lv2">
@@ -64,12 +65,23 @@ export default {
     &:first-of-type {
       padding-top: 5px;
     }
-    .lv1 {
-      border-right: 1px solid #eee;
-      width: 80px;
-    }
     :deep(.el-link--default) {
       padding: 3px 0;
+    }
+    .lv1 {
+      border-right: 1px solid #eee;
+      width: 100px;
+      :deep(.el-link--default) {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        .el-avatar {
+          vertical-align: middle;
+          position: relative;
+          top: -2px;
+        }
+      }
     }
     .lv2 {
       flex: 1;
