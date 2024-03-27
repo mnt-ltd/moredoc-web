@@ -456,9 +456,10 @@ export default {
         height: 42px;
       }
     }
-    a.el-popover__reference {
+    a.el-popover__reference,
+    .el-popover__reference-wrapper {
       position: relative;
-      top: -1px;
+      top: -1px !important;
     }
     & > div {
       margin: 0 auto;

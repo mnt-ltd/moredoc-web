@@ -84,6 +84,9 @@
                   <i class="el-icon-s-home"></i> 首页
                 </nuxt-link>
               </el-breadcrumb-item>
+              <el-breadcrumb-item>
+                <nuxt-link to="/category">全部文档</nuxt-link>
+              </el-breadcrumb-item>
               <template v-if="breadcrumbs.length < 3">
                 <el-breadcrumb-item
                   v-for="breadcrumb in breadcrumbs"

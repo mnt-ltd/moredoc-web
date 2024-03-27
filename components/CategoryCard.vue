@@ -65,8 +65,11 @@ export default {
       padding-top: 5px;
     }
     .lv1 {
-      border-right: 1px solid #ddd;
+      border-right: 1px solid #eee;
       width: 80px;
+    }
+    :deep(.el-link--default) {
+      padding: 3px 0;
     }
     .lv2 {
       flex: 1;

@@ -7,7 +7,6 @@
         v-html="item.content"
       ></div>
     </template>
-
     <el-row>
       <el-col :span="24">
         <el-card ref="breadcrumb" shadow="never">
@@ -15,6 +14,9 @@
             <el-breadcrumb separator="/">
               <el-breadcrumb-item>
                 <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
+              </el-breadcrumb-item>
+              <el-breadcrumb-item>
+                <nuxt-link to="/category">全部文档</nuxt-link>
               </el-breadcrumb-item>
               <el-breadcrumb-item
                 v-for="item in breadcrumbs"
@@ -357,8 +359,6 @@ export default {
     })
     this.title = titles.join(' · ')
 
-    this.breadcrumbs = breadcrumbs
-
     // 查找当前最后一个面包屑导航的子分类
     let categoryChildren = []
     if (breadcrumbs.length > 0) {
@@ -376,8 +376,21 @@ export default {
         return x.parent_id === breadcrumbs[breadcrumbs.length - 1].id
       })
     }
-    this.categoryChildren = categoryChildren
 
+    if (categoryChildren.length === 0) {
+      categoryChildren = this.categories.filter((x) => {
+        if (
+          this.settings.display &&
+          this.settings.display.hide_category_without_document
+        ) {
+          return x.doc_count > 0 && !x.type
+        }
+        return !x.type
+      })
+    }
+
+    this.breadcrumbs = breadcrumbs
+    this.categoryChildren = categoryChildren
     this.setQuery()
     Promise.all([this.loadData(), this.getAdvertisements('list')])
   },
@@ -501,7 +514,7 @@ export default {
         status,
         page: this.query.page,
         size: this.size,
-        category_id: this.categoryId,
+        category_id: this.categoryId || undefined,
         ext: this.$route.query.ext,
         field: [
           'id',
