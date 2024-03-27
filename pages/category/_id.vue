@@ -7,7 +7,6 @@
         v-html="item.content"
       ></div>
     </template>
-
     <el-row>
       <el-col :span="24">
         <el-card ref="breadcrumb" shadow="never">
@@ -15,6 +14,9 @@
             <el-breadcrumb separator="/">
               <el-breadcrumb-item>
                 <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
+              </el-breadcrumb-item>
+              <el-breadcrumb-item>
+                <nuxt-link to="/category">全部文档</nuxt-link>
               </el-breadcrumb-item>
               <el-breadcrumb-item
                 v-for="item in breadcrumbs"
@@ -27,7 +29,7 @@
                   </span>
                   <el-dropdown-menu slot="dropdown" class="breadcrumb-dropdown">
                     <el-dropdown-item
-                      v-for="ss in item.siblings"
+                      v-for="ss in item.siblings.filter((x) => !x.type)"
                       :key="'s1-' + ss.id"
                     >
                       <nuxt-link
@@ -57,14 +59,6 @@
           <div v-if="categoryChildren.length > 0" class="item-row">
             <div class="item-name">分类</div>
             <div class="item-content">
-              <!-- <nuxt-link
-                v-for="child in categoryChildren"
-                :key="'tree-' + child.id"
-                :to="`/category/${child.id}`"
-                :title="child.title"
-                class="el-link el-link--default"
-                >{{ child.title }}</nuxt-link
-              > -->
               <el-popover
                 v-for="child in categoryChildren"
                 :key="'tree-pop-' + child.id"
@@ -351,30 +345,14 @@ export default {
     const breadcrumbs = []
     let category = { siblings: [], ...this.categoryMap[this.categoryId] }
     if (category.id) {
-      category.siblings =
-        this.categories.filter((x) => {
-          if (
-            this.settings.display &&
-            this.settings.display.hide_category_without_document
-          ) {
-            return x.parent_id === category.parent_id && x.doc_count > 0
-          }
-          return x.parent_id === category.parent_id
-        }) || []
+      // 查询当前分类的兄弟分类
+      category.siblings = this.filterCategorySiblings(category)
       breadcrumbs.push(category)
       while (category.parent_id) {
+        // 查询当前分类的父级分类的兄弟分类
         category = { siblings: [], ...this.categoryMap[category.parent_id] }
         if (category.id) {
-          category.siblings =
-            this.categories.filter((x) => {
-              if (
-                this.settings.display &&
-                this.settings.display.hide_category_without_document
-              ) {
-                return x.parent_id === category.parent_id && x.doc_count > 0
-              }
-              return x.parent_id === category.parent_id
-            }) || []
+          category.siblings = this.filterCategorySiblings(category)
           breadcrumbs.splice(0, 0, category)
         }
       }
@@ -386,8 +364,6 @@ export default {
     })
     this.title = titles.join(' · ')
 
-    this.breadcrumbs = breadcrumbs
-
     // 查找当前最后一个面包屑导航的子分类
     let categoryChildren = []
     if (breadcrumbs.length > 0) {
@@ -398,14 +374,29 @@ export default {
         ) {
           return (
             x.parent_id === breadcrumbs[breadcrumbs.length - 1].id &&
-            x.doc_count > 0
+            x.doc_count > 0 &&
+            !x.type
           )
         }
         return x.parent_id === breadcrumbs[breadcrumbs.length - 1].id
       })
     }
-    this.categoryChildren = categoryChildren
 
+    if (categoryChildren.length === 0 && !this.$route.params.id) {
+      this.title = '全部文档'
+      categoryChildren = this.categories.filter((x) => {
+        if (
+          this.settings.display &&
+          this.settings.display.hide_category_without_document
+        ) {
+          return x.doc_count > 0 && !x.type
+        }
+        return !x.type
+      })
+    }
+
+    this.breadcrumbs = breadcrumbs
+    this.categoryChildren = categoryChildren
     this.setQuery()
     Promise.all([this.loadData(), this.getAdvertisements('list')])
   },
@@ -430,6 +421,20 @@ export default {
       this.$router.push({
         path: '/category/' + category.id,
       })
+    },
+    filterCategorySiblings(category) {
+      try {
+        return this.categories.filter((x) => {
+          if (
+            this.settings.display &&
+            this.settings.display.hide_category_without_document
+          ) {
+            return x.parent_id === category.parent_id && x.doc_count > 0
+          }
+          return x.parent_id === category.parent_id
+        })
+      } catch (error) {}
+      return []
     },
     setQuery() {
       this.query.id = parseInt(this.$route.params.id) || 0
@@ -515,7 +520,7 @@ export default {
         status,
         page: this.query.page,
         size: this.size,
-        category_id: this.categoryId,
+        category_id: this.categoryId || undefined,
         ext: this.$route.query.ext,
         field: [
           'id',

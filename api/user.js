@@ -39,6 +39,13 @@ export const canIUploadDocument = () => {
   })
 }
 
+export const canIPublishArticle = () => {
+  return service({
+    url: '/api/v1/user/canipublisharticle',
+    method: 'get',
+  })
+}
+
 export const updateUserPassword = (data) => {
   return service({
     url: '/api/v1/user/password',

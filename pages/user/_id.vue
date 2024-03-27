@@ -1,7 +1,11 @@
 <template>
   <div class="page page-user">
     <template v-for="item in advertisements">
-      <div :key="item.position+item.id" v-if="item.position=='user_top'" v-html="item.content"></div>
+      <div
+        v-if="item.position == 'user_top'"
+        :key="item.position + item.id"
+        v-html="item.content"
+      ></div>
     </template>
     <el-row>
       <el-col :span="24">
@@ -10,8 +14,8 @@
           <el-tabs
             v-model="activeTab"
             class="user-tabs mgt-20px"
-            @tab-click="tabClick"
             type="card"
+            @tab-click="tabClick"
           >
             <el-tab-pane name="user-id">
               <span slot="label">
@@ -25,8 +29,21 @@
                 >
               </span>
             </el-tab-pane>
+            <el-tab-pane name="user-id-article">
+              <span slot="label">
+                <nuxt-link
+                  class="el-link el-link--default"
+                  :to="`/user/${user.id}/article`"
+                  ><i class="el-icon-tickets"></i>&nbsp;文章</nuxt-link
+                >
+              </span>
+            </el-tab-pane>
             <template v-for="item in advertisements">
-              <div :key="item.position+item.id" v-if="item.position=='user_document_top'" v-html="item.content"></div>
+              <div
+                v-if="item.position == 'user_document_top'"
+                :key="item.position + item.id"
+                v-html="item.content"
+              ></div>
             </template>
             <nuxt-child :user="user" />
           </el-tabs>
@@ -72,10 +89,7 @@ export default {
     try {
       const id = parseInt(this.$route.params.id)
       this.user.id = id
-      Promise.all([
-        this.getUser(),
-        this.getAdvertisements('user')
-      ])
+      Promise.all([this.getUser(), this.getAdvertisements('user')])
     } catch (error) {}
   },
   methods: {

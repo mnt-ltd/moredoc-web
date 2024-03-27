@@ -24,6 +24,14 @@ body {
   margin-right: 5px;
 }
 
+.mgb-20px {
+  margin-bottom: 20px;
+}
+
+.mgb-5px {
+  margin-bottom: 5px;
+}
+
 .text-right {
   text-align: right;
 }
@@ -79,6 +87,15 @@ body {
 
 .block {
   display: block;
+}
+
+.el-footer {
+  padding: 0;
+  background-color: #ffffff;
+}
+
+.font-normal {
+  font-weight: normal;
 }
 
 @media screen and (max-width: 768px) {

@@ -43,9 +43,9 @@
             >
               <el-button
                 type="warning"
-                @click="batchCancelPunishment"
                 :disabled="selectedRow.length === 0"
                 icon="el-icon-edit"
+                @click="batchCancelPunishment"
                 >批量取消</el-button
               >
             </el-tooltip>
@@ -100,6 +100,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   listPunishment,
   getPunishment,
@@ -111,7 +112,6 @@ import FormSearch from '~/components/FormSearch.vue'
 import FormPunishment from '~/components/FormPunishment.vue'
 import { punishmentTypeOptions } from '~/utils/enum'
 import { listUser } from '~/api/user'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormPunishment },
   layout: 'admin',
@@ -176,7 +176,7 @@ export default {
       const res = await listUser({
         page: 1,
         size: 10,
-        wd: wd,
+        wd,
         id: userId || [],
         field: ['id', 'username'],
       })
@@ -185,7 +185,7 @@ export default {
       }
     },
     async batchCancelPunishment() {
-      let res = await this.$confirm(
+      const res = await this.$confirm(
         `您确定要取消选中的${this.selectedRow.length}条处罚吗？`,
         '提示',
         {
@@ -209,7 +209,7 @@ export default {
       this.loading = true
       const res = await listPunishment(this.search)
       if (res.status === 200) {
-        let punishments = res.data.punishment || []
+        const punishments = res.data.punishment || []
         punishments.map((item) => {
           item.user_html = genLinkHTML(item.username, `/user/${item.id}`)
         })
@@ -241,9 +241,9 @@ export default {
       }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listPunishment()
       } else {

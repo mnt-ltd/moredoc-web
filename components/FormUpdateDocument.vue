@@ -2,10 +2,10 @@
   <div class="com-form-update-document">
     <el-form
       ref="document"
+      v-loading="loading"
       label-position="top"
       label-width="80px"
       :model="document"
-      v-loading="loading"
     >
       <el-form-item
         label="名称"
@@ -68,7 +68,7 @@
             ></el-switch>
           </el-form-item>
         </el-col>
-        <el-col :span="12" v-if="isAdmin">
+        <el-col v-if="isAdmin" :span="12">
           <el-form-item
             label="状态"
             prop="status"
@@ -138,9 +138,9 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { updateDocument, getDocument } from '~/api/document'
 import { documentStatusOptions } from '~/utils/enum'
-import { mapGetters } from 'vuex'
 export default {
   name: 'FormUpdateDocument',
   props: {
@@ -170,18 +170,18 @@ export default {
       document: this.getInitialDocumentData(),
     }
   },
+  computed: {
+    ...mapGetters('setting', ['settings']),
+  },
   watch: {
     initDocument: {
-      async handler(val) {
+      handler(val) {
         if (val.id) {
           this.getDocument(val.id)
         }
       },
       immediate: true,
     },
-  },
-  computed: {
-    ...mapGetters('setting', ['settings']),
   },
   created() {
     this.documentStatusOptions = documentStatusOptions.map((item) => {

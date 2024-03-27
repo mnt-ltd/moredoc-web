@@ -61,8 +61,8 @@
       </div>
     </el-card>
     <el-dialog
-      :close-on-click-modal="false"
       v-if="comment.id > 0"
+      :close-on-click-modal="false"
       title="评论编审"
       :visible.sync="formCommentVisible"
       width="640px"
@@ -86,11 +86,13 @@ import {
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import { parseQueryIntArray, genLinkHTML } from '~/utils/utils'
+import { categoryTypeOptions } from '~/utils/enum'
 export default {
   components: { TableList, FormSearch },
   layout: 'admin',
   data() {
     return {
+      categoryTypeOptions,
       loading: false,
       formCommentVisible: false,
       search: {
@@ -127,7 +129,7 @@ export default {
           ...this.$route.query,
           page: parseInt(this.$route.query.page) || 1,
           size: parseInt(this.$route.query.size) || 10,
-          ...parseQueryIntArray(this.$route.query, ['status']),
+          ...parseQueryIntArray(this.$route.query, ['status', 'type']),
         }
         this.listComment()
       },
@@ -140,13 +142,18 @@ export default {
   methods: {
     async listComment() {
       this.loading = true
-      const res = await listComment(this.search)
+      const res = await listComment({
+        ...this.search,
+        with_document_title: true,
+      })
       if (res.status === 200) {
         this.comments = (res.data.comment || []).map((item) => {
           item.username = item.user.username
           item.document_title_html = genLinkHTML(
             item.document_title,
-            `/document/${item.document_id}`
+            item.type === 1
+              ? `/article/${item.document_uuid}`
+              : `/document/${item.document_uuid}`
           )
           item.username_html = genLinkHTML(
             item.username,
@@ -176,9 +183,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listComment()
       } else {
@@ -271,6 +278,14 @@ export default {
         },
         {
           type: 'select',
+          label: '类型',
+          name: 'type',
+          placeholder: '请选择评论类型',
+          multiple: true,
+          options: categoryTypeOptions,
+        },
+        {
+          type: 'select',
           label: '状态',
           name: 'status',
           placeholder: '请选择状态',
@@ -284,6 +299,11 @@ export default {
       ]
     },
     initTableListFields() {
+      const typeMap = {}
+      this.categoryTypeOptions.map((item) => {
+        typeMap[item.value] = item
+        return item
+      })
       this.tableListFields = [
         { prop: 'id', label: 'ID', width: 80, type: 'number', fixed: 'left' },
         {
@@ -299,8 +319,15 @@ export default {
           },
         },
         {
+          prop: 'type',
+          width: 80,
+          label: '类型',
+          type: 'enum',
+          enum: typeMap,
+        },
+        {
           prop: 'document_title_html',
-          label: '文档',
+          label: '标题',
           minWidth: 150,
           type: 'html',
         },

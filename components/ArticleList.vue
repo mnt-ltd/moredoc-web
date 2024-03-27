@@ -1,68 +1,82 @@
 <template>
   <div class="com-article-list">
     <ul v-if="articles.length > 0">
-      <li v-for="article in articles" :key="'a' + article.id">
-        <el-tooltip v-if="article.notice" placement="top" :content="'网站公告'">
-          <nuxt-link
-            :to="{
-              name: 'article',
-              query: {
-                is_notice: true,
-              },
-            }"
-            class="el-link el-link--danger"
-            ><i class="fa fa-volume-up"></i
-          ></nuxt-link>
-        </el-tooltip>
-        <nuxt-link
-          :to="`/article/${article.identifier}`"
-          class="el-link el-link--default"
-          :title="article.title"
-        >
-          <span v-if="withHtml" v-html="article.title"></span>
-          <template v-else>{{ article.title }}</template>
-        </nuxt-link>
-        <div v-if="withDescription" class="description">
-          <span v-if="withHtml" v-html="article.description"></span>
-          <template v-else>{{ article.description }}</template>
-        </div>
-        <div class="help-block">
+      <li v-for="article in articles" :key="'article-' + article.id">
+        <h3>
           <el-tooltip
-            placement="right"
-            :content="'发布时间:' + formatDatetime(article.created_at)"
+            v-if="article.notice"
+            placement="top"
+            :content="'网站公告'"
           >
-            <span>
-              <i class="el-icon-time"></i>
-              {{ formatRelativeTime(article.created_at) }}
-            </span>
+            <nuxt-link
+              :to="{
+                name: 'article',
+                query: {
+                  is_notice: true,
+                },
+              }"
+              class="el-link el-link--danger"
+              ><i class="fa fa-volume-up"></i
+            ></nuxt-link>
           </el-tooltip>
+          <nuxt-link
+            :to="`/article/${article.identifier}`"
+            class="el-link el-link--default"
+            >{{ article.title }}</nuxt-link
+          >
+          <img
+            v-if="article.recommend_at"
+            src="/static/images/recommend.png"
+            alt="推荐"
+            class="min-recommend"
+          />
+        </h3>
+        <div class="info">
+          <span v-if="article.user_id" class="author">
+            <nuxt-link
+              :to="`/user/${article.user_id}`"
+              class="el-link el-link--default font-normal author"
+              ><el-avatar
+                :size="16"
+                class="avatar"
+                :src="article.user.avatar"
+              ></el-avatar
+              >{{ article.user.username }}</nuxt-link
+            >
+          </span>
+          <span class="text-muted">·</span>
+          <span
+            ><i class="el-icon-time"></i
+            >{{ formatRelativeTime(article.created_at) }}</span
+          >
+        </div>
+        <div class="desc">
+          {{ article.description }}
+        </div>
+        <div class="info">
           <span
             ><i class="el-icon-view"></i>
-            {{ article.view_count || 0 }} 浏览</span
+            {{ article.view_count || 0 }} 阅读</span
           >
-          <span
-            ><i class="el-icon-user"></i>
-            {{ article.autor || settings.system.sitename || '-' }}</span
-          >
-          <!-- <span
-            ><i class="el-icon-chat-dot-square"></i>
-            {{ article.comment_count || 0 }} 评论</span
-          >
-          <span
-            ><i class="el-icon-star-off"></i>
-            {{ article.favorite_count || 0 }} 收藏</span
-          > -->
+          <span>
+            <!-- 收藏 -->
+            <i class="el-icon-star-off"></i>
+            {{ article.favorite_count || 0 }} 收藏
+          </span>
+          <span>
+            <i class="el-icon-chat-dot-square"></i>
+            {{ article.comment_count || 0 }} 评论
+          </span>
         </div>
       </li>
     </ul>
     <div v-else>
-      <el-empty description="暂无数据"></el-empty>
+      <el-empty></el-empty>
     </div>
   </div>
 </template>
 <script>
 import { formatDatetime, formatRelativeTime } from '~/utils/utils'
-import { mapGetters } from 'vuex'
 export default {
   props: {
     articles: {
@@ -78,9 +92,6 @@ export default {
       default: false,
     },
   },
-  computed: {
-    ...mapGetters('setting', ['settings']),
-  },
   methods: {
     formatRelativeTime,
     formatDatetime,
@@ -89,6 +100,7 @@ export default {
 </script>
 <style lang="scss">
 .com-article-list {
+  padding: 15px 0;
   mark {
     background-color: transparent;
     color: red;
@@ -99,32 +111,54 @@ export default {
 .com-article-list {
   ul,
   li {
-    margin: 0;
     padding: 0;
+    margin: 0;
     list-style: none;
   }
-  li {
-    border-bottom: 1px dashed #efefef;
-    padding: 20px 0;
-    &:last-child {
-      border-bottom: none;
+  h3 {
+    margin: 0;
+    a {
+      color: #000;
+      font-size: 18px;
+      font-weight: 400;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+      line-height: 30px;
+      margin-bottom: 10px;
     }
-    .help-block {
-      color: #999;
-      font-size: 13px;
-      margin-top: 10px;
-      span {
-        margin-right: 20px;
+    .min-recommend {
+      height: 24px;
+    }
+  }
+  .desc {
+    color: #666;
+    font-size: 13px;
+    margin: 10px 0;
+    line-height: 1.8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .info {
+    color: #999;
+    font-size: 12px;
+    span {
+      margin-right: 10px;
+      i {
+        margin-right: 5px;
       }
     }
-    a.el-link--default {
-      font-size: 18px;
-      color: #222;
-      display: inline-block;
-      max-width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+  }
+  li {
+    border-bottom: 1px solid #f6f6f6;
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+    &:last-of-type {
+      border-bottom: 0;
+      padding-bottom: 0;
+      margin-bottom: 0;
     }
   }
   .no-articles {
@@ -133,17 +167,18 @@ export default {
     color: #ccc;
     padding: 40px 0;
   }
-  .description {
-    margin-top: 10px;
-    color: #777;
-    font-size: 15px;
-    line-height: 24px;
-    max-height: 72px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+  .author {
+    position: relative;
+    top: -1px;
+    :deep(.el-link--default) {
+      color: #787878;
+      font-weight: normal;
+    }
+    .avatar {
+      vertical-align: middle;
+      margin-top: 2px;
+      margin-right: 6px;
+    }
   }
 }
 </style>

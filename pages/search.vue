@@ -2,18 +2,33 @@
   <div class="page page-search">
     <el-row class="header-links hidden-xs-only">
       <el-col :span="24">
-        <nuxt-link to="/" class="el-link el-link--default">文库首页</nuxt-link>
-        <nuxt-link
-          v-for="category in categoryTrees"
-          v-show="category.enable"
-          :key="'cate-' + category.id"
-          :to="`/category/${category.id}`"
-          class="el-link el-link--default"
-          >{{ category.title }}</nuxt-link
+        <nuxt-link to="/" class="el-link el-link--default"
+          ><i class="fa fa-home"></i> &nbsp;首页</nuxt-link
         >
+        <el-popover width="520" trigger="hover">
+          <CategoryCard :type="0"></CategoryCard>
+          <nuxt-link
+            slot="reference"
+            class="el-link el-link--default"
+            to="/category"
+            >文库资料</nuxt-link
+          >
+        </el-popover>
+        <el-popover width="520" trigger="hover">
+          <CategoryCard :type="1"></CategoryCard>
+          <nuxt-link
+            slot="reference"
+            class="el-link el-link--default"
+            to="/article"
+            >文章资讯</nuxt-link
+          >
+        </el-popover>
         <span class="float-right">
           <nuxt-link to="/upload" class="el-link el-link--default"
             >上传文档</nuxt-link
+          >
+          <nuxt-link to="/upload" class="el-link el-link--default"
+            >发布文章</nuxt-link
           >
           <nuxt-link
             v-if="user.id > 0"
@@ -21,13 +36,13 @@
             class="el-link el-link--default"
             >会员中心</nuxt-link
           >
-          <nuxt-link class="el-link el-link--default" v-else to="/login"
+          <nuxt-link v-else class="el-link el-link--default" to="/login"
             >登录账户</nuxt-link
           >
         </span>
       </el-col>
     </el-row>
-    <div class="search-box" ref="searchBox">
+    <div ref="searchBox" class="search-box">
       <el-row :gutter="20">
         <el-col :span="4" class="logo hidden-xs-only">
           <nuxt-link to="/" :title="settings.system.sitename"
@@ -45,10 +60,24 @@
             placeholder="请输入关键词"
             @keyup.enter.native="onSearch"
           >
+            <!-- 加一个搜索前缀，搜索文章还是文档 -->
+            <el-select
+              slot="prepend"
+              v-model="searchType"
+              placeholder="请选择搜索类型"
+              @change="changeSearchType"
+            >
+              <el-option
+                v-for="item in categoryTypeOptions"
+                :key="'st-' + item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
             <i
               slot="suffix"
-              @click="onSearch"
               class="el-input__icon el-icon-search btn-search"
+              @click="onSearch"
             ></i>
           </el-input>
         </el-col>
@@ -57,16 +86,16 @@
     <el-row :gutter="20">
       <template v-for="item in advertisements">
         <el-col
-          :span="24"
-          :key="item.position + item.id"
           v-if="item.position == 'search_top'"
+          :key="item.position + item.id"
+          :span="24"
         >
           <div v-html="item.content"></div>
         </el-col>
       </template>
-      <el-col :span="18" class="search-main" ref="searchMain">
+      <el-col ref="searchMain" :span="18" class="search-main">
         <el-card v-loading="loading" shadow="never">
-          <div slot="header">
+          <div v-if="!searchType" slot="header">
             <div class="search-filter">
               <el-dropdown :show-timeout="showTimeout">
                 <el-button type="text" :size="filterSize">
@@ -77,7 +106,7 @@
                   <el-dropdown-item
                     v-for="item in [
                       { id: 0, title: '全部分类' },
-                      ...categoryTrees,
+                      ...categoryTrees.filter((item) => !item.type),
                     ]"
                     :key="'cate-' + item.id"
                     :value="item.id"
@@ -96,8 +125,8 @@
                 </el-dropdown-menu>
               </el-dropdown>
               <el-dropdown
+                v-if="(settings.language || []).length > 0 && !searchType"
                 :show-timeout="showTimeout"
-                v-if="(settings.language || []).length > 0"
               >
                 <el-button type="text" :size="filterSize">
                   {{ filterLanguageName(query.language) }}
@@ -213,7 +242,7 @@
           </div>
           <!-- <div class="search-result-none">没有搜索到内容...</div> -->
           <div class="search-result">
-            <ul>
+            <!-- <ul>
               <li v-if="docs.length === 0">
                 <el-empty description="很遗憾，未能检索到相关结果"></el-empty>
               </li>
@@ -251,7 +280,9 @@
                   >
                 </div>
               </li>
-            </ul>
+            </ul> -->
+            <SearchResultArticle v-if="searchType === 1" :articles="articles" />
+            <SearchResultDocument v-else :docs="docs" />
           </div>
           <el-pagination
             v-if="total > 0"
@@ -291,17 +322,11 @@
               >{{ keyword }}</nuxt-link
             >
           </el-card>
-          <!-- <el-card shadow="never" class="mgt-20px">
-            <img
-              src="https://www.wenkuzhijia.cn/static/Home/default/img/cover.png"
-              alt=""
-            />
-          </el-card> -->
         </div>
         <template v-for="item in advertisements">
           <div
-            :key="item.position + item.id"
             v-if="item.position == 'search_right'"
+            :key="item.position + item.id"
             v-html="item.content"
           ></div>
         </template>
@@ -309,8 +334,8 @@
     </el-row>
     <template v-for="item in advertisements">
       <div
-        :key="item.position + item.id"
         v-if="item.position == 'search_bottom'"
+        :key="item.position + item.id"
         v-html="item.content"
       ></div>
     </template>
@@ -321,16 +346,18 @@
 import { mapGetters } from 'vuex'
 import { getStats } from '~/api/config'
 import { searchDocument } from '~/api/document'
+import { searchArticle } from '~/api/article'
 import {
   formatBytes,
   getIcon,
   formatRelativeTime,
   genTimeDuration,
 } from '~/utils/utils'
-import { datetimePickerOptions } from '~/utils/enum'
+import { datetimePickerOptions, categoryTypeOptions } from '~/utils/enum'
 export default {
   data() {
     return {
+      categoryTypeOptions,
       loading: false,
       query: {
         wd: this.$route.query.wd || '',
@@ -370,12 +397,14 @@ export default {
         { label: '最近一年', value: 'year' },
       ],
       docs: [],
+      articles: [],
       total: 0,
       spend: '',
       keywords: [],
       stats: {
         document_count: '-',
       },
+      searchType: 0,
       searchLeftWidth: 0,
       searchRightWidth: 0,
       cardOffsetTop: 35,
@@ -414,7 +443,7 @@ export default {
   watch: {
     '$route.query': {
       handler(val) {
-        let query = {
+        const query = {
           page: 1,
           size: 10,
           sort: 'default',
@@ -429,6 +458,7 @@ export default {
         }
         query.page = parseInt(query.page) || 1
         query.size = parseInt(query.size) || 10
+        this.searchType = parseInt(query.type) || 0
         this.query = query
         this.execSearch()
       },
@@ -436,7 +466,7 @@ export default {
     },
   },
   created() {
-    let query = { ...this.query, ...this.$route.query }
+    const query = { ...this.query, ...this.$route.query }
     query.page = parseInt(query.page) || 1
     query.size = parseInt(query.size) || 10
     try {
@@ -478,6 +508,21 @@ export default {
           sort: 'default',
           ext: 'all',
           ...this.query,
+        },
+      })
+    },
+    changeSearchType(value) {
+      if (!this.query.wd) {
+        return
+      }
+      this.$router.push({
+        path: '/search',
+        query: {
+          ...this.query,
+          page: 1,
+          size: 10,
+          sort: 'default',
+          type: value,
         },
       })
     },
@@ -536,16 +581,23 @@ export default {
         this.stats = res.data
       }
     },
-    async execSearch() {
-      this.loading = true
+    execSearch() {
       const query = { ...this.query }
       if (!query.category_id) {
         delete query.category_id
       }
-      query['created_at'] = genTimeDuration(query.duration)
+      query.created_at = genTimeDuration(query.duration)
       delete query.duration
-
+      if (this.searchType === 1) {
+        this.execSearchArticle(query)
+      } else {
+        this.execSearchDocument(query)
+      }
+    },
+    async execSearchDocument(query) {
+      this.loading = true
       const res = await searchDocument(query)
+      this.loading = false
       if (res.status === 200) {
         this.total = res.data.total
         this.spend = res.data.spend
@@ -569,6 +621,14 @@ export default {
         })
       }
       this.loading = false
+    },
+    async execSearchArticle(query) {
+      const res = await searchArticle(query)
+      if (res.status === 200) {
+        this.total = res.data.total
+        this.spend = res.data.spend
+        this.articles = res.data.article || []
+      }
     },
     onPageChange(page) {
       this.$router.push({
@@ -625,6 +685,14 @@ export default {
   }
 }
 .page-search {
+  .el-select .el-input {
+    width: 90px;
+    padding: 0 15px;
+    .el-input__suffix {
+      right: 0;
+      right: 25px;
+    }
+  }
   width: $max-width;
   & > .el-row {
     width: $default-width;
@@ -705,59 +773,6 @@ export default {
       padding-top: 0;
       padding-bottom: 10px;
       min-height: 540px;
-    }
-    .search-result {
-      ul,
-      li {
-        list-style: none;
-        padding: 0;
-      }
-      li {
-        padding-top: 20px;
-        &:first-of-type {
-          padding-top: 0;
-        }
-      }
-      .noresult {
-        text-align: center;
-        font-size: 14px;
-        line-height: 200px;
-        color: #999;
-      }
-    }
-    h3 {
-      margin-bottom: 10px;
-      a {
-        font-size: 18px;
-        font-weight: normal;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        display: inline-block;
-        max-width: 100%;
-        img {
-          height: 18px;
-          position: relative;
-          top: 2px;
-        }
-      }
-    }
-    .doc-desc {
-      font-size: 15px;
-      color: #6b7a88;
-      line-height: 180%;
-      word-break: break-all;
-      margin-bottom: 10px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      max-height: 81px;
-      overflow: hidden;
-      -webkit-box-orient: vertical;
-      text-overflow: ellipsis;
-    }
-    .doc-info {
-      color: #bdc3c7;
-      font-size: 14px;
     }
   }
   .search-tips {

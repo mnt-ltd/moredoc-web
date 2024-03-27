@@ -262,7 +262,7 @@
       </el-col>
       <el-col :span="18" class="latest-recommend">
         <el-card v-loading="loadingRecommend" shadow="never">
-          <div slot="header">最新推荐</div>
+          <div slot="header">文档推荐</div>
           <el-row :gutter="20">
             <el-col
               v-for="(item, index) in recommends"
@@ -301,7 +301,9 @@
     >
       <el-row :gutter="20">
         <div
-          v-for="(category, index) in categoryTreesV2"
+          v-for="(category, index) in categoryTreesV2.filter(
+            (item) => !item.type
+          )"
           :key="'tree-' + category.id"
         >
           <el-col v-if="index < 4" :span="6">
@@ -339,12 +341,11 @@
         v-html="item.content"
       ></div>
     </template>
-
-    <el-row :gutter="20" class="category-item">
+    <el-row :gutter="isMobile ? 0 : 20" class="category-item">
       <el-col
         v-for="item in documents"
         :key="'card-cate-' + item.category_id"
-        :span="12"
+        :span="24"
       >
         <el-card class="box-card mgt-20px" shadow="never">
           <div slot="header" class="clearfix">
@@ -355,38 +356,32 @@
               >
             </nuxt-link>
           </div>
-          <div>
-            <div class="card-body-left hidden-xs-only">
-              <nuxt-link :to="`/category/${item.category_id}`">
-                <el-image
-                  lazy
-                  class="category-cover"
-                  :src="item.category_cover"
+          <el-row :gutter="isMobile ? 10 : 20">
+            <el-col
+              v-for="doc in item.document"
+              :key="'c-' + item.category_id + 'd' + doc.id"
+              :span="6"
+              :xs="12"
+            >
+              <div class="doc-item">
+                <nuxt-link
+                  class="el-link el-link--default doc-cover"
+                  :to="`/document/${doc.uuid}`"
                 >
-                  <div slot="error" class="image-slot">
-                    <img
-                      src="/static/images/default-category-cover.png"
-                      :alt="item.category_name"
-                    />
-                  </div>
-                </el-image>
-              </nuxt-link>
-            </div>
-            <div class="card-body-right">
-              <nuxt-link
-                v-for="doc in item.document"
-                :key="'c-' + item.category_id + 'd' + doc.id"
-                class="el-link el-link--default"
-                :to="`/document/${doc.uuid}`"
-              >
-                <img
-                  :src="`/static/images/${getIcon(doc.ext)}_24.png`"
-                  :alt="`${getIcon(doc.ext)}文档`"
-                />
-                <span>{{ doc.title }}</span>
-              </nuxt-link>
-            </div>
-          </div>
+                  <document-cover :width="70" :document="doc" />
+                </nuxt-link>
+                <div class="doc-title">
+                  <nuxt-link
+                    class="el-link el-link--default"
+                    :to="`/document/${doc.uuid}`"
+                  >
+                    <div>{{ doc.title }}</div>
+                  </nuxt-link>
+                  <div>{{ doc.pages || '-' }} 页</div>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
         </el-card>
       </el-col>
     </el-row>
@@ -562,7 +557,7 @@ export default {
     },
     async getDocuments() {
       const res = await listDocumentForHome({
-        limit: 5,
+        limit: 8,
       })
       if (res.status === 200) {
         this.documents = res.data.document || []
@@ -861,49 +856,37 @@ export default {
   }
 
   .category-item {
-    .el-card__body > div {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-
-      .card-body-left {
-        width: 180px;
-        padding-right: 20px;
-
-        .category-cover {
-          height: 145px;
-          width: 180px;
-          overflow: hidden;
-        }
-
-        .image-slot {
-          height: 145px;
-          overflow: hidden;
-        }
-
-        img {
-          width: 180px;
-          height: 145px;
-          border-radius: 5px;
-        }
-      }
-
-      .card-body-right {
-        width: 100%;
-        margin-top: -5px;
-        box-sizing: border-box;
-        padding-right: 200px;
-
-        a {
-          text-decoration: none;
+    .el-card__body {
+      padding-bottom: 0;
+      .doc-item {
+        margin-bottom: 20px;
+        display: flex;
+        .el-link {
           display: block;
-          line-height: 30px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-
-          img {
-            display: none;
+        }
+        .doc-cover {
+          width: 70px;
+          margin-right: 15px;
+        }
+        .doc-title {
+          flex: 1;
+          .el-link {
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 180%;
+            & > div {
+              overflow: hidden;
+              display: -webkit-box;
+              text-overflow: ellipsis;
+              height: 50px;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+              word-break: break-word;
+            }
+          }
+          & > div {
+            font-size: 13px;
+            color: #888;
           }
         }
       }
@@ -999,24 +982,23 @@ export default {
     }
 
     .category-item {
-      .el-col-12 {
-        width: 100%;
+      & > .el-col {
         padding-left: 0 !important;
         padding-right: 0 !important;
-
-        .card-body-right {
-          padding-right: 0 !important;
-
-          a {
-            line-height: 35px !important;
-
-            img {
-              display: inline-block !important;
-              height: 18px;
-              width: 18px;
-              position: relative;
-              top: 3px;
-              margin-right: 3px;
+      }
+      .el-card__body {
+        padding: 15px 10px;
+        .doc-item {
+          margin-bottom: 10px;
+          .doc-cover {
+            margin-right: 10px;
+          }
+          .doc-title {
+            .el-link {
+              font-size: 13px;
+            }
+            & > div {
+              font-size: 12px;
             }
           }
         }

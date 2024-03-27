@@ -63,9 +63,9 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import DocumentCover from './DocumentCover.vue'
 import { formatBytes, formatDatetime, getIcon } from '~/utils/utils'
-import { mapGetters } from 'vuex'
 export default {
   name: 'DocumentList',
   components: { DocumentCover },

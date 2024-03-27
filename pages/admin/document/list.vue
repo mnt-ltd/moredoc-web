@@ -33,7 +33,7 @@
               :disabled="selectedRow.length === 0"
               @command="checkDocument"
             >
-              <el-button type="warning">
+              <el-button type="warning" icon="el-icon-s-check">
                 批量审批 <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
@@ -82,9 +82,9 @@
             <el-tooltip content="批量更新文档所属语言" placement="top">
               <el-button
                 type="primary"
-                @click="batchUpdateDocumentsLanguage"
                 :disabled="selectedRow.length === 0"
                 icon="el-icon-edit"
+                @click="batchUpdateDocumentsLanguage"
                 >批量语言</el-button
               >
             </el-tooltip>
@@ -136,15 +136,15 @@
             >推荐</el-button
           >
           <el-button
-            type="text"
-            @click="download2review(scope.row)"
             v-if="
               scope.row.status === 6 ||
               scope.row.status === 7 ||
               scope.row.status === 4
             "
+            type="text"
             icon="el-icon-download"
             class="text-warning"
+            @click="download2review(scope.row)"
             >下载审核</el-button
           >
         </template>
@@ -356,7 +356,9 @@ export default {
           item.disable_delete = item.status === 1
           ;(item.category_id || (item.category_id = [])).forEach((id) => {
             ;(item.category_name || (item.category_name = [])).push(
-              this.categoryMap[id].title
+              this.categoryMap[id] && this.categoryMap[id].title
+                ? this.categoryMap[id].title
+                : '-'
             )
           })
           item.title_html = genLinkHTML(item.title, `/document/${item.id}`)
@@ -508,6 +510,7 @@ export default {
       this.selectedRow = rows
     },
     checkDocument(cmd) {
+      console.log(cmd)
       this.$confirm(
         `您确定要将选中的【${this.selectedRow.length}个】文档状态变更为【${this.documentStatusOptions[cmd].label}】吗？请仔细检查，以免误操作。`,
         '温馨提示',

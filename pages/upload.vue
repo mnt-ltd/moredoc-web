@@ -37,7 +37,7 @@
                     >
                       <el-cascader
                         v-model="document.category_id"
-                        :options="categoryTrees"
+                        :options="categoryTrees.filter((x) => !x.type)"
                         :filterable="true"
                         :disabled="loading"
                         :props="{
@@ -50,7 +50,7 @@
                       ></el-cascader>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="8" v-if="(settings.language || []).length > 0">
+                  <el-col v-if="(settings.language || []).length > 0" :span="8">
                     <el-form-item label="默认语言" prop="language">
                       <template slot="label">
                         <span>默认语言</span>
@@ -96,18 +96,18 @@
                     <el-form-item prop="isDir">
                       <el-checkbox
                         v-model="isDir"
-                        @change="changeDir"
                         :disabled="loading"
+                        @change="changeDir"
                         >上传文件夹</el-checkbox
                       >
                     </el-form-item>
                   </el-col>
-                  <el-col :span="8" v-if="settings.vip.enable">
+                  <el-col v-if="settings.vip.enable" :span="8">
                     <el-form-item prop="is_vip">
                       <el-checkbox
                         v-model="isVIP"
-                        @change="changeVIP"
                         :disabled="loading"
+                        @change="changeVIP"
                         >加入VIP文档</el-checkbox
                       >
                     </el-form-item>
@@ -169,19 +169,19 @@
                       <template #default="{ row, rowIndex }">
                         <el-input v-model="row.title" :disabled="loading">
                           <el-select
-                            v-model="row.language"
+                            v-if="(settings.language || []).length > 0"
                             slot="prepend"
+                            v-model="row.language"
                             placeholder="请选择语言"
                             clearable
                             filterable
                             class="language-select"
-                            v-if="(settings.language || []).length > 0"
                           >
                             <el-option
                               v-for="item in settings.language || []"
+                              :key="item.code"
                               :label="item.language"
                               :value="item.code"
-                              :key="item.code"
                             ></el-option>
                           </el-select>
                           <template slot="append">{{
@@ -205,9 +205,9 @@
                         <div class="table-action">
                           <span>{{ formatBytes(row.size) }}</span>
                           <el-checkbox
-                            class="is-vip-checkbox"
                             v-if="settings.vip.enable"
                             v-model="row.is_vip"
+                            class="is-vip-checkbox"
                             :disabled="loading"
                             >加入VIP文档</el-checkbox
                           >
@@ -265,11 +265,11 @@
                   </vxe-table>
                 </el-form-item>
                 <el-alert
+                  v-if="fileMessages.length > 0"
                   title="告警提示"
                   type="warning"
                   class="tips-alert"
                   :closable="false"
-                  v-if="fileMessages.length > 0"
                 >
                   <div
                     v-for="(message, index) in fileMessages"
@@ -303,10 +303,10 @@
               </el-form>
             </el-col>
             <el-col
-              :span="10"
               v-if="
                 !(setKeywordsAndDescription && fileList.length > 0) || isMobile
               "
+              :span="10"
               class="upload-tips part-right"
             >
               <div><strong>温馨提示</strong></div>

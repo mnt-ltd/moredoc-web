@@ -11,10 +11,10 @@
         >
           <document-card :document="activeDocument" />
           <nuxt-link
+            slot="reference"
             :target="target"
             :to="`/document/${doc.uuid || doc.id}`"
             class="el-link el-link--default"
-            slot="reference"
           >
             <img
               :src="'/static/images/' + getIcon(doc.ext) + '_24.png'"
@@ -24,10 +24,10 @@
           </nuxt-link>
         </el-popover>
         <nuxt-link
+          v-else
           :target="target"
           :to="`/document/${doc.uuid || doc.id}`"
           class="el-link el-link--default"
-          v-else
         >
           <img
             :src="'/static/images/' + getIcon(doc.ext) + '_24.png'"
@@ -69,10 +69,27 @@ export default {
       activeDocument: {},
     }
   },
+  watch: {
+    docs: {
+      handler(newDocs) {
+        // 赋值给documentMap
+        newDocs.forEach((doc) => {
+          this.documentMap[doc.id] = doc
+        })
+      },
+      immediate: true,
+    },
+  },
   async created() {},
   methods: {
     getIcon,
     async getPopoverDocument(id) {
+      const doc = this.documentMap[id]
+      if (doc) {
+        this.activeDocument = doc
+        return
+      }
+
       this.activeDocument = { id: 0 }
       if (!this.showPopover) {
         return
@@ -82,7 +99,7 @@ export default {
         return
       }
 
-      const res = await getDocument({ id: id, with_author: true })
+      const res = await getDocument({ id, with_author: true })
       this.activeDocument = res.data
       this.documentMap[id] = res.data
     },

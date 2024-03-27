@@ -3,7 +3,7 @@
     <el-skeleton animated>
       <template slot="template">
         <ul>
-          <li v-for="i in 4" :key="i">
+          <li v-for="i in 1" :key="i">
             <el-row :gutter="20">
               <el-col
                 :span="
@@ -47,10 +47,9 @@
   </div>
 </template>
 <script>
-import { formatBytes, formatDatetime, getIcon } from '~/utils/utils'
 import { mapGetters } from 'vuex'
 export default {
-  name: 'DocumentList',
+  name: 'DocumentListSkeleton',
   props: {
     rows: {
       type: Number,

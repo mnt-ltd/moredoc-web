@@ -231,6 +231,7 @@ export const datetimePickerPunishmentOptions = {
     {
       text: '半年',
       onClick(picker) {
+        const start = new Date()
         const end = new Date()
         end.setTime(end.getTime() + 3600 * 1000 * 24 * 183)
         picker.$emit('pick', [start, end])
@@ -239,6 +240,7 @@ export const datetimePickerPunishmentOptions = {
     {
       text: '1年',
       onClick(picker) {
+        const start = new Date()
         const end = new Date()
         end.setTime(end.getTime() + 3600 * 1000 * 24 * 365)
         picker.$emit('pick', [start, end])
@@ -253,6 +255,7 @@ export const punishmentTypeOptions = [
   { label: '禁止上传', value: 3, type: 'warning' },
   { label: '禁止下载', value: 4, type: 'warning' },
   { label: '禁止收藏', value: 5, type: 'warning' },
+  { label: '禁止发布文章', value: 6, type: 'warning' },
 ]
 
 export const vipTypeOptions = [
@@ -454,4 +457,18 @@ export const advertisementPositions = [
       },
     ],
   },
+]
+
+export const categoryTypeDocument = 0
+export const categoryTypeArticle = 1
+
+export const categoryTypeOptions = [
+  { label: '文档', value: categoryTypeDocument, type: 'primary' },
+  { label: '文章', value: categoryTypeArticle, type: 'success' },
+]
+
+export const articleStatusOptions = [
+  { label: '待审核', value: 0, type: 'info' },
+  { label: '审核通过', value: 1, type: 'success' },
+  { label: '审核拒绝', value: 2, type: 'danger' },
 ]

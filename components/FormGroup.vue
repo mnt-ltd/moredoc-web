@@ -7,7 +7,7 @@
       :model="group"
     >
       <el-row :gutter="20">
-        <el-col :span="16">
+        <el-col :span="8">
           <el-form-item
             label="名称"
             prop="title"
@@ -46,6 +46,8 @@
             </el-switch>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item label="允许上传文档">
             <el-switch
@@ -60,7 +62,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="文档是否需要审核">
+          <el-form-item label="文档需要审核">
             <el-switch
               v-model="group.enable_document_review"
               style="display: block"
@@ -86,7 +88,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="评论是否需审核">
+          <el-form-item label="评论需要审核">
             <el-switch
               v-model="group.enable_comment_approval"
               style="display: block"
@@ -98,8 +100,33 @@
             </el-switch>
           </el-form-item>
         </el-col>
+        <el-col :span="8">
+          <el-form-item label="允许发布文章">
+            <el-switch
+              v-model="group.enable_article"
+              style="display: block"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="是"
+              inactive-text="否"
+            >
+            </el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="文章需要审核">
+            <el-switch
+              v-model="group.enable_article_approval"
+              style="display: block"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="是"
+              inactive-text="否"
+            >
+            </el-switch>
+          </el-form-item>
+        </el-col>
       </el-row>
-
       <el-form-item label="描述">
         <el-input
           v-model="group.description"
@@ -122,13 +149,9 @@
   </div>
 </template>
 <script>
-import { Chrome } from 'vue-color'
 import { createGroup, updateGroup } from '~/api/group'
 export default {
   name: 'FormGroup',
-  components: {
-    'chrome-picker': Chrome,
-  },
   props: {
     initGroup: {
       type: Object,
@@ -140,16 +163,6 @@ export default {
   data() {
     return {
       loading: false,
-      colors: {
-        hsl: { h: 154.92214648092607, s: 0, l: 0, a: 1 },
-        hex: '#000000',
-        hex8: '#000000FF',
-        rgba: { r: 0, g: 0, b: 0, a: 1 },
-        hsv: { h: 154.92214648092607, s: 0, v: 0, a: 1 },
-        oldHue: 154.92214648092607,
-        source: 'hex',
-        a: 1,
-      },
       group: {
         sort: 0,
       },
@@ -160,7 +173,6 @@ export default {
       handler(val) {
         if (!val.sort) val.sort = 0
         this.group = val
-        this.colors = val.color || '#000000FF'
       },
       immediate: true,
     },
@@ -168,11 +180,9 @@ export default {
   created() {
     this.group = this.initGroup
     if (!this.initGroup.sort) this.group.sort = 0
-    this.colors = this.initGroup.color || '#000000FF'
   },
   methods: {
     onSubmit() {
-      this.group.color = this.colors.hex8
       this.$refs.formGroup.validate(async (valid) => {
         if (!valid) {
           return

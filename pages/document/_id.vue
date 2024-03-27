@@ -119,6 +119,9 @@
                   <i class="el-icon-s-home"></i> 首页
                 </nuxt-link>
               </el-breadcrumb-item>
+              <el-breadcrumb-item>
+                <nuxt-link to="/category">全部文档</nuxt-link>
+              </el-breadcrumb-item>
               <template v-if="breadcrumbs.length < 3">
                 <el-breadcrumb-item
                   v-for="breadcrumb in breadcrumbs"
@@ -361,7 +364,8 @@
                 :to="`/user/${document.user_id}`"
                 class="el-link el-link--primary"
                 >{{ document.user.username || '匿名用户' }}</nuxt-link
-              >于
+              >
+              于
               <span class="text-muted">
                 {{ formatDatetime(document.created_at) }}
               </span>
@@ -805,7 +809,7 @@ export default {
     accessRecommend() {
       return (
         this.permissions.filter((item) =>
-          item.path.endsWith('SetDocumentRecommend')
+          item.path.endsWith('RecommendArticles')
         ).length > 0
       )
     },
@@ -1324,6 +1328,7 @@ export default {
       if (res.status === 200) {
         this.$message.success('取消收藏成功')
         this.favorite = { id: 0 }
+        this.document.favorite_count--
       } else {
         this.$message.error(res.data.message)
       }
@@ -1343,6 +1348,7 @@ export default {
       if (res.status === 200) {
         this.$message.success('收藏成功')
         this.favorite = res.data
+        this.document.favorite_count++
       } else {
         this.$message.error(res.data.message)
       }
@@ -1422,7 +1428,7 @@ export default {
     },
     randomAdvertisement() {
       const advertisements = this.advertisements.filter(
-        (item) => item.position == 'document_between'
+        (item) => item.position === 'document_between'
       )
       if (advertisements.length > 0) {
         const index = Math.floor(Math.random() * advertisements.length)

@@ -45,12 +45,12 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import { listCategory, deleteCategory, getCategory } from '~/api/category'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormCategory from '~/components/FormCategory.vue'
 import { categoryToTrees, parseQueryIntArray } from '~/utils/utils'
-import { mapGetters, mapActions } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormCategory },
   layout: 'admin',
@@ -69,11 +69,12 @@ export default {
       tableListFields: [],
       selectedRow: [],
       category: { id: 0, title: '', cover: '', sort: '', icon: '' },
+      categoryTypeDocument: [0],
     }
   },
   head() {
     return {
-      title: `分类管理 - ${this.settings.system.sitename}`,
+      title: `文档分类 - ${this.settings.system.sitename}`,
     }
   },
   computed: {
@@ -93,14 +94,17 @@ export default {
       },
     },
   },
-  async created() {
+  created() {
     this.initSearchForm()
   },
   methods: {
     ...mapActions('category', ['getCategories']),
     async listCategory() {
       this.loading = true
-      const res = await listCategory(this.search)
+      const res = await listCategory({
+        ...this.search,
+        type: this.categoryTypeDocument,
+      })
       if (res.status === 200) {
         let categories = res.data.category || []
         categories = categories.map((item) => {

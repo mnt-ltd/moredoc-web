@@ -26,9 +26,9 @@
               </div>
             </el-col>
             <el-col :span="8">
-              <div>收藏</div>
+              <div>文章</div>
               <div class="el-link el-link--primary">
-                {{ user.favorite_count || 0 }}
+                {{ user.article_count || 0 }}
               </div>
             </el-col>
             <el-col :span="8"

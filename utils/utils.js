@@ -275,10 +275,12 @@ export function requireLogin(settings, user, route, permissions = []) {
     // 未登录，且开启了登录访问限制
     if (
       !(
-        route.name === 'login' ||
-        route.name === 'register' ||
-        route.name === 'findpassword' ||
-        route.name === 'oauth-type' // 第三方登录
+        (
+          route.name === 'login' ||
+          route.name === 'register' ||
+          route.name === 'findpassword' ||
+          route.name === 'oauth-type'
+        ) // 第三方登录
       )
     ) {
       return true
@@ -331,8 +333,9 @@ export function genTimeDuration(duration) {
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 31)
       break
     case 'three_month':
+      // 最近三个月
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 92)
-    // 最近三个月
+      break
     case 'half_year':
       // 最近半年
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 183)
@@ -351,12 +354,12 @@ export function isValidMobile(mobile) {
   return /^1[3456789]\d{9}$/.test(mobile)
 }
 
-export function genPrevPage(hash, pageNO, ext, enableGZIP){
-  if (!ext){
-    ext=".svg"
+export function genPrevPage(hash, pageNO, ext, enableGZIP) {
+  if (!ext) {
+    ext = '.svg'
   }
-  if (ext===".svg" && enableGZIP){
-    ext=".gzip.svg"
+  if (ext === '.svg' && enableGZIP) {
+    ext = '.gzip.svg'
   }
-  return  `/view/page/${hash}/${pageNO}${ext}`
+  return `/view/page/${hash}/${pageNO}${ext}`
 }

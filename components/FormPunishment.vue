@@ -34,7 +34,7 @@
           >
           </el-option>
         </el-select>
-        <el-input v-else :disabled="true" v-model="punishment.username" />
+        <el-input v-else v-model="punishment.username" :disabled="true" />
       </el-form-item>
       <el-form-item
         prop="type"
@@ -45,22 +45,22 @@
         <template slot="label">
           处罚类型
           <ToolTip
-            content="禁止评论：不允许发表评论；禁止上传：不允许上传文档；禁止收藏：不允许收藏；禁止下载：不允许下载文档；禁用账户：包括上述全部禁用项"
+            content="禁止评论：不允许发表评论；禁止上传：不允许上传文档；禁止收藏：不允许收藏文档和文章；禁止下载：不允许下载文档；禁止发布文章；禁用账户：包括上述全部禁用项"
           />
         </template>
         <el-checkbox-group v-if="punishment.id === 0" v-model="punishment.type">
           <el-checkbox
             v-for="item in punishmentTypeOptions"
-            :label="item.value"
             :key="'checkbox-pt' + item.value"
+            :label="item.value"
             >{{ item.label }}</el-checkbox
           >
         </el-checkbox-group>
         <el-select v-else v-model="punishment.type" :disabled="true">
           <el-option
             v-for="item in punishmentTypeOptions"
-            :label="item.label"
             :key="'select-pt-' + item.value"
+            :label="item.label"
             :value="item.value"
           >
           </el-option>
@@ -97,16 +97,16 @@
       </el-row>
       <el-form-item label="处罚原因">
         <el-input
-          type="textarea"
           v-model="punishment.reason"
+          type="textarea"
           :rows="3"
           placeholder="请输入处罚原因，被处罚用户可见"
         ></el-input>
       </el-form-item>
       <el-form-item label="处罚备注">
         <el-input
-          type="textarea"
           v-model="punishment.remark"
+          type="textarea"
           :rows="3"
           placeholder="请输入处罚备注，管理员可见"
         ></el-input>
@@ -160,7 +160,7 @@ export default {
   watch: {
     initPunishment: {
       handler(val) {
-        let enable = val.enable || false
+        const enable = val.enable || false
         this.punishment = {
           id: 0,
           user_id: '',
@@ -168,7 +168,7 @@ export default {
           reason: '',
           type: [],
           ...val,
-          enable: enable,
+          enable,
         }
       },
       immediate: true,
@@ -213,7 +213,7 @@ export default {
       const res = await listUser({
         page: 1,
         size: 10,
-        wd: wd,
+        wd,
         id: userId || [],
         field: ['id', 'username'],
       })

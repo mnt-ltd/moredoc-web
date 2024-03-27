@@ -1,5 +1,5 @@
 <template>
-  <div class="com-user-favorite">
+  <div class="com-favorite-document">
     <el-table v-loading="loading" :data="favorites" style="width: 100%">
       <el-table-column prop="title" label="文档" min-width="200">
         <template slot-scope="scope">
@@ -44,10 +44,10 @@
         </template>
       </el-table-column>
       <el-table-column
+        v-if="userId === user.id"
         label="操作"
         width="70"
         fixed="right"
-        v-if="userId === user.id"
       >
         <template slot-scope="scope">
           <el-tooltip content="移除收藏" placement="top">
@@ -90,7 +90,7 @@ import {
   getIcon,
 } from '~/utils/utils'
 export default {
-  name: 'UserFavorite',
+  name: 'FavoriteDocument',
   props: {
     userId: {
       type: Number,
@@ -105,6 +105,7 @@ export default {
       query: {
         page: parseInt(this.$route.query.page) || 1,
         size: 20,
+        type: this.$route.query.type,
       },
     }
   },
@@ -163,6 +164,7 @@ export default {
     pageChange(page) {
       this.$router.push({
         query: {
+          ...this.$route.query,
           page,
         },
       })
@@ -172,7 +174,7 @@ export default {
 </script>
 
 <style lang="scss">
-.com-user-favorite {
+.com-favorite-document {
   .doc-title {
     display: block;
     white-space: nowrap;

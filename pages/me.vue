@@ -3,16 +3,29 @@
     <el-row :gutter="20">
       <el-col :span="6" class="part-left">
         <el-card shadow="never">
-          <user-card :user="user" :hideLatestDocuments="true" />
-          <nuxt-link to="/upload">
-            <el-button
-              type="primary"
-              icon="el-icon-upload2"
-              class="btn-block mgt-20px"
-              v-if="!isMobile"
-              >上传文档</el-button
-            >
-          </nuxt-link>
+          <user-card :user="user" :hide-latest="true" />
+          <el-row v-if="!isMobile" :gutter="10">
+            <el-col :span="12">
+              <nuxt-link to="/upload">
+                <el-button
+                  type="primary"
+                  icon="el-icon-upload2"
+                  class="btn-block mgt-20px"
+                  >上传文档</el-button
+                >
+              </nuxt-link>
+            </el-col>
+            <el-col :span="12">
+              <nuxt-link to="/post">
+                <el-button
+                  type="primary"
+                  icon="el-icon-plus"
+                  class="btn-block mgt-20px"
+                  >发布文章</el-button
+                >
+              </nuxt-link>
+            </el-col>
+          </el-row>
           <el-tabs
             v-if="isMobile"
             v-model="defaultActive.value"
@@ -77,10 +90,6 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'PageMe',
-  computed: {
-    ...mapGetters('user', ['user']),
-    ...mapGetters('setting', ['settings']),
-  },
   data() {
     return {
       defaultActive: {
@@ -109,6 +118,11 @@ export default {
           icon: 'el-icon-document',
         },
         {
+          label: '我的文章',
+          value: '/me/article',
+          icon: 'el-icon-tickets',
+        },
+        {
           label: '我的收藏',
           value: '/me/favorite',
           icon: 'el-icon-star-off',
@@ -130,6 +144,10 @@ export default {
     return {
       title: `${this.defaultActive.label} - ${this.user.username} - ${this.settings.system.sitename}`,
     }
+  },
+  computed: {
+    ...mapGetters('user', ['user']),
+    ...mapGetters('setting', ['settings']),
   },
   watch: {
     '$route.path': {

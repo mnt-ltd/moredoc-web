@@ -28,7 +28,9 @@
             <nuxt-link
               :to="`/user/${document.user_id}`"
               class="el-link el-link--primary"
-              >{{ document.user && document.user.username }}</nuxt-link
+              >{{
+                (document.user && document.user.username) || document.username
+              }}</nuxt-link
             >
           </el-descriptions-item>
           <el-descriptions-item>
@@ -86,8 +88,8 @@
 </template>
 
 <script>
-import { formatBytes, getIcon } from '~/utils/utils'
 import { mapGetters } from 'vuex'
+import { formatBytes, getIcon } from '~/utils/utils'
 export default {
   name: 'DocumentCard',
   props: {
@@ -103,7 +105,7 @@ export default {
   },
   watch: {
     document: {
-      handler: function (val) {
+      handler(val) {
         this.score = val.score / 100 || 3
       },
       deep: true,
