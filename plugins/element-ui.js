@@ -7,6 +7,11 @@ import VueViewer from 'v-viewer'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 
+import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+
+// mixins
+import mixins from '~/mixins/mixins'
+
 Vue.use(VXETable)
 
 // import locale from 'element-ui/lib/locale/lang/en'
@@ -29,16 +34,11 @@ Vue.use(VueViewer, {
   },
 })
 
-import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
-
 Vue.use(Element, { zhLocale })
 // 以便光标在输入框时快捷键同样有效
 hotkeys.filter = (e) => {
   return true
 }
-
-// mixins
-import mixins from '~/mixins/mixins'
 Vue.mixin(mixins)
 
 // Vue2 引入快捷键

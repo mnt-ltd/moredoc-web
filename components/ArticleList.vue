@@ -8,6 +8,12 @@
             class="el-link el-link--default"
             >{{ article.title }}</nuxt-link
           >
+          <img
+            v-if="article.recommend_at"
+            src="/static/images/recommend.png"
+            alt="推荐"
+            class="min-recommend"
+          />
         </h3>
         <div class="info">
           <span v-if="article.user_id" class="author">
@@ -103,6 +109,9 @@ export default {
         'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
       line-height: 30px;
       margin-bottom: 10px;
+    }
+    .min-recommend {
+      height: 24px;
     }
   }
   .desc {

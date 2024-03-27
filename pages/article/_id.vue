@@ -186,7 +186,12 @@
               {{ article.reject_reason }}
             </el-alert>
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <div data-slate-editor v-html="article.content"></div>
+            <div
+              ref="viewer"
+              v-viewer
+              data-slate-editor
+              v-html="article.content"
+            ></div>
           </article>
           <el-row v-if="article.id > 0" class="btn-actions">
             <el-col :span="12">
@@ -382,6 +387,18 @@ export default {
       this.breadcrumbs = breadcrumbs
       this.article = article
       this.getRelatedArticles()
+
+      this.$nextTick(() => {
+        setTimeout(() => {
+          try {
+            // 如果是移动端，则直接返回
+            if (this.isMobile) return
+            const viewer = this.$refs.viewer.$viewer
+            viewer.options.url = 'src' // 设置图片地址，之前已经全局设置为了data-source，不过只在移动端应用。这里的修改是为了PC端应用
+            viewer.update()
+          } catch (error) {}
+        }, 1000) // 设置延迟，等待内容渲染完成
+      })
     },
     async getRelatedArticles() {
       const res = await getRelatedArticles({
@@ -564,6 +581,12 @@ export default {
     word-wrap: break-word;
     img {
       max-width: 100%;
+      cursor: zoom-in;
+      &:hover {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 4px !important;
+        overflow: hidden;
+      }
     }
     .w-e-text-container [data-slate-editor] blockquote {
       border-left-width: 4px !important;
