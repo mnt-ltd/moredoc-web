@@ -27,14 +27,30 @@
             <nuxt-link to="/">首页</nuxt-link>
           </el-menu-item>
           <el-menu-item index="/category" class="hidden-xs-only">
-            <el-popover width="520" trigger="hover" :open-delay="360">
-              <CategoryCard :type="0"></CategoryCard>
+            <el-popover
+              ref="popover0"
+              width="520"
+              trigger="hover"
+              :open-delay="360"
+            >
+              <CategoryCard
+                :type="0"
+                @close="closePopover('popover0')"
+              ></CategoryCard>
               <nuxt-link slot="reference" to="/category">文档文库</nuxt-link>
             </el-popover>
           </el-menu-item>
           <el-menu-item index="/article" class="hidden-xs-only">
-            <el-popover width="520" trigger="hover" :open-delay="360">
-              <CategoryCard :type="1"></CategoryCard>
+            <el-popover
+              ref="popover1"
+              width="520"
+              trigger="hover"
+              :open-delay="360"
+            >
+              <CategoryCard
+                :type="1"
+                @close="closePopover('popover1')"
+              ></CategoryCard>
               <nuxt-link slot="reference" to="/article">文章资讯</nuxt-link>
             </el-popover>
           </el-menu-item>
@@ -353,6 +369,13 @@ export default {
     goToLink(link) {
       this.menuDrawerVisible = false
       this.$router.push(link)
+    },
+    closePopover(ref) {
+      this.$nextTick(() => {
+        try {
+          this.$refs[ref].doClose()
+        } catch (error) {}
+      })
     },
     async getSignedToday() {
       const res = await getSignedToday()

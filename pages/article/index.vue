@@ -178,7 +178,10 @@ export default {
   },
   head() {
     return {
-      title: this.title + ' - ' + this.settings.system.sitename,
+      title:
+        (this.title ? '[文章]' + this.title : '全部文章') +
+        ' - ' +
+        this.settings.system.sitename,
       meta: [
         {
           hid: 'description',

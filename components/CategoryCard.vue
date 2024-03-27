@@ -15,6 +15,7 @@
               ? '/article?category_id=' + cate.id
               : `/category/${cate.id}`
           "
+          @click.native="$emit('close')"
         >
           <el-avatar :size="20" :src="cate.icon"></el-avatar>
           <span>{{ cate.title }}</span>
@@ -30,6 +31,7 @@
               ? '/article?category_id=' + sub.id
               : `/category/${sub.id}`
           "
+          @click.native="$emit('close')"
           >{{ sub.title }}</nuxt-link
         >
       </div>
