@@ -41,6 +41,7 @@ export default {
   .el-main {
     padding-left: 0;
     padding-right: 0;
+    min-height: calc(100vh - 60px);
   }
   .el-link {
     font-size: 15px;

@@ -53,6 +53,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .com-category-card {
+  max-height: calc(100vh - 80px);
+  overflow: auto;
   .row {
     display: flex;
     justify-content: space-between;

@@ -143,12 +143,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { listArticle, searchArticle, deleteArticle } from '~/api/article'
-import {
-  formatBytes,
-  formatDatetime,
-  formatRelativeTime,
-  getIcon,
-} from '~/utils/utils'
+import { formatBytes, formatDatetime, formatRelativeTime } from '~/utils/utils'
 import { datetimePickerOptions, articleStatusOptions } from '~/utils/enum'
 
 export default {

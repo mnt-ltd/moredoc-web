@@ -48,9 +48,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { formatBytes, formatDatetime, getIcon } from '~/utils/utils'
 export default {
-  name: 'DocumentList',
+  name: 'DocumentListSkeleton',
   props: {
     rows: {
       type: Number,

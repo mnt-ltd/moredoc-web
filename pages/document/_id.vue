@@ -648,7 +648,7 @@ export default {
     accessRecommend() {
       return (
         this.permissions.filter((item) =>
-          item.path.endsWith('SetDocumentRecommend')
+          item.path.endsWith('RecommendArticles')
         ).length > 0
       )
     },

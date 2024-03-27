@@ -16,6 +16,74 @@
                 </template>
               </template>
               {{ article.title }}
+              <img
+                v-if="article.recommend_at"
+                class="icon-recommend"
+                src="/static/images/recommend.png"
+                alt="推荐"
+              />
+              <div
+                v-if="
+                  user.id > 0 &&
+                  (accessDelete ||
+                    accessRecommend ||
+                    accessUpdate ||
+                    accessForbiden)
+                "
+                class="actions"
+              >
+                <el-button
+                  v-if="accessDelete"
+                  type="text"
+                  icon="el-icon-delete"
+                  @click="deleteArticle"
+                  >删除文章</el-button
+                >
+                <nuxt-link
+                  v-if="accessUpdate"
+                  :to="`/post?identifier=${article.identifier}`"
+                >
+                  <el-button type="text" icon="el-icon-edit"
+                    >编辑文章</el-button
+                  >
+                </nuxt-link>
+                <template>
+                  <!-- 管理员权限 -->
+                  <el-dropdown v-if="accessForbiden" @command="checkArticle">
+                    <span class="el-dropdown-link">
+                      <el-button type="text" icon="el-icon-document-checked"
+                        >文章审批</el-button
+                      >
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item command="pass"
+                        >审核通过</el-dropdown-item
+                      >
+                      <el-dropdown-item command="reject"
+                        >审核拒绝</el-dropdown-item
+                      >
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                  <el-dropdown
+                    v-if="accessRecommend"
+                    @command="recommendArticle"
+                  >
+                    <span class="el-dropdown-link">
+                      <el-button type="text"
+                        ><i class="fa fa-thumbs-up"></i> 推荐设置</el-button
+                      >
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item command="cancel"
+                        >取消推荐</el-dropdown-item
+                      >
+                      <el-dropdown-item command="recommend"
+                        >推荐文章</el-dropdown-item
+                      >
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </template>
+              </div>
             </h1>
             <el-breadcrumb separator="/">
               <el-breadcrumb-item>
@@ -120,7 +188,7 @@
             <!-- eslint-disable-next-line vue/no-v-html -->
             <div data-slate-editor v-html="article.content"></div>
           </article>
-          <el-row class="btn-actions">
+          <el-row v-if="article.id > 0" class="btn-actions">
             <el-col :span="12">
               <share-box :title="article.title" />
             </el-col>
@@ -185,7 +253,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getArticle, getRelatedArticles } from '~/api/article'
+import {
+  getArticle,
+  getRelatedArticles,
+  deleteArticle,
+  recommendArticles,
+  checkArticles,
+} from '~/api/article'
 import ShareBox from '~/components/ShareBox.vue'
 import { getFavorite, createFavorite, deleteFavorite } from '~/api/favorite'
 import { formatRelativeTime } from '~/utils/utils'
@@ -228,7 +302,38 @@ export default {
   computed: {
     ...mapGetters('setting', ['settings']),
     ...mapGetters('category', ['categoryMap', 'categoryTrees']),
-    ...mapGetters('user', ['user']),
+    ...mapGetters('user', ['user', 'permissions']),
+    accessUpdate() {
+      if (this.user.id === this.article.user_id) {
+        return true
+      }
+      return (
+        this.permissions.filter((item) => item.path.endsWith('UpdateArticle'))
+          .length > 0
+      )
+    },
+    accessDelete() {
+      if (this.user.id === this.article.user_id) {
+        return true
+      }
+      return (
+        this.permissions.filter((item) => item.path.endsWith('DeleteArticle'))
+          .length > 0
+      )
+    },
+    accessRecommend() {
+      return (
+        this.permissions.filter((item) =>
+          item.path.endsWith('RecommendArticles')
+        ).length > 0
+      )
+    },
+    accessForbiden() {
+      return (
+        this.permissions.filter((item) => item.path.endsWith('UpdateArticle'))
+          .length > 0
+      )
+    },
   },
   async created() {
     await this.getArticle()
@@ -274,7 +379,6 @@ export default {
           }
         }
       }
-
       this.breadcrumbs = breadcrumbs
       this.article = article
       this.getRelatedArticles()
@@ -354,6 +458,47 @@ export default {
         this.$message.error(res.data.message || '取消收藏失败')
       }
     },
+    deleteArticle() {
+      this.$confirm('此操作将删除该文章, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(async () => {
+          const res = await deleteArticle({ id: this.article.id })
+          if (res.status === 200) {
+            this.$message.success('删除成功')
+            this.$router.push('/article')
+          } else {
+            this.$message.error(res.data.message || '删除失败')
+          }
+        })
+        .catch(() => {})
+    },
+    async recommendArticle(command) {
+      const res = await recommendArticles({
+        article_id: [this.article.id],
+        is_recommend: command === 'recommend',
+      })
+      if (res.status === 200) {
+        this.$message.success('操作成功')
+        this.getArticle()
+      } else {
+        this.$message.error(res.data.message)
+      }
+    },
+    async checkArticle(command) {
+      const res = await checkArticles({
+        article_id: [this.article.id],
+        status: command === 'pass' ? 1 : 2,
+      })
+      if (res.status === 200) {
+        this.$message.success('操作成功')
+        this.getArticle()
+      } else {
+        this.$message.error(res.data.message)
+      }
+    },
   },
 }
 </script>
@@ -379,6 +524,10 @@ export default {
       font-weight: 400;
       margin: 0;
       color: #111;
+      .icon-recommend {
+        height: 30px;
+        vertical-align: middle;
+      }
     }
   }
   [data-w-e-type='todo'] {
@@ -411,6 +560,7 @@ export default {
   }
   article {
     line-height: 180%;
+    min-height: 300px;
     word-wrap: break-word;
     img {
       max-width: 100%;

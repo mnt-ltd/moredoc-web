@@ -4,15 +4,28 @@
       <el-col :span="6" class="part-left">
         <el-card shadow="never">
           <user-card :user="user" :hide-latest="true" />
-          <nuxt-link to="/upload">
-            <el-button
-              v-if="!isMobile"
-              type="primary"
-              icon="el-icon-upload2"
-              class="btn-block mgt-20px"
-              >上传文档</el-button
-            >
-          </nuxt-link>
+          <el-row v-if="!isMobile" :gutter="10">
+            <el-col :span="12">
+              <nuxt-link to="/upload">
+                <el-button
+                  type="primary"
+                  icon="el-icon-upload2"
+                  class="btn-block mgt-20px"
+                  >上传文档</el-button
+                >
+              </nuxt-link>
+            </el-col>
+            <el-col :span="12">
+              <nuxt-link to="/post">
+                <el-button
+                  type="primary"
+                  icon="el-icon-plus"
+                  class="btn-block mgt-20px"
+                  >发布文章</el-button
+                >
+              </nuxt-link>
+            </el-col>
+          </el-row>
           <el-tabs
             v-if="isMobile"
             v-model="defaultActive.value"

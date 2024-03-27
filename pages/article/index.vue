@@ -99,7 +99,10 @@
           >
             {{ activeCate.description }}
           </div>
-          <article-list :articles="articles" />
+          <article-list-skeleton
+            v-if="loading && articles.length === 0 && query.page === 1"
+          />
+          <article-list v-else :articles="articles" />
           <el-pagination
             v-if="total > 0"
             :current-page="query.page"
@@ -148,9 +151,10 @@ import { mapGetters } from 'vuex'
 import { listArticle } from '~/api/article'
 import ArticleNavbar from '~/components/ArticleNavbar.vue'
 import ArticleFooter from '~/components/ArticleFooter.vue'
+import ArticleListSkeleton from '~/components/ArticleListSkeleton.vue'
 export default {
   name: 'PageArticleIndex',
-  components: { ArticleNavbar, ArticleFooter },
+  components: { ArticleNavbar, ArticleFooter, ArticleListSkeleton },
   layout: 'article',
   data() {
     return {
