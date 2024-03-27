@@ -255,7 +255,7 @@
       </el-col>
       <el-col :span="18" class="latest-recommend">
         <el-card v-loading="loadingRecommend" shadow="never">
-          <div slot="header">最新推荐</div>
+          <div slot="header">文档推荐</div>
           <el-row :gutter="20">
             <el-col
               v-for="(item, index) in recommends"
