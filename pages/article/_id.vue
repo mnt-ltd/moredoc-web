@@ -410,13 +410,14 @@ export default {
     }
   }
   article {
+    line-height: 180%;
+    word-wrap: break-word;
     img {
       max-width: 100%;
     }
     .w-e-text-container [data-slate-editor] blockquote {
       border-left-width: 4px !important;
     }
-    line-height: 180%;
     blockquote {
       padding: 10px;
       color: #777;

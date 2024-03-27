@@ -6,7 +6,7 @@
     :model="article"
   >
     <el-row :gutter="20">
-      <el-col :span="11">
+      <el-col :span="11" :xs="14">
         <el-form-item
           label="标题"
           prop="title"
@@ -23,7 +23,7 @@
           </el-input>
         </el-form-item>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="6" :xs="10">
         <el-form-item
           label="分类"
           prop="category_id"
@@ -47,7 +47,7 @@
           ></el-cascader>
         </el-form-item>
       </el-col>
-      <el-col v-if="isAdmin" :span="7">
+      <el-col v-if="isAdmin" :span="7" :xs="12">
         <el-form-item label="标识" prop="identifier">
           <!-- 管理员才有权限设置标识 -->
           <el-input
@@ -60,7 +60,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col :span="11">
+      <el-col :span="11" :xs="16">
         <el-form-item label="关键字">
           <el-input
             v-model="article.keywords"
@@ -70,7 +70,7 @@
         </el-form-item>
       </el-col>
       <template v-if="isAdmin">
-        <el-col :span="6">
+        <el-col :span="6" :xs="8">
           <!-- 审核状态 -->
           <el-form-item label="审核状态">
             <el-select v-model="article.status">
@@ -83,7 +83,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="6" :xs="24">
           <!-- 推荐 -->
           <el-form-item label="推荐">
             <el-switch
