@@ -37,7 +37,7 @@
                 :type="0"
                 @close="closePopover('popover0')"
               ></CategoryCard>
-              <nuxt-link slot="reference" to="/category">文档文库</nuxt-link>
+              <nuxt-link slot="reference" to="/category">文库资料</nuxt-link>
             </el-popover>
           </el-menu-item>
           <el-menu-item index="/article" class="hidden-xs-only">
@@ -247,7 +247,7 @@
       <el-collapse v-model="activeCollapse">
         <el-collapse-item name="categories">
           <template slot="title"
-            ><i class="el-icon-document"></i> &nbsp; <span>文档文库</span>
+            ><i class="el-icon-document"></i> &nbsp; <span>文库资料</span>
           </template>
           <ul>
             <li

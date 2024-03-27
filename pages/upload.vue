@@ -27,7 +27,7 @@
                 >
                   <el-cascader
                     v-model="document.category_id"
-                    :options="categoryTrees"
+                    :options="categoryTrees.filter((x) => !x.type)"
                     :filterable="true"
                     :disabled="loading"
                     :props="{
@@ -56,8 +56,8 @@
                     </el-form-item>
                   </el-col>
                   <el-col
-                    :span="12"
                     v-if="(settings.language || []).length > 0"
+                    :span="12"
                   >
                     <el-form-item label="默认语言" prop="language">
                       <el-select

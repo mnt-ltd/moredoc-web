@@ -11,7 +11,7 @@
             slot="reference"
             class="el-link el-link--default"
             to="/category"
-            >文档文库</nuxt-link
+            >文库资料</nuxt-link
           >
         </el-popover>
         <el-popover width="520" trigger="hover">
