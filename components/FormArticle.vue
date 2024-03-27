@@ -290,7 +290,7 @@ export default {
           const res = await updateArticle(article)
           if (res.status === 200) {
             this.$message.success('修改成功')
-            this.$emit('success', res.data)
+            this.$emit('success', article)
           } else {
             this.$message.error(res.data.message)
           }

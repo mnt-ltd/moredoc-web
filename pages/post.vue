@@ -97,7 +97,6 @@ export default {
       this.article = res.data
     },
     success(article) {
-      this.$message.success('发布成功')
       this.$router.push(`/article/${article.identifier}`)
     },
     back() {
