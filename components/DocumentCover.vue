@@ -1,23 +1,29 @@
 <template>
-  <el-image
-    ref="image"
-    class="com-document-cover"
-    :src="
-      document.attachment && document.attachment.hash
-        ? `/view/cover/${document.attachment.hash}`
-        : document.cover || ''
-    "
-    :lazy="lazy"
-    :alt="document.title"
-    :class="document.is_vip && settings.vip.enable ? 'vip-doc' : ''"
-  >
-    <div slot="error" class="image-slot">
-      <img src="/static/images/default-cover.png" />
-    </div>
-  </el-image>
+  <div>
+    <el-image
+      ref="image"
+      class="com-document-cover"
+      :src="
+        document.attachment && document.attachment.hash
+          ? `/view/cover/${document.attachment.hash}`
+          : document.cover || ''
+      "
+      :lazy="lazy"
+      :alt="document.title"
+      :class="[
+        showExt ? 'ext-icon ext-' + getIcon(document.ext) : '',
+        document.is_vip && settings.vip.enable ? 'vip-doc' : '',
+      ]"
+    >
+      <div slot="error" class="image-slot">
+        <img src="/static/images/default-cover.png" />
+      </div>
+    </el-image>
+  </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { getIcon } from '~/utils/utils'
 export default {
   name: 'DocumentCover',
   props: {
@@ -32,6 +38,10 @@ export default {
     width: {
       type: Number,
       default: 0,
+    },
+    showExt: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -48,6 +58,7 @@ export default {
     window.removeEventListener('resize', this.resetImageHeight)
   },
   methods: {
+    getIcon,
     resetImageHeight() {
       this.$nextTick(() => {
         // 210/297
