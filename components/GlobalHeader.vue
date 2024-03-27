@@ -26,63 +26,39 @@
           <el-menu-item index="/" class="hidden-xs-only">
             <nuxt-link to="/">首页</nuxt-link>
           </el-menu-item>
-          <el-submenu
-            v-show="$route.path !== '/' || navigations.length > 0"
-            index="channel"
-            class="hidden-xs-only"
-          >
-            <template slot="title">文档分类</template>
-            <el-menu-item
-              v-for="item in categoryTrees.filter((item) => !item.type)"
-              :key="'sub-cate-' + item.id"
-              class="channel-category"
-              :index="`/category/${item.id}`"
-            >
-              <nuxt-link
-                class="el-link el-link--default"
-                :to="`/category/${item.id}`"
-                >{{ item.title }}</nuxt-link
-              >
-            </el-menu-item>
-          </el-submenu>
-          <template v-if="navigations.length === 0">
-            <el-menu-item
-              v-for="(item, index) in categoryTrees.filter(
-                (item) => !item.type
-              )"
-              v-show="$route.path === '/' && index < 6"
-              :key="'c-' + item.id"
-              :index="`/category/${item.id}`"
+          <el-menu-item index="/category" class="hidden-xs-only">
+            <el-popover width="520" trigger="hover" :open-delay="360">
+              <CategoryCard :type="0"></CategoryCard>
+              <nuxt-link slot="reference" to="/category">文档文库</nuxt-link>
+            </el-popover>
+          </el-menu-item>
+          <el-menu-item index="/article" class="hidden-xs-only">
+            <el-popover width="520" trigger="hover" :open-delay="360">
+              <CategoryCard :type="1"></CategoryCard>
+              <nuxt-link slot="reference" to="/article">文章资讯</nuxt-link>
+            </el-popover>
+          </el-menu-item>
+          <template v-for="item in navigations">
+            <el-submenu
+              v-if="item.children && item.children.length > 0"
+              :key="'nav-' + item.id"
+              :index="`nav-${item.id}`"
               class="hidden-xs-only"
             >
-              <nuxt-link :to="`/category/${item.id}`">{{
-                item.title
-              }}</nuxt-link>
-            </el-menu-item>
-          </template>
-          <template v-else>
-            <template v-for="item in navigations">
-              <el-submenu
-                v-if="item.children && item.children.length > 0"
-                :key="'nav-' + item.id"
-                :index="`nav-${item.id}`"
-                class="hidden-xs-only"
-              >
-                <template slot="title">{{ item.title }}</template>
-                <NavigationLink
-                  v-for="child in item.children || []"
-                  :key="'child-' + child.id"
-                  :hidden-x-s="true"
-                  :navigation="child"
-                />
-              </el-submenu>
+              <template slot="title">{{ item.title }}</template>
               <NavigationLink
-                v-else
-                :key="'nav1-' + item.id"
-                :navigation="item"
+                v-for="child in item.children || []"
+                :key="'child-' + child.id"
                 :hidden-x-s="true"
+                :navigation="child"
               />
-            </template>
+            </el-submenu>
+            <NavigationLink
+              v-else
+              :key="'nav1-' + item.id"
+              :navigation="item"
+              :hidden-x-s="true"
+            />
           </template>
           <el-menu-item
             v-show="$route.path !== '/'"
@@ -127,9 +103,6 @@
                 <el-dropdown-item command="me"
                   ><i class="fa fa-user-o"></i> 个人中心</el-dropdown-item
                 >
-                <!-- <el-dropdown-item command="profile"
-                  ><i class="fa fa-edit"></i> 个人资料</el-dropdown-item
-                > -->
                 <el-dropdown-item command="upload"
                   ><i class="el-icon-upload2 dropdown-upload"></i
                   >上传文档</el-dropdown-item
@@ -258,7 +231,7 @@
       <el-collapse v-model="activeCollapse">
         <el-collapse-item name="categories">
           <template slot="title"
-            ><i class="el-icon-menu"></i> &nbsp; <span>文档分类</span>
+            ><i class="el-icon-document"></i> &nbsp; <span>文档文库</span>
           </template>
           <ul>
             <li
@@ -268,6 +241,24 @@
               <div
                 class="el-link el-link--default"
                 @click="goToLink(`/category/${item.id}`)"
+              >
+                {{ item.title }}
+              </div>
+            </li>
+          </ul>
+        </el-collapse-item>
+        <el-collapse-item name="article">
+          <template slot="title"
+            ><i class="el-icon-tickets"></i> &nbsp; <span>文章资讯</span>
+          </template>
+          <ul>
+            <li
+              v-for="item in categoryTrees.filter((item) => item.type == 1)"
+              :key="'collapse-sub-cate-' + item.id"
+            >
+              <div
+                class="el-link el-link--default"
+                @click="goToLink(`/article?category_id=${item.id}`)"
               >
                 {{ item.title }}
               </div>
@@ -464,6 +455,10 @@ export default {
         margin-top: -4px;
         height: 42px;
       }
+    }
+    a.el-popover__reference {
+      position: relative;
+      top: -1px;
     }
     & > div {
       margin: 0 auto;
