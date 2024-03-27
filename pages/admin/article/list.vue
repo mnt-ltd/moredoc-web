@@ -407,7 +407,9 @@ export default {
           type: 'html',
         },
         { prop: 'identifier', label: '标识', width: 200 },
-        { prop: 'view_count', label: '浏览', width: 80, type: 'number' },
+        { prop: 'view_count', label: '阅读', width: 80, type: 'number' },
+        { prop: 'favorite_count', label: '收藏', width: 80, type: 'number' },
+        { prop: 'comment_count', label: '评论', width: 80, type: 'number' },
         {
           prop: 'category_name',
           label: '分类',

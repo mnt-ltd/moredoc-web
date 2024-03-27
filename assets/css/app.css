@@ -77,7 +77,9 @@ body {
   background-color: #fff;
 }
 
-.el-image__error, .el-image__inner, .el-image__placeholder {
+.el-image__error,
+.el-image__inner,
+.el-image__placeholder {
   background-color: #eee;
 }
 
@@ -101,4 +103,75 @@ body {
   .el-main {
     padding: 15px;
   }
+}
+
+.ext-icon::after {
+  color: #fff;
+  padding: 2px 5px;
+  font-size: 10px;
+  margin-left: 5px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-top-left-radius: 5px;
+  content: "OTHER";
+  background-color: #70c9ad;
+}
+
+.ext-pdf::after {
+  content: "PDF";
+  background-color: #ec6660;
+}
+
+.ext-ppt::after {
+  content: "PPT";
+  background-color: #f39c12;
+}
+
+.ext-xls::after,
+.ext-excel::after {
+  content: "XLS";
+  background-color: #27ae60;
+}
+
+.ext-doc::after,
+.ext-word::after {
+  content: "DOC";
+  background-color: #6095f7;
+}
+
+.ext-epub::after {
+  content: "EPUB";
+  background-color: #70c9ad;
+}
+
+.ext-chm::other {
+  content: "OTHER";
+  background-color: #70c9ad;
+}
+
+.ext-code::after {
+  content: "CODE";
+  background-color: #70c9ad;
+}
+
+.ext-mobi::after {
+  content: "MOBI";
+  background-color: #70c9ad;
+}
+
+.ext-txt::after,
+.ext-text::after {
+  content: "TXT";
+  background-color: #34495e;
+}
+
+.ext-umd::after {
+  content: "UMD";
+  background-color: #70c9ad;
+}
+
+.ext-other::after {
+  content: "OTHER";
+  background-color: #70c9ad;
 }

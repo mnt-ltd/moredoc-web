@@ -361,7 +361,11 @@
                   class="el-link el-link--default doc-cover"
                   :to="`/document/${doc.uuid}`"
                 >
-                  <document-cover :width="70" :document="doc" />
+                  <document-cover
+                    :width="70"
+                    :document="doc"
+                    :show-ext="true"
+                  />
                 </nuxt-link>
                 <div class="doc-title">
                   <nuxt-link
