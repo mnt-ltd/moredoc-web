@@ -58,7 +58,7 @@
         ></el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col v-if="settings.vip.enable" :span="12">
           <!-- 是否是VIP文档 -->
           <el-form-item label="VIP文档" prop="is_vip">
             <el-switch

@@ -12,7 +12,7 @@
               />
               {{ document.title }}
               <el-tooltip
-                v-if="document.is_vip"
+                v-if="document.is_vip && settings.vip.enable"
                 content="VIP文档"
                 placement="top"
               >

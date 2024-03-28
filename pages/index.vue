@@ -53,7 +53,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-row :gutter="20" class="notice-board" v-if="notices.length > 0">
+    <el-row v-if="notices.length > 0" :gutter="20" class="notice-board">
       <el-col :span="24">
         <el-card shadow="never">
           <notice-board :notices="notices" />
