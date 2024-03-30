@@ -10,10 +10,12 @@
             :to="`/article/${article.identifier || article.id}`"
             class="el-link el-link--primary"
           >
-            {{ article.title }}
+            <span v-html="article.title"></span>
           </nuxt-link>
         </h3>
-        <div class="article-desc">{{ article.description }}</div>
+        <div class="article-desc">
+          <div v-html="article.description"></div>
+        </div>
         <div class="article-info">
           <span class="hidden-xs-only"
             ><i class="el-icon-time"></i>

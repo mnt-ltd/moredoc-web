@@ -53,7 +53,8 @@
             }"
             class="el-link el-link--default doc-title"
           >
-            {{ scope.row.title }}
+            <span v-if="query.wd" v-html="scope.row.title"></span>
+            <span v-else>{{ scope.row.title }}</span>
           </nuxt-link>
         </template>
       </el-table-column>

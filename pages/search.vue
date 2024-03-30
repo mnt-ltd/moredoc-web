@@ -240,47 +240,7 @@
             秒，为您找到相关结果约
             <span class="el-link el-link--danger">{{ total || 0 }}</span> 个.
           </div>
-          <!-- <div class="search-result-none">没有搜索到内容...</div> -->
           <div class="search-result">
-            <!-- <ul>
-              <li v-if="docs.length === 0">
-                <el-empty description="很遗憾，未能检索到相关结果"></el-empty>
-              </li>
-              <li v-for="doc in docs" :key="'doc-' + doc.id">
-                <h3 class="doc-title">
-                  <a
-                    :href="`/document/${doc.uuid || doc.id}`"
-                    class="el-link el-link--primary"
-                  >
-                    <img
-                      :src="`/static/images/${doc.icon}_24.png`"
-                      :alt="`${doc.icon}文档`"
-                    />
-                    <span v-html="doc.title"></span>
-                  </a>
-                </h3>
-                <div class="doc-desc" v-html="doc.description"></div>
-                <div class="doc-info">
-                  <el-rate
-                    v-model="doc.score"
-                    disabled
-                    show-score
-                    text-color="#ff9900"
-                    score-template="{value}"
-                  >
-                  </el-rate>
-                  <span class="float-right"
-                    >{{ doc.price || 0 }}
-                    {{ settings.system.credit_name || '魔豆' }} |
-                    {{ doc.pages || '-' }} 页 |
-                    {{ formatBytes(doc.size) }}
-                    <span class="hidden-xs-only"
-                      >| {{ formatRelativeTime(doc.created_at) }}</span
-                    ></span
-                  >
-                </div>
-              </li>
-            </ul> -->
             <SearchResultArticle v-if="searchType === 1" :articles="articles" />
             <SearchResultDocument v-else :docs="docs" />
           </div>

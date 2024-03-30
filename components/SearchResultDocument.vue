@@ -6,18 +6,18 @@
       </li>
       <li v-for="doc in docs" :key="'doc-' + doc.id">
         <h3 class="doc-title">
-          <nuxt-link
-            :to="`/document/${doc.uuid || doc.id}`"
+          <a
+            :href="`/document/${doc.uuid || doc.id}`"
             class="el-link el-link--primary"
           >
             <img
               :src="`/static/images/${doc.icon}_24.png`"
               :alt="`${doc.icon}文档`"
             />
-            {{ doc.title }}
-          </nuxt-link>
+            <span v-html="doc.title"></span>
+          </a>
         </h3>
-        <div class="doc-desc">{{ doc.description }}</div>
+        <div class="doc-desc" v-html="doc.description"></div>
         <div class="doc-info">
           <el-rate
             v-model="doc.score"
