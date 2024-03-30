@@ -7,6 +7,7 @@
           :placement="placement"
           width="480"
           trigger="hover"
+          :open-delay="500"
           @show="getPopoverDocument(doc.id)"
         >
           <document-card :document="activeDocument" />
