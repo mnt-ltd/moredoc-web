@@ -2,13 +2,15 @@
   <div class="com-article-simple-list">
     <ul>
       <li v-for="article in articles" :key="'article-' + article.id">
-        <nuxt-link
-          target="_blank"
-          :to="`/article/${article.identifier}`"
-          class="el-link el-link--default"
-        >
-          {{ article.title }}
-        </nuxt-link>
+        <el-tooltip :content="article.title" placement="left">
+          <nuxt-link
+            target="_blank"
+            :to="`/article/${article.identifier}`"
+            class="el-link el-link--default"
+          >
+            {{ article.title }}
+          </nuxt-link>
+        </el-tooltip>
       </li>
     </ul>
   </div>
