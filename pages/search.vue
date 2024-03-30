@@ -25,19 +25,19 @@
         </el-popover>
         <span class="float-right">
           <nuxt-link to="/upload" class="el-link el-link--default"
-            >上传文档</nuxt-link
+            ><i class="el-icon-upload2"></i>&nbsp;上传文档</nuxt-link
           >
           <nuxt-link to="/upload" class="el-link el-link--default"
-            >发布文章</nuxt-link
+            ><i class="el-icon-plus"></i>&nbsp;发布文章</nuxt-link
           >
           <nuxt-link
             v-if="user.id > 0"
             :to="`/user/${user.id}`"
             class="el-link el-link--default"
-            >会员中心</nuxt-link
+            ><i class="el-icon-user"></i>&nbsp;会员中心</nuxt-link
           >
           <nuxt-link v-else class="el-link el-link--default" to="/login"
-            >登录账户</nuxt-link
+            ><i class="el-icon-user"></i>&nbsp;登录账户</nuxt-link
           >
         </span>
       </el-col>
@@ -452,6 +452,7 @@ export default {
         path: '/search',
         query: {
           wd: this.query.wd,
+          type: this.query.type,
           page: 1,
           size: 10,
           sort: 'default',
@@ -588,7 +589,22 @@ export default {
       if (res.status === 200) {
         this.total = res.data.total
         this.spend = res.data.spend
-        this.articles = res.data.article || []
+        const articles = res.data.article || []
+        const keywords = []
+        articles.map((article) => {
+          try {
+            article.keywords.split(',').map((keyword) => {
+              keyword = keyword.trim()
+              if (keyword && !keywords.includes(keyword)) {
+                keywords.push(keyword)
+              }
+              return keyword
+            })
+          } catch (error) {}
+          return article
+        })
+        this.keywords = keywords
+        this.articles = articles
       }
     },
     onPageChange(page) {
