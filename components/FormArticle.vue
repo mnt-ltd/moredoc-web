@@ -70,7 +70,7 @@
         </el-form-item>
       </el-col>
       <template v-if="isAdmin">
-        <el-col :span="6" :xs="8">
+        <el-col :span="4" :xs="8">
           <!-- 审核状态 -->
           <el-form-item label="审核状态">
             <el-select v-model="article.status">
@@ -83,7 +83,25 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6" :xs="24">
+        <el-col :span="5">
+          <el-form-item>
+            <div slot="label">
+              公告值
+              <el-tooltip
+                content="大于0表示该文章为公告内容，值越大越靠前"
+                placement="top"
+              >
+                <el-button type="text" icon="el-icon-info"></el-button>
+              </el-tooltip>
+            </div>
+            <el-input-number
+              v-model="article.notice"
+              :min="0"
+              clearable
+            ></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4" :xs="24">
           <!-- 推荐 -->
           <el-form-item label="推荐">
             <el-switch
@@ -179,6 +197,7 @@ export default {
           id: 0,
           category_id: [],
           status: 0,
+          notice: 0,
         }
       },
     },
@@ -217,6 +236,7 @@ export default {
         id: 0,
         category_id: [],
         status: 0,
+        notice: 0,
       },
     }
   },
@@ -226,7 +246,7 @@ export default {
         if (val.recommend_at) {
           val.is_recommend = true
         }
-        const article = { status: 0, ...val }
+        const article = { notice: 0, status: 0, ...val }
         if (this.isAdmin && !article.id) {
           article.status = 1
         }

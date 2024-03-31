@@ -177,7 +177,11 @@ export default {
         this.search = {
           ...this.search,
           ...this.$route.query,
-          ...parseQueryIntArray(this.$route.query, ['status']),
+          ...parseQueryIntArray(this.$route.query, [
+            'status',
+            'is_notice',
+            'category_id',
+          ]),
           page: parseInt(this.$route.query.page) || 1,
           size: parseInt(this.$route.query.size) || 10,
         }
@@ -384,6 +388,18 @@ export default {
           placeholder: '请选择分类',
           trees: this.trees,
         },
+        // 是否是公告
+        {
+          type: 'select',
+          label: '是否是公告',
+          name: 'is_notice',
+          placeholder: '请选择是否是公告',
+          multiple: true,
+          options: [
+            { label: '是', value: 1 },
+            { label: '否', value: 0 },
+          ],
+        },
       ]
     },
     initTableListFields() {
@@ -422,6 +438,12 @@ export default {
           width: 100,
           type: 'enum',
           enum: statusEnum,
+        },
+        {
+          prop: 'notice',
+          label: '公告值',
+          width: 100,
+          type: 'number',
         },
         {
           prop: 'recommend_at',
