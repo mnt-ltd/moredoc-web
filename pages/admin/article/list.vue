@@ -177,7 +177,7 @@ export default {
         this.search = {
           ...this.search,
           ...this.$route.query,
-          ...parseQueryIntArray(this.$route.query, ['status']),
+          ...parseQueryIntArray(this.$route.query, ['status', 'category_id']),
           page: parseInt(this.$route.query.page) || 1,
           size: parseInt(this.$route.query.size) || 10,
         }
