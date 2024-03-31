@@ -88,8 +88,6 @@ export default {
         this.search = {
           ...this.search,
           ...this.$route.query,
-          page: parseInt(this.$route.query.page) || 1,
-          size: parseInt(this.$route.query.size) || 10,
           ...parseQueryIntArray(this.$route.query, ['is_notice', 'enable']),
         }
         await this.initTableListFields()
