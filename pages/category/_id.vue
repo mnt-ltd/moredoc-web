@@ -389,9 +389,9 @@ export default {
           this.settings.display &&
           this.settings.display.hide_category_without_document
         ) {
-          return x.doc_count > 0 && !x.type
+          return x.doc_count > 0 && !x.type && !x.parent_id
         }
-        return !x.type
+        return !x.type && !x.parent_id
       })
     }
 

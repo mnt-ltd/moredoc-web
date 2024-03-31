@@ -31,7 +31,7 @@
               ref="popover0"
               width="520"
               trigger="hover"
-              :open-delay="360"
+              :open-delay="500"
             >
               <CategoryCard
                 :type="0"
@@ -45,7 +45,7 @@
               ref="popover1"
               width="520"
               trigger="hover"
-              :open-delay="360"
+              :open-delay="500"
             >
               <CategoryCard
                 :type="1"
