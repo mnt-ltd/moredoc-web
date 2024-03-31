@@ -15,7 +15,7 @@
                   is_notice: true,
                 },
               }"
-              class="el-link el-link--danger"
+              class="el-link el-link--danger notice"
               ><i class="fa fa-volume-up"></i
             ></nuxt-link>
           </el-tooltip>
@@ -117,6 +117,9 @@ export default {
   }
   h3 {
     margin: 0;
+    .notice {
+      color: #f56c6c;
+    }
     a {
       color: #000;
       font-size: 18px;

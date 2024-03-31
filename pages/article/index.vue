@@ -202,6 +202,9 @@ export default {
       handler() {
         const page = this.$route.query.page || 1
         this.query.page = parseInt(page) || 1
+        this.query.is_notice = this.$route.query.is_notice
+          ? [this.$route.query.is_notice]
+          : []
         this.setActiveCate()
         this.getArticles()
       },
