@@ -151,23 +151,14 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { listFriendlink } from '~/api/friendlink'
-import { listNavigation } from '~/api/navigation'
-import { categoryToTrees } from '~/utils/utils'
-import { getSignedToday, signToday } from '~/api/user'
 
 export default {
   middleware: ['checkFront', 'analytic'],
   data() {
     return {
-      search: {
-        wd: '',
-      },
       friendlinks: [],
-      timeouter: null,
       currentYear: new Date().getFullYear(),
-      categoryTrees: [],
       sign: { id: 0 },
-      activeCollapse: 'categories',
       navigations: [],
     }
   },
@@ -177,34 +168,10 @@ export default {
     ...mapGetters('category', ['categories']),
   },
   async created() {
-    await Promise.all([
-      this.getCategories(),
-      this.getSettings(),
-      this.listNavigation(),
-      this.listFriendlink(),
-      this.getAdvertisements('global'),
-    ])
-
-    this.categoryTrees = categoryToTrees(this.categories).filter((item) => {
-      if (
-        this.settings.display &&
-        this.settings.display.hide_category_without_document
-      ) {
-        return item.enable && item.doc_count > 0
-      }
-      return item.enable
-    })
+    await Promise.all([this.listFriendlink(), this.getAdvertisements('global')])
   },
   methods: {
-    ...mapActions('category', ['getCategories']),
     ...mapActions('setting', ['getSettings']),
-    ...mapActions('user', ['logout', 'getUser', 'checkAndRefreshUser']),
-    async getSignedToday() {
-      const res = await getSignedToday()
-      if (res.status === 200) {
-        this.sign = res.data || this.sign
-      }
-    },
     async listFriendlink() {
       const res = await listFriendlink({
         enable: true,
@@ -212,51 +179,6 @@ export default {
       })
       if (res.status === 200) {
         this.friendlinks = res.data.friendlink || []
-      }
-    },
-    async signToday() {
-      const res = await signToday()
-      if (res.status === 200) {
-        const sign = res.data || { id: 1 }
-        this.sign = sign
-        this.getUser()
-        this.$message.success(
-          `签到成功，获得 ${sign.award || 0} ${
-            this.settings.system.credit_name || '魔豆'
-          }奖励`
-        )
-      } else {
-        this.$message.error(res.message || res.data.message)
-      }
-    },
-    async listNavigation() {
-      const res = await listNavigation({ page: 1, size: 10000 })
-      if (res.status === 200) {
-        let navigations = res.data.navigation || []
-        navigations = categoryToTrees(navigations).filter((item) => item.enable)
-        this.navigations = navigations
-      }
-    },
-    async handleDropdown(command) {
-      switch (command) {
-        case 'logout':
-          await this.logout()
-          location.reload()
-          break
-        case 'upload':
-          this.$router.push('/upload')
-          break
-        case 'ucenter':
-          this.$router.push(`/user/${this.user.id}`)
-          break
-        case 'me':
-          this.$router.push(`/me`)
-          break
-        case 'admin':
-          this.$router.push('/admin')
-          break
-        default:
-          break
       }
     },
   },

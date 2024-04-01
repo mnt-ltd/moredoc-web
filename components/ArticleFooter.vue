@@ -107,9 +107,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['user', 'token', 'allowPages', 'permissions']),
     ...mapGetters('setting', ['settings']),
-    ...mapGetters('category', ['categories']),
   },
 }
 </script>

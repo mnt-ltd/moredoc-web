@@ -20,7 +20,9 @@ export const category = {
       state.categoryMap = map
     },
     setCategoryTrees(state, categories) {
-      state.categoryTrees = categoryToTrees(categories)
+      const trees = categoryToTrees(categories)
+      console.log(trees, categories)
+      state.categoryTrees = trees
     },
   },
   actions: {
