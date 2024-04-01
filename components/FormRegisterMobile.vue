@@ -72,8 +72,8 @@
           <el-button
             slot="append"
             type="primary"
-            @click="sendSMSCaptcha"
             :class="leftSeconds > 0 || loading ? 'btn-disabled' : ''"
+            @click="sendSMSCaptcha"
           >
             <span v-if="leftSeconds > 0">{{ leftSeconds }} 秒</span>
             <span v-else>发送短信验证码</span>
@@ -81,9 +81,9 @@
         </el-input>
       </el-form-item>
       <el-form-item
+        v-if="user.setpassword"
         label="密码"
         prop="password"
-        v-if="user.setpassword"
         :rules="[
           {
             required: true,
@@ -122,11 +122,11 @@
           type="primary"
           class="btn-block btn-register"
           icon="el-icon-connection"
-          @click="execRegister"
           :disabled="
             settings && settings.security && !settings.security.enable_register
           "
           :loading="loading"
+          @click="execRegister"
           >注册并绑定</el-button
         >
         <el-button
@@ -134,11 +134,11 @@
           type="primary"
           class="btn-block btn-register"
           icon="el-icon-check"
-          @click="execRegister"
           :disabled="
             settings && settings.security && !settings.security.enable_register
           "
           :loading="loading"
+          @click="execRegister"
           >立即注册</el-button
         >
       </el-form-item>
@@ -183,10 +183,10 @@ export default {
     ...mapGetters('setting', ['settings']),
   },
   created() {
-    // this.loadCaptcha()
-    if(this.settings.security.enable_captcha_register){
-      this.captcha.enable = true
-    }
+    this.loadCaptcha()
+    // if (this.settings.security.enable_captcha_register) {
+    //   this.captcha.enable = true
+    // }
   },
   methods: {
     ...mapActions('user', ['registerByMobile']),
@@ -194,7 +194,7 @@ export default {
       this.$refs.formRegister.validate(async (valid) => {
         if (valid) {
           this.loading = true
-          if(!this.user.setpassword) this.user.password=''
+          if (!this.user.setpassword) this.user.password = ''
           const res = await this.registerByMobile({
             code: this.user.code,
             mobile: this.user.mobile,
@@ -202,7 +202,7 @@ export default {
           })
           this.loading = false
           if (res.status === 200) {
-            if(this.isOauthBind){
+            if (this.isOauthBind) {
               this.$emit('onSuccess', res)
               return
             }

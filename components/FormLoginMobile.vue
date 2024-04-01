@@ -72,8 +72,8 @@
           <el-button
             slot="append"
             type="primary"
-            @click="sendSMSCaptcha"
             :class="leftSeconds > 0 || loading ? 'btn-disabled' : ''"
+            @click="sendSMSCaptcha"
           >
             <span v-if="leftSeconds > 0">{{ leftSeconds }} 秒</span>
             <span v-else>发送短信验证码</span>
@@ -94,8 +94,8 @@
           type="primary"
           class="btn-block"
           icon="el-icon-connection"
-          @click="execLogin"
           :loading="loading"
+          @click="execLogin"
           >登录并绑定</el-button
         >
         <el-button
@@ -103,8 +103,8 @@
           type="primary"
           class="btn-block"
           icon="el-icon-check"
-          @click="execLogin"
           :loading="loading"
+          @click="execLogin"
           >立即登录</el-button
         >
       </el-form-item>
@@ -150,10 +150,10 @@ export default {
     ...mapGetters('setting', ['settings']),
   },
   created() {
-    // this.loadCaptcha()
-    if(this.settings.security.enable_captcha_login){
-      this.captcha.enable = true
-    }
+    this.loadCaptcha()
+    // if (this.settings.security.enable_captcha_login) {
+    //   this.captcha.enable = true
+    // }
   },
   methods: {
     ...mapActions('user', ['loginByMobile']),
@@ -222,7 +222,7 @@ export default {
         return
       }
 
-      this.isRegistered = res.data.is_registered ? true : false
+      this.isRegistered = !!res.data.is_registered
 
       this.leftSeconds = 60
       setInterval(() => {
