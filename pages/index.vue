@@ -342,17 +342,12 @@
       >
         <el-card class="box-card mgt-20px" shadow="never">
           <div slot="header" class="clearfix">
-            <div>
-              <strong>{{ item.category_name }}</strong>
-            </div>
-            <div></div>
-            <div>
-              <nuxt-link :to="`/category/${item.category_id}`">
-                <el-button style="float: right; padding: 3px 0" type="text"
-                  >更多</el-button
-                >
-              </nuxt-link>
-            </div>
+            <strong>{{ item.category_name }}</strong>
+            <nuxt-link :to="`/category/${item.category_id}`">
+              <el-button style="float: right; padding: 3px 0" type="text"
+                >更多</el-button
+              >
+            </nuxt-link>
           </div>
           <el-row :gutter="isMobile ? 10 : 20">
             <el-col
@@ -388,64 +383,6 @@
         </el-card>
       </el-col>
     </el-row>
-    <!-- <el-row :gutter="isMobile ? 0 : 20" class="category-item">
-      <el-col :span="24">
-        <el-card class="box-card mgt-20px" shadow="never">
-          <div slot="header" class="clearfix">
-            <div>
-              <strong>文库资料</strong>
-            </div>
-            <div>
-              <el-tabs v-model="activeIndex" @tab-click="changeActiveIndex">
-                <el-tab-pane
-                  v-for="(item, index) in documents"
-                  :key="'card-cate-' + item.category_id"
-                  :label="item.category_name"
-                  :name="`${index}`"
-                ></el-tab-pane>
-              </el-tabs>
-            </div>
-            <div>
-              <nuxt-link to="/category">
-                <el-button style="float: right; padding: 3px 0" type="text"
-                  >更多</el-button
-                >
-              </nuxt-link>
-            </div>
-          </div>
-          <el-row v-if="documents.length > 0" :gutter="isMobile ? 10 : 20">
-            <el-col
-              v-for="doc in documents[activeIndex].document"
-              :key="'c-' + documents[activeIndex].category_id + 'd' + doc.id"
-              :span="6"
-              :xs="12"
-            >
-              <div class="doc-item">
-                <nuxt-link
-                  class="el-link el-link--default doc-cover"
-                  :to="`/document/${doc.uuid}`"
-                >
-                  <document-cover
-                    :width="70"
-                    :document="doc"
-                    :show-ext="true"
-                  />
-                </nuxt-link>
-                <div class="doc-title">
-                  <nuxt-link
-                    class="el-link el-link--default"
-                    :to="`/document/${doc.uuid}`"
-                  >
-                    <div>{{ doc.title }}</div>
-                  </nuxt-link>
-                  <div>{{ doc.pages || '-' }} 页</div>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-        </el-card>
-      </el-col>
-    </el-row> -->
     <template v-for="item in advertisements">
       <div
         v-if="item.position == 'index_link_top'"
@@ -909,44 +846,6 @@ export default {
   }
 
   .category-item {
-    .el-card__header {
-      .clearfix {
-        display: flex;
-        & > div {
-          &:first-child {
-            width: 90px;
-          }
-          &:nth-child(2) {
-            flex: 1;
-            text-align: right;
-            margin-top: -4px;
-            .el-tabs__header {
-              margin: 0;
-            }
-            .el-tabs__nav-wrap::after {
-              display: none;
-            }
-            .el-tabs__item {
-              padding: 0 10px;
-              background: #eee;
-              border-radius: 10px;
-              margin-right: 5px;
-              height: 30px;
-              line-height: 30px;
-              font-size: 13px;
-              &.is-active {
-                background: #409eff;
-                color: #fff;
-              }
-            }
-          }
-          &:last-child {
-            text-align: right;
-            width: 70px;
-          }
-        }
-      }
-    }
     .el-card__body {
       padding-bottom: 0;
       .doc-item {

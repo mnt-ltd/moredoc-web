@@ -6,7 +6,6 @@ export const category = {
   state: {
     categories: [],
     categoryMap: {},
-    categoryTrees: [],
   },
   mutations: {
     setCategories(state, categories) {
@@ -18,11 +17,6 @@ export const category = {
         map[item.id] = item
       })
       state.categoryMap = map
-    },
-    setCategoryTrees(state, categories) {
-      const trees = categoryToTrees(categories)
-      console.log(trees, categories)
-      state.categoryTrees = trees
     },
   },
   actions: {
@@ -46,7 +40,6 @@ export const category = {
       if (res.status === 200) {
         commit('setCategories', res.data.category || [])
         commit('setCategoryMap', res.data.category || [])
-        commit('setCategoryTrees', res.data.category || [])
       }
       return res
     },
@@ -55,11 +48,8 @@ export const category = {
     categories(state) {
       return state.categories
     },
-    documentCategories(state) {
-      return state.categories.filter((item) => !item.type)
-    },
     categoryTrees(state) {
-      return state.categoryTrees
+      return categoryToTrees(state.categories)
     },
     categoryMap(state) {
       return state.categoryMap
