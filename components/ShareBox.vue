@@ -1,7 +1,12 @@
 <template>
   <div class="com-share-box">
     <span class="text-muted">分享到: &nbsp;</span>
-    <el-popover placement="top" width="200" trigger="hover">
+    <el-popover
+      placement="top"
+      width="200"
+      class="hidden-xs-only"
+      trigger="hover"
+    >
       <div id="qrcode" ref="qrcode" class="qrcode text-center">
         <div class="mgb-5px">打开微信 扫码分享</div>
       </div>

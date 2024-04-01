@@ -91,6 +91,13 @@ export default {
       flex: 1;
       display: flex;
       flex-wrap: wrap;
+      // 只显示3行
+      max-height: 72px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
       :deep(.el-link--default) {
         font-weight: normal;
         margin-left: 15px;
