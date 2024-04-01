@@ -260,7 +260,7 @@ export default {
     filterCategoryChildren(category) {
       try {
         return this.categories.filter((x) => {
-          return x.parent_id === category.id && x.type === 1
+          return x.parent_id === category.id && x.type === 1 && x.enable
         })
       } catch (error) {}
       return []

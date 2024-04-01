@@ -17,7 +17,7 @@
       </li>
       <li
         v-for="cate in categories.filter(
-          (item) => item.type === 1 && !item.parent_id
+          (item) => item.type === 1 && !item.parent_id && item.enable
         )"
         :key="'cate-' + cate.id"
       >
