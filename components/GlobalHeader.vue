@@ -319,7 +319,6 @@ export default {
         wd: '',
         type: this.$route.path.startsWith('/article') ? 1 : 0,
       },
-      friendlinks: [],
       timeouter: null,
       currentYear: new Date().getFullYear(),
       categoryTrees: [],
@@ -337,9 +336,9 @@ export default {
   },
   async created() {
     await Promise.all([
-      this.getCategories(),
+      this.categories.length > 0 ? '' : this.getCategories(),
       this.getSettings(),
-      this.listNavigation(),
+      this.navigations.length > 0 ? '' : this.listNavigation(),
       this.getAdvertisements('global'),
     ])
 
