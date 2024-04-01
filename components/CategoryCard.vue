@@ -2,7 +2,7 @@
   <div class="com-category-card">
     <div
       v-for="cate in categoryTrees.filter(
-        (x) => x.type === type || (!type && !x.type)
+        (x) => x.enable && (x.type === type || (!type && !x.type))
       )"
       :key="'cate-' + cate.id"
       class="row"
@@ -23,7 +23,7 @@
       </div>
       <div class="lv2">
         <nuxt-link
-          v-for="sub in cate.children"
+          v-for="sub in (cate.children || []).filter((x) => x.enable)"
           :key="'sub-' + sub.id"
           class="el-link el-link--default"
           :to="
