@@ -312,7 +312,6 @@ import { getSignedToday, signToday } from '~/api/user'
 
 export default {
   components: { UserAvatar },
-  middleware: ['checkFront', 'analytic'],
   data() {
     return {
       search: {
