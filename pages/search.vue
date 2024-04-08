@@ -276,6 +276,7 @@
                   wd: keyword,
                   page: 1,
                   size: 10,
+                  type: searchType,
                 },
               }"
               class="el-link el-link--default"
