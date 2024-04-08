@@ -127,8 +127,12 @@ export default {
   }
   .powered-by {
     color: #898989;
+    font-size: 12px;
     .el-link {
       margin-right: 0;
+      position: relative;
+      top: -1px;
+      font-size: 12px;
     }
   }
   .copyright-year {

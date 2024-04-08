@@ -27,7 +27,7 @@
           <nuxt-link to="/upload" class="el-link el-link--default"
             ><i class="el-icon-upload2"></i>&nbsp;上传文档</nuxt-link
           >
-          <nuxt-link to="/upload" class="el-link el-link--default"
+          <nuxt-link to="/post" class="el-link el-link--default"
             ><i class="el-icon-plus"></i>&nbsp;发布文章</nuxt-link
           >
           <nuxt-link
