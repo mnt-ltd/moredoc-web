@@ -251,7 +251,7 @@
           </template>
           <ul>
             <li
-              v-for="item in categoryTrees.filter((item) => !item.type)"
+              v-for="item in categoryDocumentTrees"
               :key="'collapse-sub-cate-' + item.id"
             >
               <div
@@ -269,7 +269,7 @@
           </template>
           <ul>
             <li
-              v-for="item in categoryTrees.filter((item) => item.type == 1)"
+              v-for="item in categoryArticleTrees"
               :key="'collapse-sub-cate-' + item.id"
             >
               <div
@@ -296,7 +296,7 @@
               :navigation="child"
             />
           </el-submenu>
-          <NavigationLink v-else :key="'nav-' + item.id" :navigation="item" />
+          <NavigationLink v-else :key="'nav1-' + item.id" :navigation="item" />
         </template>
       </el-menu>
     </el-drawer>
@@ -319,7 +319,8 @@ export default {
       },
       timeouter: null,
       currentYear: new Date().getFullYear(),
-      categoryTrees: [],
+      categoryDocumentTrees: [],
+      categoryArticleTrees: [],
       menuDrawerVisible: false,
       sign: { id: 0 },
       activeCollapse: 'categories',
@@ -339,14 +340,19 @@ export default {
       this.getAdvertisements('global'),
     ])
 
-    this.categoryTrees = categoryToTrees(this.categories).filter((item) => {
+    const trees = categoryToTrees(this.categories)
+    this.categoryDocumentTrees = trees.filter((item) => {
       if (
         this.settings.display &&
         this.settings.display.hide_category_without_document
       ) {
-        return item.enable && item.doc_count > 0
+        return item.enable && item.doc_count > 0 && !item.type
       }
-      return item.enable
+      return item.enable && !item.type
+    })
+
+    this.categoryArticleTrees = trees.filter((item) => {
+      return item.enable && item.type
     })
 
     this.loopUpdate()

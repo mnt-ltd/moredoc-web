@@ -38,8 +38,8 @@
   </div>
 </template>
 <script>
-import { setDocumentsCategory } from '~/api/document'
 import { mapGetters } from 'vuex'
+import { setDocumentsCategory } from '~/api/document'
 export default {
   name: 'FormUpdateDocumentsCategory',
   props: {

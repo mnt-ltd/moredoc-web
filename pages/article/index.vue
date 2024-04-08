@@ -318,6 +318,9 @@ export default {
 </script>
 <style lang="scss">
 .page-article-index {
+  .el-tabs--border-card > .el-tabs__header {
+    padding: 0 10px;
+  }
   .article-footer {
     .el-card__body {
       padding: 0;
