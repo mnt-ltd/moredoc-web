@@ -1,12 +1,6 @@
 <template>
   <div class="com-category-card">
-    <div
-      v-for="cate in categoryTrees.filter(
-        (x) => x.enable && (x.type === type || (!type && !x.type))
-      )"
-      :key="'cate-' + cate.id"
-      class="row"
-    >
+    <div v-for="cate in categoryTrees" :key="'cate-' + cate.id" class="row">
       <div class="lv1">
         <nuxt-link
           class="el-link el-link--default"
@@ -40,6 +34,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { categoryToTrees } from '~/utils/utils'
 export default {
   name: 'CategoryCard',
   props: {
@@ -48,8 +43,33 @@ export default {
       default: 0, // 0文档 1文章
     },
   },
+  data() {
+    return {
+      categoryTrees: [],
+    }
+  },
   computed: {
-    ...mapGetters('category', ['categoryTrees']),
+    ...mapGetters('category', ['categories']),
+    ...mapGetters('setting', ['settings']),
+  },
+  watch: {
+    type: {
+      immediate: true,
+      handler(val) {
+        const cates = this.categories.filter((x) => {
+          if (
+            !val &&
+            !x.type &&
+            this.settings.display &&
+            this.settings.display.hide_category_without_document
+          ) {
+            return x.doc_count > 0
+          }
+          return x.type === val || (!x.type && !val)
+        })
+        this.categoryTrees = categoryToTrees(cates)
+      },
+    },
   },
 }
 </script>
