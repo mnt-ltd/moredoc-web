@@ -15,6 +15,7 @@ import GlobalFooter from '~/components/GlobalFooter.vue'
 
 export default {
   components: { GlobalHeader, GlobalFooter },
+  middleware: ['checkFront', 'analytic'],
 }
 </script>
 <style lang="scss">

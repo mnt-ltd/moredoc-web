@@ -31,7 +31,7 @@
               ref="popover0"
               width="520"
               trigger="hover"
-              :open-delay="500"
+              :open-delay="600"
             >
               <CategoryCard
                 :type="0"
@@ -45,7 +45,7 @@
               ref="popover1"
               width="520"
               trigger="hover"
-              :open-delay="500"
+              :open-delay="600"
             >
               <CategoryCard
                 :type="1"
@@ -306,13 +306,11 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import UserAvatar from '~/components/UserAvatar.vue'
-import { listNavigation } from '~/api/navigation'
 import { categoryToTrees, requireLogin } from '~/utils/utils'
 import { getSignedToday, signToday } from '~/api/user'
 
 export default {
   components: { UserAvatar },
-  middleware: ['checkFront', 'analytic'],
   data() {
     return {
       search: {
@@ -325,20 +323,19 @@ export default {
       menuDrawerVisible: false,
       sign: { id: 0 },
       activeCollapse: 'categories',
-      navigations: [],
       advertisements: [],
     }
   },
   computed: {
     ...mapGetters('user', ['user', 'token', 'allowPages', 'permissions']),
-    ...mapGetters('setting', ['settings']),
+    ...mapGetters('setting', ['settings', 'navigations']),
     ...mapGetters('category', ['categories']),
   },
   async created() {
     await Promise.all([
       this.categories.length > 0 ? '' : this.getCategories(),
       this.getSettings(),
-      this.navigations.length > 0 ? '' : this.listNavigation(),
+      this.listNavigation(),
       this.getAdvertisements('global'),
     ])
 
@@ -362,7 +359,7 @@ export default {
   },
   methods: {
     ...mapActions('category', ['getCategories']),
-    ...mapActions('setting', ['getSettings']),
+    ...mapActions('setting', ['getSettings', 'listNavigation']),
     ...mapActions('user', ['logout', 'getUser', 'checkAndRefreshUser']),
     showMenuDrawer() {
       this.getSignedToday()
@@ -400,14 +397,6 @@ export default {
         this.$message.error(res.message || res.data.message)
       }
     },
-    async listNavigation() {
-      const res = await listNavigation({ page: 1, size: 10000 })
-      if (res.status === 200) {
-        let navigations = res.data.navigation || []
-        navigations = categoryToTrees(navigations).filter((item) => item.enable)
-        this.navigations = navigations
-      }
-    },
     onSearch() {
       if (!this.search.wd) return
       this.menuDrawerVisible = false
@@ -429,6 +418,8 @@ export default {
         this.getSettings()
         // 更新分类信息
         this.getCategories()
+        // 更新导航栏
+        this.listNavigation()
         // 递归
         this.loopUpdate()
       }, 1000 * 60) // 每分钟更新一次
