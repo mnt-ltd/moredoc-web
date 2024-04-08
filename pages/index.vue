@@ -351,8 +351,7 @@
           </div>
           <el-row :gutter="isMobile ? 10 : 20">
             <el-col
-              v-for="(doc, idx) in item.document"
-              v-show="idx < 6"
+              v-for="doc in item.document"
               :key="'c-' + item.category_id + 'd' + doc.id"
               :span="6"
               :xs="12"
@@ -545,7 +544,7 @@ export default {
     },
     async getDocuments() {
       const res = await listDocumentForHome({
-        limit: 12,
+        limit: 8,
       })
       if (res.status === 200) {
         this.documents = (res.data.document || []).filter(

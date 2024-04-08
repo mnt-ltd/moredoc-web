@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="imagebox">
     <el-image
       ref="image"
       class="com-document-cover"
@@ -61,10 +61,12 @@ export default {
         // 210/297
         // 重置封面高度：1. 读取封面宽度，2，根据宽高比计算高度
         const image = this.$refs.image.$el
+        const imagebox = this.$refs.imagebox
         if (!image) return
-        const width = this.width || image.offsetWidth
+        const width = this.width || imagebox.offsetWidth - 4 // 减去边框
         const height = (width * 297) / 210
-        image.style.height = `${this.isMobile ? height - 2 : height - 10}px`
+        image.style.height = `${this.isMobile ? height - 2 : height - 7}px`
+        image.style.width = `${width}px`
       })
     },
   },
