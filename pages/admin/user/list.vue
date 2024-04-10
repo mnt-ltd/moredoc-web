@@ -85,6 +85,7 @@
       <FormUserProfile
         ref="formUserProfile"
         :init-user="user"
+        :is-admin="true"
         @success="successProfile"
       />
     </el-dialog>
@@ -378,6 +379,11 @@ export default {
         { prop: 'favorite_count', label: '收藏', width: 80, type: 'number' },
         { prop: 'comment_count', label: '评论', width: 80, type: 'number' },
         { prop: 'realname', label: '姓名', width: 150 },
+        {
+          prop: 'remark',
+          label: '备注',
+          width: 250,
+        },
         { prop: 'email', label: '邮箱', width: 200 },
         { prop: 'mobile', label: '电话', width: 200 },
         { prop: 'identity', label: '身份证', width: 250 },

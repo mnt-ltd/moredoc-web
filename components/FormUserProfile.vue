@@ -49,7 +49,15 @@
           :rows="5"
         ></el-input>
       </el-form-item>
-
+      <el-form-item v-if="isAdmin" label="用户备注">
+        <el-input
+          v-model="profile.remark"
+          type="textarea"
+          placeholder="管理员可以在此处添加对用户的备注信息，备注只有管理员可见"
+          clearable
+          :rows="5"
+        ></el-input>
+      </el-form-item>
       <el-form-item>
         <el-button
           type="primary"
@@ -73,6 +81,10 @@ export default {
       default: () => {
         return {}
       },
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
