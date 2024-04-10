@@ -165,7 +165,7 @@ export default {
       },
       recommend: {
         page: 1,
-        size: 5,
+        size: 8,
         totalPage: 1,
         loading: false,
       },

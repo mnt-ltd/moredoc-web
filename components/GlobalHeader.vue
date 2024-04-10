@@ -12,7 +12,7 @@
     <el-header v-if="$route.name !== 'search' || isMobile">
       <div>
         <el-menu
-          :default-active="$route.path"
+          :default-active="activePath"
           class="float-left"
           mode="horizontal"
         >
@@ -325,6 +325,7 @@ export default {
       sign: { id: 0 },
       activeCollapse: 'categories',
       advertisements: [],
+      activePath: '/',
     }
   },
   computed: {
@@ -332,7 +333,13 @@ export default {
     ...mapGetters('setting', ['settings', 'navigations']),
     ...mapGetters('category', ['categories']),
   },
+  watch: {
+    $route(to, from) {
+      this.resetActivePath()
+    },
+  },
   async created() {
+    this.resetActivePath()
     await Promise.all([
       this.getCategories(),
       this.getSettings(),
@@ -370,6 +377,14 @@ export default {
     showMenuDrawer() {
       this.getSignedToday()
       this.menuDrawerVisible = true
+    },
+    resetActivePath() {
+      const slice = this.$route.path.split('/').slice(0, 2)
+      let actvePath = slice.join('/')
+      if (actvePath === '/document') {
+        actvePath = '/category'
+      }
+      this.activePath = actvePath
     },
     goToLink(link) {
       this.menuDrawerVisible = false
