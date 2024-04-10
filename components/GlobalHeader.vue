@@ -334,7 +334,7 @@ export default {
   },
   async created() {
     await Promise.all([
-      this.categories.length > 0 ? '' : this.getCategories(),
+      this.getCategories(),
       this.getSettings(),
       this.listNavigation(),
       this.getAdvertisements('global'),
