@@ -28,10 +28,18 @@
           { type: 'email', message: '请输入正确的电子邮箱', trigger: 'blur' },
         ]"
       >
-        <el-input v-model="profile.email" clearable></el-input>
+        <el-input
+          v-model="profile.email"
+          :disabled="initUser.email"
+          clearable
+        ></el-input>
       </el-form-item>
       <el-form-item label="联系电话">
-        <el-input v-model="profile.mobile" clearable></el-input>
+        <el-input
+          v-model="profile.mobile"
+          :disabled="initUser.mobile"
+          clearable
+        ></el-input>
       </el-form-item>
       <el-form-item label="联系地址">
         <el-input
