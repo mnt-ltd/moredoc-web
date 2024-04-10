@@ -28,7 +28,7 @@
           >
             <el-cascader
               v-model="form.category_id"
-              :options="categoryTrees"
+              :options="trees"
               :props="{
                 checkStrictly: true,
                 expandTrigger: 'hover',
