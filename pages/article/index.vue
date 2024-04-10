@@ -166,7 +166,7 @@ export default {
       },
       recommend: {
         page: 1,
-        size: 5,
+        size: 8,
         totalPage: 1,
         loading: false,
       },
@@ -320,6 +320,14 @@ export default {
 .page-article-index {
   .el-tabs--border-card > .el-tabs__header {
     padding: 0 10px;
+    border-bottom: 0 !important;
+  }
+  .el-tabs__item.is-active {
+    border-top-left-radius: 4px !important;
+    border-top-right-radius: 4px !important;
+    border-left-color: transparent !important;
+    border-right-color: transparent !important;
+    margin-top: 2px !important;
   }
   .article-footer {
     .el-card__body {
