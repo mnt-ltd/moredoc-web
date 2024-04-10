@@ -77,8 +77,8 @@
           <el-table-column prop="status" label="发布条件" width="80">
             <template slot-scope="scope">
               <i
-                class="el-icon-success el-link el-link--success"
                 v-if="scope.row.status === 3 && scope.row.title"
+                class="el-icon-success el-link el-link--success"
               >
                 满足</i
               >
@@ -153,10 +153,13 @@ export default {
   computed: {
     ...mapGetters('category', ['categoryTrees']),
     ...mapGetters('setting', ['settings']),
+    trees() {
+      return this.categoryTrees.filter((item) => !item.type)
+    },
   },
   methods: {
     formatBytes,
-    async batchUpdateSpiderDocuments() {
+    batchUpdateSpiderDocuments() {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           const docs = this.documents.map((item) => {

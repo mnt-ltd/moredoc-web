@@ -18,24 +18,24 @@
               <template v-if="batchUpdating">
                 <el-button
                   type="primary"
-                  @click="submitBatchUpdate"
                   icon="el-icon-check"
                   :loading="loading"
+                  @click="submitBatchUpdate"
                   >提交修改</el-button
                 >
                 <el-button
                   type="warning"
-                  @click="cancelBatchUpdate"
                   icon="el-icon-close"
+                  @click="cancelBatchUpdate"
                   >取消</el-button
                 >
               </template>
               <el-button
-                type="primary"
                 v-else
+                type="primary"
                 icon="el-icon-edit"
-                @click="batchUpdate"
                 :disabled="selectedRow.length === 0"
+                @click="batchUpdate"
                 >批量修改</el-button
               >
             </el-button-group>
@@ -71,7 +71,7 @@
         :show-edit="false"
         :show-delete="true"
         :show-select="true"
-        :actionsMinWidth="80"
+        :actions-min-width="80"
         @selectRow="selectRow"
         @editRow="editRow"
         @deleteRow="deleteRow"
@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   listSpiderDocument,
   deleteSpiderDocument,
@@ -120,7 +121,6 @@ import { spiderDocumentStatusOptions } from '~/utils/enum'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 // import FormSpiderDocument from '~/components/FormSpiderDocument.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: {
     TableList,
@@ -185,7 +185,7 @@ export default {
         order: 'status asc, id desc',
       })
       if (res.status === 200) {
-        let spiderDocuments = res.data.spider_document || []
+        const spiderDocuments = res.data.spider_document || []
         spiderDocuments.map((item) => {
           item.url_html = genLinkHTML(item.url, item.url)
           item.editing = false
@@ -306,7 +306,7 @@ export default {
         }
       })
     },
-    async onPublish() {
+    onPublish() {
       this.showPublishing = true
     },
     batchDelete() {
