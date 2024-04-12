@@ -538,6 +538,11 @@ export default {
     }
   }
 
+  .el-carousel__button {
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+  }
   .searchbox {
     position: relative;
     margin-bottom: 20px;
@@ -903,7 +908,7 @@ export default {
       margin-top: -20px;
       padding-left: 0 !important;
       padding-right: 0 !important;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     .categories {
