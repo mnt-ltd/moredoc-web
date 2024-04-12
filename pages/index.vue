@@ -897,6 +897,10 @@ export default {
       }
     }
 
+    & > .el-row {
+      margin-top: 35px !important;
+    }
+
     .el-carousel__arrow {
       display: none;
     }
