@@ -580,8 +580,9 @@ export default {
     min-height: 300px;
     word-wrap: break-word;
     img {
-      max-width: 100%;
+      max-width: 100% !important;
       cursor: zoom-in;
+      height: auto !important;
       &:hover {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         border-radius: 4px !important;
