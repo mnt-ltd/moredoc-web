@@ -6,6 +6,11 @@
     :model="article"
   >
     <el-row :gutter="20">
+      <el-col v-if="isAdmin || canICrawlArticle" :span="24">
+        <FormCrawlArticle @success="crawlArticleSuccess"></FormCrawlArticle>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
       <el-col :span="11" :xs="14">
         <el-form-item
           label="标题"
@@ -185,6 +190,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    canICrawlArticle: {
+      type: Boolean,
+      default: false,
+    },
     initArticle: {
       type: Object,
       default: () => {
@@ -298,6 +307,10 @@ export default {
         formData.append('file', blobInfo.blob(), blobInfo.filename())
         xhr.send(formData)
       })
+    },
+    crawlArticleSuccess(artice) {
+      console.log(artice)
+      this.article = { ...this.article, ...artice }
     },
     onSubmit() {
       this.$refs.formArticle.validate(async (valid) => {

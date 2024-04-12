@@ -18,6 +18,7 @@
         :init-article="article"
         :category-trees="trees"
         :can-i-publish="canIPublish"
+        :can-i-crawl-article="canICrawlArticle"
         @success="success"
       ></FormArticle>
     </el-card>
@@ -31,6 +32,7 @@ export default {
   data() {
     return {
       canIPublish: false,
+      canICrawlArticle: false,
       loading: false,
       article: {
         title: '',
@@ -80,6 +82,7 @@ export default {
       const res = await canIPublishArticle()
       if (res.status === 200) {
         this.canIPublish = true
+        this.canICrawlArticle = res.data.enable_article_crawl
         this.getArticle()
       }
       this.loading = false

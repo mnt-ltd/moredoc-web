@@ -126,6 +126,19 @@
             </el-switch>
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <el-form-item label="允许采集文章">
+            <el-switch
+              v-model="group.enable_article_crawl"
+              style="display: block"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="是"
+              inactive-text="否"
+            >
+            </el-switch>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-form-item label="描述">
         <el-input

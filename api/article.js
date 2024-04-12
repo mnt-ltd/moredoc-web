@@ -111,3 +111,11 @@ export const searchArticle = (params) => {
     params,
   })
 }
+
+export const crawlArticle = (data) => {
+  return service({
+    url: '/api/v1/article/crawl',
+    method: 'post',
+    data,
+  })
+}

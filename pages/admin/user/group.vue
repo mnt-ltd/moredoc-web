@@ -328,6 +328,12 @@ export default {
           width: 120,
           type: 'bool',
         },
+        {
+          prop: 'enable_article_crawl',
+          label: '允许采集文章',
+          width: 120,
+          type: 'bool',
+        },
         // { prop: 'is_display', label: '是否展示', width: 80, type: 'bool' },
         { prop: 'description', label: '描述', width: 250 },
         { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
