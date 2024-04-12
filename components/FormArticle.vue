@@ -229,9 +229,9 @@ export default {
         branding: true, // 是否禁用“Powered by TinyMCE”
         menubar: true, // 顶部菜单栏显示,
         toolbar:
-          'undo redo | styleselect blocks | kityformula-editor codesample table link bold italic | bullist numlist alignleft aligncenter alignright alignjustify indent outdent | image media | searchreplace preview fullscreen help',
+          'undo redo | styleselect blocks | kityformula-editor codesample code table link bold italic | bullist numlist alignleft aligncenter alignright alignjustify indent outdent | image media | searchreplace preview fullscreen help',
         plugins:
-          'kityformula-editor image media wordcount codesample code link charmap emoticons table searchreplace visualblocks fullscreen table paste code help wordcount lists preview',
+          'kityformula-editor image media wordcount codesample code link charmap emoticons table searchreplace visualblocks fullscreen table paste help wordcount lists preview',
         relative_urls: false, // 是否使用相对路径
         images_upload_handler: this.images_upload_handler,
       },
@@ -315,6 +315,7 @@ export default {
     onSubmit() {
       this.$refs.formArticle.validate(async (valid) => {
         if (!valid) {
+          this.$message.error('请填写标题或选择分类')
           return
         }
         this.loading = true
