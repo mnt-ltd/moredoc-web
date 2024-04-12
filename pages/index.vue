@@ -63,75 +63,15 @@
     </template>
 
     <el-row :gutter="20" class="mgt-20px">
-      <el-col :span="6" class="float-right right-at-recommend">
-        <el-card
-          v-if="
-            settings.display.show_document_count ||
-            settings.display.show_register_user_count
-          "
-          class="text-center stat-info"
-          shadow="never"
-        >
-          <el-row>
-            <el-col
-              v-if="settings.display.show_document_count"
-              :span="
-                settings.display.show_document_count &&
-                settings.display.show_register_user_count
-                  ? 12
-                  : 24
-              "
-            >
-              <small>收录文档</small>
-              <div>
-                <span class="el-link el-link--primary">
-                  {{ stats.document_count || 0 }}
-                </span>
-              </div>
-            </el-col>
-            <el-col
-              v-if="settings.display.show_register_user_count"
-              :span="
-                settings.display.show_document_count &&
-                settings.display.show_register_user_count
-                  ? 12
-                  : 24
-              "
-            >
-              <small>注册用户</small>
-              <div>
-                <span class="el-link el-link--primary">
-                  {{ stats.user_count || 0 }}
-                </span>
-              </div>
-            </el-col>
-          </el-row>
-        </el-card>
-        <el-card
-          v-if="
-            settings.display.show_document_count ||
-            settings.display.show_register_user_count
-          "
-          class="text-center mgt-20px hidden-xs-only"
-          shadow="never"
-        >
-          <nuxt-link to="/upload">
-            <el-button type="warning" class="btn-block" icon="el-icon-upload"
-              >上传文档</el-button
-            >
-          </nuxt-link>
-        </el-card>
-        <el-card
-          v-else
-          class="text-center hidden-xs-only upload-box"
-          shadow="never"
-        >
-          <nuxt-link to="/upload">
-            <div>
-              <i class="el-icon-upload"></i>
-              <div>分享文档，共建知识库</div>
-            </div>
-          </nuxt-link>
+      <el-col :span="7" class="float-right right-at-recommend">
+        <el-card shadow="never" class="index-articles">
+          <div slot="header">
+            <i class="fa fa-newspaper-o"></i> 文章资讯
+            <nuxt-link to="/article" class="float-right">
+              <el-button type="text">更多</el-button>
+            </nuxt-link>
+          </div>
+          <ArticleSimpleList :articles="articles"></ArticleSimpleList>
         </el-card>
         <el-card
           v-if="user.id > 0"
@@ -140,15 +80,12 @@
         >
           <el-row>
             <el-col :span="8">
-              <nuxt-link :to="`/user/${user.id}`">
+              <nuxt-link :to="`/me`">
                 <user-avatar :size="64" :user="user" />
               </nuxt-link>
             </el-col>
             <el-col :span="16">
-              <nuxt-link
-                class="el-link el-link--default"
-                :to="`/user/${user.id}`"
-              >
+              <nuxt-link class="el-link el-link--default" :to="`/me`">
                 <h3>{{ user.username }}</h3>
               </nuxt-link>
               <div class="help-block login-tips">
@@ -160,26 +97,6 @@
             </el-col>
           </el-row>
           <div class="line"></div>
-          <el-row class="text-center user-count">
-            <el-col :span="8">
-              <div>
-                <small>文档</small>
-              </div>
-              <span>{{ user.doc_count || 0 }}</span>
-            </el-col>
-            <el-col :span="8">
-              <div>
-                <small>收藏</small>
-              </div>
-              <span>{{ user.favorite_count || 0 }}</span>
-            </el-col>
-            <el-col :span="8">
-              <div>
-                <small>{{ settings.system.credit_name || '魔豆' }}</small>
-              </div>
-              <span>{{ user.credit_count || 0 }}</span>
-            </el-col>
-          </el-row>
           <el-button
             v-if="sign.id > 0"
             :key="'sign-' + sign.id"
@@ -200,11 +117,19 @@
             <i class="fa fa-calendar-plus-o"></i>
             每日签到
           </el-button>
-          <div class="mgt-20px">
-            <div>个性签名</div>
-            <div class="help-block user-signature">
-              {{ user.signature || '暂无个性签名' }}
-            </div>
+          <div class="help-block" style="margin-top: 8px">
+            <el-row>
+              <el-col :span="12">
+                <nuxt-link to="/upload" class="el-link el-link--default">
+                  <small><i class="el-icon-upload2"></i> 上传文档</small>
+                </nuxt-link>
+              </el-col>
+              <el-col :span="12" class="text-right">
+                <nuxt-link to="/post" class="el-link el-link--default">
+                  <small><i class="el-icon-plus"></i> 发布文章</small>
+                </nuxt-link>
+              </el-col>
+            </el-row>
           </div>
         </el-card>
         <el-card
@@ -220,18 +145,10 @@
             </el-col>
             <el-col :span="16">
               <h3>欢迎您，游客</h3>
-              <div class="help-block login-tips">登录可体验更多功能</div>
+              <div class="help-block login-tips">登录，体验更多功能</div>
             </el-col>
           </el-row>
           <div class="line"></div>
-          <div>
-            <ul>
-              <li>分享知识，获取收益</li>
-              <li>发表点评，抒发见解</li>
-              <li>下载文档，畅享阅读</li>
-              <li>身份认证，彰显尊贵</li>
-            </ul>
-          </div>
           <div class="btn-login">
             <nuxt-link to="/login">
               <el-button class="btn-block" type="primary">马上登录</el-button>
@@ -253,9 +170,24 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="18" class="latest-recommend">
+      <el-col :span="17" class="latest-recommend">
         <el-card v-loading="loadingRecommend" shadow="never">
-          <div slot="header">文档推荐</div>
+          <div slot="header">
+            <div>
+              <i class="fa fa-thumbs-o-up"></i>
+              文档推荐
+              <div class="float-right stats">
+                <el-button type="text"
+                  >{{ stats.document_count || 0 }}
+                  <span class="text-muted">文档</span></el-button
+                >
+                <el-button type="text"
+                  >{{ stats.article_count || 0 }}
+                  <span class="text-muted">文章</span>
+                </el-button>
+              </div>
+            </div>
+          </div>
           <el-row :gutter="20">
             <el-col
               v-for="(item, index) in recommends"
@@ -343,10 +275,11 @@
         <el-card class="box-card mgt-20px" shadow="never">
           <div slot="header" class="clearfix">
             <strong>{{ item.category_name }}</strong>
-            <nuxt-link :to="`/category/${item.category_id}`">
-              <el-button style="float: right; padding: 3px 0" type="text"
-                >更多</el-button
-              >
+            <nuxt-link
+              :to="`/category/${item.category_id}`"
+              class="float-right"
+            >
+              <el-button type="text">更多</el-button>
             </nuxt-link>
           </div>
           <el-row :gutter="isMobile ? 10 : 20">
@@ -401,6 +334,7 @@ import { getSignedToday, signToday } from '~/api/user'
 import { getStats } from '~/api/config'
 import { getIcon } from '~/utils/utils'
 import { advertisementPositions } from '~/utils/enum'
+import { listArticle } from '~/api/article'
 export default {
   components: { UserAvatar },
   data() {
@@ -422,6 +356,7 @@ export default {
       carouselIndexes: [0], // 跑马灯index，用于跑马灯图片的懒加载
       advertisementPositions,
       activeIndex: '0',
+      articles: [],
     }
   },
   head() {
@@ -469,6 +404,7 @@ export default {
   async created() {
     const requests = [
       this.getRecommendDocuments(),
+      this.getArticles(),
       this.listBanner(),
       this.getDocuments(),
       this.getSignedToday(),
@@ -499,6 +435,15 @@ export default {
     onSearch() {
       if (this.search.wd) {
         location.href = '/search?wd=' + encodeURIComponent(this.search.wd)
+      }
+    },
+    async getArticles() {
+      const res = await listArticle({
+        page: 1,
+        size: 6,
+      })
+      if (res.status === 200) {
+        this.articles = res.data.article || []
       }
     },
     async getSignedToday() {
@@ -733,7 +678,7 @@ export default {
 
     .line {
       border-top: 1px solid #efefef;
-      margin: 15px 0;
+      margin: 12px 0;
     }
 
     ul,
@@ -793,6 +738,22 @@ export default {
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+    }
+  }
+
+  .el-card__header {
+    .float-right {
+      margin-top: -7px;
+      .text-muted {
+        font-weight: normal !important;
+      }
+    }
+  }
+
+  .index-articles {
+    .el-card__body {
+      padding-top: 4px;
+      padding-bottom: 4px;
     }
   }
 
@@ -938,7 +899,6 @@ export default {
     }
 
     .right-at-recommend {
-      display: none; // 屏蔽，影响整体美观
       width: 100%;
       margin-top: -20px;
       padding-left: 0 !important;
