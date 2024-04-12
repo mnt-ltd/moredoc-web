@@ -897,8 +897,8 @@ export default {
       }
     }
 
-    & > .el-row {
-      margin-top: 35px !important;
+    .index-articles {
+      margin-top: 20px !important;
     }
 
     .el-carousel__arrow {
