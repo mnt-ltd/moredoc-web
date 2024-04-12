@@ -282,6 +282,7 @@ export default {
     onSubmit() {
       this.$refs.formArticle.validate(async (valid) => {
         if (!valid) {
+          this.$message.error('请填写标题或选择分类')
           return
         }
         this.loading = true
