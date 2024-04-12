@@ -70,7 +70,7 @@
     </template>
 
     <el-row :gutter="20" class="mgt-20px">
-      <el-col :span="7" class="float-right right-at-recommend">
+      <el-col :span="6" class="float-right right-at-recommend">
         <el-card shadow="never" class="index-articles">
           <div slot="header">
             <i class="fa fa-newspaper-o"></i> 文章资讯
@@ -177,7 +177,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="17" class="latest-recommend">
+      <el-col :span="18" class="latest-recommend">
         <el-card v-loading="loadingRecommend" shadow="never">
           <div slot="header">
             <div>
@@ -702,7 +702,7 @@ export default {
 
     .line {
       border-top: 1px solid #efefef;
-      margin: 12px 0;
+      margin: 14px 0 15px;
     }
 
     ul,
