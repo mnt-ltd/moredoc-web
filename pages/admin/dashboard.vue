@@ -142,7 +142,7 @@
           >
             更新全量索引</el-button
           >
-          <el-tooltip
+          <!-- <el-tooltip
             content="重建全文索引，将会删除当前的索引数据，并重新全量更新索引内容"
           >
             <el-button
@@ -153,7 +153,7 @@
             >
               重建全文索引</el-button
             >
-          </el-tooltip>
+          </el-tooltip> -->
         </div>
       </div>
       <el-descriptions class="margin-top" :column="3" border>
