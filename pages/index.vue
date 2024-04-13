@@ -71,18 +71,9 @@
 
     <el-row :gutter="20" class="mgt-20px">
       <el-col :span="6" class="float-right right-at-recommend">
-        <el-card shadow="never" class="index-articles">
-          <div slot="header">
-            <i class="fa fa-newspaper-o"></i> 文章资讯
-            <nuxt-link to="/article" class="float-right">
-              <el-button type="text">更多</el-button>
-            </nuxt-link>
-          </div>
-          <ArticleSimpleList :articles="articles"></ArticleSimpleList>
-        </el-card>
         <el-card
           v-if="user.id > 0"
-          class="box-card mgt-20px hidden-xs-only login-form"
+          class="box-card hidden-xs-only login-form"
           shadow="never"
         >
           <el-row>
@@ -141,7 +132,7 @@
         </el-card>
         <el-card
           v-else
-          class="box-card mgt-20px hidden-xs-only login-form"
+          class="box-card hidden-xs-only login-form"
           shadow="never"
         >
           <el-row>
@@ -175,6 +166,15 @@
               </el-col>
             </el-row>
           </div>
+        </el-card>
+        <el-card shadow="never" class="index-articles mgt-20px">
+          <div slot="header">
+            <i class="fa fa-newspaper-o"></i> 文章资讯
+            <nuxt-link to="/article" class="float-right">
+              <el-button type="text">更多</el-button>
+            </nuxt-link>
+          </div>
+          <ArticleSimpleList :articles="articles"></ArticleSimpleList>
         </el-card>
       </el-col>
       <el-col :span="18" class="latest-recommend">
