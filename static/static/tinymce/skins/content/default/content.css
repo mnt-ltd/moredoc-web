@@ -49,7 +49,7 @@ code {
   border-radius: 3px;
   padding: 0.1rem 0.2rem;
 }
-.mce-content-body:not([dir=rtl]) blockquote {
+/* .mce-content-body:not([dir=rtl]) blockquote {
   border-left: 2px solid #ccc;
   margin-left: 1.5rem;
   padding-left: 1rem;
@@ -58,4 +58,12 @@ code {
   border-right: 2px solid #ccc;
   margin-right: 1.5rem;
   padding-right: 1rem;
+} */
+.mce-content-body:not([dir=rtl]) blockquote, .mce-content-body[dir=rtl] blockquote {
+  padding: 10px;
+  color: #777;
+  font-size: 0.95em;
+  background-color: #f6f8fa;
+  border-left: 4px solid #ddd;
+  margin-left: 0;
 }

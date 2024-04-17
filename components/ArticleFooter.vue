@@ -96,6 +96,7 @@
       PRO
       <span>{{ settings.system.version }}</span>
     </div>
+    <FixedRightBar />
   </div>
 </template>
 <script>
