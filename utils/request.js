@@ -32,7 +32,12 @@ service.interceptors.response.use(
     return response
   },
   (error) => {
-    return error.response
+    return {
+      status: error.response.status,
+      data: {
+        message: `${error.response.status} ${error.response.statusText}`,
+      },
+    }
   }
 )
 
