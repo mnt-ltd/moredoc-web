@@ -27,6 +27,15 @@
           </div>
         </el-image>
       </el-tooltip>
+      <div v-if="showRemove && image" slot="tip" class="el-upload__tip">
+        <el-button
+          type="text"
+          size="mini"
+          icon="el-icon-delete"
+          @click="onRemove"
+          >移除图片</el-button
+        >
+      </div>
     </el-upload>
   </div>
 </template>
@@ -51,6 +60,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showRemove: {
+      type: Boolean,
+      default: false,
+    },
     image: {
       type: String,
       default: '',
@@ -72,6 +85,9 @@ export default {
     success(res) {
       this.$emit('success', res)
     },
+    onRemove() {
+      this.$emit('remove')
+    },
     onError(err) {
       try {
         const message = JSON.parse(err.message)
@@ -85,6 +101,7 @@ export default {
 </script>
 <style lang="scss">
 .com-upload-image {
+  line-height: 1 !important;
   .el-image {
     img {
       width: 100%;

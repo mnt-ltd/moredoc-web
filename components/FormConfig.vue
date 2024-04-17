@@ -66,6 +66,8 @@
           :action="'/api/v1/upload/config'"
           :image="configs[index]['value']"
           :width="'200px'"
+          :show-remove="true"
+          @remove="configs[index]['value'] = ''"
           @success="success($event, index)"
         />
         <el-input
@@ -109,7 +111,7 @@ export default {
   watch: {
     initConfigs: {
       handler(val) {
-        let configs = { ...val }
+        const configs = { ...val }
         Object.values(configs).forEach((item) => {
           if (item.input_type === 'select-multi') {
             try {
@@ -123,7 +125,7 @@ export default {
     },
   },
   created() {
-    let configs = { ...this.initConfigs }
+    const configs = { ...this.initConfigs }
     Object.values(configs).forEach((item) => {
       if (item.input_type === 'select-multi') {
         try {

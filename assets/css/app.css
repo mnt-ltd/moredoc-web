@@ -175,3 +175,10 @@ body {
   content: "OTHER";
   background-color: #70c9ad;
 }
+
+.mce-content-body:not([dir="rtl"]) blockquote {
+  padding: 10px;
+  color: #777;
+  font-size: 0.95em;
+  background-color: #f6f8fa;
+}

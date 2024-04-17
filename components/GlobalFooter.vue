@@ -146,6 +146,7 @@
         v-html="item.content"
       ></div>
     </template>
+    <FixedRightBar />
   </div>
 </template>
 <script>
