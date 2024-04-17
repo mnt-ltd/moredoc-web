@@ -114,7 +114,7 @@
       <el-descriptions class="margin-top" :column="3" border>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-tickets"></i>
+            <i class="el-icon-document"></i>
             文档
           </template>
           {{ stats.document_count || 0 }}
@@ -149,10 +149,10 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-picture-outline"></i>
-            横幅
+            <i class="el-icon-tickets"></i>
+            文章
           </template>
-          {{ stats.banner_count || 0 }}
+          {{ stats.article_count || 0 }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">

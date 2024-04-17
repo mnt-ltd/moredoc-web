@@ -5,18 +5,6 @@
         <el-tooltip
           class="item"
           effect="dark"
-          content="上传文档"
-          placement="left"
-        >
-          <nuxt-link to="/upload" class="el-link el-link--default">
-            <i class="el-icon-document-add"></i>
-          </nuxt-link>
-        </el-tooltip>
-      </li>
-      <li>
-        <el-tooltip
-          class="item"
-          effect="dark"
           content="发布文章"
           placement="left"
         >
@@ -25,17 +13,28 @@
           </nuxt-link>
         </el-tooltip>
       </li>
-      <!-- 公众号二维码 -->
       <li>
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="上传文档"
+          placement="left"
+        >
+          <nuxt-link to="/upload" class="el-link el-link--default">
+            <i class="el-icon-upload"></i>
+          </nuxt-link>
+        </el-tooltip>
+      </li>
+      <li v-if="settings.display.wechat_qrcode">
         <el-popover placement="left" trigger="hover" width="200">
           <div class="qrcode">
             <img
-              src="https://www.bookstack.cn/static/images/qrcode_for_gh.jpg"
-              alt="公众号"
+              :src="settings.display.wechat_qrcode"
+              :alt="settings.display.wechat_tip || '扫码关注'"
               style="width: 100%"
             />
             <div class="help-block text-center" style="font-size: 13px">
-              我们的公众号同样精彩
+              {{ settings.display.wechat_tip || '扫码关注' }}
             </div>
           </div>
           <a
@@ -47,14 +46,20 @@
           </a>
         </el-popover>
       </li>
-      <li>
+      <li v-if="settings.display.contact_link">
         <el-tooltip
           class="item"
           effect="dark"
-          content="联系我们，反馈您的意见与建议"
+          :content="
+            settings.display.contact_tip || '联系我们，反馈您的意见与建议'
+          "
           placement="left"
         >
-          <a href="javascript:;" class="el-link el-link--default">
+          <a
+            :href="settings.display.contact_link"
+            target="_blank"
+            class="el-link el-link--default"
+          >
             <i class="el-icon-s-custom"></i>
           </a>
         </el-tooltip>
@@ -79,8 +84,12 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'FixedRightBar',
+  computed: {
+    ...mapGetters('setting', ['settings']),
+  },
   methods: {
     go2top() {
       document.scrollingElement.scrollTo({
