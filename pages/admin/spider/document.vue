@@ -172,7 +172,7 @@ export default {
       },
     },
   },
-  async created() {
+  created() {
     this.initSearchForm()
     this.initTableListFields()
   },
@@ -190,6 +190,7 @@ export default {
           item.url_html = genLinkHTML(item.url, item.url)
           item.editing = false
           item.status = item.status || 0
+          return item
         })
         this.spiderDocuments = spiderDocuments
         this.total = res.data.total
@@ -223,11 +224,12 @@ export default {
         this.$refs.spiderDocumentForm.reset()
       })
     },
-    async batchUpdate() {
+    batchUpdate() {
       // 将spiderDocuments中可以修改的字段设置为修改中
       const selectIdMap = {}
       this.selectedRow.map((item) => {
         selectIdMap[item.id] = true
+        return item
       })
 
       this.spiderDocuments = this.spiderDocuments.map((item) => {
@@ -278,7 +280,7 @@ export default {
       this.showPublishing = false
       this.listSpiderDocument()
     },
-    async onDownload() {
+    onDownload() {
       this.$confirm(
         `您确定要将选中的【${this.selectedRow.length}条】文档加入到采集队列吗？`,
         '温馨提示',
@@ -324,7 +326,16 @@ export default {
           const res = await deleteSpiderDocument({ id: ids })
           if (res.status === 200) {
             this.$message.success('删除成功')
-            this.listSpiderDocument()
+            if (!this.batchUpdating) {
+              this.listSpiderDocument()
+            } else {
+              this.spiderDocuments = this.spiderDocuments.filter(
+                (item) => !ids.includes(item.id)
+              )
+              if (this.spiderDocuments.length === 0) {
+                this.listSpiderDocument()
+              }
+            }
           } else {
             this.$message.error(res.data.message)
           }
@@ -351,7 +362,16 @@ export default {
           const res = await deleteSpiderDocument({ id: row.id })
           if (res.status === 200) {
             this.$message.success('删除成功')
-            this.listSpiderDocument()
+            if (!this.batchUpdating) {
+              this.listSpiderDocument()
+            } else {
+              this.spiderDocuments = this.spiderDocuments.filter(
+                (item) => item.id !== row.id
+              )
+              if (this.spiderDocuments.length === 0) {
+                this.listSpiderDocument()
+              }
+            }
           } else {
             this.$message.error(res.data.message)
           }
