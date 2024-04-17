@@ -108,7 +108,7 @@
             <i class="fa fa-calendar-plus-o"></i>
             每日签到
           </el-button>
-          <div class="help-block" style="margin-top: 8px">
+          <div class="help-block sub-btn">
             <el-row>
               <el-col :span="12">
                 <nuxt-link to="/upload" class="el-link el-link--default">
@@ -145,7 +145,7 @@
               <el-button class="btn-block" type="primary">马上登录</el-button>
             </nuxt-link>
           </div>
-          <div class="help-block">
+          <div class="help-block sub-btn">
             <el-row>
               <el-col :span="12">
                 <nuxt-link to="/findpassword" class="el-link el-link--default">
@@ -703,10 +703,6 @@ export default {
       font-size: 15px;
     }
 
-    .btn-login {
-      margin: 15px 0 5px;
-    }
-
     .login-tips {
       margin-top: -10px;
       font-size: 14px;
@@ -755,10 +751,18 @@ export default {
     }
   }
 
+  .sub-btn {
+    position: relative;
+    top: 13px;
+    padding-bottom: 7px;
+  }
+
   .index-articles {
     .el-card__body {
       padding-top: 4px;
       padding-bottom: 4px;
+      min-height: 253px;
+      box-sizing: border-box;
     }
   }
 
