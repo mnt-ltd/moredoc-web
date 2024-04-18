@@ -185,6 +185,12 @@
                   >{{ stats.article_count || 0 }}
                   <span class="text-muted">文章</span>
                 </el-button>
+                <el-button
+                  v-if="settings.display.show_register_user_count"
+                  type="text"
+                  >{{ stats.user_count || 0 }}
+                  <span class="text-muted">用户</span>
+                </el-button>
               </div>
             </div>
           </div>
