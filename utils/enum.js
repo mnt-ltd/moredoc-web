@@ -12,7 +12,7 @@ export const attachmentTypeOptions = [
   { label: '文档', value: 2 },
   { label: '文章', value: 3 },
   { label: '评论', value: 4 },
-  { label: '横幅', value: 5 },
+  { label: '轮播图', value: 5 },
   { label: '分类封面', value: 6 },
   { label: '配置', value: 7 },
 ]
@@ -28,11 +28,11 @@ export const documentStatusOptions = [
   { label: '审核拒绝', value: 7, type: 'danger' },
 ]
 
-// 0 网站横幅，1 小程序横幅，2 APP横幅
+// 0 网站轮播图，1 小程序轮播图，2 APP轮播图
 export const bannerTypeOptions = [
-  { label: '网站横幅', value: 0, type: 'primary' },
-  { label: '小程序横幅', value: 1, type: 'success' },
-  { label: 'APP横幅', value: 2, type: 'warning' },
+  { label: '网站轮播图', value: 0, type: 'primary' },
+  { label: '小程序轮播图', value: 1, type: 'success' },
+  { label: 'APP轮播图', value: 2, type: 'warning' },
 ]
 
 export const boolOptions = [

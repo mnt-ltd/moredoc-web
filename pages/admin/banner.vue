@@ -48,7 +48,7 @@
     <el-dialog
       :close-on-click-modal="false"
       width="640px"
-      :title="banner.id > 0 ? '编辑横幅' : '新增横幅'"
+      :title="banner.id > 0 ? '编辑轮播图' : '新增轮播图'"
       :visible.sync="formVisible"
     >
       <FormBanner
@@ -61,13 +61,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { listBanner, deleteBanner, getBanner } from '~/api/banner'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormBanner from '~/components/FormBanner.vue'
 import { bannerTypeOptions } from '~/utils/enum'
 import { parseQueryIntArray } from '~/utils/utils'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormBanner },
   layout: 'admin',
@@ -91,7 +91,7 @@ export default {
   },
   head() {
     return {
-      title: `横幅管理 - ${this.settings.system.sitename}`,
+      title: `轮播图管理 - ${this.settings.system.sitename}`,
     }
   },
   computed: {
@@ -144,9 +144,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listBanner()
       } else {
@@ -177,7 +177,7 @@ export default {
     },
     batchDelete() {
       this.$confirm(
-        `您确定要删除选中的【${this.selectedRow.length}个】横幅吗？删除之后不可恢复！`,
+        `您确定要删除选中的【${this.selectedRow.length}个】轮播图吗？删除之后不可恢复！`,
         '温馨提示',
         {
           confirmButtonText: '确定',
@@ -199,7 +199,7 @@ export default {
     },
     deleteRow(row) {
       this.$confirm(
-        `您确定要删除横幅【${row.title}】吗？删除之后不可恢复！`,
+        `您确定要删除轮播图【${row.title}】吗？删除之后不可恢复！`,
         '温馨提示',
         {
           confirmButtonText: '确定',
@@ -233,7 +233,7 @@ export default {
           type: 'select',
           label: '类型',
           name: 'type',
-          placeholder: '请选择横幅类型',
+          placeholder: '请选择轮播图类型',
           multiple: true,
           options: this.bannerTypeOptions,
         },
@@ -257,7 +257,7 @@ export default {
       })
       this.tableListFields = [
         { prop: 'id', label: 'ID', width: 80, type: 'number' },
-        { prop: 'path', label: '横幅', width: 360, type: 'image' },
+        { prop: 'path', label: '轮播图', width: 360, type: 'image' },
         {
           prop: 'type',
           label: '类型',

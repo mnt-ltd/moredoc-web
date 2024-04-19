@@ -10,7 +10,7 @@
         label="图片"
         prop="path"
         :rules="[
-          { required: true, message: '请上传横幅图片', trigger: 'blur' },
+          { required: true, message: '请上传轮播图图片', trigger: 'blur' },
         ]"
       >
         <UploadImage
@@ -24,14 +24,14 @@
         <el-input
           v-model="banner.title"
           clearable
-          placeholder="请输入横幅名称"
+          placeholder="请输入轮播图名称"
         ></el-input>
       </el-form-item>
       <el-form-item label="链接" prop="url">
         <el-input
           v-model="banner.url"
           clearable
-          placeholder="请输入链接地址，链接地址为空点击横幅不会跳转"
+          placeholder="请输入链接地址，链接地址为空点击轮播图不会跳转"
         ></el-input>
       </el-form-item>
       <el-row :gutter="20">
@@ -40,7 +40,7 @@
             <el-select
               v-model="banner.type"
               clearable
-              placeholder="请选择横幅类型"
+              placeholder="请选择轮播图类型"
             >
               <el-option
                 v-for="opt in bannerTypeOptions"

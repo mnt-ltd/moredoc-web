@@ -60,7 +60,7 @@ const cumstomPermissionMap = {
     pages: ['/admin/report'],
   },
   'api.v1.BannerAPI': {
-    label: '横幅管理',
+    label: '轮播图管理',
     path: 'ListBanner',
     children: [],
     pages: ['/admin/banner'],
@@ -254,7 +254,7 @@ export const adminMenus = [
   },
   {
     page: '/admin/banner',
-    title: '横幅管理',
+    title: '轮播图管理',
     icon: 'el-icon-picture-outline',
   },
   {

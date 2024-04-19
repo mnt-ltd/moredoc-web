@@ -429,7 +429,7 @@ export default {
       const res = await listBanner({
         enable: true,
         field: ['id', 'title', 'path', 'url'],
-        type: 0, // 0，网站横幅
+        type: 0, // 0，网站轮播图
       })
       if (res.status === 200) {
         this.banners = res.data.banner
