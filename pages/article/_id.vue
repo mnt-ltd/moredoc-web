@@ -192,6 +192,7 @@
               data-slate-editor
               v-html="article.content"
             ></div>
+            <div v-if="!article.id" style="min-height: 100vh"></div>
           </article>
           <el-row v-if="article.id > 0" class="btn-actions">
             <el-col :span="12">
@@ -257,7 +258,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import {
   getArticle,
   getRelatedArticles,
@@ -306,7 +307,7 @@ export default {
   },
   computed: {
     ...mapGetters('setting', ['settings']),
-    ...mapGetters('category', ['categoryMap', 'categoryTrees']),
+    ...mapGetters('category', ['categoryMap', 'categoryTrees', 'categories']),
     ...mapGetters('user', ['user', 'permissions']),
     accessUpdate() {
       if (this.user.id === this.article.user_id) {
@@ -341,6 +342,9 @@ export default {
     },
   },
   async created() {
+    if (this.categories.length === 0) {
+      await this.getCategories()
+    }
     await this.getArticle()
     await this.getFavorite()
   },
@@ -351,6 +355,7 @@ export default {
     window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
+    ...mapActions('category', ['getCategories']),
     formatRelativeTime,
     async getArticle() {
       const res = await getArticle({ identifier: this.$route.params.id })
