@@ -1,20 +1,20 @@
 <template>
   <el-container class="layout-default layout-article">
-    <GlobalNavbar />
+    <global-header />
     <el-main>
       <nuxt />
     </el-main>
     <el-footer v-if="$route.path != '/article'" height="auto">
-      <GlobalFooter />
+      <global-footer />
     </el-footer>
   </el-container>
 </template>
 <script>
-import GlobalNavbar from '~/components/GlobalHeader.vue'
+import GlobalHeader from '~/components/GlobalHeader.vue'
 import GlobalFooter from '~/components/GlobalFooter.vue'
 
 export default {
-  components: { GlobalNavbar, GlobalFooter },
+  components: { GlobalHeader, GlobalFooter },
   middleware: ['checkFront', 'analytic'],
 }
 </script>

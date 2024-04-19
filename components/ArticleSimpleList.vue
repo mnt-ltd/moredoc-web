@@ -4,7 +4,6 @@
       <li v-for="article in articles" :key="'article-' + article.id">
         <el-tooltip :content="article.title" placement="left">
           <nuxt-link
-            target="_blank"
             :to="`/article/${article.identifier}`"
             class="el-link el-link--default"
           >

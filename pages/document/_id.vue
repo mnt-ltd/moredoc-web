@@ -62,14 +62,22 @@
                     icon="el-icon-no-smoking"
                     @click="forbiden"
                     >禁用文档</el-button
-                  >
-                  <el-button
-                    v-if="accessRecommend"
-                    type="text"
-                    icon="el-icon-document-checked"
-                    @click="setRecommend"
-                    >推荐设置</el-button
-                  >
+                  >&nbsp;
+                  <el-dropdown v-if="accessRecommend" @command="setRecommend">
+                    <span class="el-dropdown-link">
+                      <el-button type="text"
+                        ><i class="fa fa-thumbs-up"></i> 推荐设置</el-button
+                      >
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item command="cancel"
+                        >取消推荐</el-dropdown-item
+                      >
+                      <el-dropdown-item command="recommend"
+                        >推荐文章</el-dropdown-item
+                      >
+                    </el-dropdown-menu>
+                  </el-dropdown>
                 </template>
               </div>
             </h1>
@@ -518,17 +526,6 @@
         @success="updateDocumentSuccess"
       />
     </el-dialog>
-    <el-dialog
-      :close-on-click-modal="false"
-      title="推荐设置"
-      :visible.sync="formDocumentRecommendVisible"
-      :width="isMobile ? '95%' : '640px'"
-    >
-      <FormDocumentRecommend
-        :init-document="updateDocument"
-        @success="setRecommendSuccess"
-      />
-    </el-dialog>
   </div>
 </template>
 
@@ -544,6 +541,7 @@ import {
   getDocumentScore,
   deleteDocument,
   updateDocument,
+  setDocumentRecommend,
 } from '~/api/document'
 import { getFavorite, createFavorite, deleteFavorite } from '~/api/favorite'
 import {
@@ -603,7 +601,6 @@ export default {
       tips: '',
       descriptions: [],
       updateDocumentVisible: false,
-      formDocumentRecommendVisible: false,
     }
   },
   head() {
@@ -732,15 +729,21 @@ export default {
         }
       })
     },
-    setRecommend() {
-      const doc = { ...this.document }
-      delete doc.icon
-      this.updateDocument = doc
-      this.formDocumentRecommendVisible = true
-    },
-    setRecommendSuccess() {
-      this.formDocumentRecommendVisible = false
-      this.getDocument()
+    async setRecommend(command) {
+      let recommend = 1 // 推荐
+      if (command === 'cancel') {
+        recommend = 0 // 取消推荐
+      }
+      const res = await setDocumentRecommend({
+        id: [this.document.id],
+        type: recommend,
+      })
+      if (res.status === 200) {
+        this.$message.success('操作成功')
+        this.getDocument()
+      } else {
+        this.$message.error(res.data.message)
+      }
     },
     deleteDocument() {
       this.$confirm(`您确定要删除文档《${this.document.title}》吗？`, '提示', {
