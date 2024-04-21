@@ -684,11 +684,11 @@ export default {
 
       .el-card__body {
         padding: 15px 0 20px;
-        max-height: 80px;
+        max-height: 120px;
         overflow: hidden;
         display: -webkit-box;
-        // -webkit-box-orient: vertical;
         -webkit-line-clamp: 3;
+        box-sizing: border-box;
       }
 
       a {
@@ -868,6 +868,16 @@ export default {
               word-break: break-word;
             }
           }
+          @media screen and (max-width: $mobile-width) {
+            .el-link {
+              margin-bottom: 15px;
+              & > div {
+                height: 66px;
+                line-height: 22px;
+                -webkit-line-clamp: 3;
+              }
+            }
+          }
           & > div {
             font-size: 13px;
             color: #888;
@@ -962,7 +972,6 @@ export default {
         width: 50%;
 
         .el-card__body {
-          height: 75px;
           overflow: hidden;
         }
       }
@@ -1004,6 +1013,9 @@ export default {
         padding: 0 10px;
       }
     }
+  }
+  .page-index .categories .el-row .el-card__body {
+    height: 110px;
   }
 }
 </style>
