@@ -25,6 +25,10 @@
         :min-width="item.minWidth"
         :fixed="item.fixed"
       >
+        <template slot="header" slot-scope="scope">
+          {{ item.label }}
+          <slot :row="scope.column" name="header"></slot>
+        </template>
         <template slot-scope="scope">
           <!-- 头像 -->
           <el-avatar
@@ -38,6 +42,7 @@
           <div v-else-if="item.type === 'number'">
             <el-input-number
               v-if="item.editable && scope.row['editing']"
+              :key="'number-' + item.prop + '-' + scope.row.id"
               v-model="scope.row[item.prop]"
               size="medium"
             ></el-input-number>
@@ -58,6 +63,7 @@
           <div v-else-if="item.type === 'enum'">
             <el-select
               v-if="item.editable && scope.row['editing']"
+              :key="'select-' + item.prop + '-' + scope.row.id"
               v-model="scope.row[item.prop]"
               size="medium"
             >
@@ -70,8 +76,8 @@
             </el-select>
             <template v-else>
               <el-tag
-                size="medium"
                 v-if="item.enum[scope.row[item.prop] || 0]"
+                size="medium"
                 :type="item.enum[scope.row[item.prop] || 0].type || 'info'"
                 :effect="item.enum[scope.row[item.prop] || 0].effect || 'dark'"
               >
@@ -107,9 +113,9 @@
           <span v-else-if="item.type === 'array'">
             <template v-if="scope.row[item.prop]">
               <el-tag
-                size="medium"
                 v-for="(value, idx) in scope.row[item.prop]"
                 :key="item.prop + idx"
+                size="medium"
                 class="mgr-5px"
                 >{{ value }}</el-tag
               >
@@ -136,8 +142,8 @@
           <template v-else>
             <el-input
               v-if="item.editable && scope.row['editing']"
-              size="medium"
               v-model="scope.row[item.prop]"
+              size="medium"
               :placeholder="item.placeholder || '请输入' + item.label"
               type="textarea"
               :rows="3"
@@ -177,8 +183,8 @@
             size="small"
             icon="el-icon-delete"
             :disabled="scope.row.disable_delete"
-            @click="deleteRow(scope.row)"
             class="text-danger"
+            @click="deleteRow(scope.row)"
             >删除</el-button
           >
         </template>

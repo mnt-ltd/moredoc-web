@@ -49,7 +49,10 @@
         </el-col>
         <el-col :span="12">
           <!-- 文档语言 -->
-          <el-form-item label="文档语言" prop="language">
+          <el-form-item
+            label="文档语言(只对未指定语言文档有效)"
+            prop="language"
+          >
             <el-select
               v-model="form.language"
               filterable
@@ -86,18 +89,25 @@
             </template>
           </el-table-column>
           <el-table-column prop="id" label="ID" width="80"></el-table-column>
-          <el-table-column prop="title" label="标题"></el-table-column>
-          <!-- <el-table-column prop="price" label="价格" width="140">
+          <el-table-column prop="language" label="语言" width="110">
             <template slot-scope="scope">
-              <el-input-number
-                v-model="scope.row.price"
-                :min="0"
-                :max="100000"
-                size="mini"
-              />
+              <el-select
+                v-model="scope.row.language"
+                filterable
+                clearable
+                placeholder="请选择文档语言"
+              >
+                <el-option
+                  v-for="item in settings.language"
+                  :key="item.code"
+                  :label="item.language"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </template>
-          </el-table-column> -->
-          <el-table-column prop="size" label="大小" width="100">
+          </el-table-column>
+          <el-table-column prop="title" label="标题"></el-table-column>
+          <el-table-column prop="size" label="大小" width="80">
             <template slot-scope="scope">
               {{ formatBytes(scope.row.size) }}
             </template>
@@ -169,7 +179,7 @@ export default {
               category_id: JSON.stringify(this.form.category_id),
               user_id: this.form.user_id,
               price: this.form.price || 0,
-              language: this.form.language,
+              language: item.language || this.form.language,
             }
             localStorage.setItem('user_id', this.form.user_id)
             delete newItem.url_html

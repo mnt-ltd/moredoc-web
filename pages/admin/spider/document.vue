@@ -63,6 +63,7 @@
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <TableList
+        ref="tableList"
         :loading="loading"
         :table-data="spiderDocuments"
         :fields="tableListFields"
@@ -75,7 +76,69 @@
         @selectRow="selectRow"
         @editRow="editRow"
         @deleteRow="deleteRow"
-      />
+      >
+        <template v-if="batchUpdating" slot="header" slot-scope="scope">
+          <el-popover
+            v-if="scope.row.property === 'title'"
+            placement="bottom"
+            width="520"
+            trigger="click"
+          >
+            <el-form v-model="titleForm" label-position="top" size="mini">
+              <el-form-item label="引用(将指定字段内容填充到正式标题)">
+                <el-select
+                  v-model="titleForm.field"
+                  placeholder="请选择"
+                  clearable
+                >
+                  <el-option
+                    v-for="item in [
+                      { label: '文档链接', value: 'url' },
+                      { label: '链接标题', value: 'title_from_href' },
+                      { label: 'URL标题', value: 'title_from_url' },
+                      { label: '附件标题', value: 'title_from_attachment' },
+                    ]"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+                <el-button
+                  icon="el-icon-check"
+                  type="primary"
+                  @click="fillTitle"
+                  >确定</el-button
+                >
+              </el-form-item>
+              <el-form-item label="字符串替换">
+                <el-row :gutter="10">
+                  <el-col :span="10">
+                    <el-input
+                      v-model="titleForm.search"
+                      placeholder="查找内容"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="10">
+                    <el-input
+                      v-model="titleForm.replace"
+                      placeholder="替换内容"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-button type="primary" @click="replaceTitle">
+                      <i class="fa fa-exchange"></i>
+                      替换
+                    </el-button>
+                  </el-col>
+                </el-row>
+              </el-form-item>
+            </el-form>
+            <el-tooltip slot="reference" content="快捷操作">
+              <el-button icon="el-icon-setting" type="text"></el-button>
+            </el-tooltip>
+          </el-popover>
+        </template>
+      </TableList>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <div class="text-right">
@@ -139,6 +202,11 @@ export default {
         enable: [],
         size: 10,
       },
+      titleForm: {
+        field: '',
+        search: '',
+        replace: '',
+      },
       spiderDocuments: [],
       total: 0,
       searchFormFields: [],
@@ -190,6 +258,7 @@ export default {
           item.url_html = genLinkHTML(item.url, item.url)
           item.editing = false
           item.status = item.status || 0
+          item.title = item.title || '' // 添加title字段，用于编辑
           return item
         })
         this.spiderDocuments = spiderDocuments
@@ -203,6 +272,25 @@ export default {
       this.search.size = val
       this.$router.push({
         query: this.search,
+      })
+    },
+    fillTitle() {
+      this.spiderDocuments.map((item) => {
+        if (item.editing) {
+          item.title = item[this.titleForm.field]
+        }
+        return item
+      })
+    },
+    replaceTitle() {
+      this.spiderDocuments.map((item) => {
+        if (item.editing) {
+          item.title = (item.title || '').replace(
+            this.titleForm.search,
+            this.titleForm.replace
+          )
+        }
+        return item
       })
     },
     handlePageChange(val) {
@@ -401,9 +489,16 @@ export default {
     },
     initTableListFields() {
       const enumStatus = {}
+      const enumLanguage = {}
       this.spiderDocumentStatusOptions.map((item) => {
         enumStatus[item.value] = item
+        return item
       })
+      ;(this.settings.language || []).map((item) => {
+        enumLanguage[item.code] = { label: item.language, value: item.code }
+        return item
+      })
+
       this.tableListFields = [
         { prop: 'id', label: 'ID', width: 80, type: 'number', fixed: 'left' },
         {
@@ -412,13 +507,21 @@ export default {
           width: 130,
           type: 'enum',
           enum: enumStatus,
+          // editable: true,
+        },
+        { prop: 'url_html', label: '文档链接', minWidth: 200, type: 'html' },
+        {
+          prop: 'language',
+          label: '语言',
+          width: 130,
+          type: 'enum',
+          enum: enumLanguage,
           editable: true,
         },
-        { prop: 'url_html', label: '文档链接', minWidth: 250, type: 'html' },
         {
           prop: 'title',
           label: '正式标题',
-          minWidth: 200,
+          minWidth: 300,
           editable: true,
         },
         {
