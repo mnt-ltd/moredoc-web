@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-findpassword" v-if="settings.system.enable_sms">
+  <div v-if="settings.system.enable_sms" class="page page-findpassword">
     <el-card shadow="never">
       <div slot="header">
         找回密码
@@ -34,10 +34,9 @@ export default {
   computed: {
     ...mapGetters('setting', ['settings']),
   },
-  async created() {
+  created() {
     if (!this.settings.system.enable_sms) {
       this.$router.replace('/findpassword')
-      return
     }
   },
   methods: {},
@@ -46,7 +45,7 @@ export default {
 <style lang="scss">
 .page-findpassword {
   .el-card {
-    width: 720px;
+    width: 520px;
     margin: 0 auto;
   }
   .float {

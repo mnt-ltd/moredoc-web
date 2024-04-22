@@ -4,9 +4,9 @@
       <div slot="header">
         找回密码
         <nuxt-link
+          v-if="settings.system.enable_sms"
           class="float"
           to="/findpassword-mobile"
-          v-if="settings.system.enable_sms"
         >
           <el-button type="text" icon="el-icon-top-right"
             >通过手机号找回密码</el-button
@@ -34,6 +34,9 @@ export default {
   head() {
     return {
       title: '找回密码 - ' + this.settings.system.sitename,
+      bodyAttrs: {
+        class: 'autoheight',
+      },
     }
   },
   async created() {},
@@ -46,14 +49,14 @@ export default {
 <style lang="scss">
 .page-findpassword {
   .el-card {
-    width: 720px;
-    margin: 0 auto;
+    width: 520px;
+    margin: 100px auto;
   }
   .float {
     float: right;
     margin-top: -10px;
   }
-  .el-card__body{
+  .el-card__body {
     padding-bottom: 0;
     margin-bottom: -20px;
   }

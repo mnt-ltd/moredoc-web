@@ -52,6 +52,11 @@ import { mapGetters } from 'vuex'
 export default {
   // 已登录用户，直接跳转到个人中心
   middleware: ['checklogin'],
+  data() {
+    return {
+      redirect: this.$route.query.redirect || '/me',
+    }
+  },
   head() {
     return {
       title: `用户登录 - ${this.settings.system.sitename}`,
@@ -67,11 +72,9 @@ export default {
           content: `${this.settings.system.description}`,
         },
       ],
-    }
-  },
-  data() {
-    return {
-      redirect: this.$route.query.redirect || '/me',
+      bodyAttrs: {
+        class: 'autoheight',
+      },
     }
   },
   computed: {
@@ -96,13 +99,13 @@ export default {
     margin: 0 auto;
   }
   .el-card {
-    width: 640px;
+    width: 520px;
     max-width: 100%;
     margin: 100px auto;
     margin-right: 0;
     &.close-box {
       margin-right: auto;
-      width: 640px;
+      width: 520px;
       .close-tips {
         margin-bottom: 20px;
         border: 1px dashed #f60;

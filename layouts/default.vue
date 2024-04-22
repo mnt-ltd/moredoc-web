@@ -19,6 +19,12 @@ export default {
 }
 </script>
 <style lang="scss">
+.autoheight .layout-default .el-main {
+  min-height: auto;
+  .page {
+    height: calc(100vh - 60px - 135px);
+  }
+}
 .layout-default {
   background-color: $background-grey-light;
   min-width: $min-width !important;

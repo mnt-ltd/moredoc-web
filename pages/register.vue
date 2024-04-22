@@ -64,6 +64,9 @@ export default {
           content: `${this.settings.system.description}`,
         },
       ],
+      bodyAttrs: {
+        class: 'autoheight',
+      },
     }
   },
   computed: {
@@ -83,7 +86,7 @@ export default {
     margin: 0 auto;
   }
   .el-card {
-    width: 640px;
+    width: 520px;
     max-width: 100%;
     margin: 100px auto;
     margin-right: 0;
