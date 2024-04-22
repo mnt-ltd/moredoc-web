@@ -23,6 +23,9 @@ export default {
   head() {
     return {
       title: '找回密码 - ' + this.settings.system.sitename,
+      bodyAttrs: {
+        class: 'autoheight',
+      },
     }
   },
   async created() {},
@@ -35,10 +38,10 @@ export default {
 <style lang="scss">
 .page-findpassword {
   .el-card {
-    width: 720px;
-    margin: 0 auto;
+    width: 520px;
+    margin: 100px auto;
   }
-  .el-card__body{
+  .el-card__body {
     padding-bottom: 0;
     margin-bottom: -20px;
   }
