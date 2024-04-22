@@ -259,6 +259,7 @@ export default {
           item.editing = false
           item.status = item.status || 0
           item.title = item.title || '' // 添加title字段，用于编辑
+          item.disable_delete = item.status === 1 || item.status === 2
           return item
         })
         this.spiderDocuments = spiderDocuments
@@ -341,6 +342,7 @@ export default {
           const newItem = { ...item }
           delete newItem.url_html
           delete newItem.editing
+          delete newItem.disable_delete
           return newItem
         })
       this.loading = true
@@ -385,6 +387,7 @@ export default {
           }
           delete newItem.url_html
           delete newItem.editing
+          delete newItem.disable_delete
           return newItem
         })
         const res = await batchUpdateSpiderDocument({ spider_document: docs })
