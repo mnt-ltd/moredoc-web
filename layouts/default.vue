@@ -22,7 +22,7 @@ export default {
 .autoheight .layout-default .el-main {
   min-height: auto;
   .page {
-    height: calc(100vh - 60px - 135px);
+    min-height: calc(100vh - 60px - 135px);
   }
 }
 .layout-default {

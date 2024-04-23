@@ -64,6 +64,7 @@ export default {
 @media screen and (max-width: 768px) {
   .page-findpassword {
     .el-card {
+      margin: 10px auto;
       width: 100%;
     }
   }
