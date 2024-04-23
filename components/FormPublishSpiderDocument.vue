@@ -184,6 +184,7 @@ export default {
             localStorage.setItem('user_id', this.form.user_id)
             delete newItem.url_html
             delete newItem.editing
+            delete newItem.disable_delete
             return newItem
           })
 
