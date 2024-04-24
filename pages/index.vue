@@ -968,7 +968,7 @@ export default {
     }
   }
   .page-index .categories .el-row .el-card__body {
-    height: 110px;
+    height: 105px;
   }
 }
 </style>
