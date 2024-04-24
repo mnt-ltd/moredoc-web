@@ -29,7 +29,7 @@
           >
             <el-cascader
               v-model="document.category_id"
-              :options="categoryTrees"
+              :options="categoryTrees.filter((item) => !item.type)"
               :filterable="true"
               :props="{
                 checkStrictly: true,
