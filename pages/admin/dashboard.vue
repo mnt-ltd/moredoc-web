@@ -66,8 +66,15 @@
       <el-descriptions class="margin-top" :column="2" border>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-tickets"></i>
+            <i class="el-icon-document"></i>
             最大文档数
+          </template>
+          不限
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-tickets"></i>
+            最大文章数
           </template>
           不限
         </el-descriptions-item>
@@ -165,80 +172,6 @@
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <div slot="header">
-        <span>环境依赖</span>
-        <a
-          href="https://www.bookstack.cn/read/moredoc/install.md"
-          target="_blank"
-        >
-          <el-button
-            style="float: right; padding: 3px 0"
-            icon="el-icon-tickets"
-            type="text"
-          >
-            依赖安装教程</el-button
-          >
-        </a>
-      </div>
-      <el-table
-        v-loading="envLoading"
-        :data="envs"
-        style="width: 100%"
-        empty-text="您暂无权限查看环境依赖情况"
-      >
-        <el-table-column prop="name" label="名称" width="120">
-        </el-table-column>
-        <el-table-column prop="is_required" label="是否必须" width="100">
-          <template slot-scope="scope">
-            <el-tag
-              v-if="scope.row.is_required"
-              effect="dark"
-              type="danger"
-              size="small"
-              >必须安装</el-tag
-            >
-            <el-tag v-else effect="dark" type="info" size="small"
-              >非必须</el-tag
-            >
-          </template>
-        </el-table-column>
-        <el-table-column prop="is_installed" label="安装" width="100">
-          <template slot-scope="scope">
-            <el-tag
-              v-if="scope.row.is_installed"
-              effect="dark"
-              type="success"
-              size="small"
-              >已安装</el-tag
-            >
-            <el-tag v-else effect="dark" type="warning" size="small"
-              >未安装</el-tag
-            >
-          </template>
-        </el-table-column>
-        <el-table-column prop="version" label="版本" min-width="100">
-          <template slot-scope="scope">
-            {{ scope.row.version || '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="description" min-width="200" label="用途">
-        </el-table-column>
-        <el-table-column prop="error" label="错误" min-width="100">
-          <template slot-scope="scope">
-            <span v-if="scope.row.error" size="small">{{
-              scope.row.error
-            }}</span>
-            <span v-else>-</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="checked_at" width="180" label="检测">
-          <template slot-scope="scope">
-            {{ formatDatetime(scope.row.checked_at) }}
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
-    <el-card shadow="never" class="mgt-20px">
-      <div slot="header">
         <span>系统信息</span>
         <el-button
           style="float: right; padding: 3px 0"
@@ -261,7 +194,68 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 程序版本 </template>
-          {{ stats.version }}
+          <span class="ver-item">{{ stats.version }}</span>
+          <span v-if="release.tag_name != stats.version" class="ver-item">
+            <a
+              href="https://gitee.com/mnt-ltd/moredoc/releases"
+              target="_blank"
+            >
+              <el-tooltip content="点击查看">
+                <el-badge value="new" class="item">
+                  <el-button size="small"
+                    >新版本: {{ release.tag_name }}</el-button
+                  >
+                </el-badge>
+              </el-tooltip>
+            </a>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          </span>
+          <el-button
+            size="mini"
+            type="text"
+            class="ver-item"
+            icon="el-icon-refresh"
+            :loading="releaseRefreshing"
+            @click="refreshRelease"
+            >检测新版本</el-button
+          >
+          <el-dropdown class="ver-item" @command="setReleaseSource">
+            <el-button size="mini" type="text" icon="el-icon-setting">
+              检测设置
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item
+                command="none"
+                :icon="
+                  release.source === 'none' ? 'el-icon-check' : 'el-icon-minus'
+                "
+                >不主动检测新版本</el-dropdown-item
+              >
+              <el-dropdown-item
+                command="auto"
+                :icon="
+                  release.source === 'auto' ? 'el-icon-check' : 'el-icon-minus'
+                "
+                >自动选择检测方式</el-dropdown-item
+              >
+              <el-dropdown-item
+                command="gitee"
+                :icon="
+                  release.source === 'gitee' ? 'el-icon-check' : 'el-icon-minus'
+                "
+                >从Gitee检测新版本</el-dropdown-item
+              >
+              <el-dropdown-item
+                :icon="
+                  release.source === 'github'
+                    ? 'el-icon-check'
+                    : 'el-icon-minus'
+                "
+                command="github"
+                >从Github检测新版本</el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </el-dropdown>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> Git Hash </template>
@@ -339,6 +333,80 @@
         </el-descriptions-item>
       </el-descriptions>
     </el-card>
+    <el-card shadow="never" class="mgt-20px">
+      <div slot="header">
+        <span>环境依赖</span>
+        <a
+          href="https://www.bookstack.cn/read/moredoc/install.md"
+          target="_blank"
+        >
+          <el-button
+            style="float: right; padding: 3px 0"
+            icon="el-icon-tickets"
+            type="text"
+          >
+            依赖安装教程</el-button
+          >
+        </a>
+      </div>
+      <el-table
+        v-loading="envLoading"
+        :data="envs"
+        style="width: 100%"
+        empty-text="您暂无权限查看环境依赖情况"
+      >
+        <el-table-column prop="name" label="名称" width="120">
+        </el-table-column>
+        <el-table-column prop="is_required" label="是否必须" width="100">
+          <template slot-scope="scope">
+            <el-tag
+              v-if="scope.row.is_required"
+              effect="dark"
+              type="danger"
+              size="small"
+              >必须安装</el-tag
+            >
+            <el-tag v-else effect="dark" type="info" size="small"
+              >非必须</el-tag
+            >
+          </template>
+        </el-table-column>
+        <el-table-column prop="is_installed" label="安装" width="100">
+          <template slot-scope="scope">
+            <el-tag
+              v-if="scope.row.is_installed"
+              effect="dark"
+              type="success"
+              size="small"
+              >已安装</el-tag
+            >
+            <el-tag v-else effect="dark" type="warning" size="small"
+              >未安装</el-tag
+            >
+          </template>
+        </el-table-column>
+        <el-table-column prop="version" label="版本" min-width="100">
+          <template slot-scope="scope">
+            {{ scope.row.version || '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="description" min-width="200" label="用途">
+        </el-table-column>
+        <el-table-column prop="error" label="错误" min-width="100">
+          <template slot-scope="scope">
+            <span v-if="scope.row.error" size="small">{{
+              scope.row.error
+            }}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="checked_at" width="180" label="检测">
+          <template slot-scope="scope">
+            {{ formatDatetime(scope.row.checked_at) }}
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
   </div>
 </template>
 
@@ -361,6 +429,9 @@ import {
   updateSitemap,
   getDevice,
   setSQLMode,
+  refreshLatestRelease,
+  getLatestRelease,
+  setReleaseSource,
 } from '~/api/config'
 
 use([
@@ -405,6 +476,11 @@ export default {
       devices: [],
       timeouter: null,
       mysqlGroupBy: {},
+      release: {
+        tag_name: '-',
+        source: 'auto',
+      },
+      releaseRefreshing: false,
     }
   },
   head() {
@@ -419,7 +495,12 @@ export default {
   },
   created() {
     this.initDevice()
-    Promise.all([this.getStats(), this.getEnvs(), this.loopGetDevice()])
+    Promise.all([
+      this.getStats(),
+      this.getEnvs(),
+      this.loopGetDevice(),
+      this.getLatestRelease(),
+    ])
   },
   beforeDestroy() {
     clearTimeout(this.timeouter)
@@ -440,6 +521,32 @@ export default {
           ...this.stats,
           ...res.data,
         }
+      }
+    },
+    async getLatestRelease() {
+      const res = await getLatestRelease()
+      if (res.status === 200) {
+        this.release = res.data
+      }
+    },
+    async setReleaseSource(cmd) {
+      const res = await setReleaseSource({ source: cmd })
+      if (res.status === 200) {
+        this.release.source = cmd
+        this.$message.success('设置成功')
+      } else {
+        this.$message.error(res.data.message || '设置失败')
+      }
+    },
+    async refreshRelease() {
+      this.releaseRefreshing = true
+      const res = await refreshLatestRelease()
+      this.releaseRefreshing = false
+      if (res.status === 200) {
+        this.release = res.data
+        this.$message.success('检测成功')
+      } else {
+        this.$message.error(res.data.message || '检测失败')
       }
     },
     async getEnvs() {
@@ -679,6 +786,10 @@ export default {
 </script>
 <style lang="scss">
 .page-admin-dashboard {
+  .ver-item {
+    display: inline-block;
+    margin-right: 20px;
+  }
   .el-descriptions-item__label.is-bordered-label {
     width: 150px;
   }
