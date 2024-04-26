@@ -82,3 +82,33 @@ export const renewDocumentIndex = (data) => {
     data,
   })
 }
+
+export const getLatestRelease = () => {
+  return service({
+    url: '/api/v1/release',
+    method: 'get',
+  })
+}
+
+export const refreshLatestRelease = () => {
+  return service({
+    url: '/api/v1/release',
+    method: 'post',
+  })
+}
+
+export const ignoreRelease = (data) => {
+  return service({
+    url: '/api/v1/release/ignore',
+    method: 'put',
+    data,
+  })
+}
+
+export const setReleaseSource = (data) => {
+  return service({
+    url: '/api/v1/release/source',
+    method: 'put',
+    data,
+  })
+}

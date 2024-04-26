@@ -10,7 +10,10 @@
           :open-delay="500"
           @show="getPopoverDocument(doc.id)"
         >
-          <document-card :document="activeDocument" />
+          <document-card
+            v-if="activeDocument.id > 0"
+            :document="activeDocument"
+          />
           <nuxt-link
             slot="reference"
             :target="target"
