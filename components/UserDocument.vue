@@ -35,8 +35,8 @@
           type="primary"
           size="medium"
           icon="el-icon-search"
-          @click="onSearch"
           :loading="loading"
+          @click="onSearch"
         >
           搜索
         </el-button>
@@ -46,30 +46,32 @@
     <el-table v-loading="loading" :data="docs" style="width: 100%">
       <el-table-column prop="title" label="名称" min-width="300">
         <template slot-scope="scope">
-          <nuxt-link
-            target="_blank"
-            :to="{
-              name: 'document-id',
-              params: { id: scope.row.uuid || scope.row.id },
-            }"
-            class="el-link el-link--default doc-title"
-          >
-            <img :src="`/static/images/${scope.row.icon}_24.png`" alt="" />
-            {{ scope.row.title }}
-          </nuxt-link>
+          <el-tooltip :content="scope.row.title" placement="right">
+            <nuxt-link
+              target="_blank"
+              :to="{
+                name: 'document-id',
+                params: { id: scope.row.uuid || scope.row.id },
+              }"
+              class="el-link el-link--default doc-title"
+            >
+              <img :src="`/static/images/${scope.row.icon}_24.png`" alt="" />
+              {{ scope.row.title }}
+            </nuxt-link>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column
-        prop="language"
         v-if="(settings.language || []).length > 0"
+        prop="language"
         label="语言"
         width="110"
       >
         <template slot-scope="scope">
           <el-tag
+            v-if="filterLanguage(scope.row.language).language"
             size="mini"
             effect="plain"
-            v-if="filterLanguage(scope.row.language).language"
           >
             {{ filterLanguage(scope.row.language).language }}
           </el-tag>
@@ -86,38 +88,38 @@
         </template>
       </el-table-column>
       <el-table-column
+        v-if="settings.display.show_document_view_count || showPrivateData"
         prop="view_count"
         label="浏览"
         width="70"
-        v-if="settings.display.show_document_view_count || showPrivateData"
       >
         <template slot-scope="scope">{{ scope.row.view_count || 0 }}</template>
       </el-table-column>
       <el-table-column
+        v-if="settings.display.show_document_download_count || showPrivateData"
         prop="download_count"
         label="下载"
         width="70"
-        v-if="settings.display.show_document_download_count || showPrivateData"
       >
         <template slot-scope="scope">{{
           scope.row.download_count || 0
         }}</template>
       </el-table-column>
       <el-table-column
+        v-if="settings.display.show_document_favorite_count || showPrivateData"
         prop="favorite_count"
         label="收藏"
         width="70"
-        v-if="settings.display.show_document_favorite_count || showPrivateData"
       >
         <template slot-scope="scope">{{
           scope.row.favorite_count || 0
         }}</template>
       </el-table-column>
       <el-table-column
+        v-if="showPrivateData"
         prop="status"
         label="状态"
         width="70"
-        v-if="showPrivateData"
       >
         <template slot-scope="scope">
           <el-tag
@@ -160,8 +162,8 @@
           <el-tooltip content="编辑文档" placement="top">
             <el-button
               type="text"
-              @click="updateDocument(scope.row)"
               icon="el-icon-edit"
+              @click="updateDocument(scope.row)"
             ></el-button>
           </el-tooltip>
           <el-tooltip content="删除文档" placement="top">
@@ -186,8 +188,8 @@
       :pager-count="isMobile ? 5 : 7"
       :small="isMobile"
       :total="total"
-      @current-change="pageChange"
       class="mgt-20px"
+      @current-change="pageChange"
     >
     </el-pagination>
     <el-dialog

@@ -45,16 +45,18 @@
     <el-table v-loading="loading" :data="articles" style="width: 100%">
       <el-table-column prop="title" label="标题" min-width="300">
         <template slot-scope="scope">
-          <nuxt-link
-            target="_blank"
-            :to="{
-              name: 'article-id',
-              params: { id: scope.row.identifier },
-            }"
-            class="el-link el-link--default doc-title"
-          >
-            {{ scope.row.title }}
-          </nuxt-link>
+          <el-tooltip :content="scope.row.title" placement="right">
+            <nuxt-link
+              target="_blank"
+              :to="{
+                name: 'article-id',
+                params: { id: scope.row.identifier },
+              }"
+              class="el-link el-link--default doc-title"
+            >
+              {{ scope.row.title }}
+            </nuxt-link>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column
