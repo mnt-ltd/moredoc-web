@@ -632,6 +632,7 @@ export default {
       tips: '',
       descriptions: [],
       updateDocumentVisible: false,
+      metaDescription: '',
     }
   },
   head() {
@@ -641,9 +642,7 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.document.description
-            ? this.document.description.substr(0, 255)
-            : this.document.title,
+          content: this.metaDescription,
         },
         {
           hid: 'keywords',
@@ -892,11 +891,13 @@ export default {
           if (item.value === doc.status) {
             this.tips = `当前文档【${item.label}】，暂时无法正常提供预览，建议您下载到本地进行阅读。`
           }
+          return item
         })
       }
 
       let description = (doc.description || '-').trim()
       if (description) description = description + '...'
+      this.metaDescription = description.replace(' ', '').substr(0, 200)
       ;(this.settings.language || []).map((item) => {
         if (item.code === doc.language) {
           doc.language = item.language
