@@ -71,7 +71,7 @@
         :show-view="false"
         :show-edit="false"
         :show-delete="true"
-        :show-select="true"
+        :show-select="!batchUpdating"
         :actions-min-width="80"
         @selectRow="selectRow"
         @editRow="editRow"
