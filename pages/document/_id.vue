@@ -202,6 +202,36 @@
                   score-template="{value}"
                 ></el-rate>
               </span>
+              <div v-else-if="item.name === 'description'">
+                <div v-if="item.value.length > 255">
+                  <div
+                    ref="description"
+                    class="description"
+                    :class="showContent ? 'description-lg' : ''"
+                  >
+                    {{ item.value }}
+                  </div>
+                  <div class="text-center">
+                    <el-button
+                      v-if="showContent"
+                      type="text"
+                      icon="el-icon-arrow-up"
+                      size="mini"
+                      @click="toggleContent"
+                      >收起内容</el-button
+                    >
+                    <el-button
+                      v-else
+                      type="text"
+                      icon="el-icon-arrow-down"
+                      size="mini"
+                      @click="toggleContent"
+                      >展开内容</el-button
+                    >
+                  </div>
+                </div>
+                <div v-else class="description">{{ item.value }}</div>
+              </div>
               <div v-else>{{ item.value }}</div>
             </el-descriptions-item>
           </el-descriptions>
@@ -570,6 +600,7 @@ export default {
         },
       },
       updateDocument: {},
+      showContent: false,
       score: null,
       disabledScore: false,
       downloading: false,
@@ -610,7 +641,9 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.document.description,
+          content: this.document.description
+            ? this.document.description.substr(0, 255)
+            : this.document.title,
         },
         {
           hid: 'keywords',
@@ -745,6 +778,18 @@ export default {
         this.$message.error(res.data.message)
       }
     },
+    toggleContent() {
+      if (this.showContent) {
+        try {
+          this.$nextTick(() => {
+            this.$refs.description[0].scrollTo(0, 0)
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      this.showContent = !this.showContent
+    },
     deleteDocument() {
       this.$confirm(`您确定要删除文档《${this.document.title}》吗？`, '提示', {
         confirmButtonText: '确定',
@@ -853,10 +898,10 @@ export default {
       let description = (doc.description || '-').trim()
       if (description) description = description + '...'
       ;(this.settings.language || []).map((item) => {
-        console.log(item, doc.language)
         if (item.code === doc.language) {
           doc.language = item.language
         }
+        return item
       })
 
       const item = doc.language
@@ -1386,6 +1431,24 @@ export default {
   }
   .descriptions-label {
     width: 80px;
+  }
+  .description {
+    position: relative;
+    max-height: 101px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    line-height: 180%;
+    // 只显示4行
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    &.description-lg {
+      max-height: unset;
+      display: block;
+      max-height: 360px;
+      overflow-y: auto;
+    }
   }
 }
 
