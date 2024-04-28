@@ -684,7 +684,7 @@ export default {
 
       .el-card__body {
         padding: 15px 0 20px;
-        max-height: 120px;
+        max-height: 115px;
         overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 3;
