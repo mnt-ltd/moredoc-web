@@ -74,7 +74,7 @@
                         >取消推荐</el-dropdown-item
                       >
                       <el-dropdown-item command="recommend"
-                        >推荐文章</el-dropdown-item
+                        >推荐文档</el-dropdown-item
                       >
                     </el-dropdown-menu>
                   </el-dropdown>
@@ -935,7 +935,7 @@ export default {
         },
         {
           label: '摘要',
-          value: description,
+          value: doc.content || description,
           icon: 'el-icon-document',
           name: 'description',
         },
