@@ -6,84 +6,93 @@
       label-width="80px"
       :model="configs"
     >
-      <el-form-item
-        v-for="(item, index) in configs"
-        :key="'cfg-' + item.id"
-        :label="
-          item.label + (item.placeholder ? '（' + item.placeholder + '）' : '')
-        "
-      >
-        <el-input-number
-          v-if="item.input_type === 'number'"
-          v-model="configs[index]['value']"
-          clearable
-          :min="0"
-          :placeholder="item.placeholder"
-          :step="1"
-        ></el-input-number>
-        <el-input
-          v-else-if="item.input_type === 'textarea'"
-          v-model="configs[index]['value']"
-          type="textarea"
-          :placeholder="item.placeholder"
-          rows="5"
-        ></el-input>
-        <el-select
-          v-else-if="item.input_type === 'select'"
-          v-model="configs[index]['value']"
-          @change="onChange(item)"
+      <el-row :gutter="20">
+        <el-col
+          v-for="(item, index) in configs"
+          :key="'cfg-' + item.id"
+          :span="item.col_num || 24"
         >
-          <el-option
-            v-for="option in item.options.split('\n')"
-            :key="'option-' + option"
-            :label="option.split(':')[1]"
-            :value="option.split(':')[0]"
-          ></el-option>
-        </el-select>
-        <el-select
-          v-else-if="item.input_type === 'select-multi'"
-          v-model="configs[index]['value']"
-          multiple
-          clearable
-        >
-          <el-option
-            v-for="option in item.options.split('\n')"
-            :key="'option-' + option"
-            :label="option.split(':')[1]"
-            :value="option.split(':')[0]"
-          ></el-option>
-        </el-select>
-        <el-switch
-          v-else-if="item.input_type === 'switch'"
-          v-model="configs[index]['value']"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-          active-text="是"
-          inactive-text="否"
-          :active-value="'true'"
-          :inactive-value="'false'"
-        >
-        </el-switch>
-        <el-color-picker
-          v-else-if="item.input_type === 'color'"
-          v-model="configs[index]['value']"
-        ></el-color-picker>
-        <UploadImage
-          v-else-if="item.input_type === 'image'"
-          :action="'/api/v1/upload/config'"
-          :image="configs[index]['value']"
-          :width="'200px'"
-          :show-remove="true"
-          @remove="configs[index]['value'] = ''"
-          @success="success($event, index)"
-        />
-        <el-input
-          v-else
-          v-model="configs[index]['value']"
-          :placeholder="item.placeholder"
-          clearable
-        ></el-input>
-      </el-form-item>
+          <el-form-item>
+            <div slot="label">
+              {{ item.label
+              }}<template v-if="item.placeholder"
+                >（<small>{{ item.placeholder }}</small
+                >）</template
+              >
+            </div>
+            <el-input-number
+              v-if="item.input_type === 'number'"
+              v-model="configs[index]['value']"
+              clearable
+              :min="0"
+              :placeholder="item.placeholder"
+              :step="1"
+            ></el-input-number>
+            <el-input
+              v-else-if="item.input_type === 'textarea'"
+              v-model="configs[index]['value']"
+              type="textarea"
+              :placeholder="item.placeholder"
+              rows="5"
+            ></el-input>
+            <el-select
+              v-else-if="item.input_type === 'select'"
+              v-model="configs[index]['value']"
+              @change="onChange(item)"
+            >
+              <el-option
+                v-for="option in item.options.split('\n')"
+                :key="'option-' + option"
+                :label="option.split(':')[1]"
+                :value="option.split(':')[0]"
+              ></el-option>
+            </el-select>
+            <el-select
+              v-else-if="item.input_type === 'select-multi'"
+              v-model="configs[index]['value']"
+              multiple
+              clearable
+            >
+              <el-option
+                v-for="option in item.options.split('\n')"
+                :key="'option-' + option"
+                :label="option.split(':')[1]"
+                :value="option.split(':')[0]"
+              ></el-option>
+            </el-select>
+            <el-switch
+              v-else-if="item.input_type === 'switch'"
+              v-model="configs[index]['value']"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="是"
+              inactive-text="否"
+              :active-value="'true'"
+              :inactive-value="'false'"
+            >
+            </el-switch>
+            <el-color-picker
+              v-else-if="item.input_type === 'color'"
+              v-model="configs[index]['value']"
+            ></el-color-picker>
+            <UploadImage
+              v-else-if="item.input_type === 'image'"
+              :action="'/api/v1/upload/config'"
+              :image="configs[index]['value']"
+              :width="'200px'"
+              :show-remove="true"
+              @remove="configs[index]['value'] = ''"
+              @success="success($event, index)"
+            />
+            <el-input
+              v-else
+              v-model="configs[index]['value']"
+              :placeholder="item.placeholder"
+              clearable
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item v-if="showButton">
         <el-button
           type="primary"
@@ -189,6 +198,7 @@ export default {
 .com-form-config {
   .el-form-item__label {
     padding-bottom: 0;
+    line-height: 28px;
   }
 }
 </style>
