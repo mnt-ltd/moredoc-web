@@ -279,7 +279,11 @@
         v-html="item.content"
       ></div>
     </template>
-    <el-row :gutter="isMobile ? 0 : 20" class="category-item">
+    <el-row
+      v-if="settings.display.index_document_style == 'list'"
+      :gutter="isMobile ? 0 : 20"
+      class="category-item-list"
+    >
       <el-col
         v-for="item in documents"
         :key="'card-cate-' + item.category_id"
@@ -328,6 +332,58 @@
         </el-card>
       </el-col>
     </el-row>
+    <el-row v-else :gutter="20" class="category-item-card">
+      <el-col
+        v-for="item in documents"
+        :key="'card-cate-' + item.category_id"
+        :span="12"
+      >
+        <el-card class="box-card mgt-20px" shadow="never">
+          <div slot="header" class="clearfix">
+            <strong>{{ item.category_name }}</strong>
+            <nuxt-link :to="`/category/${item.category_id}`">
+              <el-button style="float: right; padding: 3px 0" type="text"
+                >更多</el-button
+              >
+            </nuxt-link>
+          </div>
+          <div>
+            <div class="card-body-left hidden-xs-only">
+              <nuxt-link :to="`/category/${item.category_id}`">
+                <el-image
+                  lazy
+                  class="category-cover"
+                  :src="item.category_cover"
+                >
+                  <div slot="error" class="image-slot">
+                    <img
+                      src="/static/images/default-category-cover.png"
+                      :alt="item.category_name"
+                    />
+                  </div>
+                </el-image>
+              </nuxt-link>
+            </div>
+            <div class="card-body-right">
+              <nuxt-link
+                v-for="(doc, index) in item.document"
+                v-show="index < 5"
+                :key="'c-' + item.category_id + 'd' + doc.id"
+                class="el-link el-link--default"
+                :to="`/document/${doc.uuid}`"
+              >
+                <img
+                  :src="`/static/images/${getIcon(doc.ext)}_24.png`"
+                  :alt="`${getIcon(doc.ext)}文档`"
+                />
+                <span>{{ doc.title }}</span>
+              </nuxt-link>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
     <template v-for="item in advertisements">
       <div
         v-if="item.position == 'index_link_top'"
@@ -839,7 +895,7 @@ export default {
     }
   }
 
-  .category-item {
+  .category-item-list {
     .el-card__body {
       padding-bottom: 0;
       .doc-item {
@@ -895,6 +951,59 @@ export default {
 
     .el-card__body {
       padding: 0 20px;
+    }
+  }
+
+  .category-item-card {
+    .el-card__body {
+      padding-bottom: 15px;
+    }
+    .el-card__body > div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      .card-body-left {
+        width: 180px;
+        padding-right: 20px;
+
+        .category-cover {
+          height: 145px;
+          width: 180px;
+          overflow: hidden;
+        }
+
+        .image-slot {
+          height: 145px;
+          overflow: hidden;
+        }
+
+        img {
+          width: 180px;
+          height: 145px;
+          border-radius: 5px;
+        }
+      }
+
+      .card-body-right {
+        width: 100%;
+        margin-top: -5px;
+        box-sizing: border-box;
+        padding-right: 200px;
+
+        a {
+          text-decoration: none;
+          display: block;
+          line-height: 30px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          img {
+            display: none;
+          }
+        }
+      }
     }
   }
 }
@@ -977,7 +1086,7 @@ export default {
       }
     }
 
-    .category-item {
+    .category-item-list {
       & > .el-col {
         padding-left: 0 !important;
         padding-right: 0 !important;
@@ -1011,6 +1120,31 @@ export default {
 
       .el-card__body {
         padding: 0 10px;
+      }
+    }
+
+    .category-item-card {
+      .el-col-12 {
+        width: 100%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+
+        .card-body-right {
+          padding-right: 0 !important;
+
+          a {
+            line-height: 35px !important;
+
+            img {
+              display: inline-block !important;
+              height: 18px;
+              width: 18px;
+              position: relative;
+              top: 3px;
+              margin-right: 3px;
+            }
+          }
+        }
       }
     }
   }
