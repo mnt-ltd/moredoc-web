@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   listNavigation,
   deleteNavigation,
@@ -70,7 +71,6 @@ import { genLinkHTML, parseQueryIntArray, categoryToTrees } from '~/utils/utils'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormNavigation from '~/components/FormNavigation.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormNavigation },
   layout: 'admin',
@@ -115,7 +115,7 @@ export default {
       },
     },
   },
-  async created() {
+  created() {
     this.initSearchForm()
     this.initTableListFields()
     // await this.listNavigation()
@@ -125,7 +125,7 @@ export default {
       this.loading = true
       const res = await listNavigation(this.search)
       if (res.status === 200) {
-        let navigations = res.data.navigation || []
+        const navigations = res.data.navigation || []
         navigations.map((item) => {
           item.title_html = genLinkHTML(item.title, item.href)
           if (item.color) {
@@ -135,9 +135,11 @@ export default {
               `<a style="color:${item.color}" `
             )
           }
+          item.disable_delete = item.fixed
+          return item
         })
 
-        let trees = categoryToTrees(navigations, false)
+        const trees = categoryToTrees(navigations, false)
         this.navigations = trees
         this.total = res.data.total
       } else {
@@ -161,9 +163,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listNavigation()
       } else {
