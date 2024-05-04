@@ -23,61 +23,87 @@
                 :alt="settings.system.sitename"
             /></nuxt-link>
           </el-menu-item>
-          <el-menu-item index="/" class="hidden-xs-only">
-            <nuxt-link to="/">首页</nuxt-link>
-          </el-menu-item>
-          <el-menu-item index="/category" class="hidden-xs-only">
-            <el-popover
-              ref="popover0"
-              width="520"
-              trigger="hover"
-              :open-delay="600"
-            >
-              <CategoryCard
-                :type="0"
-                @close="closePopover('popover0')"
-              ></CategoryCard>
-              <nuxt-link slot="reference" to="/category">文库资料</nuxt-link>
-            </el-popover>
-          </el-menu-item>
-          <el-menu-item index="/article" class="hidden-xs-only">
-            <el-popover
-              ref="popover1"
-              width="520"
-              trigger="hover"
-              :open-delay="600"
-            >
-              <CategoryCard
-                :type="1"
-                @close="closePopover('popover1')"
-              ></CategoryCard>
-              <nuxt-link slot="reference" to="/article">文章资讯</nuxt-link>
-            </el-popover>
-          </el-menu-item>
-          <template v-for="item in navigations">
-            <el-submenu
-              v-if="item.children && item.children.length > 0"
-              :key="'nav-' + item.id"
-              :index="`nav-${item.id}`"
-              class="hidden-xs-only"
-            >
-              <template slot="title">{{ item.title }}</template>
+          <template v-for="item in navigations.filter((item) => item.enable)">
+            <template v-if="item.fixed">
+              <el-menu-item
+                v-if="item.href == '/'"
+                :key="'nav-index-' + item.id"
+                index="/"
+                class="hidden-xs-only"
+              >
+                <nuxt-link to="/">{{ item.title || '首页' }}</nuxt-link>
+              </el-menu-item>
+              <el-menu-item
+                v-if="item.href == '/category'"
+                :key="'nav-category-' + item.id"
+                index="/category"
+                class="hidden-xs-only"
+              >
+                <el-popover
+                  ref="popover0"
+                  width="520"
+                  trigger="hover"
+                  :open-delay="600"
+                >
+                  <CategoryCard
+                    :type="0"
+                    @close="closePopover('popover0')"
+                  ></CategoryCard>
+                  <nuxt-link slot="reference" to="/category">{{
+                    item.title || '文库资料'
+                  }}</nuxt-link>
+                </el-popover>
+              </el-menu-item>
+              <el-menu-item
+                v-if="item.href == '/article'"
+                :key="'nav-article-' + item.id"
+                index="/article"
+                class="hidden-xs-only"
+              >
+                <el-popover
+                  ref="popover1"
+                  width="520"
+                  trigger="hover"
+                  :open-delay="600"
+                >
+                  <CategoryCard
+                    :type="1"
+                    @close="closePopover('popover1')"
+                  ></CategoryCard>
+                  <nuxt-link slot="reference" to="/article">{{
+                    item.title || '文章资讯'
+                  }}</nuxt-link>
+                </el-popover>
+              </el-menu-item>
+            </template>
+            <template v-else>
+              <el-submenu
+                v-if="item.children && item.children.length > 0"
+                :key="'nav-' + item.id"
+                :index="`nav-${item.id}`"
+                class="hidden-xs-only"
+              >
+                <template slot="title">{{ item.title }}</template>
+                <NavigationLink
+                  v-for="child in item.children || []"
+                  :key="'child-' + child.id"
+                  :hidden-x-s="true"
+                  :navigation="child"
+                />
+              </el-submenu>
               <NavigationLink
-                v-for="child in item.children || []"
-                :key="'child-' + child.id"
+                v-else
+                :key="'nav1-' + item.id"
+                :navigation="item"
                 :hidden-x-s="true"
-                :navigation="child"
               />
-            </el-submenu>
-            <NavigationLink
-              v-else
-              :key="'nav1-' + item.id"
-              :navigation="item"
-              :hidden-x-s="true"
-            />
+            </template>
           </template>
           <el-menu-item
-            v-show="$route.path !== '/'"
+            v-show="
+              $route.path !== '/' ||
+              navigations.filter((item) => item.enable).length <= 3
+            "
             index="searchbox"
             class="nav-searchbox hidden-xs-only"
             :class="navigations.length <= 2 ? 'nav-searchbox-large' : ''"
@@ -245,9 +271,21 @@
         >
       </ul>
       <el-collapse v-model="activeCollapse">
-        <el-collapse-item name="categories">
+        <el-collapse-item
+          v-if="
+            navigations.filter(
+              (item) => item.enable && item.fixed && item.href === '/category'
+            ).length > 0
+          "
+          name="categories"
+        >
           <template slot="title"
-            ><i class="el-icon-document"></i> &nbsp; <span>文库资料</span>
+            ><i class="el-icon-document"></i> &nbsp;
+            <span>{{
+              navigations.filter(
+                (item) => item.enable && item.fixed && item.href === '/category'
+              )[0].title || '文库资料'
+            }}</span>
           </template>
           <ul>
             <li
@@ -263,9 +301,21 @@
             </li>
           </ul>
         </el-collapse-item>
-        <el-collapse-item name="article">
+        <el-collapse-item
+          v-if="
+            navigations.filter(
+              (item) => item.enable && item.fixed && item.href === '/article'
+            ).length > 0
+          "
+          name="article"
+        >
           <template slot="title"
-            ><i class="el-icon-tickets"></i> &nbsp; <span>文章资讯</span>
+            ><i class="el-icon-tickets"></i> &nbsp;
+            <span>{{
+              navigations.filter(
+                (item) => item.enable && item.fixed && item.href === '/article'
+              )[0].title || '文章资讯'
+            }}</span>
           </template>
           <ul>
             <li
@@ -283,7 +333,11 @@
         </el-collapse-item>
       </el-collapse>
       <el-menu :default-active="$route.path" class="el-menu-mobile">
-        <template v-for="item in navigations">
+        <template
+          v-for="item in navigations.filter(
+            (item) => item.enable && !item.fixed
+          )"
+        >
           <el-submenu
             v-if="item.children && item.children.length > 0"
             :key="'nav-' + item.id"

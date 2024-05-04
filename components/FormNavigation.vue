@@ -7,7 +7,10 @@
       :model="navigation"
     >
       <!-- 下拉菜单选择一级分类 -->
-      <el-form-item label="上级导航">
+      <el-form-item
+        v-if="!(navigation.id > 0 && navigation.fixed)"
+        label="上级导航"
+      >
         <el-select
           v-model="navigation.parent_id"
           :filterable="true"
@@ -33,14 +36,12 @@
           clearable
         ></el-input>
       </el-form-item>
-      <el-form-item
-        label="地址"
-        prop="href"
-      >
+      <el-form-item label="地址" prop="href">
         <el-input
           v-model="navigation.href"
           placeholder="请输入导航地址，如 https://mnt.ltd"
           clearable
+          :disabled="navigation.fixed"
         ></el-input>
       </el-form-item>
       <el-row :gutter="20">
