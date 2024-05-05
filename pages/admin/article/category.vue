@@ -88,7 +88,7 @@ export default {
         this.search = {
           ...this.search,
           ...this.$route.query,
-          ...parseQueryIntArray(this.$route.query, ['is_notice', 'enable']),
+          ...parseQueryIntArray(this.$route.query, ['enable']),
         }
         await this.initTableListFields()
         this.listCategory()
@@ -227,18 +227,6 @@ export default {
           label: '关键字',
           name: 'wd',
           placeholder: '请输入关键字',
-        },
-        // 是否是公告
-        {
-          type: 'select',
-          label: '是否是公告',
-          name: 'is_notice',
-          placeholder: '请选择是否是公告',
-          multiple: true,
-          options: [
-            { label: '是', value: 1 },
-            { label: '否', value: 0 },
-          ],
         },
         {
           type: 'select',
