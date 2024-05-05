@@ -44,6 +44,7 @@
                   v-if="accessUpdate"
                   type="text"
                   icon="el-icon-edit"
+                  :loading="showUpdating"
                   @click="showUpdateDocument"
                   >编辑文档</el-button
                 >
@@ -562,6 +563,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import QRCode from 'qrcodejs2' // 引入qrcode
+import { f } from 'vue-marquee-text-component'
 import DocumentSimpleList from '~/components/DocumentSimpleList.vue'
 import {
   getDocument,
@@ -634,6 +636,7 @@ export default {
       descriptions: [],
       updateDocumentVisible: false,
       metaDescription: '',
+      showUpdating: false,
     }
   },
   head() {
@@ -735,8 +738,11 @@ export default {
       this.updateDocumentVisible = false
       this.getDocument()
     },
-    showUpdateDocument() {
+    async showUpdateDocument() {
+      this.showUpdating = true
+      await this.getDocument(true)
       this.updateDocumentVisible = true
+      this.showUpdating = false
       const doc = { ...this.document }
       delete doc.icon
       this.updateDocument = doc
@@ -809,7 +815,7 @@ export default {
         }
       })
     },
-    async getDocument() {
+    async getDocument(withAllContent = false) {
       if (!this.documentId && !this.documentUUID) {
         this.$message.error('文档不存在')
         this.$router.replace('/404')
@@ -820,6 +826,7 @@ export default {
         id: this.documentId,
         uuid: this.documentUUID,
         with_author: true,
+        with_all_content: withAllContent,
       })
 
       if (res.status !== 200) {
