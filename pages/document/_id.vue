@@ -734,9 +734,10 @@ export default {
       score: null,
       disabledScore: false,
       downloading: false,
-      documentId: isNaN(Number(this.$route.params.id))
-        ? 0
-        : parseInt(this.$route.params.id),
+      documentId:
+        this.$route.params.id.length === 16
+          ? 0
+          : parseInt(this.$route.params.id),
       documentUUID: this.$route.params.id || '',
       pages: [],
       pagesPerRead: 10,
