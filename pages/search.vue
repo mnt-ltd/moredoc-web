@@ -271,6 +271,7 @@
             <nuxt-link
               v-for="keyword in keywords"
               :key="'kw-' + keyword"
+              rel="nofollow"
               :to="{
                 path: '/search',
                 query: {
