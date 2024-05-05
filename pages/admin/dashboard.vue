@@ -81,7 +81,7 @@
             <i class="el-icon-tickets"></i>
             最大文章数
           </template>
-          不限
+          {{ license.max_articles || '不限' }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
