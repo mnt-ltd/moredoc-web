@@ -1059,7 +1059,7 @@ export default {
       if (doc.status !== 2) {
         // 2 为文档已转换成功，不需要展示提示
         this.documentStatusOptions.map((item) => {
-          if (item.value === doc.status) {
+          if (item.value === doc.status || (!doc.status && item.value === 0)) {
             this.tips = `当前文档【${item.label}】，暂时无法正常提供预览，建议您下载到本地进行阅读。`
           }
           return item
