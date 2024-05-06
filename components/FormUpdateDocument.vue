@@ -120,7 +120,17 @@
           v-model="document.description"
           placeholder="请输入文档摘要"
           type="textarea"
-          rows="5"
+          rows="4 "
+        ></el-input>
+      </el-form-item>
+      <el-form-item
+        label="文档文本内容(一般无需编辑，当文档文本乱码时可以在此编辑修正)"
+      >
+        <el-input
+          v-model="document.content"
+          placeholder="请输入文档文本内容"
+          type="textarea"
+          rows="8"
         ></el-input>
       </el-form-item>
 

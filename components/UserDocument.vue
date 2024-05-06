@@ -168,6 +168,7 @@
             <el-button
               type="text"
               icon="el-icon-edit"
+              :loading="updating"
               @click="updateDocument(scope.row)"
             ></el-button>
           </el-tooltip>
@@ -214,7 +215,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { deleteDocument, listDocument, searchDocument } from '~/api/document'
+import {
+  deleteDocument,
+  getDocument,
+  listDocument,
+  searchDocument,
+} from '~/api/document'
 import {
   formatBytes,
   formatDatetime,
@@ -249,6 +255,7 @@ export default {
       isSearch: false,
       updateDocumentVisible: false,
       document: { id: 0 },
+      updating: false,
     }
   },
   computed: {
@@ -292,11 +299,17 @@ export default {
     formatBytes,
     formatDatetime,
     formatRelativeTime,
-    updateDocument(row) {
+    async updateDocument(row) {
+      this.updating = true
+      await this.getDocument(row.id)
+      this.updating = false
       this.updateDocumentVisible = true
-      const doc = { ...row }
-      delete doc.icon
-      this.document = doc
+    },
+    async getDocument(id) {
+      const res = await getDocument({ id, with_all_content: true })
+      if (res.status === 200) {
+        this.document = res.data || { id: 0 }
+      }
     },
     updateDocumentSuccess() {
       this.updateDocumentVisible = false

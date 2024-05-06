@@ -237,6 +237,7 @@
               v-for="keyword in keywords"
               :key="'kw' + keyword"
               :to="{ path: '/search', query: { wd: keyword } }"
+              rel="nofollow"
             >
               <el-tag effect="plain"> {{ keyword }}</el-tag>
             </nuxt-link>
