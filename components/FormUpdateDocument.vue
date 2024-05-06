@@ -2,23 +2,48 @@
   <div class="com-form-update-document">
     <el-form
       ref="document"
-      v-loading="loading"
       label-position="top"
       label-width="80px"
       :model="document"
     >
-      <el-form-item
-        label="名称"
-        prop="title"
-        :rules="[
-          { required: true, message: '请输入文档名称', trigger: 'blur' },
-        ]"
-      >
-        <el-input
-          v-model="document.title"
-          placeholder="请输入文档名称"
-        ></el-input>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="14">
+          <el-form-item
+            label="名称"
+            prop="title"
+            :rules="[
+              { required: true, message: '请输入文档名称', trigger: 'blur' },
+            ]"
+          >
+            <el-input
+              v-model="document.title"
+              type="textarea"
+              :rows="3"
+              placeholder="请输入文档名称"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-upload
+            ref="upload"
+            v-loading="uploading"
+            drag
+            :action="'/api/v1/upload/document'"
+            :headers="{ authorization: `bearer ${token}` }"
+            :show-file-list="true"
+            :auto-upload="true"
+            :on-change="onChange"
+            :before-upload="beforeUpload"
+            :on-remove="onRemove"
+            :disabled="loading"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              如需变更文档源文件，请将文件拖到此处，或<em>点击上传</em>
+            </div>
+          </el-upload>
+        </el-col>
+      </el-row>
       <el-row :gutter="20">
         <el-col :span="12" :xs="24">
           <el-form-item
@@ -177,11 +202,43 @@ export default {
     return {
       documentStatusOptions,
       loading: false,
+      uploading: false,
       document: this.getInitialDocumentData(),
+      attachment: {
+        id: 0,
+      },
+      allowExt: [
+        '.doc',
+        '.docx',
+        '.rtf',
+        '.wps',
+        '.odt',
+        '.dot',
+        '.ppt',
+        '.pptx',
+        '.pps',
+        '.ppsx',
+        '.dps',
+        '.odp',
+        '.pot',
+        '.xls',
+        '.xlsx',
+        '.csv',
+        '.tsv',
+        '.et',
+        '.ods',
+        '.epub',
+        '.umd',
+        '.chm',
+        '.mobi',
+        '.txt',
+        '.pdf',
+      ],
     }
   },
   computed: {
     ...mapGetters('setting', ['settings']),
+    ...mapGetters('user', ['token']),
   },
   watch: {
     initDocument: {
@@ -234,6 +291,39 @@ export default {
         }
       })
     },
+    onChange(file) {
+      if (!file.response) {
+        this.uploading = true
+      } else {
+        this.uploading = false
+        if (file.response.code === 200) {
+          this.attachment.id = file.response.data.id
+          try {
+            // 只取最后一个文件
+            this.$refs.upload.uploadFiles = [file]
+          } catch (error) {}
+        } else {
+          this.$message.error(file.response.message || '上传失败')
+        }
+      }
+    },
+    beforeUpload(file) {
+      const ext = '.' + file.name.split('.').pop().toLowerCase()
+      const allowExt =
+        this.settings.security.document_allowed_ext || this.allowExt
+      console.log(allowExt)
+      if (!allowExt.includes(ext)) {
+        this.$message.error('不允许上传该类型文件')
+        this.uploading = false
+        return false
+      }
+      this.attachment.id = 0
+      console.log('beforeUpload', file)
+    },
+    onRemove(file) {
+      this.attachment.id = 0
+      console.log('onRemove', file)
+    },
     async getDocument(documentId) {
       this.loading = true
       const res = await getDocument({ id: documentId })
@@ -249,6 +339,21 @@ export default {
 .com-form-update-document {
   .el-select {
     width: 100%;
+  }
+  .el-upload-dragger {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 125px;
+    .el-icon-upload {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 50px;
+    }
+    .el-upload__text {
+      font-size: 13px;
+      color: #888888;
+    }
   }
 }
 </style>
