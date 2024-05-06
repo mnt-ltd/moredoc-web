@@ -563,7 +563,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import QRCode from 'qrcodejs2' // 引入qrcode
-import { f } from 'vue-marquee-text-component'
 import DocumentSimpleList from '~/components/DocumentSimpleList.vue'
 import {
   getDocument,
