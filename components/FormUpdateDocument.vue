@@ -280,7 +280,14 @@ export default {
       this.$refs.document.validate(async (valid) => {
         if (valid) {
           this.loading = true
-          const res = await updateDocument(this.document)
+          const document = {
+            ...this.document,
+            attachment: {
+              ...this.document.attachment,
+              id: this.attachment.id,
+            },
+          }
+          const res = await updateDocument(document)
           if (res.status === 200) {
             this.$message.success('更新成功')
             this.$emit('success')
