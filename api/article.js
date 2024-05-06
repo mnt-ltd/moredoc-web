@@ -119,3 +119,11 @@ export const crawlArticle = (data) => {
     data,
   })
 }
+
+export const updateArticleIndexes = (data) => {
+  return service({
+    url: '/api/v1/article/index',
+    method: 'put',
+    data,
+  })
+}

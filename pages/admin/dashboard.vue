@@ -147,20 +147,16 @@
             type="text"
             @click="updateDocumentIndexes"
           >
-            更新全量索引</el-button
+            更新文档索引</el-button
           >
-          <!-- <el-tooltip
-            content="重建全文索引，将会删除当前的索引数据，并重新全量更新索引内容"
+          <el-button
+            :loading="articleIndexloading"
+            icon="el-icon-refresh"
+            type="text"
+            @click="updateArticleIndexes"
           >
-            <el-button
-              :loading="loading"
-              icon="el-icon-refresh"
-              type="text"
-              @click="renewDocumentIndex"
-            >
-              重建全文索引</el-button
-            >
-          </el-tooltip> -->
+            更新文章索引</el-button
+          >
         </div>
       </div>
       <el-descriptions class="margin-top" :column="3" border>
@@ -506,6 +502,7 @@ import {
   setReleaseSource,
 } from '~/api/config'
 import { updateDocumentIndexes } from '~/api/document'
+import { updateArticleIndexes } from '~/api/article'
 import { formatDatetime, formatBytes, formatDate } from '~/utils/utils'
 
 use([
@@ -553,6 +550,7 @@ export default {
       },
       envs: [],
       loading: false,
+      articleIndexloading: false,
       loadingLicense: false,
       envLoading: false,
       gauges: [],
@@ -681,12 +679,23 @@ export default {
     async updateDocumentIndexes() {
       this.loading = true
       const res = await updateDocumentIndexes()
+      this.loading = false
       if (res.status === 200) {
         this.$message.success('提交成功')
         this.loading = false
         return
       }
-      this.loading = false
+      this.$message.error(res.data.message || '更新失败')
+    },
+    async updateArticleIndexes() {
+      this.articleIndexloading = true
+      const res = await updateArticleIndexes()
+      this.articleIndexloading = false
+      if (res.status === 200) {
+        this.$message.success('提交成功')
+        this.loading = false
+        return
+      }
       this.$message.error(res.data.message || '更新失败')
     },
     initDevice() {
