@@ -32,7 +32,20 @@ export const setting = {
     async getSettings({ commit }) {
       const res = await getSettings()
       if (res.status === 200) {
-        commit('setSettings', res.data)
+        commit('setSettings', {
+          system: {},
+          footer: {},
+          security: {},
+          download: {},
+          display: {},
+          payment: {},
+          vip: {
+            enable: false,
+            icon: '',
+          },
+          language: [],
+          ...res.data,
+        })
       } else {
         Message({
           type: 'error',
