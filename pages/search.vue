@@ -5,24 +5,36 @@
         <nuxt-link to="/" class="el-link el-link--default"
           ><i class="fa fa-home"></i> &nbsp;首页</nuxt-link
         >
-        <el-popover width="520" trigger="hover">
-          <CategoryCard :type="0"></CategoryCard>
-          <nuxt-link
-            slot="reference"
-            class="el-link el-link--default"
-            to="/category"
-            >文库资料</nuxt-link
+        <template v-for="item in navigations.filter((item) => item.enable)">
+          <el-popover
+            v-if="item.href === '/category'"
+            :key="'/category' + item.id"
+            width="520"
+            trigger="hover"
           >
-        </el-popover>
-        <el-popover width="520" trigger="hover">
-          <CategoryCard :type="1"></CategoryCard>
-          <nuxt-link
-            slot="reference"
-            class="el-link el-link--default"
-            to="/article"
-            >文章资讯</nuxt-link
+            <CategoryCard :type="0"></CategoryCard>
+            <nuxt-link
+              slot="reference"
+              class="el-link el-link--default"
+              to="/category"
+              >{{ item.title || '文库资料' }}</nuxt-link
+            >
+          </el-popover>
+          <el-popover
+            v-if="item.href === '/article'"
+            :key="'/article' + item.id"
+            width="520"
+            trigger="hover"
           >
-        </el-popover>
+            <CategoryCard :type="1"></CategoryCard>
+            <nuxt-link
+              slot="reference"
+              class="el-link el-link--default"
+              to="/article"
+              >{{ item.title || '文章资讯' }}</nuxt-link
+            >
+          </el-popover>
+        </template>
         <span class="float-right">
           <nuxt-link to="/upload" class="el-link el-link--default"
             ><i class="el-icon-upload2"></i>&nbsp;上传文档</nuxt-link
@@ -398,7 +410,7 @@ export default {
   computed: {
     ...mapGetters('user', ['user']),
     ...mapGetters('category', ['categoryTrees']),
-    ...mapGetters('setting', ['settings']),
+    ...mapGetters('setting', ['settings', 'navigations']),
     filterSize() {
       return this.isMobile ? 'mini' : 'medium'
     },
