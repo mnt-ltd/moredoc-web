@@ -46,13 +46,13 @@ export const category = {
   },
   getters: {
     categories(state) {
-      return state.categories
+      return state.categories || []
     },
     categoryTrees(state) {
-      return categoryToTrees(state.categories)
+      return categoryToTrees(state.categories) || []
     },
     categoryMap(state) {
-      return state.categoryMap
+      return state.categoryMap || {}
     },
   },
 }

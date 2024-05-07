@@ -145,16 +145,16 @@ export const user = {
   },
   getters: {
     user(state) {
-      return state.user
+      return state.user || { id: 0 }
     },
     token(state) {
-      return state.token
+      return state.token || ''
     },
     permissions(state) {
-      return state.permissions
+      return state.permissions || []
     },
     allowPages(state) {
-      return state.allowPages
+      return state.allowPages || []
     },
   },
 }

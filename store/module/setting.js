@@ -25,7 +25,14 @@ export const setting = {
     async getSettings({ commit }) {
       const res = await getSettings()
       if (res.status === 200) {
-        commit('setSettings', res.data)
+        commit('setSettings', {
+          system: {},
+          footer: {},
+          security: {},
+          display: {},
+          language: [],
+          ...res.data,
+        })
       }
       return res
     },
