@@ -172,6 +172,11 @@ export default {
     batchUpdateSpiderDocuments() {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
+          if (!this.form.user_id) {
+            this.$message.error('请输入用户ID')
+            return
+          }
+
           const docs = this.documents.map((item) => {
             const newItem = {
               ...item,
