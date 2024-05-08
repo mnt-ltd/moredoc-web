@@ -510,7 +510,7 @@ export default {
           width: 130,
           type: 'enum',
           enum: enumStatus,
-          // editable: true,
+          editable: true,
         },
         { prop: 'url_html', label: '文档链接', minWidth: 200, type: 'html' },
         {
