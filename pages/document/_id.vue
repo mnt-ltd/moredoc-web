@@ -653,16 +653,6 @@
       />
     </el-dialog>
     <el-dialog
-      title="用户登录"
-      :visible.sync="loginVisible"
-      :width="isMobile ? '95%' : '520px'"
-    >
-      <form-login
-        :enable-redirect="false"
-        @onSuccess="loginSuccess"
-      ></form-login>
-    </el-dialog>
-    <el-dialog
       title="文档下载"
       :visible.sync="downloadVisible"
       :width="isMobile ? '95%' : '520px'"
@@ -762,7 +752,6 @@ export default {
       cardWidth: 0,
       cardOffsetTop: 0,
       tips: '',
-      loginVisible: false,
       downloadVisible: false,
       descriptions: [],
       orderNO: '',
@@ -1225,8 +1214,8 @@ export default {
       await this.checkAndRefreshUser()
 
       if (!this.user.id) {
-        // 未登录，显示登录
-        this.loginVisible = true
+        this.$message.warning('您未登录，请先登录再下载')
+        this.$router.push('/login')
         return
       }
 
@@ -1393,8 +1382,8 @@ export default {
     async createFavorite() {
       await this.checkAndRefreshUser()
       if (!this.user.id) {
-        // 未登录，显示登录
-        this.loginVisible = true
+        this.$message.warning('您未登录，请先登录再收藏')
+        this.$router.push('/login')
         return
       }
 
@@ -1479,7 +1468,6 @@ export default {
       })
     },
     loginSuccess() {
-      this.loginVisible = false
       this.downloadDocument()
     },
     randomAdvertisement() {
