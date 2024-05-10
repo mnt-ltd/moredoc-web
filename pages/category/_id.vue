@@ -233,6 +233,7 @@
               v-for="keyword in keywords"
               :key="'kw' + keyword"
               :to="{ path: '/search', query: { wd: keyword } }"
+              target="_blank"
               rel="nofollow"
             >
               <el-tag effect="plain"> {{ keyword }}</el-tag>
