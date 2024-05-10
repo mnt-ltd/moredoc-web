@@ -6,8 +6,9 @@
       </li>
       <li v-for="doc in docs" :key="'doc-' + doc.id">
         <h3 class="doc-title">
-          <a
-            :href="`/document/${doc.uuid || doc.id}`"
+          <nuxt-link
+            target="_blank"
+            :to="`/document/${doc.uuid || doc.id}`"
             class="el-link el-link--primary"
           >
             <img
@@ -15,7 +16,7 @@
               :alt="`${doc.icon}文档`"
             />
             <span v-html="doc.title"></span>
-          </a>
+          </nuxt-link>
         </h3>
         <div class="doc-desc" v-html="doc.description"></div>
         <div class="doc-info">

@@ -43,6 +43,7 @@
           <nuxt-link
             v-for="word in settings.system.recommend_words"
             :key="'kw-' + word"
+            target="_blank"
             :to="{
               path: '/search',
               query: { wd: word },
@@ -78,12 +79,16 @@
         >
           <el-row>
             <el-col :span="8">
-              <nuxt-link :to="`/me`">
+              <nuxt-link :to="`/me`" target="_blank">
                 <user-avatar :size="64" :user="user" />
               </nuxt-link>
             </el-col>
             <el-col :span="16">
-              <nuxt-link class="el-link el-link--default" :to="`/me`">
+              <nuxt-link
+                class="el-link el-link--default"
+                target="_blank"
+                :to="`/me`"
+              >
                 <h3>{{ user.username }}</h3>
               </nuxt-link>
               <div class="help-block login-tips">
@@ -118,12 +123,20 @@
           <div class="help-block sub-btn">
             <el-row>
               <el-col :span="12">
-                <nuxt-link to="/upload" class="el-link el-link--default">
+                <nuxt-link
+                  to="/upload"
+                  class="el-link el-link--default"
+                  target="_blank"
+                >
                   <small><i class="el-icon-upload2"></i> 上传文档</small>
                 </nuxt-link>
               </el-col>
               <el-col :span="12" class="text-right">
-                <nuxt-link to="/post" class="el-link el-link--default">
+                <nuxt-link
+                  to="/post"
+                  class="el-link el-link--default"
+                  target="_blank"
+                >
                   <small><i class="el-icon-plus"></i> 发布文章</small>
                 </nuxt-link>
               </el-col>
@@ -170,7 +183,7 @@
         <el-card shadow="never" class="index-articles mgt-20px">
           <div slot="header">
             <i class="fa fa-newspaper-o"></i> 文章资讯
-            <nuxt-link to="/article" class="float-right">
+            <nuxt-link to="/article" target="_blank" class="float-right">
               <el-button type="text">更多</el-button>
             </nuxt-link>
           </div>
@@ -214,7 +227,7 @@
                 :content="item.title"
                 placement="top"
               >
-                <nuxt-link :to="`/document/${item.uuid}`">
+                <nuxt-link :to="`/document/${item.uuid}`" target="_blank">
                   <document-cover :document="item" />
                   <div class="el-link el-link--default">{{ item.title }}</div>
                 </nuxt-link>
@@ -250,6 +263,7 @@
                 <nuxt-link
                   class="el-link el-link--default"
                   :to="`/category/${category.id}`"
+                  target="_blank"
                 >
                   <img
                     :src="category.icon || '/static/images/logo-icon.png'"
@@ -264,6 +278,7 @@
                 :key="'child-' + child.id"
                 class="el-link el-link--default"
                 :to="`/category/${child.id}`"
+                target="_blank"
                 >{{ child.title }}</nuxt-link
               >
             </el-card>
@@ -295,6 +310,7 @@
             <nuxt-link
               :to="`/category/${item.category_id}`"
               class="float-right"
+              target="_blank"
             >
               <el-button type="text">更多</el-button>
             </nuxt-link>
@@ -310,6 +326,7 @@
                 <nuxt-link
                   class="el-link el-link--default doc-cover"
                   :to="`/document/${doc.uuid}`"
+                  target="_blank"
                 >
                   <document-cover
                     :width="70"
@@ -321,6 +338,7 @@
                   <nuxt-link
                     class="el-link el-link--default"
                     :to="`/document/${doc.uuid}`"
+                    target="_blank"
                   >
                     <div>{{ doc.title }}</div>
                   </nuxt-link>
@@ -341,7 +359,7 @@
         <el-card class="box-card mgt-20px" shadow="never">
           <div slot="header" class="clearfix">
             <strong>{{ item.category_name }}</strong>
-            <nuxt-link :to="`/category/${item.category_id}`">
+            <nuxt-link :to="`/category/${item.category_id}`" target="_blank">
               <el-button style="float: right; padding: 3px 0" type="text"
                 >更多</el-button
               >
@@ -349,7 +367,7 @@
           </div>
           <div>
             <div class="card-body-left hidden-xs-only">
-              <nuxt-link :to="`/category/${item.category_id}`">
+              <nuxt-link target="_blank" :to="`/category/${item.category_id}`">
                 <el-image
                   lazy
                   class="category-cover"
@@ -370,6 +388,7 @@
                 v-show="index < 5"
                 :key="'c-' + item.category_id + 'd' + doc.id"
                 class="el-link el-link--default"
+                target="_blank"
                 :to="`/document/${doc.uuid}`"
               >
                 <img

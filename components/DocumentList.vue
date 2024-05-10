@@ -7,7 +7,7 @@
             :span="!settings.display.hide_keywords_on_lists || isMobile ? 4 : 3"
             class="doc-cover"
           >
-            <nuxt-link :to="`/document/${doc.uuid || doc.id}`">
+            <nuxt-link :to="`/document/${doc.uuid || doc.id}`" target="_blank">
               <document-cover :document="doc" />
             </nuxt-link>
           </el-col>
@@ -18,6 +18,7 @@
           >
             <h3>
               <nuxt-link
+                target="_blank"
                 :to="`/document/${doc.uuid || doc.id}`"
                 class="el-link el-link--primary"
                 ><img

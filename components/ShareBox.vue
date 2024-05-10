@@ -52,13 +52,12 @@ export default {
       return window.location.href
     },
   },
-  watch: {
-    title() {
-      this.qrcode()
-    },
+  mounted() {
+    this.qrcode()
   },
   methods: {
     qrcode() {
+      console.log('qrcode')
       // 把之前可能存在的二维码清空
       this.$refs.qrcode.innerHTML =
         '<div class="mgb-5px">打开微信 扫码分享</div>'

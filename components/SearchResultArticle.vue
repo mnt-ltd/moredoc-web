@@ -7,6 +7,7 @@
       <li v-for="article in articles" :key="'article-' + article.id">
         <h3 class="article-title">
           <nuxt-link
+            target="_blank"
             :to="`/article/${article.identifier || article.id}`"
             class="el-link el-link--primary"
           >

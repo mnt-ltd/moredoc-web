@@ -416,13 +416,15 @@ export default {
       return item.enable && item.type
     })
 
-    this.loopUpdate()
     if (requireLogin(this.settings, this.user, this.$route, this.permissions)) {
       this.$router.push('/login')
     }
   },
+  mounted() {
+    window.addEventListener('focus', this.checkAndRefreshUser())
+  },
   beforeDestroy() {
-    clearTimeout(this.timeouter)
+    window.removeEventListener('focus', this.checkAndRefreshUser())
   },
   methods: {
     ...mapActions('category', ['getCategories']),
@@ -485,19 +487,14 @@ export default {
       })
       this.search.wd = ''
     },
-    loopUpdate() {
-      clearTimeout(this.timeouter)
-      this.timeouter = setTimeout(() => {
-        this.checkAndRefreshUser()
-        // 更新系统配置信息
-        this.getSettings()
-        // 更新分类信息
-        this.getCategories()
-        // 更新导航栏
-        this.listNavigation()
-        // 递归
-        this.loopUpdate()
-      }, 1000 * 60) // 每分钟更新一次
+    updateVuex() {
+      this.checkAndRefreshUser()
+      // 更新系统配置信息
+      this.getSettings()
+      // 更新分类信息
+      this.getCategories()
+      // 更新导航栏
+      this.listNavigation()
     },
     async handleDropdown(command) {
       switch (command) {

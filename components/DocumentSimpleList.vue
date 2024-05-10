@@ -56,7 +56,7 @@ export default {
     },
     target: {
       type: String,
-      default: '',
+      default: '_blank',
     },
     showPopover: {
       type: Boolean,
