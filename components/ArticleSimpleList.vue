@@ -6,6 +6,7 @@
           <nuxt-link
             :to="`/article/${article.identifier}`"
             class="el-link el-link--default"
+            target="_blank"
           >
             {{ article.title }}
           </nuxt-link>

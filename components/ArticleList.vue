@@ -6,6 +6,7 @@
           <nuxt-link
             :to="`/article/${article.identifier}`"
             class="el-link el-link--default"
+            target="_blank"
             >{{ article.title }}
             <img
               v-if="article.recommend_at"
@@ -19,6 +20,7 @@
             <nuxt-link
               :to="`/user/${article.user_id}`"
               class="el-link el-link--default font-normal author"
+              target="_blank"
               ><el-avatar
                 :size="16"
                 class="avatar"

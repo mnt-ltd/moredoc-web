@@ -7,6 +7,7 @@
       <li v-for="doc in docs" :key="'doc-' + doc.id">
         <h3 class="doc-title">
           <nuxt-link
+            target="_blank"
             :to="`/document/${doc.uuid || doc.id}`"
             class="el-link el-link--primary"
           >
