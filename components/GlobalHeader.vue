@@ -544,11 +544,6 @@ export default {
         height: 42px;
       }
     }
-    a.el-popover__reference,
-    .el-popover__reference-wrapper {
-      position: relative;
-      top: -1px !important;
-    }
     & > div {
       margin: 0 auto;
       width: $default-width;
@@ -594,6 +589,7 @@ export default {
       display: inline-block;
       // padding: 0 20px;
       padding: 0 15px;
+      font-size: 14px;
       font-weight: normal;
     }
     .el-menu-item {
@@ -601,6 +597,10 @@ export default {
       [class^='el-icon-'] {
         font-size: 15px;
         margin-right: 2px;
+      }
+      & > span {
+        position: relative;
+        top: -1px;
       }
     }
   }

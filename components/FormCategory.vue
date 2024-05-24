@@ -91,7 +91,7 @@
         </el-col>
       </el-row>
 
-      <el-form-item label="描述" prop="description">
+      <el-form-item v-if="initCategory.id > 0" label="描述" prop="description">
         <el-input
           v-model="category.description"
           :type="'textarea'"
@@ -113,7 +113,7 @@
             >
             </el-switch> </el-form-item
         ></el-col>
-        <el-col :span="12">
+        <el-col v-if="initCategory.id > 0" :span="12">
           <el-form-item label="显示分类描述">
             <el-switch
               v-model="category.show_description"
