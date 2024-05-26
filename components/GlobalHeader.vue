@@ -400,6 +400,9 @@ export default {
       this.listNavigation(),
       this.getAdvertisements('global'),
     ])
+    if (this.user.id > 0) {
+      this.getUserPermissions()
+    }
 
     const trees = categoryToTrees(this.categories)
     this.categoryDocumentTrees = trees.filter((item) => {
@@ -429,7 +432,12 @@ export default {
   methods: {
     ...mapActions('category', ['getCategories']),
     ...mapActions('setting', ['getSettings', 'listNavigation']),
-    ...mapActions('user', ['logout', 'getUser', 'checkAndRefreshUser']),
+    ...mapActions('user', [
+      'logout',
+      'getUser',
+      'checkAndRefreshUser',
+      'getUserPermissions',
+    ]),
     showMenuDrawer() {
       this.getSignedToday()
       this.menuDrawerVisible = true
