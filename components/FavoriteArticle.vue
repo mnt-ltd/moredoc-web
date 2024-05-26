@@ -1,7 +1,7 @@
 <template>
   <div class="com-favorite-article">
     <el-table v-loading="loading" :data="favorites" style="width: 100%">
-      <el-table-column prop="title" label="文档" min-width="200">
+      <el-table-column prop="title" label="文章" min-width="200">
         <template slot-scope="scope">
           <nuxt-link
             target="_blank"

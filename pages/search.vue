@@ -107,7 +107,7 @@
       </template>
       <el-col ref="searchMain" :span="18" class="search-main">
         <el-card v-loading="loading" shadow="never">
-          <div v-if="!searchType" slot="header">
+          <div slot="header">
             <div class="search-filter">
               <el-dropdown :show-timeout="showTimeout">
                 <el-button type="text" :size="filterSize">
@@ -118,7 +118,11 @@
                   <el-dropdown-item
                     v-for="item in [
                       { id: 0, title: '全部分类' },
-                      ...categoryTrees.filter((item) => !item.type),
+                      ...categoryTrees.filter(
+                        (item) =>
+                          (!searchType && !item.type) ||
+                          (searchType && item.type == searchType)
+                      ),
                     ]"
                     :key="'cate-' + item.id"
                     :value="item.id"
@@ -166,7 +170,7 @@
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <el-dropdown :show-timeout="showTimeout">
+              <el-dropdown v-if="!searchType" :show-timeout="showTimeout">
                 <el-button type="text" :size="filterSize">
                   <img
                     v-if="query.ext != 'all' && query.ext != ''"
@@ -205,7 +209,13 @@
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
-                    v-for="item in searchSorts"
+                    v-for="item in searchSorts.filter(
+                      (item) =>
+                        !searchType ||
+                        (searchType &&
+                          item.value != 'pages' &&
+                          item.value != 'size')
+                    )"
                     :key="'ss-' + item.value"
                   >
                     <nuxt-link
@@ -490,6 +500,7 @@ export default {
       if (!this.query.wd) {
         return
       }
+      this.total = 0
       this.$router.push({
         path: '/search',
         query: {
