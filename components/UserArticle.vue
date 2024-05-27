@@ -58,7 +58,7 @@
               }"
               class="el-link el-link--default doc-title"
             >
-              <span v-if="query.wd" v-html="scope.row.title"></span>
+              <span v-if="isSearch" v-html="scope.row.title"></span>
               <span v-else>{{ scope.row.title }}</span>
             </nuxt-link>
           </el-tooltip>
@@ -177,6 +177,7 @@ export default {
         created_at: [],
       },
       article: { id: 0 },
+      isSearch: false,
     }
   },
   computed: {
@@ -252,6 +253,7 @@ export default {
       }
 
       if (res.status === 200) {
+        this.isSearch = !!this.query.wd
         this.articles = res.data.article || []
         this.total = res.data.total || 0
       }
