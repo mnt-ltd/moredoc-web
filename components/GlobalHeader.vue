@@ -44,6 +44,7 @@
                   width="520"
                   trigger="hover"
                   :open-delay="600"
+                  :disabled="categories.filter((x) => !x.type).length === 0"
                 >
                   <CategoryCard
                     :type="0"
@@ -65,6 +66,9 @@
                   width="520"
                   trigger="hover"
                   :open-delay="600"
+                  :disabled="
+                    categories.filter((x) => x.type === 1).length === 0
+                  "
                 >
                   <CategoryCard
                     :type="1"
