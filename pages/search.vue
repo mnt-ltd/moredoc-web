@@ -11,6 +11,7 @@
             :key="'/category' + item.id"
             width="520"
             trigger="hover"
+            :disabled="categoryTrees.filter((x) => !x.type).length === 0"
           >
             <CategoryCard :type="0"></CategoryCard>
             <nuxt-link
@@ -25,6 +26,7 @@
             :key="'/article' + item.id"
             width="520"
             trigger="hover"
+            :disabled="categoryTrees.filter((x) => x.type === 1).length === 0"
           >
             <CategoryCard :type="1"></CategoryCard>
             <nuxt-link
