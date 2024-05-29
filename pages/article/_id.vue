@@ -628,5 +628,12 @@ export default {
       }
     }
   }
+  @media screen and (max-width: 768px) {
+    .article-list {
+      position: relative !important;
+      width: 100% !important;
+      top: 0 !important;
+    }
+  }
 }
 </style>
