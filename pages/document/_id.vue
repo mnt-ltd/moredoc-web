@@ -824,7 +824,7 @@ export default {
       const res = await getDocument({
         id: this.documentId,
         uuid: this.documentUUID,
-        with_author: true,
+        with_author: !withAllContent, // 不需要获取作者信息
         with_all_content: withAllContent,
       })
 

@@ -403,7 +403,7 @@ export default {
       window.open(routeUrl.href, '_blank')
     },
     async editRow(row) {
-      const res = await getDocument({ id: row.id })
+      const res = await getDocument({ id: row.id, with_all_content: true })
       if (res.status === 200) {
         this.document = res.data
         this.formVisible = true
