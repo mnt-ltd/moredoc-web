@@ -986,7 +986,10 @@ export default {
         this.$router.replace('/404')
         return
       }
-      const doc = res.data || {}
+      const doc = {
+        user: this.document.user,
+        ...res.data,
+      }
       doc.score = parseFloat(doc.score) / 100 || 4.0
 
       if (!doc.preview || doc.preview >= doc.pages) {

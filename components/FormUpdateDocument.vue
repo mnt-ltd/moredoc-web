@@ -252,7 +252,7 @@ export default {
   },
   created() {
     this.documentStatusOptions = documentStatusOptions.map((item) => {
-      if (item.value === 1) {
+      if (item.value === 1 || item.value === 2) {
         // 转换中 这个状态不能选中
         item.disabled = true
       }
