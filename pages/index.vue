@@ -28,7 +28,7 @@
           <el-input
             v-model="search.wd"
             size="large"
-            placeholder="搜索文档..."
+            placeholder="搜索内容..."
             @keydown.native.enter="onSearch"
           >
             <i
@@ -46,7 +46,7 @@
             target="_blank"
             :to="{
               path: '/search',
-              query: { wd: word },
+              query: { wd: word, type: -1 },
             }"
           >
             <el-tag size="small">{{ word }}</el-tag>
@@ -524,7 +524,8 @@ export default {
     },
     onSearch() {
       if (this.search.wd) {
-        location.href = '/search?wd=' + encodeURIComponent(this.search.wd)
+        location.href =
+          '/search?type=-1&wd=' + encodeURIComponent(this.search.wd)
       }
     },
     async getNotices() {

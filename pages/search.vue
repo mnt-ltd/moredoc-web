@@ -82,7 +82,10 @@
               @change="changeSearchType"
             >
               <el-option
-                v-for="item in categoryTypeOptions"
+                v-for="item in [
+                  { label: '综合', value: -1 },
+                  ...categoryTypeOptions,
+                ]"
                 :key="'st-' + item.value"
                 :label="item.label"
                 :value="item.value"
@@ -111,7 +114,10 @@
         <el-card v-loading="loading" shadow="never">
           <div slot="header">
             <div class="search-filter">
-              <el-dropdown :show-timeout="showTimeout">
+              <el-dropdown
+                v-if="!(searchType === -1)"
+                :show-timeout="showTimeout"
+              >
                 <el-button type="text" :size="filterSize">
                   {{ filterCategoryName(query.category_id)
                   }}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -266,6 +272,10 @@
           </div>
           <div class="search-result">
             <SearchResultArticle v-if="searchType === 1" :articles="articles" />
+            <SearchResultAggregation
+              v-else-if="searchType === -1"
+              :docs="docs"
+            />
             <SearchResultDocument v-else :docs="docs" />
           </div>
           <el-pagination
@@ -333,6 +343,7 @@ import { mapGetters } from 'vuex'
 import { getStats } from '~/api/config'
 import { searchDocument } from '~/api/document'
 import { searchArticle } from '~/api/article'
+import { search } from '~/api/search'
 import {
   formatBytes,
   getIcon,
@@ -576,10 +587,41 @@ export default {
       }
       query.created_at = genTimeDuration(query.duration)
       delete query.duration
-      if (this.searchType === 1) {
-        this.execSearchArticle(query)
-      } else {
-        this.execSearchDocument(query)
+      switch (this.searchType) {
+        case 1:
+          this.execSearchArticle(query)
+          break
+        case -1:
+          this.execAggregateSearch(query)
+          break
+        default:
+          this.execSearchDocument(query)
+          break
+      }
+    },
+    async execAggregateSearch(query) {
+      this.loading = true
+      const res = await search(query)
+      this.loading = false
+      if (res.status === 200) {
+        this.total = res.data.total
+        this.spend = res.data.spend
+        const docs = res.data.document || []
+        const keywords = []
+        this.docs = docs.map((doc) => {
+          doc.icon = getIcon(doc.ext)
+          try {
+            doc.keywords.split(',').map((keyword) => {
+              keyword = keyword.trim()
+              if (keyword && !keywords.includes(keyword)) {
+                keywords.push(keyword)
+              }
+              return keyword
+            })
+          } catch (error) {}
+          this.keywords = keywords
+          return doc
+        })
       }
     },
     async execSearchDocument(query) {
@@ -608,7 +650,6 @@ export default {
           return doc
         })
       }
-      this.loading = false
     },
     async execSearchArticle(query) {
       const res = await searchArticle(query)

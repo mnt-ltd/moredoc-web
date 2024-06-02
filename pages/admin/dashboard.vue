@@ -212,19 +212,10 @@
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-magic-stick"></i>
-            文档索引
+            全文索引
           </template>
           {{ stats.index_document_count || 0 }} 篇 (
           {{ formatBytes(stats.index_document_size) }}
-          )
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template slot="label">
-            <i class="el-icon-truck"></i>
-            文章索引
-          </template>
-          {{ stats.index_article_count || 0 }} 篇 (
-          {{ formatBytes(stats.index_article_size) }}
           )
         </el-descriptions-item>
       </el-descriptions>
