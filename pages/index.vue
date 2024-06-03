@@ -46,7 +46,8 @@
             target="_blank"
             :to="{
               path: '/search',
-              query: { wd: word, type: -1 },
+              query: { wd: word },
+              // query: { wd: word, type: -1 },
             }"
           >
             <el-tag size="small">{{ word }}</el-tag>
@@ -524,8 +525,7 @@ export default {
     },
     onSearch() {
       if (this.search.wd) {
-        location.href =
-          '/search?type=-1&wd=' + encodeURIComponent(this.search.wd)
+        location.href = '/search?wd=' + encodeURIComponent(this.search.wd)
       }
     },
     async getNotices() {
