@@ -46,7 +46,7 @@
               :disabled="selectedRow.length === 0"
               icon="el-icon-download"
               @click="onDownload"
-              >采集选中</el-button
+              >下载选中</el-button
             >
           </el-form-item>
           <el-form-item>
@@ -372,7 +372,7 @@ export default {
     },
     onDownload() {
       this.$confirm(
-        `您确定要将选中的【${this.selectedRow.length}条】文档加入到采集队列吗？`,
+        `您确定要将选中的【${this.selectedRow.length}篇】文档加入到下载队列吗？`,
         '温馨提示',
         {
           confirmButtonText: '确定',
@@ -392,7 +392,7 @@ export default {
         })
         const res = await batchUpdateSpiderDocument({ spider_document: docs })
         if (res.status === 200) {
-          this.$message.success('加入采集队列成功')
+          this.$message.success('加入下载队列成功')
           this.listSpiderDocument()
         } else {
           this.$message.error(res.data.message)
