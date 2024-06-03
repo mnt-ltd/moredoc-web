@@ -1,6 +1,6 @@
 <template>
   <div class="page page-order">
-    <el-card shadow="never" v-loading="loading">
+    <el-card v-loading="loading" shadow="never">
       <div slot="header">
         订单信息
         <nuxt-link to="/me/order">
@@ -12,15 +12,15 @@
           >
         </nuxt-link>
         <el-button
-          type="text"
           v-if="order.status === 1"
-          @click="closeOrder"
+          type="text"
           class="order-action el-link el-link--warning"
           icon="el-icon-close"
+          @click="closeOrder"
           >关闭订单</el-button
         >
       </div>
-      <div class="mgb-20px" v-if="order.status === 1">
+      <div v-if="order.status === 1" class="mgb-20px">
         <el-alert title="温馨提示" type="warning" :closable="false" show-icon>
           请在
           <strong class="el-link el-link--danger count-down">{{
@@ -58,8 +58,8 @@
           <el-tooltip content="复制订单号">
             <el-button
               icon="el-icon-document-copy"
-              @click="copyOrderNO(order.order_no)"
               type="text"
+              @click="copyOrderNO(order.order_no)"
             ></el-button>
           </el-tooltip>
         </el-descriptions-item>
@@ -180,25 +180,25 @@
       </el-descriptions>
     </el-card>
     <!-- 购买文档的商品信息 -->
-    <el-card shadow="never" class="mgt-20px" v-if="order.order_type === 1">
+    <el-card v-if="order.order_type === 1" shadow="never" class="mgt-20px">
       <div slot="header">商品信息</div>
       <goods-card :order="order" />
     </el-card>
-    <el-card shadow="never" class="mgt-20px" v-else-if="order.order_type === 2">
+    <el-card v-else-if="order.order_type === 2" shadow="never" class="mgt-20px">
       <div slot="header">商品信息</div>
       <!-- 购买VIP的商品信息 -->
       <GoodsCardVIP :order="order" />
     </el-card>
     <!-- 待支付的订单，才现实支付方式 -->
-    <el-card shadow="never" class="mgt-20px" v-if="order.status === 1">
+    <el-card v-if="order.status === 1" shadow="never" class="mgt-20px">
       <div slot="header">支付方式</div>
       <div class="payment-type">
         <el-radio
+          v-if="order.order_type != 2 || settings.vip.enable_credit_pay"
           v-model="paymentType"
           class="payment-type-radio"
           :label="5"
           :disabled="order.amount > user.credit_count"
-          v-if="order.order_type != 2 || settings.vip.enable_credit_pay"
           border
         >
           积分支付
@@ -207,10 +207,16 @@
             {{ settings.system.credit_name }}</small
           > </el-radio
         ><el-radio
+          v-for="item in payments"
+          v-show="
+            settings.payment['enable_' + item.name] ||
+            (item.name === 'downcode' &&
+              settings.download.enable_code_download &&
+              order.order_type === 1)
+          "
+          :key="'pt-' + item.value"
           v-model="paymentType"
           class="payment-type-radio"
-          v-for="item in payments"
-          :key="'pt-' + item.value"
           :label="item.value"
           :disabled="
             !order.amount ||
@@ -218,12 +224,6 @@
               settings.download.enable_code_download &&
               settings.download.max_price > 0 &&
               order.amount > settings.download.max_price)
-          "
-          v-show="
-            settings.payment['enable_' + item.name] ||
-            (item.name === 'downcode' &&
-              settings.download.enable_code_download &&
-              order.order_type === 1)
           "
           border
         >
@@ -243,8 +243,8 @@
       <div class="text-right">
         <!-- 输入下载码 -->
         <el-input
-          v-model="downcode"
           v-if="paymentType === 9"
+          v-model="downcode"
           placeholder="请输入下载码"
           class="downcode"
         ></el-input>
@@ -265,14 +265,14 @@
         <el-button
           type="danger"
           :disabled="paymentType === 5 && user.credit_count < order.amount"
-          @click="payOrder"
           :loading="paying"
           icon="el-icon-position"
+          @click="payOrder"
           >支付订单</el-button
         >
       </div>
     </el-card>
-    <a href="" ref="redirect" target="_blank"></a>
+    <a ref="redirect" href="" target="_blank"></a>
     <el-dialog
       title="支付"
       :visible.sync="payCheckVisible"
@@ -292,7 +292,7 @@
               元</span
             >
           </h3>
-          <div ref="qrcode" id="qrcode" class="text-center"></div>
+          <div id="qrcode" ref="qrcode" class="text-center"></div>
           <small>使用微信扫描二维码进行支付 </small>
         </div>
         <div v-else>请在新打开的页面进行支付。</div>
@@ -301,16 +301,16 @@
       <span slot="footer" class="dialog-footer">
         <el-button
           type="primary"
-          @click="donePayment"
           icon="el-icon-check"
           size="small"
+          @click="donePayment"
           >支付成功</el-button
         >
         <el-button
           type="warning"
           icon="el-icon-warning-outline"
-          @click="donePayment"
           size="small"
+          @click="donePayment"
           >支付失败</el-button
         >
       </span>
@@ -318,14 +318,14 @@
   </div>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
+import QRCode from 'qrcodejs2' // 引入qrcode
 import { getOrder, payOrder, getOrderStatus, closeOrder } from '~/api/order'
 import { formatDatetime, countDownTime } from '~/utils/utils'
 import { paymentTypeOptions } from '~/utils/enum'
 import { downloadDocument } from '~/api/document'
-import { mapGetters, mapActions } from 'vuex'
-import QRCode from 'qrcodejs2' // 引入qrcode
 export default {
-  name: 'page-order',
+  name: 'PageOrder',
   data() {
     return {
       paymentType: 5, // 5，积分支付; 8，虎皮椒支付
@@ -351,16 +351,16 @@ export default {
       title: `订单详情 - 订单号:${this.$route.query.order_no || 'loading'}`,
     }
   },
-  async created() {
+  computed: {
+    ...mapGetters('setting', ['settings']),
+    ...mapGetters('user', ['user']),
+  },
+  created() {
     this.paymentTypeMap = paymentTypeOptions.reduce((obj, item) => {
       obj[item.value] = item
       return obj
     }, {})
     Promise.all([this.getUser(), this.getOrder()])
-  },
-  computed: {
-    ...mapGetters('setting', ['settings']),
-    ...mapGetters('user', ['user']),
   },
   methods: {
     ...mapActions('user', ['getUser']),
@@ -370,14 +370,13 @@ export default {
       this.loading = true
       const res = await getOrder({ order_no: this.$route.query.order_no })
       if (res.status === 200) {
-        let order = res.data || {}
+        const order = res.data || {}
         this.order = order
         if (order.status === 1) {
           this.paymentType = order.payment_type || this.paymentType
-
           // 待支付的订单，根据closed_at字段来计算还有多长时间关闭订单
           this.intervaler = setInterval(async () => {
-            let left = countDownTime(order.closed_at)
+            const left = countDownTime(order.closed_at)
             if (left.seconds <= 0) {
               clearInterval(this.intervaler)
               await this.closeOrder()
@@ -427,21 +426,20 @@ export default {
           }
         } else {
           // 新开一个子窗口
-          this.$refs['redirect'].setAttribute('href', res.data.payment_url)
-          this.$refs['redirect'].click()
+          this.$refs.redirect.setAttribute('href', res.data.payment_url)
+          this.$refs.redirect.click()
           if (!this.isMobile) this.payCheckVisible = true
         }
-        return
       } else if (res.data.order_status === 2) {
         this.$message.success('恭喜您，支付成功')
         this.execAfterPaid()
       }
     },
     // 复制订单号
-    copyOrderNO(order_no) {
+    copyOrderNO(orderNo) {
       const input = document.createElement('input')
       input.setAttribute('readonly', 'readonly')
-      input.setAttribute('value', order_no)
+      input.setAttribute('value', orderNo)
       document.body.appendChild(input)
       input.select()
       input.setSelectionRange(0, 9999)
@@ -471,15 +469,19 @@ export default {
     },
     // 支付完成
     async donePayment() {
+      await this.getOrderStatus()
+      if (this.order.status === 2) {
+        this.execAfterPaid()
+      }
+      this.payCheckVisible = false
+    },
+    async getOrderStatus() {
       const res = await getOrderStatus({ order_no: this.order.order_no })
       if (res.status === 200) {
         this.order = res.data || {}
-        // 支付完成
-        if (res.data.status === 2) this.execAfterPaid()
       } else {
         this.$message.error(res.data.message)
       }
-      this.payCheckVisible = false
     },
     // 关闭订单
     async closeOrder() {
