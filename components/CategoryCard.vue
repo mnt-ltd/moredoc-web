@@ -1,6 +1,11 @@
 <template>
   <div class="com-category-card">
-    <div v-for="cate in categoryTrees" :key="'cate-' + cate.id" class="row">
+    <div
+      v-for="cate in categoryTrees"
+      :key="'cate-' + cate.id"
+      class="row"
+      :class="level === 1 ? 'row-line' : ''"
+    >
       <div class="lv1">
         <nuxt-link
           class="el-link el-link--default"
@@ -46,6 +51,7 @@ export default {
   data() {
     return {
       categoryTrees: [],
+      level: 1,
     }
   },
   computed: {
@@ -63,11 +69,19 @@ export default {
             this.settings.display &&
             this.settings.display.hide_category_without_document
           ) {
-            return x.doc_count > 0
+            return x.doc_count > 0 && x.enable
           }
-          return x.type === val || (!x.type && !val)
+          return (x.type === val || (!x.type && !val)) && x.enable
         })
-        this.categoryTrees = categoryToTrees(cates)
+        const categoryTrees = categoryToTrees(cates)
+        let level = 1
+        categoryTrees.forEach((x) => {
+          if (x.children && x.children.length > 0) {
+            level = 2
+          }
+        })
+        this.level = level
+        this.categoryTrees = categoryTrees
       },
     },
   },
@@ -82,6 +96,15 @@ export default {
     justify-content: space-between;
     padding: 15px 0;
     border-bottom: 1px dashed #f1f2f3;
+    &.row-line {
+      display: inline-block;
+      border-bottom: 0;
+      padding: 10px 5px;
+      .lv1 {
+        border-right: 0;
+        margin-right: 5px;
+      }
+    }
     &:last-of-type {
       border-bottom: 0;
       padding-bottom: 5px;
