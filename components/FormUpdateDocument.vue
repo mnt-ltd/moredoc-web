@@ -174,7 +174,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { updateDocument, getDocument } from '~/api/document'
+import { updateDocument } from '~/api/document'
 import { documentStatusOptions } from '~/utils/enum'
 export default {
   name: 'FormUpdateDocument',
@@ -243,8 +243,9 @@ export default {
   watch: {
     initDocument: {
       handler(val) {
-        if (val.id) {
-          this.getDocument(val.id)
+        this.document = {
+          ...this.getInitialDocumentData(),
+          ...val,
         }
       },
       immediate: true,
@@ -330,14 +331,6 @@ export default {
     onRemove(file) {
       this.attachment.id = 0
       console.log('onRemove', file)
-    },
-    async getDocument(documentId) {
-      this.loading = true
-      const res = await getDocument({ id: documentId })
-      if (res.status === 200) {
-        this.document = res.data
-      }
-      this.loading = false
     },
   },
 }
