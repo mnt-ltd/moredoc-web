@@ -100,7 +100,7 @@ export const paymentTypeOptions = [
   { label: '虎皮椒支付', value: 8 },
   { label: '其他', value: 7 },
   { label: '下载码支付', value: 9 },
-  {label: '广告支付', value: 10},
+  { label: '广告支付', value: 10 },
 ]
 
 export const orderTypeOptions = [
@@ -167,11 +167,11 @@ export const spiderUrlStatusOptions = [
 ]
 
 export const spiderDocumentStatusOptions = [
-  { label: '待采集', value: 0, type: 'info' },
-  { label: '采集队列', value: 1, type: 'primary' },
-  { label: '采集中..', value: 2, type: 'primary' },
-  { label: '采集成功', value: 3, type: 'success' },
-  { label: '采集失败', value: 4, type: 'warning' },
+  { label: '待下载', value: 0, type: 'info' },
+  { label: '下载队列', value: 1, type: 'primary' },
+  { label: '下载中..', value: 2, type: 'primary' },
+  { label: '下载成功', value: 3, type: 'success' },
+  { label: '下载失败', value: 4, type: 'warning' },
   { label: '发布队列', value: 5, type: 'primary' },
   { label: '发布中', value: 6, type: 'primary' },
   { label: '发布成功', value: 7, type: 'success' },
@@ -324,7 +324,7 @@ export const oauthTypeOptions = [
   { label: '码云', value: oauthTypeGitee },
   { label: 'Github', value: oauthTypeGithub },
   { label: '微信小程序', value: oauthTypeWechatMini },
-  { label:'谷歌', value: oauthTypeGoogle},
+  { label: '谷歌', value: oauthTypeGoogle },
   { label: '自定义', value: oauthTypeCustom },
 ]
 
