@@ -405,7 +405,7 @@ export default {
       this.getAdvertisements('global'),
     ])
     if (this.user.id > 0) {
-      this.getUserPermissions()
+      await Promise.all([this.getUser(), this.getUserPermissions()])
     }
 
     const trees = categoryToTrees(this.categories)
