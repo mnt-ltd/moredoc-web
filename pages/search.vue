@@ -141,7 +141,11 @@
                         item.id == query.category_id ? 'el-link--primary' : ''
                       "
                       :to="{
-                        query: { ...$route.query, category_id: item.id },
+                        query: {
+                          ...$route.query,
+                          category_id: item.id,
+                          page: 1,
+                        },
                       }"
                       >{{ item.title }}</nuxt-link
                     >
@@ -171,7 +175,11 @@
                         item.code == query.language ? 'el-link--primary' : ''
                       "
                       :to="{
-                        query: { ...$route.query, language: item.code },
+                        query: {
+                          ...$route.query,
+                          language: item.code,
+                          page: 1,
+                        },
                       }"
                       >{{ item.language }}</nuxt-link
                     >
@@ -197,7 +205,7 @@
                       class="el-link el-link--default"
                       :class="item.value == query.ext ? 'el-link--primary' : ''"
                       :to="{
-                        query: { ...$route.query, ext: item.value },
+                        query: { ...$route.query, ext: item.value, page: 1 },
                       }"
                     >
                       <img
@@ -232,7 +240,7 @@
                         item.value == query.sort ? 'el-link--primary' : ''
                       "
                       :to="{
-                        query: { ...$route.query, sort: item.value },
+                        query: { ...$route.query, sort: item.value, page: 1 },
                       }"
                       >{{ item.label }}</nuxt-link
                     >
@@ -255,7 +263,11 @@
                         item.value == query.duration ? 'el-link--primary' : ''
                       "
                       :to="{
-                        query: { ...$route.query, duration: item.value },
+                        query: {
+                          ...$route.query,
+                          duration: item.value,
+                          page: 1,
+                        },
                       }"
                       >{{ item.label }}</nuxt-link
                     >
