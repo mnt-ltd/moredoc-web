@@ -190,14 +190,16 @@
               <i class="fa fa-thumbs-o-up"></i>
               文档推荐
               <div class="float-right stats">
-                <el-button type="text"
-                  >{{ stats.document_count || 0 }}
-                  <span class="text-muted">文档</span></el-button
-                >
-                <el-button type="text"
-                  >{{ stats.article_count || 0 }}
-                  <span class="text-muted">文章</span>
-                </el-button>
+                <template v-if="settings.display.show_document_count">
+                  <el-button type="text"
+                    >{{ stats.document_count || 0 }}
+                    <span class="text-muted">文档</span></el-button
+                  >
+                  <el-button type="text"
+                    >{{ stats.article_count || 0 }}
+                    <span class="text-muted">文章</span>
+                  </el-button>
+                </template>
                 <el-button
                   v-if="settings.display.show_register_user_count"
                   type="text"
