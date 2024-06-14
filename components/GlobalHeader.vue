@@ -34,7 +34,7 @@
                 <nuxt-link to="/">{{ item.title || '首页' }}</nuxt-link>
               </el-menu-item>
               <el-menu-item
-                v-if="item.href == '/category'"
+                v-else-if="item.href == '/category'"
                 :key="'nav-category-' + item.id"
                 index="/category"
                 class="hidden-xs-only"
@@ -56,7 +56,7 @@
                 </el-popover>
               </el-menu-item>
               <el-menu-item
-                v-if="item.href == '/article'"
+                v-else-if="item.href == '/article'"
                 :key="'nav-article-' + item.id"
                 index="/article"
                 class="hidden-xs-only"
@@ -79,6 +79,12 @@
                   }}</nuxt-link>
                 </el-popover>
               </el-menu-item>
+              <NavigationLink
+                v-else
+                :key="'nav-fixed-else-' + item.id"
+                :navigation="item"
+                :hidden-x-s="true"
+              />
             </template>
             <template v-else>
               <el-submenu
@@ -339,7 +345,13 @@
       <el-menu :default-active="$route.path" class="el-menu-mobile">
         <template
           v-for="item in navigations.filter(
-            (item) => item.enable && !item.fixed
+            (item) =>
+              item.enable &&
+              !(
+                item.href === '/' ||
+                item.href === '/category' ||
+                item.href === '/article'
+              )
           )"
         >
           <el-submenu
