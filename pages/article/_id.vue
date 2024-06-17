@@ -372,7 +372,7 @@ export default {
       const breadcrumbs = []
       const tmpBreadcrumbs = (article.category_id || []).map((id) => {
         const breadcrumb = this.categoryMap[id]
-        if (!breadcrumb.parent_id) {
+        if (breadcrumb && !breadcrumb.parent_id) {
           breadcrumbs.push(breadcrumb)
         }
         return breadcrumb
@@ -382,7 +382,11 @@ export default {
       for (let j = 0; j < length; j++) {
         for (let i = 0; i < tmpBreadcrumbs.length; i++) {
           const breadcrumb = tmpBreadcrumbs[i]
-          if (breadcrumb.parent_id === breadcrumbs[breadcrumbs.length - 1].id) {
+          if (
+            breadcrumb &&
+            breadcrumbs[breadcrumbs.length - 1] &&
+            breadcrumb.parent_id === breadcrumbs[breadcrumbs.length - 1].id
+          ) {
             breadcrumbs.push(breadcrumb)
             tmpBreadcrumbs.splice(i, 1)
             break
