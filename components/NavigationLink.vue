@@ -1,8 +1,8 @@
 <template>
   <el-menu-item
-    :class="hiddenXS ? 'hidden-xs-only':''"
     :key="'nav-' + navigation.id"
-    :index="`nav-${navigation.id}`"
+    :class="hiddenXS ? 'hidden-xs-only' : ''"
+    :index="navigation.href"
   >
     <template v-if="navigation.href">
       <!-- 判断是否存在 https:// 或者 http:// -->
