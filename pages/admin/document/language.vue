@@ -74,7 +74,7 @@
         >
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormLanguage
           :init-language="language"
           :visible="formLanguageVisible"

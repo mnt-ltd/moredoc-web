@@ -100,7 +100,9 @@
         <el-page-header content="个人资料" @back="formProfileVisible = false">
         </el-page-header>
       </div>
-      <div style="padding: 20px"><FormProfile @success="profileSuccess" /></div>
+      <div style="padding: 0 20px">
+        <FormProfile @success="profileSuccess" />
+      </div>
     </el-drawer>
     <el-drawer
       :visible.sync="formPasswordVisible"
@@ -112,7 +114,7 @@
         <el-page-header content="修改密码" @back="formPasswordVisible = false">
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormPassword @success="passwordSuccess" />
       </div>
     </el-drawer>

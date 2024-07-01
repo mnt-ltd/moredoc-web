@@ -50,7 +50,7 @@
         <el-page-header content="编辑附件" @back="formVisible = false">
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormPermission :init-permission="permission" @success="formSuccess" />
       </div>
     </el-drawer>

@@ -69,7 +69,7 @@
         >
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormGroup :init-group="group" @success="success" />
       </div>
     </el-drawer>
