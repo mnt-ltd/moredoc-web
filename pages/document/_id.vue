@@ -669,7 +669,7 @@
         <el-page-header content="文档下载" @back="downloadVisible = false">
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <form-download
           :document="document"
           :order_no="orderNO"

@@ -197,7 +197,7 @@
         >
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormUpdateDocumentsVIP
           v-if="formDocumentsVIPVisible"
           :documents="categoryDocuments"

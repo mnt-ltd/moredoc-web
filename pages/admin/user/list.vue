@@ -116,7 +116,7 @@
         <el-page-header content="积分充值" @back="formRechargeVisible = false">
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormRecharge
           ref="formRecharge"
           :init-user="user"
