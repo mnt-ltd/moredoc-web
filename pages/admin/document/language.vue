@@ -61,23 +61,33 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="language.id ? '编辑语言' : '新增语言'"
+    <el-drawer
       :visible.sync="formLanguageVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormLanguage
-        :init-language="language"
-        :visible="formLanguageVisible"
-        @success="onSuccess"
-        @close="formLanguageVisible = false"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          :content="language.id ? '编辑语言' : '新增语言'"
+          @back="formLanguageVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormLanguage
+          :init-language="language"
+          :visible="formLanguageVisible"
+          @success="onSuccess"
+          @close="formLanguageVisible = false"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   listLanguage,
   updateLanguageStatus,
@@ -87,7 +97,6 @@ import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormLanguage from '~/components/FormLanguage.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormLanguage },
   layout: 'admin',

@@ -154,52 +154,88 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog
-      :close-on-click-modal="false"
-      title="编辑文档"
-      width="640px"
+    <el-drawer
       :visible.sync="formVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormUpdateDocument
-        :category-trees="trees"
-        :init-document="document"
-        :is-admin="true"
-        @success="formSuccess"
-      />
-    </el-dialog>
-    <el-dialog
-      :close-on-click-modal="false"
-      title="批量分类"
-      width="640px"
+      <div slot="title">
+        <el-page-header content="编辑文档" @back="formVisible = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormUpdateDocument
+          :category-trees="trees"
+          :init-document="document"
+          :is-admin="true"
+          @success="formSuccess"
+        />
+      </div>
+    </el-drawer>
+    <el-drawer
       :visible.sync="formDocumentsCategoryVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormUpdateDocumentsCategory
-        v-if="formDocumentsCategoryVisible"
-        :category-trees="trees"
-        :documents="categoryDocuments"
-        @success="formSuccess"
-      />
-    </el-dialog>
-    <el-dialog
-      :close-on-click-modal="false"
-      title="批量设置语言"
-      width="640px"
+      <div slot="title">
+        <el-page-header
+          content="批量分类"
+          @back="formDocumentsCategoryVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormUpdateDocumentsCategory
+          v-if="formDocumentsCategoryVisible"
+          :category-trees="trees"
+          :documents="categoryDocuments"
+          @success="formSuccess"
+        />
+      </div>
+    </el-drawer>
+    <el-drawer
       :visible.sync="formDocumentsLanguageVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormUpdateDocumentsLanguage
-        v-if="formDocumentsLanguageVisible"
-        :documents="languageDocuments"
-        @success="formSuccess"
-      />
-    </el-dialog>
-    <el-dialog
-      :close-on-click-modal="false"
-      title="推荐设置"
+      <div slot="title">
+        <el-page-header
+          content="批量设置语言"
+          @back="formDocumentsLanguageVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormUpdateDocumentsLanguage
+          v-if="formDocumentsLanguageVisible"
+          :documents="languageDocuments"
+          @success="formSuccess"
+        />
+      </div>
+    </el-drawer>
+    <el-drawer
       :visible.sync="formDocumentRecommendVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormDocumentRecommend :init-document="document" @success="formSuccess" />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          content="推荐设置"
+          @back="formDocumentRecommendVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormDocumentRecommend
+          :init-document="document"
+          @success="formSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 

@@ -533,30 +533,47 @@
         </el-row>
       </el-card>
     </div>
-    <el-dialog
-      title="举报文档"
+    <el-drawer
       :visible.sync="reportVisible"
-      :width="isMobile ? '95%' : '640px'"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormReport
-        ref="reportForm"
-        :init-report="report"
-        :is-admin="false"
-        @success="formReportSuccess"
-      />
-    </el-dialog>
-    <el-dialog
-      title="编辑文档"
+      <div slot="title">
+        <el-page-header content="举报文档" @back="reportVisible = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormReport
+          ref="reportForm"
+          :init-report="report"
+          :is-admin="false"
+          @success="formReportSuccess"
+        />
+      </div>
+    </el-drawer>
+    <el-drawer
       :visible.sync="updateDocumentVisible"
-      :width="isMobile ? '95%' : '640px'"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormUpdateDocument
-        :category-trees="categoryTrees"
-        :init-document="updateDocument"
-        :is-admin="false"
-        @success="updateDocumentSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          content="编辑文档"
+          @back="updateDocumentVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormUpdateDocument
+          :category-trees="categoryTrees"
+          :init-document="updateDocument"
+          :is-admin="false"
+          @success="updateDocumentSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 

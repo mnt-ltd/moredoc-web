@@ -28,19 +28,28 @@
         @deleteRow="deleteRow"
       />
     </el-card>
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="category.id ? '编辑分类' : '新增分类'"
+    <el-drawer
       :visible.sync="formVisible"
-      :width="'640px'"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormCategory
-        ref="categoryForm"
-        :init-category="category"
-        :trees="trees"
-        @success="formCategorySuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          :content="category.id ? '编辑分类' : '新增分类'"
+          @back="formVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormCategory
+          ref="categoryForm"
+          :init-category="category"
+          :trees="trees"
+          @success="formCategorySuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 

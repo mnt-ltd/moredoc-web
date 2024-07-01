@@ -60,19 +60,25 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog
-      v-if="comment.id > 0"
-      :close-on-click-modal="false"
-      title="评论编审"
+    <el-drawer
       :visible.sync="formCommentVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormCommentCheck
-        ref="formComment"
-        :comment="comment"
-        @success="formCommentSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header content="评论编审" @back="formCommentVisible = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormCommentCheck
+          v-if="comment.id > 0"
+          ref="formComment"
+          :comment="comment"
+          @success="formCommentSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 

@@ -43,31 +43,39 @@
         </el-pagination>
       </div>
     </el-card>
-
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="report.id ? '编辑举报' : '新增举报'"
+    <el-drawer
       :visible.sync="formReportVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormReport
-        ref="reportForm"
-        :init-report="report"
-        :is-admin="true"
-        @success="formReportSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          :content="report.id ? '编辑举报' : '新增举报'"
+          @back="formReportVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormReport
+          ref="reportForm"
+          :init-report="report"
+          :is-admin="true"
+          @success="formReportSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { listReport, deleteReport } from '~/api/report'
 import { reportOptions } from '~/utils/enum'
 import { parseQueryIntArray, genLinkHTML } from '~/utils/utils'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormReport from '~/components/FormReport.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormReport },
   layout: 'admin',
@@ -98,10 +106,6 @@ export default {
   computed: {
     ...mapGetters('setting', ['settings']),
   },
-  async created() {
-    this.initSearchForm()
-    this.initTableListFields()
-  },
   watch: {
     '$route.query': {
       handler() {
@@ -117,12 +121,16 @@ export default {
       immediate: true,
     },
   },
+  async created() {
+    this.initSearchForm()
+    this.initTableListFields()
+  },
   methods: {
     async listReport() {
       this.loading = true
       const res = await listReport(this.search)
       if (res.status === 200) {
-        let reports = res.data.report || []
+        const reports = res.data.report || []
         reports.map((item) => {
           item.username_html = genLinkHTML(
             item.username,
@@ -156,9 +164,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listReport()
       } else {

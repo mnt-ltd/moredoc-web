@@ -43,23 +43,32 @@
         </el-pagination>
       </div>
     </el-card>
-
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="advertisement.id ? '编辑广告' : '新增广告'"
+    <el-drawer
       :visible.sync="formAdvertisementVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormAdvertisement
-        ref="advertisementForm"
-        :init-advertisement="advertisement"
-        @success="formAdvertisementSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          :content="advertisement.id ? '编辑广告' : '新增广告'"
+          @back="formAdvertisementVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormAdvertisement
+          ref="advertisementForm"
+          :init-advertisement="advertisement"
+          @success="formAdvertisementSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   listAdvertisement,
   deleteAdvertisement,
@@ -70,7 +79,6 @@ import { advertisementPositions } from '~/utils/enum'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormAdvertisement from '~/components/FormAdvertisement.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormAdvertisement },
   layout: 'admin',
@@ -126,7 +134,7 @@ export default {
       this.loading = true
       const res = await listAdvertisement(this.search)
       if (res.status === 200) {
-        let advertisements = res.data.advertisement || []
+        const advertisements = res.data.advertisement || []
         advertisements.map((item) => {
           item.title_html = genLinkHTML(item.title, item.link)
         })
@@ -153,9 +161,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.$router.push({
           query: this.search,
@@ -260,13 +268,13 @@ export default {
           placeholder: '请选择位置',
           multiple: true,
           options: positions,
-        }
+        },
       ]
     },
     initTableListFields() {
       const positions = {}
-      this.advertisementPositions.map(item=>{
-        (item.children || []).map(item=>{
+      this.advertisementPositions.map((item) => {
+        ;(item.children || []).map((item) => {
           positions[item.value] = item
         })
       })
@@ -279,8 +287,10 @@ export default {
           type: 'bool',
           fixed: 'left',
         },
-        { 
-          prop: 'position', label: '广告位', width: 200,
+        {
+          prop: 'position',
+          label: '广告位',
+          width: 200,
           type: 'enum',
           enum: positions,
         },

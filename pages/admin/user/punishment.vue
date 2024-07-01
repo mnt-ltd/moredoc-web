@@ -83,19 +83,27 @@
         </el-pagination>
       </div>
     </el-card>
-
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="punishment.id ? '编辑惩罚' : '新增惩罚'"
+    <el-drawer
       :visible.sync="formPunishmentVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormPunishment
-        ref="punishmentForm"
-        :init-punishment="punishment"
-        @success="formPunishmentSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          :content="punishment.id ? '编辑惩罚' : '新增惩罚'"
+          @back="formPunishmentVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormPunishment
+          ref="punishmentForm"
+          :init-punishment="punishment"
+          @success="formPunishmentSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 

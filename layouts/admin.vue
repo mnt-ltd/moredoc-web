@@ -4,7 +4,7 @@
       :class="isCollapse ? 'layout-aside-collapsed' : ''"
       :width="'240px'"
     >
-      <div class="logo" @click="gohome" title="文库管理后台">
+      <div class="logo" title="文库管理后台" @click="gohome">
         <img v-if="isCollapse" src="/static/images/logo-icon.png" />
         <img v-else src="/static/images/logo.png" />
       </div>
@@ -90,12 +90,32 @@
         <nuxt />
       </el-main>
     </el-container>
-    <el-dialog title="个人资料" :visible.sync="formProfileVisible" width="30%">
-      <FormProfile @success="profileSuccess" />
-    </el-dialog>
-    <el-dialog title="个人资料" :visible.sync="formPasswordVisible" width="30%">
-      <FormPassword @success="passwordSuccess" />
-    </el-dialog>
+    <el-drawer
+      :visible.sync="formProfileVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
+    >
+      <div slot="title">
+        <el-page-header content="个人资料" @back="formProfileVisible = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 20px"><FormProfile @success="profileSuccess" /></div>
+    </el-drawer>
+    <el-drawer
+      :visible.sync="formPasswordVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
+    >
+      <div slot="title">
+        <el-page-header content="修改密码" @back="formPasswordVisible = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormPassword @success="passwordSuccess" />
+      </div>
+    </el-drawer>
   </el-container>
 </template>
 <script>

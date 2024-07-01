@@ -193,18 +193,28 @@
       @current-change="pageChange"
     >
     </el-pagination>
-    <el-dialog
-      title="编辑文档"
+    <el-drawer
       :visible.sync="updateDocumentVisible"
-      :width="isMobile ? '95%' : '640px'"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormUpdateDocument
-        :category-trees="categoryTrees"
-        :init-document="document"
-        :is-admin="false"
-        @success="updateDocumentSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          content="编辑文档"
+          @back="updateDocumentVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormUpdateDocument
+          :category-trees="categoryTrees"
+          :init-document="document"
+          :is-admin="false"
+          @success="updateDocumentSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
