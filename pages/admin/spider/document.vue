@@ -155,19 +155,24 @@
         </el-pagination>
       </div>
     </el-card>
-
-    <el-dialog
-      title="发布选中文档"
+    <el-drawer
       :visible.sync="showPublishing"
-      width="640px"
-      :close-on-click-modal="false"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormPublishSpiderDocument
-        v-if="showPublishing"
-        :documents="selectedRow"
-        @success="formSpiderDocumentSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header content="发布选中文档" @back="showPublishing = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 0 20px">
+        <FormPublishSpiderDocument
+          v-if="showPublishing"
+          :documents="selectedRow"
+          @success="formSpiderDocumentSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 

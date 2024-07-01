@@ -43,30 +43,38 @@
         </el-pagination>
       </div>
     </el-card>
-
-    <el-dialog
-      :title="spiderUrl.id ? '编辑链接' : '新增链接'"
+    <el-drawer
       :visible.sync="formSpiderUrlVisible"
-      width="640px"
-      :close-on-click-modal="false"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormSpiderUrl
-        ref="spiderUrlForm"
-        :init-spider-url="spiderUrl"
-        @success="formSpiderUrlSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          :content="spiderUrl.id ? '编辑链接' : '新增链接'"
+          @back="formSpiderUrlVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 0 20px">
+        <FormSpiderUrl
+          ref="spiderUrlForm"
+          :init-spider-url="spiderUrl"
+          @success="formSpiderUrlSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { listSpiderUrl, deleteSpiderUrl, getSpiderUrl } from '~/api/spiderurl'
 import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
 import { spiderUrlStatusOptions } from '~/utils/enum'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormSpiderUrl from '~/components/FormSpiderUrl.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormSpiderUrl },
   layout: 'admin',
@@ -121,7 +129,7 @@ export default {
       this.loading = true
       const res = await listSpiderUrl(this.search)
       if (res.status === 200) {
-        let spiderUrls = res.data.spider_url || []
+        const spiderUrls = res.data.spider_url || []
         spiderUrls.map((item) => {
           item.url_html = genLinkHTML(item.url, item.url)
         })
