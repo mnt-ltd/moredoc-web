@@ -44,19 +44,28 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="navigation.id ? '编辑导航' : '新增导航'"
+    <el-drawer
       :visible.sync="formNavigationVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormNavigation
-        ref="navigationForm"
-        :init-navigation="navigation"
-        :trees="navigations"
-        @success="formNavigationSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          :content="navigation.id ? '编辑导航' : '新增导航'"
+          @back="formNavigationVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormNavigation
+          ref="navigationForm"
+          :init-navigation="navigation"
+          :trees="navigations"
+          @success="formNavigationSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 

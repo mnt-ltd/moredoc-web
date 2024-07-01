@@ -56,15 +56,24 @@
         </el-pagination>
       </div>
     </el-card>
-
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="group.id ? '编辑分组' : '新增分组'"
+    <el-drawer
       :visible.sync="formGroupVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormGroup :init-group="group" @success="success" />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          :content="group.id ? '编辑分组' : '新增分组'"
+          @back="formGroupVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormGroup :init-group="group" @success="success" />
+      </div>
+    </el-drawer>
+
     <el-drawer
       :title="`【${group.title}】管理授权`"
       :visible.sync="formGroupPermissionVisible"
@@ -77,14 +86,6 @@
         />
       </div>
     </el-drawer>
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="`【${group.title}】前台功能授权`"
-      :visible.sync="formGroupPermissionFrontVisible"
-      width="640px"
-    >
-      asd
-    </el-dialog>
   </div>
 </template>
 

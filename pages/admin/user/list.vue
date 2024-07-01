@@ -62,44 +62,68 @@
         </el-pagination>
       </div>
     </el-card>
-
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="user.id ? '设置用户' : '新增用户'"
+    <el-drawer
       :visible.sync="formUserVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormUser
-        ref="formUser"
-        :init-user="user"
-        :groups="groups"
-        @success="success"
-      />
-    </el-dialog>
-    <el-dialog
-      :close-on-click-modal="false"
-      title="编辑用户"
+      <div slot="title">
+        <el-page-header
+          :content="user.id ? '设置用户' : '新增用户'"
+          @back="formUserVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormUser
+          ref="formUser"
+          :init-user="user"
+          :groups="groups"
+          @success="success"
+        />
+      </div>
+    </el-drawer>
+    <el-drawer
       :visible.sync="formUserProfileVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormUserProfile
-        ref="formUserProfile"
-        :init-user="user"
-        :is-admin="true"
-        @success="successProfile"
-      />
-    </el-dialog>
-    <el-dialog
-      title="积分充值"
+      <div slot="title">
+        <el-page-header
+          content="编辑用户"
+          @back="formUserProfileVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormUserProfile
+          ref="formUserProfile"
+          :init-user="user"
+          :is-admin="true"
+          @success="successProfile"
+        />
+      </div>
+    </el-drawer>
+    <el-drawer
       :visible.sync="formRechargeVisible"
-      width="520px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormRecharge
-        ref="formRecharge"
-        :init-user="user"
-        @success="successRecharge"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header content="积分充值" @back="formRechargeVisible = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormRecharge
+          ref="formRecharge"
+          :init-user="user"
+          @success="successRecharge"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 

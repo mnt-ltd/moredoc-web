@@ -44,22 +44,32 @@
       </div>
     </el-card>
 
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="friendlink.id ? '编辑友链' : '新增友链'"
+    <el-drawer
       :visible.sync="formFriendlinkVisible"
-      width="640px"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormFriendlink
-        ref="friendlinkForm"
-        :init-friendlink="friendlink"
-        @success="formFriendlinkSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          :content="friendlink.id ? '编辑友链' : '新增友链'"
+          @back="formFriendlinkVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormFriendlink
+          ref="friendlinkForm"
+          :init-friendlink="friendlink"
+          @success="formFriendlinkSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   listFriendlink,
   deleteFriendlink,
@@ -69,7 +79,6 @@ import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormFriendlink from '~/components/FormFriendlink.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormFriendlink },
   layout: 'admin',
@@ -124,7 +133,7 @@ export default {
       this.loading = true
       const res = await listFriendlink(this.search)
       if (res.status === 200) {
-        let friendlinks = res.data.friendlink || []
+        const friendlinks = res.data.friendlink || []
         friendlinks.map((item) => {
           item.title_html = genLinkHTML(item.title, item.link)
         })
@@ -151,9 +160,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.$router.push({
           query: this.search,

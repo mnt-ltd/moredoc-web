@@ -42,19 +42,25 @@
         </el-pagination>
       </div>
     </el-card>
-
-    <el-dialog
-      :close-on-click-modal="false"
-      title="编辑附件"
-      width="640px"
+    <el-drawer
       :visible.sync="formVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormAttachment :init-attachment="attachment" @success="formSuccess" />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header content="编辑附件" @back="formVisible = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormAttachment :init-attachment="attachment" @success="formSuccess" />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   listAttachment,
   deleteAttachment,
@@ -65,7 +71,6 @@ import FormSearch from '~/components/FormSearch.vue'
 import FormAttachment from '~/components/FormAttachment.vue'
 import { attachmentTypeOptions } from '~/utils/enum'
 import { parseQueryIntArray } from '~/utils/utils'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormAttachment },
   layout: 'admin',

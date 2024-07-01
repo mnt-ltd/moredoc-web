@@ -95,19 +95,28 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog
-      :close-on-click-modal="false"
-      title="批量分类"
-      width="640px"
+    <el-drawer
       :visible.sync="formArticlesCategoryVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormUpdateArticlesCategory
-        v-if="formArticlesCategoryVisible"
-        :category-trees="trees"
-        :articles="categoryArticles"
-        @success="formSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          content="批量分类"
+          @back="formArticlesCategoryVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormUpdateArticlesCategory
+          v-if="formArticlesCategoryVisible"
+          :category-trees="trees"
+          :articles="categoryArticles"
+          @success="formSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 

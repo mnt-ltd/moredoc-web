@@ -40,25 +40,30 @@
         </el-pagination>
       </div>
     </el-card>
-
-    <el-dialog
-      :close-on-click-modal="false"
-      title="编辑附件"
-      width="640px"
+    <el-drawer
       :visible.sync="formVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormPermission :init-permission="permission" @success="formSuccess" />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header content="编辑附件" @back="formVisible = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormPermission :init-permission="permission" @success="formSuccess" />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { listPermission, getPermission } from '~/api/permission'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormPermission from '~/components/FormPermission.vue'
 import { methodOptions } from '~/utils/enum'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch, FormPermission },
   layout: 'admin',
@@ -134,9 +139,9 @@ export default {
       this.search = { ...this.search, ...search, page: 1 }
       if (
         location.pathname + location.search ===
-        this.$router.resolve({
-          query: this.search,
-        }).href
+        this.$router.resolve({
+          query: this.search,
+        }).href
       ) {
         this.listPermission()
       } else {

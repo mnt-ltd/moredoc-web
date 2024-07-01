@@ -6,8 +6,8 @@
     >
       <div
         class="logo"
-        @click="gohome"
         :title="`${settings.system.sitename || '魔豆文库'}管理后台`"
+        @click="gohome"
       >
         <img
           v-if="isCollapse"
@@ -102,12 +102,32 @@
         <nuxt />
       </el-main>
     </el-container>
-    <el-dialog title="个人资料" :visible.sync="formProfileVisible" width="30%">
-      <FormProfile @success="profileSuccess" />
-    </el-dialog>
-    <el-dialog title="个人资料" :visible.sync="formPasswordVisible" width="30%">
-      <FormPassword @success="passwordSuccess" />
-    </el-dialog>
+    <el-drawer
+      :visible.sync="formProfileVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
+    >
+      <div slot="title">
+        <el-page-header content="个人资料" @back="formProfileVisible = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 20px"><FormProfile @success="profileSuccess" /></div>
+    </el-drawer>
+    <el-drawer
+      :visible.sync="formPasswordVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
+    >
+      <div slot="title">
+        <el-page-header content="修改密码" @back="formPasswordVisible = false">
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormPassword @success="passwordSuccess" />
+      </div>
+    </el-drawer>
   </el-container>
 </template>
 <script>

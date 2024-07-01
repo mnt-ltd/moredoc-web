@@ -44,19 +44,27 @@
         </el-pagination>
       </div>
     </el-card>
-
-    <el-dialog
-      :close-on-click-modal="false"
-      width="640px"
-      :title="banner.id > 0 ? '编辑轮播图' : '新增轮播图'"
+    <el-drawer
       :visible.sync="formVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
     >
-      <FormBanner
-        ref="formBanner"
-        :init-banner="banner"
-        @success="formSuccess"
-      />
-    </el-dialog>
+      <div slot="title">
+        <el-page-header
+          :content="banner.id > 0 ? '编辑轮播图' : '新增轮播图'"
+          @back="formVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 20px">
+        <FormBanner
+          ref="formBanner"
+          :init-banner="banner"
+          @success="formSuccess"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 

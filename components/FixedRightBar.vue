@@ -102,7 +102,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .com-fixed-right-bar {
-  z-index: 9999;
+  z-index: 99;
   position: fixed;
   right: 20px;
   bottom: 0;
