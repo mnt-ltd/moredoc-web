@@ -75,7 +75,7 @@
         >
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormUser
           ref="formUser"
           :init-user="user"
@@ -97,7 +97,7 @@
         >
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormUserProfile
           ref="formUserProfile"
           :init-user="user"

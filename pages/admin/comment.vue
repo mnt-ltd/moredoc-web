@@ -70,7 +70,7 @@
         <el-page-header content="评论编审" @back="formCommentVisible = false">
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormCommentCheck
           v-if="comment.id > 0"
           ref="formComment"

@@ -175,7 +175,7 @@
         <el-page-header content="编辑文档" @back="formVisible = false">
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormUpdateDocument
           :category-trees="trees"
           :init-document="document"
@@ -218,7 +218,7 @@
         >
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormUpdateDocumentsCategory
           v-if="formDocumentsCategoryVisible"
           :category-trees="trees"
@@ -240,7 +240,7 @@
         >
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormUpdateDocumentsLanguage
           v-if="formDocumentsLanguageVisible"
           :documents="languageDocuments"
@@ -261,7 +261,7 @@
         >
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormDocumentRecommend
           :init-document="document"
           @success="formSuccess"

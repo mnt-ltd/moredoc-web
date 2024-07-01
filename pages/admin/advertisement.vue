@@ -56,7 +56,7 @@
         >
         </el-page-header>
       </div>
-      <div style="padding: 20px">
+      <div style="padding: 0 20px">
         <FormAdvertisement
           ref="advertisementForm"
           :init-advertisement="advertisement"
