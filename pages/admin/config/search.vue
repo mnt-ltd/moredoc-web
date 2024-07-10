@@ -2,20 +2,26 @@
   <el-card v-loading="loading" shadow="never">
     <FormConfig v-if="configs.length > 0" :init-configs="configs">
       <template slot="buttons">
-        <el-button
+        <!-- <el-button
           type="primary"
           icon="el-icon-refresh"
           :loading="testing"
           @click="updateDocumentIndexes"
           >更新全量全文索引</el-button
-        >
+        > -->
+        <el-alert class="mgt-20px" type="warning" show-icon :closeable="false">
+          <div slot="title">
+            变更全文搜索引擎之后，务必在当前 管理后台 ->
+            <nuxt-link
+              to="/admin/dashboard"
+              style="font-size: 12px; vertical-align: middle; margin-top: -2px"
+              class="el-link el-link--primary"
+              >面板</nuxt-link
+            >
+            数据统计右侧分别更新全文索引。
+          </div>
+        </el-alert>
       </template>
-      <el-alert
-        title="变更全文搜索引擎之后，务必重新更新全量全文索引。"
-        type="warning"
-        show-icon
-      >
-      </el-alert>
     </FormConfig>
   </el-card>
 </template>
