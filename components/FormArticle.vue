@@ -11,23 +11,6 @@
       </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col :span="11" :xs="14">
-        <el-form-item
-          label="标题"
-          prop="title"
-          :rules="[
-            { required: true, trigger: 'blur', message: '请输入文章标题' },
-          ]"
-        >
-          <el-input
-            v-model="article.title"
-            placeholder="请输入文章标题"
-            clearable
-            :disabled="!canIPublish"
-          >
-          </el-input>
-        </el-form-item>
-      </el-col>
       <el-col :span="6" :xs="10">
         <el-form-item
           label="分类"
@@ -52,6 +35,23 @@
           ></el-cascader>
         </el-form-item>
       </el-col>
+      <el-col :span="11" :xs="14">
+        <el-form-item
+          label="标题"
+          prop="title"
+          :rules="[
+            { required: true, trigger: 'blur', message: '请输入文章标题' },
+          ]"
+        >
+          <el-input
+            v-model="article.title"
+            placeholder="请输入文章标题"
+            clearable
+            :disabled="!canIPublish"
+          >
+          </el-input>
+        </el-form-item>
+      </el-col>
       <el-col v-if="isAdmin" :span="7" :xs="12">
         <el-form-item label="标识" prop="identifier">
           <!-- 管理员才有权限设置标识 -->
@@ -64,6 +64,7 @@
         </el-form-item>
       </el-col>
     </el-row>
+
     <el-row :gutter="20">
       <el-col :span="11" :xs="16">
         <el-form-item label="关键字">
@@ -142,6 +143,18 @@
         rows="5"
       ></el-input>
     </el-form-item>
+    <el-row :gutter="20">
+      <el-col :span="6" :xs="10">
+        <el-form-item label="来源">
+          <el-input v-model="article.source" clearable></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="11" :xs="14">
+        <el-form-item label="来源地址">
+          <el-input v-model="article.source_url" clearable></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
     <el-form-item label="内容" class="editor-item">
       <Editor
         v-if="canIPublish"
