@@ -396,7 +396,6 @@
 import { mapActions, mapGetters } from 'vuex'
 import { calcMD5, formatBytes } from '~/utils/utils'
 import { createDocument, isDocumentExist } from '~/api/document'
-import { canIUploadDocument } from '~/api/user'
 import { uploadDocument } from '~/api/attachment'
 export default {
   data() {
@@ -486,15 +485,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['token', 'user']),
+    ...mapGetters('user', ['token', 'user', 'groups']),
     ...mapGetters('category', ['categoryTrees']),
     ...mapGetters('setting', ['settings']),
   },
-  async created() {
-    const res = await canIUploadDocument()
-    if (res.status === 200) {
-      this.canIUploadDocument = true
-    }
+  created() {
+    this.groups.forEach((group) => {
+      if (group.enable_upload) {
+        this.canIUploadDocument = true
+      }
+    })
     try {
       this.maxDocumentSize =
         (this.settings.security.max_document_size || 50) * 1024 * 1024
@@ -518,6 +518,7 @@ export default {
       } else if (this.otherExtEnum.includes(ext)) {
         this.otherExt.push(ext)
       }
+      return ext
     })
   },
   methods: {

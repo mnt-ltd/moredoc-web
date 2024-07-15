@@ -8,12 +8,10 @@ import {
   register,
   registerByMobile,
   loginByMobile,
+  listUserGroup,
 } from '~/api/user'
 import { permissionsToTree } from '~/utils/permission'
-import {
-  loginOauth,
-  bindOauth,
-} from '~/api/oauth'
+import { loginOauth, bindOauth } from '~/api/oauth'
 export const user = {
   namespaced: true,
   state: {
@@ -31,10 +29,14 @@ export const user = {
     permissions: [],
     allowPages: [],
     redirectAfterOauth: '/me', // oauth 登录后的跳转页面
+    groups: [],
   },
   mutations: {
     setUser(state, user) {
       state.user = user
+    },
+    setGroups(state, groups) {
+      state.groups = groups
     },
     mergeUser(state, user) {
       state.user = { ...state.user, ...user }
@@ -62,7 +64,7 @@ export const user = {
   actions: {
     setRedirectAfterOauth({ commit }, redirect) {
       // 如果redirect的地址是oauth前缀的地址，则不变更
-      if(redirect.startsWith('/oauth')) return
+      if (redirect.startsWith('/oauth')) return
       commit('setRedirectAfterOauth', redirect)
     },
     // 获取用户信息
@@ -70,6 +72,13 @@ export const user = {
       const res = await getUser()
       if (res.status === 200) {
         commit('setUser', res.data)
+      }
+      return res
+    },
+    async getUserGroups({ commit }) {
+      const res = await listUserGroup()
+      if (res.status === 200) {
+        commit('setGroups', res.data.group || [])
       }
       return res
     },
@@ -97,7 +106,10 @@ export const user = {
       commit('setUser', res.data.user)
       commit('setToken', res.data.token)
       // 获取用户权限
-      await dispatch('getUserPermissions')
+      await Promise.all([
+        dispatch('getUserPermissions'),
+        dispatch('getUserGroups'),
+      ])
       return res
     },
     async registerByMobile({ commit, dispatch }, registerInfo) {
@@ -127,7 +139,10 @@ export const user = {
       commit('setUser', res.data.user)
       commit('setToken', res.data.token)
       // 获取用户权限
-      await dispatch('getUserPermissions')
+      await Promise.all([
+        dispatch('getUserPermissions'),
+        dispatch('getUserGroups'),
+      ])
       return res
     },
     async loginOauth({ commit, dispatch }, loginInfo) {
@@ -139,8 +154,9 @@ export const user = {
         })
         return res
       }
-      
-      if(res.data.token && res.data.user){        // 如果返回信息中有token和用户信息，则表示登录成功。否则表示需要对用户信息进行绑定
+
+      if (res.data.token && res.data.user) {
+        // 如果返回信息中有token和用户信息，则表示登录成功。否则表示需要对用户信息进行绑定
         commit('setUser', res.data.user)
         commit('setToken', res.data.token)
         await dispatch('getUserPermissions')
@@ -158,8 +174,8 @@ export const user = {
         })
         return res
       }
-      if(res.data.token) commit('setToken', res.data.token)
-      if(res.data.user) commit('setUser', res.data.user)
+      if (res.data.token) commit('setToken', res.data.token)
+      if (res.data.user) commit('setUser', res.data.user)
       await dispatch('getUserPermissions')
       return res
     },
@@ -236,6 +252,9 @@ export const user = {
     },
     redirectAfterOauth(state) {
       return state.redirectAfterOauth
-    }
+    },
+    groups(state) {
+      return state.groups || []
+    },
   },
 }

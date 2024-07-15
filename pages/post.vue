@@ -27,7 +27,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getArticle } from '~/api/article'
-import { canIPublishArticle } from '~/api/user'
 export default {
   data() {
     return {
@@ -63,7 +62,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['token', 'user']),
+    ...mapGetters('user', ['token', 'user', 'groups']),
     ...mapGetters('category', ['categoryTrees']),
     ...mapGetters('setting', ['settings']),
     trees() {
@@ -74,18 +73,12 @@ export default {
     this.canIPublishArticle()
   },
   methods: {
-    async canIPublishArticle() {
-      if (!this.token) {
-        return
-      }
-      this.loading = true
-      const res = await canIPublishArticle()
-      if (res.status === 200) {
-        this.canIPublish = true
-        this.canICrawlArticle = res.data.enable_article_crawl
-        this.getArticle()
-      }
-      this.loading = false
+    canIPublishArticle() {
+      this.groups.forEach((group) => {
+        if (group.enable_article) {
+          this.canIPublish = true
+        }
+      })
     },
     async getArticle() {
       const identifier = this.$route.query.identifier

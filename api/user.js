@@ -243,3 +243,11 @@ export const setRewardedAdCreditAward = (data) => {
     data,
   })
 }
+
+export const listUserGroup = (params) => {
+  return service({
+    url: '/api/v1/user/group',
+    method: 'get',
+    params,
+  })
+}
