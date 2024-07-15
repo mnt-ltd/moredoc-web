@@ -417,7 +417,11 @@ export default {
       this.getAdvertisements('global'),
     ])
     if (this.user.id > 0) {
-      await Promise.all([this.getUser(), this.getUserPermissions()])
+      await Promise.all([
+        this.getUser(),
+        this.getUserPermissions(),
+        this.getUserGroups(),
+      ])
     }
 
     const trees = categoryToTrees(this.categories)
@@ -453,6 +457,7 @@ export default {
       'getUser',
       'checkAndRefreshUser',
       'getUserPermissions',
+      'getUserGroups',
     ]),
     showMenuDrawer() {
       this.getSignedToday()

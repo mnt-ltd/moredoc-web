@@ -6,6 +6,7 @@ import {
   logout,
   getUserPermissions,
   register,
+  listUserGroup,
 } from '~/api/user'
 import { permissionsToTree } from '~/utils/permission'
 export const user = {
@@ -24,10 +25,14 @@ export const user = {
     token: '',
     permissions: [],
     allowPages: [],
+    groups: [],
   },
   mutations: {
     setUser(state, user) {
       state.user = user
+    },
+    setGroups(state, groups) {
+      state.groups = groups
     },
     mergeUser(state, user) {
       state.user = { ...state.user, ...user }
@@ -58,6 +63,13 @@ export const user = {
       }
       return res
     },
+    async getUserGroups({ commit }) {
+      const res = await listUserGroup()
+      if (res.status === 200) {
+        commit('setGroups', res.data.group || [])
+      }
+      return res
+    },
     async updateUserProfile({ commit }, profile) {
       const res = await updateUserProfile(profile)
       if (res.status === 200) {
@@ -82,7 +94,10 @@ export const user = {
       commit('setUser', res.data.user)
       commit('setToken', res.data.token)
       // 获取用户权限
-      await dispatch('getUserPermissions')
+      await Promise.all([
+        dispatch('getUserPermissions'),
+        dispatch('getUserGroups'),
+      ])
       return res
     },
     async login({ commit, dispatch }, loginInfo) {
@@ -97,7 +112,10 @@ export const user = {
       commit('setUser', res.data.user)
       commit('setToken', res.data.token)
       // 获取用户权限
-      await dispatch('getUserPermissions')
+      await Promise.all([
+        dispatch('getUserPermissions'),
+        dispatch('getUserGroups'),
+      ])
       return res
     },
     async logout({ commit }) {
@@ -155,6 +173,9 @@ export const user = {
     },
     allowPages(state) {
       return state.allowPages || []
+    },
+    groups(state) {
+      return state.groups || []
     },
   },
 }
