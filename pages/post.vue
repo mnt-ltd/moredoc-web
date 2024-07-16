@@ -30,8 +30,6 @@ import { getArticle } from '~/api/article'
 export default {
   data() {
     return {
-      canIPublish: false,
-      canICrawlArticle: false,
       loading: false,
       article: {
         title: '',
@@ -68,18 +66,14 @@ export default {
     trees() {
       return this.categoryTrees.filter((item) => item.type === 1)
     },
-  },
-  created() {
-    this.canIPublishArticle()
+    canIPublish() {
+      return this.groups.some((group) => group.enable_article)
+    },
+    canICrawlArticle() {
+      return this.groups.some((group) => group.enable_article_crawl)
+    },
   },
   methods: {
-    canIPublishArticle() {
-      this.groups.forEach((group) => {
-        if (group.enable_article) {
-          this.canIPublish = true
-        }
-      })
-    },
     async getArticle() {
       const identifier = this.$route.query.identifier
       if (!identifier) {
