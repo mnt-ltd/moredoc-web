@@ -194,10 +194,10 @@
             ></div>
             <div v-if="!article.id" style="min-height: 100vh"></div>
           </article>
-          <div class="source">
+          <div v-if="article.source || article.source_url" class="source">
             <span>来源:</span>
-            <div>{{ article.source }}</div>
-            <div>
+            <div v-if="article.source">{{ article.source }}</div>
+            <div v-if="article.source_url">
               <a
                 class="el-link el-link--default"
                 target="_blank"
