@@ -127,7 +127,7 @@
                   ? '搜索文章...'
                   : '搜索文档...'
               "
-              @keyup.enter.native="onSearch"
+              @keydown.native.enter="onSearch"
             >
               <i
                 slot="suffix"
@@ -200,7 +200,7 @@
         class="search-input"
         size="large"
         placeholder="搜索文档..."
-        @keyup.enter.native="onSearch"
+        @keydown.native.enter="onSearch"
       >
         <i
           slot="suffix"

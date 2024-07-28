@@ -597,6 +597,7 @@ import {
   formatBytes,
   getIcon,
   genPrevPage,
+  categoryToTrees,
 } from '~/utils/utils'
 import { documentStatusOptions } from '~/utils/enum'
 import FormComment from '~/components/FormComment.vue'
@@ -883,32 +884,15 @@ export default {
       }
 
       const breadcrumbs = []
-      const tmpBreadcrumbs = (doc.category_id || []).map((id) => {
-        const breadcrumb = this.categoryMap[id]
-        if (breadcrumb && !breadcrumb.parent_id) {
-          breadcrumbs.push(breadcrumb)
-        }
-        return breadcrumb
-      })
-
-      const length = tmpBreadcrumbs.length
-      for (let j = 0; j < length; j++) {
-        for (let i = 0; i < tmpBreadcrumbs.length; i++) {
-          const breadcrumb = tmpBreadcrumbs[i]
-          if (
-            breadcrumb &&
-            breadcrumbs[breadcrumbs.length - 1] &&
-            breadcrumb.parent_id === breadcrumbs[breadcrumbs.length - 1].id
-          ) {
-            breadcrumbs.push(breadcrumb)
-            tmpBreadcrumbs.splice(i, 1)
-            break
-          }
+      const trees = categoryToTrees(doc.category || [])
+      if (trees.length > 0) {
+        breadcrumbs.push(trees[0])
+        while (trees[0].children && trees[0].children.length > 0) {
+          trees[0] = trees[0].children[0]
+          breadcrumbs.push(trees[0])
         }
       }
-
       this.breadcrumbs = breadcrumbs
-
       doc.icon = getIcon(doc.ext)
       this.pages = pages
       this.document = doc
