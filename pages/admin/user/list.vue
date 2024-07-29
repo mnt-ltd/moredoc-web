@@ -376,13 +376,13 @@ export default {
         { prop: 'identity', label: '身份证', width: 250 },
         { prop: 'address', label: '地址', width: 250 },
         { prop: 'signature', label: '签名', width: 250 },
-        { prop: 'created_at', label: '注册时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '注册时间', width: 170, type: 'datetime' },
         { prop: 'register_ip', label: '注册IP', width: 160 },
-        { prop: 'login_at', label: '最后登录', width: 160, type: 'datetime' },
+        { prop: 'login_at', label: '最后登录', width: 170, type: 'datetime' },
         {
           prop: 'last_login_ip',
           label: '最后登录IP',
-          width: 160,
+          width: 170,
         },
       ]
     },

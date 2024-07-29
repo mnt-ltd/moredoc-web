@@ -279,8 +279,8 @@ export default {
         { prop: 'target', label: '打开方式', width: 80 },
         { prop: 'sort', label: '排序', width: 80, type: 'number' },
         { prop: 'description', label: '描述', minWidth: 200 },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },

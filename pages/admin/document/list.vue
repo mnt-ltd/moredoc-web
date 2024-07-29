@@ -647,12 +647,12 @@ export default {
         { prop: 'comment_count', label: '评论', width: 70, type: 'number' },
         { prop: 'keywords', label: '关键字', minWidth: 200 },
         // { prop: 'description', label: '摘要', minWidth: 200 },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
         {
           prop: 'recommend_at',
           label: '推荐时间',
-          width: 160,
+          width: 170,
           type: 'datetime',
         },
       ]

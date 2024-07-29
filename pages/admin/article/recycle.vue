@@ -387,9 +387,9 @@ export default {
           minWidth: 180,
           type: 'breadcrumb',
         },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
-        { prop: 'deleted_at', label: '删除时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
+        { prop: 'deleted_at', label: '删除时间', width: 170, type: 'datetime' },
       ]
     },
     batchUpdateArticlesCategory() {

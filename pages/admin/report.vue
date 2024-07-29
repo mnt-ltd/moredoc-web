@@ -293,8 +293,8 @@ export default {
           type: 'html',
         },
         { prop: 'remark', label: '处理描述', minWidth: 150 },
-        { prop: 'created_at', label: '举报时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '举报时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },

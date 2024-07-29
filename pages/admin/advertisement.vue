@@ -279,13 +279,12 @@ export default {
         })
       })
       this.tableListFields = [
-        { prop: 'id', label: 'ID', width: 80, type: 'number', fixed: 'left' },
+        { prop: 'id', label: 'ID', width: 80, type: 'number' },
         {
           prop: 'enable',
           label: '状态',
           width: 80,
           type: 'bool',
-          fixed: 'left',
         },
         {
           prop: 'position',
@@ -301,10 +300,10 @@ export default {
         },
         { prop: 'remark', label: '广告备注', minWidth: 250 },
         // { prop: 'content', label: '广告代码', minWidth:250 },
-        { prop: 'start_time', label: '开始时间', width: 160, type: 'datetime' },
-        { prop: 'end_time', label: '截止时间', width: 160, type: 'datetime' },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'start_time', label: '开始时间', width: 170, type: 'datetime' },
+        { prop: 'end_time', label: '截止时间', width: 170, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },

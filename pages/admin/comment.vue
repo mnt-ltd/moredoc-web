@@ -339,8 +339,8 @@ export default {
         },
         { prop: 'content', label: '评论内容', minWidth: 150 },
         { prop: 'username_html', label: '评论人', minWidth: 150, type: 'html' },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },

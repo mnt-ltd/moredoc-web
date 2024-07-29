@@ -331,8 +331,8 @@ export default {
         },
         // { prop: 'is_display', label: '是否展示', width: 80, type: 'bool' },
         { prop: 'description', label: '描述', width: 250 },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },
