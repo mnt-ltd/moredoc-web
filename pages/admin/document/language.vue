@@ -283,8 +283,8 @@ export default {
         },
         { prop: 'code', label: '代码', minWidth: 150 },
         { prop: 'sort', label: '排序', width: 80, type: 'number' },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },

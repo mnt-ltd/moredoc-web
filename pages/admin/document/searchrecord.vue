@@ -269,7 +269,7 @@ export default {
         { prop: 'page', label: '页码', width: 70 },
         { prop: 'ip', label: 'IP', width: 100 },
         { prop: 'spend_time', label: '耗时(秒)', width: 100, type: 'number' },
-        { prop: 'created_at', label: '搜索时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '搜索时间', width: 170, type: 'datetime' },
         { prop: 'user_agent', label: '客户端', minWidth: 200, type: 'number' },
       ]
     },

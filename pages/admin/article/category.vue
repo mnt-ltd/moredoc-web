@@ -279,8 +279,8 @@ export default {
         { prop: 'cover', label: '封面', width: 100, type: 'image' },
         { prop: 'doc_count', label: '文章数', width: 80, type: 'number' },
         { prop: 'description', label: '分类描述', minWidth: 200 },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },

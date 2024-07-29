@@ -372,7 +372,7 @@ export default {
         },
         { prop: 'username_html', label: '上传者', width: 120, type: 'html' },
         { prop: 'deleted_username', label: '删除者', width: 120 },
-        { prop: 'deleted_at', label: '删除时间', width: 160, type: 'datetime' },
+        { prop: 'deleted_at', label: '删除时间', width: 170, type: 'datetime' },
         {
           prop: 'status',
           label: '状态',
@@ -394,8 +394,8 @@ export default {
         { prop: 'comment_count', label: '评论', width: 80, type: 'number' },
         { prop: 'keywords', label: '关键字', minWidth: 200 },
         // { prop: 'description', label: '摘要', minWidth: 200 },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },

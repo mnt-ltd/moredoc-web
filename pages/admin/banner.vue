@@ -283,8 +283,8 @@ export default {
         { prop: 'url', label: '链接', minWidth: 150, type: 'link' },
         { prop: 'sort', label: '排序', width: 80, type: 'number' },
         { prop: 'description', label: '备注', width: 200 },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },

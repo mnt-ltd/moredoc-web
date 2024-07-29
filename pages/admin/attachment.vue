@@ -269,8 +269,8 @@ export default {
         { prop: 'hash', label: 'HASH', width: 290 },
         { prop: 'path', label: '存储路径', minWidth: 300 },
         { prop: 'description', label: '备注', width: 200 },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },
