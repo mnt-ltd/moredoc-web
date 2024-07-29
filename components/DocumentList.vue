@@ -34,25 +34,26 @@
               </nuxt-link>
             </h3>
             <div class="doc-info">
-              <el-rate
-                v-model="doc.score"
-                disabled
-                show-score
-                text-color="#ff9900"
-                score-template="{value}"
-              >
-              </el-rate>
-              <span class="float-right">
+              <span>
                 {{ doc.price || 0 }}
                 {{ settings.system.credit_name || '魔豆' }}
                 <span class="line">|</span> {{ doc.pages || '-' }} 页
                 <span class="line">|</span>
                 {{ formatBytes(doc.size) || '-' }}
-                <span class="hidden-xs-only"
+                <span
                   ><span class="line">|</span>
-                  {{ formatDatetime(doc.created_at) }}</span
+                  {{ formatRelativeTime(doc.created_at) }}</span
                 ></span
               >
+              <el-rate
+                v-model="doc.score"
+                disabled
+                class="float-right hidden-xs-only"
+                show-score
+                text-color="#ff9900"
+                score-template="{value}"
+              >
+              </el-rate>
             </div>
             <div class="doc-desc">
               {{ doc.description }}
@@ -66,7 +67,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import DocumentCover from './DocumentCover.vue'
-import { formatBytes, formatDatetime, getIcon } from '~/utils/utils'
+import {
+  formatBytes,
+  formatDatetime,
+  formatRelativeTime,
+  getIcon,
+} from '~/utils/utils'
 export default {
   name: 'DocumentList',
   components: { DocumentCover },
@@ -86,6 +92,7 @@ export default {
     formatBytes,
     formatDatetime,
     getIcon,
+    formatRelativeTime,
   },
 }
 </script>
@@ -131,7 +138,7 @@ export default {
     }
   }
   .doc-info {
-    margin: 10px 0;
+    margin: 10px 0 8px;
     font-size: 13px;
     color: #888;
     .line {
