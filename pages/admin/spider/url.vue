@@ -260,8 +260,8 @@ export default {
         { prop: 'url_html', label: '链接', minWidth: 250, type: 'html' },
         { prop: 'total', label: '发现文档', width: 100, type: 'number' },
         { prop: 'error', label: '错误', minWidth: 150 },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },

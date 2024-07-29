@@ -564,8 +564,8 @@ export default {
         },
         // { prop: 'document_id', label: '发布到文档', minWidth: 200 },
         { prop: 'category_id', label: '发布到分类', minWidth: 150 },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
       ]
     },
   },

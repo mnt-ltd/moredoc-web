@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { listOrder } from '~/api/order'
 import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
 import {
@@ -78,7 +79,6 @@ import {
 } from '~/utils/enum'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
-import { mapGetters } from 'vuex'
 export default {
   components: { TableList, FormSearch },
   layout: 'admin',
@@ -217,18 +217,18 @@ export default {
       ]
     },
     initTableListFields() {
-      let statusMap = {}
-      let paymentTypeMap = {}
-      let orderTypeMap = {}
+      const statusMap = {}
+      const paymentTypeMap = {}
+      const orderTypeMap = {}
       this.orderStatusOptions.forEach((item) => {
         statusMap[item.value] = item
       })
       this.paymentTypeOptions.forEach((item) => {
-        item['type'] = 'primary'
+        item.type = 'primary'
         paymentTypeMap[item.value] = item
       })
       this.orderTypeOptions.forEach((item) => {
-        item['type'] = 'success'
+        item.type = 'success'
         orderTypeMap[item.value] = item
       })
 
@@ -268,10 +268,10 @@ export default {
         { prop: 'price', label: '价格', width: 80, type: 'number' },
         { prop: 'coupon_amount', label: '优惠', width: 80, type: 'number' },
         { prop: 'amount', label: '实付', width: 80, type: 'number' },
-        { prop: 'created_at', label: '创建时间', width: 160, type: 'datetime' },
-        // { prop: 'updated_at', label: '更新时间', width: 160, type: 'datetime' },
-        { prop: 'paid_at', label: '支付时间', width: 160, type: 'datetime' },
-        { prop: 'closed_at', label: '关闭时间', width: 160, type: 'datetime' },
+        { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
+        // { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
+        { prop: 'paid_at', label: '支付时间', width: 170, type: 'datetime' },
+        { prop: 'closed_at', label: '关闭时间', width: 170, type: 'datetime' },
       ]
     },
   },

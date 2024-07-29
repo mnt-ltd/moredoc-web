@@ -234,8 +234,8 @@ export default {
           type: 'number',
         },
         { prop: 'times', label: '下载频次(次/天)', minWidth: 150 },
-        { prop: 'joined_at', label: '加入时间', width: 160, type: 'datetime' },
-        { prop: 'expired_at', label: '过期时间', width: 160, type: 'datetime' },
+        { prop: 'joined_at', label: '加入时间', width: 170, type: 'datetime' },
+        { prop: 'expired_at', label: '过期时间', width: 170, type: 'datetime' },
       ]
     },
   },
