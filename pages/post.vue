@@ -24,7 +24,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { getArticle } from '~/api/article'
 export default {
   data() {
@@ -69,8 +69,10 @@ export default {
   },
   created() {
     this.canIPublishArticle()
+    this.getCategories()
   },
   methods: {
+    ...mapActions('category', ['getCategories']),
     canIPublishArticle() {
       this.groups.forEach((group) => {
         if (group.enable_article) {

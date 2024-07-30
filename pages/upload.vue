@@ -394,6 +394,7 @@ export default {
     ...mapGetters('setting', ['settings']),
   },
   created() {
+    this.getCategories()
     this.groups.forEach((group) => {
       if (group.enable_upload) {
         this.canIUploadDocument = true
@@ -428,6 +429,7 @@ export default {
   methods: {
     formatBytes,
     ...mapActions('user', ['getUser']),
+    ...mapActions('category', ['getCategories']),
     onChange(file) {
       const name = file.name.toLowerCase()
       const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
