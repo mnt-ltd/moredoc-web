@@ -289,13 +289,13 @@ export default {
       if (res.status === 200) {
         const articles = res.data.article || []
         articles.map((item) => {
-          ;(item.category_id || (item.category_id = [])).forEach((id) => {
-            ;(item.category_name || (item.category_name = [])).push(
-              this.categoryMap[id] && this.categoryMap[id].title
-                ? this.categoryMap[id].title
-                : '-'
-            )
-          })
+          // ;(item.category_id || (item.category_id = [])).forEach((id) => {
+          //   ;(item.category_name || (item.category_name = [])).push(
+          //     this.categoryMap[id] && this.categoryMap[id].title
+          //       ? this.categoryMap[id].title
+          //       : '-'
+          //   )
+          // })
           item.title_html = genLinkHTML(
             item.title,
             `/article/${item.identifier}`
@@ -382,10 +382,10 @@ export default {
         { prop: 'identifier', label: '标识', width: 200 },
         { prop: 'view_count', label: '浏览', width: 80, type: 'number' },
         {
-          prop: 'category_name',
+          prop: 'category',
           label: '分类',
           minWidth: 180,
-          type: 'breadcrumb',
+          type: 'category',
         },
         { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
         { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },

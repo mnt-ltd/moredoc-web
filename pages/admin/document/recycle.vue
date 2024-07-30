@@ -181,13 +181,13 @@ export default {
       if (res.status === 200) {
         const documents = res.data.document || []
         documents.forEach((item) => {
-          ;(item.category_id || (item.category_id = [])).forEach((id) => {
-            ;(item.category_name || (item.category_name = [])).push(
-              this.categoryMap[id] && this.categoryMap[id].title
-                ? this.categoryMap[id].title
-                : '-'
-            )
-          })
+          // ;(item.category_id || (item.category_id = [])).forEach((id) => {
+          //   ;(item.category_name || (item.category_name = [])).push(
+          //     this.categoryMap[id] && this.categoryMap[id].title
+          //       ? this.categoryMap[id].title
+          //       : '-'
+          //   )
+          // })
           item.title_html = genLinkHTML(item.title, `/document/${item.id}`)
           item.username_html = genLinkHTML(
             item.username,
@@ -381,10 +381,10 @@ export default {
           enum: statusMap,
         },
         {
-          prop: 'category_name',
+          prop: 'category',
           label: '分类',
           minWidth: 180,
-          type: 'breadcrumb',
+          type: 'category',
         },
         { prop: 'pages', label: '页数', width: 80, type: 'number' },
         { prop: 'price', label: '价格', width: 80, type: 'number' },
