@@ -263,13 +263,13 @@ export default {
       if (res.status === 200) {
         const articles = res.data.article || []
         articles.map((item) => {
-          ;(item.category_id || (item.category_id = [])).forEach((id) => {
-            ;(item.category_name || (item.category_name = [])).push(
-              this.categoryMap[id] && this.categoryMap[id].title
-                ? this.categoryMap[id].title
-                : '-'
-            )
-          })
+          // ;(item.category_id || (item.category_id = [])).forEach((id) => {
+          //   ;(item.category_name || (item.category_name = [])).push(
+          //     this.categoryMap[id] && this.categoryMap[id].title
+          //       ? this.categoryMap[id].title
+          //       : '-'
+          //   )
+          // })
           item.title_html = genLinkHTML(
             item.title,
             `/article/${item.identifier}`
@@ -436,10 +436,10 @@ export default {
         { prop: 'favorite_count', label: '收藏', width: 80, type: 'number' },
         { prop: 'comment_count', label: '评论', width: 80, type: 'number' },
         {
-          prop: 'category_name',
+          prop: 'category',
           label: '分类',
           minWidth: 180,
-          type: 'breadcrumb',
+          type: 'category',
         },
         {
           prop: 'status',

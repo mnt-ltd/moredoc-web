@@ -20,15 +20,7 @@
         </h3>
         <div class="doc-desc" v-html="doc.description"></div>
         <div class="doc-info">
-          <el-rate
-            v-model="doc.score"
-            disabled
-            show-score
-            text-color="#ff9900"
-            score-template="{value}"
-          >
-          </el-rate>
-          <span class="float-right"
+          <span
             >{{ doc.price || 0 }} {{ settings.system.credit_name || '魔豆' }} |
             {{ doc.pages || '-' }} 页 |
             {{ formatBytes(doc.size) }}
@@ -36,6 +28,15 @@
               >| {{ formatRelativeTime(doc.created_at) }}</span
             ></span
           >
+          <el-rate
+            v-model="doc.score"
+            disabled
+            show-score
+            text-color="#ff9900"
+            score-template="{value}"
+            class="float-right"
+          >
+          </el-rate>
         </div>
       </li>
     </ul>

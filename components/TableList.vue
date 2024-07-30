@@ -135,6 +135,18 @@
             </template>
             <template v-else>{{ scope.row[item.prop] || '-' }}</template>
           </span>
+          <span v-else-if="item.type === 'category'">
+            <template v-if="scope.row[item.prop]">
+              <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item
+                  v-for="(value, idx) in scope.row[item.prop]"
+                  :key="item.prop + idx"
+                  >{{ value.title }}</el-breadcrumb-item
+                >
+              </el-breadcrumb>
+            </template>
+            <template v-else>{{ scope.row[item.prop] || '-' }}</template>
+          </span>
           <!-- 字符串。更多，则需要继续扩展 -->
           <span v-else-if="item.type === 'html'">
             <span v-html="scope.row[item.prop]"></span>

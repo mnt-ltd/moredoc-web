@@ -400,13 +400,13 @@ export default {
         documents.forEach((item) => {
           // 对于转换中的文档，禁止删除
           item.disable_delete = item.status === 1
-          ;(item.category_id || (item.category_id = [])).forEach((id) => {
-            ;(item.category_name || (item.category_name = [])).push(
-              this.categoryMap[id] && this.categoryMap[id].title
-                ? this.categoryMap[id].title
-                : '-'
-            )
-          })
+          // ;(item.category_id || (item.category_id = [])).forEach((id) => {
+          //   ;(item.category_name || (item.category_name = [])).push(
+          //     this.categoryMap[id] && this.categoryMap[id].title
+          //       ? this.categoryMap[id].title
+          //       : '-'
+          //   )
+          // })
           item.title_html = genLinkHTML(item.title, `/document/${item.id}`)
           item.username_html = genLinkHTML(
             item.username,
@@ -671,10 +671,10 @@ export default {
           enum: languageMap,
         },
         {
-          prop: 'category_name',
+          prop: 'category',
           label: '分类',
           minWidth: 180,
-          type: 'breadcrumb',
+          type: 'category',
         },
         {
           prop: 'is_vip',
