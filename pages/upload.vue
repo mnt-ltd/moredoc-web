@@ -490,6 +490,7 @@ export default {
     ...mapGetters('setting', ['settings']),
   },
   created() {
+    this.getCategories()
     this.groups.forEach((group) => {
       if (group.enable_upload) {
         this.canIUploadDocument = true
@@ -524,6 +525,7 @@ export default {
   methods: {
     formatBytes,
     ...mapActions('user', ['getUser']),
+    ...mapActions('category', ['getCategories']),
     // 设置是否允许选择文件夹上传
     changeDir() {
       const upload = this.$refs.upload.$el.querySelector('input[type=file]')

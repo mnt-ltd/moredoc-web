@@ -25,7 +25,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { getArticle } from '~/api/article'
 export default {
   data() {
@@ -73,7 +73,12 @@ export default {
       return this.groups.some((group) => group.enable_article_crawl)
     },
   },
+  created() {
+    this.getArticle()
+    this.getCategories()
+  },
   methods: {
+    ...mapActions('category', ['getCategories']),
     async getArticle() {
       const identifier = this.$route.query.identifier
       if (!identifier) {
