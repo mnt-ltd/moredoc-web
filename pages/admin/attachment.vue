@@ -5,12 +5,22 @@
         :fields="searchFormFields"
         :loading="loading"
         :show-create="false"
-        :show-delete="true"
+        :show-delete="false"
         :disabled-delete="selectedRow.length === 0"
         :default-search="search"
         @onSearch="onSearch"
         @onDelete="batchDelete"
-      />
+      >
+        <template slot="buttons">
+          <el-form-item>
+            <el-tooltip
+              content="附件只能查看，不能直接删除，而是由系统直接管理，会随着相应数据的删除而自动删除。"
+            >
+              <el-button type="text" icon="el-icon-info"></el-button>
+            </el-tooltip>
+          </el-form-item>
+        </template>
+      </FormSearch>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <TableList
@@ -20,8 +30,9 @@
         :show-actions="true"
         :show-view="false"
         :show-edit="true"
-        :show-delete="true"
-        :show-select="true"
+        :show-delete="false"
+        :show-select="false"
+        :actions-min-width="90"
         @selectRow="selectRow"
         @editRow="editRow"
         @deleteRow="deleteRow"
