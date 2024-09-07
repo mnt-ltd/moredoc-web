@@ -51,9 +51,9 @@
           type="primary"
           class="btn-block"
           icon="el-icon-check"
-          @click="execFindPassword"
           :loading="loading"
           :disabled="disabled"
+          @click="execFindPassword"
           >立即提交</el-button
         >
         <nuxt-link to="/register" title="" class="el-link el-link--default"
@@ -70,8 +70,8 @@
   </div>
 </template>
 <script>
-import { getUserCaptcha, findPasswordStepTwo } from '~/api/user'
 import { mapGetters } from 'vuex'
+import { getUserCaptcha, findPasswordStepTwo } from '~/api/user'
 export default {
   name: 'FormFindPasswordStepTwo',
   props: {
@@ -106,7 +106,7 @@ export default {
     this.user.token = this.$route.query.token
     this.user.email = this.$route.query.email
     // this.loadCaptcha()
-    if(this.settings.security.enable_captcha_find_password){
+    if (this.settings.security.enable_captcha_find_password) {
       this.captcha.enable = true
     }
   },
