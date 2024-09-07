@@ -33,8 +33,13 @@ export default {
   },
   computed: {
     ...mapGetters('setting', ['settings']),
+    ...mapGetters('user', ['user']),
   },
   created() {
+    // 如果已经登录，跳转到个人中心
+    if (this.user && this.user.id) {
+      this.$router.push('/me')
+    }
     if (!this.settings.system.enable_sms) {
       this.$router.replace('/findpassword')
     }

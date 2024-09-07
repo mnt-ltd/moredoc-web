@@ -73,6 +73,11 @@
             slot="append"
             type="primary"
             :class="leftSeconds > 0 || loading ? 'btn-disabled' : ''"
+            :disabled="
+              settings &&
+              settings.security &&
+              !settings.security.enable_register
+            "
             @click="sendSMSCaptcha"
           >
             <span v-if="leftSeconds > 0">{{ leftSeconds }} 秒</span>
