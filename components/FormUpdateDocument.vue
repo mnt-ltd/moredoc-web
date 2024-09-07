@@ -148,9 +148,14 @@
           rows="4 "
         ></el-input>
       </el-form-item>
-      <el-form-item
-        label="文档文本内容(一般无需编辑，当文档文本乱码时可以在此编辑修正)"
-      >
+      <el-form-item>
+        <el-checkbox v-model="updateDocuementContent"
+          ><span
+            >编辑文档文本内容(不建议修改，除非有乱码。如文本太大，浏览器页面会崩溃。)</span
+          ></el-checkbox
+        >
+      </el-form-item>
+      <el-form-item v-if="updateDocuementContent" label="文档文本内容">
         <el-input
           v-model="document.content"
           placeholder="请输入文档文本内容"
@@ -200,6 +205,7 @@ export default {
   },
   data() {
     return {
+      updateDocuementContent: false,
       documentStatusOptions,
       loading: false,
       uploading: false,
@@ -243,6 +249,7 @@ export default {
   watch: {
     initDocument: {
       handler(val) {
+        this.updateDocuementContent = false
         this.document = {
           ...this.getInitialDocumentData(),
           ...val,
