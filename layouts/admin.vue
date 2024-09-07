@@ -17,7 +17,7 @@
           :router="true"
           :default-active="activeMenu"
           :collapse="isCollapse"
-          class="layout-admin-menu"
+          class="layout-admin-menu custom-scrollbar"
         >
           <el-menu-item index="/admin/dashboard">
             <i class="el-icon-monitor"></i>
@@ -260,6 +260,8 @@ export default {
     border-right: 1px solid #e6e6e6;
     .el-menu {
       border-right: 0;
+      max-height: calc(100vh - 60px);
+      overflow-y: auto;
     }
   }
   .el-header {

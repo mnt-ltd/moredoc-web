@@ -79,6 +79,9 @@ export default {
           this.canIPublish = true
         }
       })
+      if (this.canIPublish) {
+        this.getArticle()
+      }
     },
     async getArticle() {
       const identifier = this.$route.query.identifier

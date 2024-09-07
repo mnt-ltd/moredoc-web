@@ -160,3 +160,26 @@ body {
 .el-page-header__content {
     font-size: 16px;
 }
+
+// 自定义滚动条样式，效果类似macOS
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(50, 50, 50, 0.4) rgba(50, 50, 50, 0.4);
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: rgba(50, 50, 50, 0.4);
+        border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #dcdde1;
+    }
+    ::-webkit-scrollbar-track {
+        background-color: rgba(50, 50, 50, 0.4);
+    }
+    ::-webkit-scrollbar-corner {
+        background-color: rgba(50, 50, 50, 0.4);
+    }
+}
