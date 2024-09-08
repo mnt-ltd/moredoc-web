@@ -18,7 +18,7 @@
               :disabled="selectedRow.length === 0"
               @command="batchStatus"
             >
-              <el-button type="warning">
+              <el-button type="warning" :disabled="selectedRow.length === 0">
                 批量启用/禁用 <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">

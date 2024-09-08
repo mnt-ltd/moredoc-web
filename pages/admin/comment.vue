@@ -17,7 +17,7 @@
             :disabled="selectedRow.length === 0"
             @command="checkComment"
           >
-            <el-button type="primary">
+            <el-button type="primary" :disabled="selectedRow.length === 0">
               批量审批 <i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">

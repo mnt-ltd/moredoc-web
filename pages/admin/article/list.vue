@@ -34,7 +34,11 @@
               :disabled="selectedRow.length === 0"
               @command="batchRecommend"
             >
-              <el-button type="primary" icon="el-icon-s-check">
+              <el-button
+                type="primary"
+                icon="el-icon-s-check"
+                :disabled="selectedRow.length === 0"
+              >
                 批量推荐 <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
@@ -48,7 +52,11 @@
               :disabled="selectedRow.length === 0"
               @command="batchCheeck"
             >
-              <el-button type="warning" icon="el-icon-s-check">
+              <el-button
+                type="warning"
+                icon="el-icon-s-check"
+                :disabled="selectedRow.length === 0"
+              >
                 批量审核 <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">

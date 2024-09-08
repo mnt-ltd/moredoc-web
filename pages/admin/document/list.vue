@@ -33,7 +33,11 @@
               :disabled="selectedRow.length === 0"
               @command="checkDocument"
             >
-              <el-button type="warning" icon="el-icon-s-check">
+              <el-button
+                type="warning"
+                icon="el-icon-s-check"
+                :disabled="selectedRow.length === 0"
+              >
                 批量审批 <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
@@ -43,6 +47,11 @@
                 <el-dropdown-item :command="7">审核拒绝</el-dropdown-item>
                 <!-- 文档状态变为待审核 -->
                 <el-dropdown-item :command="6">变为待审</el-dropdown-item>
+                <el-dropdown-item :command="4" divided
+                  >禁用文档</el-dropdown-item
+                >
+                <!-- 表示已转换 -->
+                <el-dropdown-item :command="2">启用文档</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-form-item>
