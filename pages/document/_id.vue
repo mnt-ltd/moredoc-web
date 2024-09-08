@@ -92,12 +92,20 @@
                 >
                 <template>
                   <!-- 管理员权限 -->
-                  <el-button
-                    v-if="accessForbiden"
-                    type="text"
-                    icon="el-icon-no-smoking"
-                    @click="forbiden"
-                    >禁用文档</el-button
+                  <el-dropdown v-if="accessForbiden" @command="setForbiden">
+                    <span class="el-dropdown-link">
+                      <el-button type="text" icon="el-icon-no-smoking">
+                        文档启禁</el-button
+                      >
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item command="disable"
+                        >禁用文档</el-dropdown-item
+                      >
+                      <el-dropdown-item command="enable"
+                        >启用文档</el-dropdown-item
+                      >
+                    </el-dropdown-menu> </el-dropdown
                   >&nbsp;
                   <el-dropdown v-if="accessRecommend" @command="setRecommend">
                     <span class="el-dropdown-link">
@@ -925,20 +933,30 @@ export default {
       delete doc.icon
       this.updateDocument = doc
     },
-    forbiden() {
-      this.$confirm(`您确定要禁用文档《${this.document.title}》吗？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }).then(async () => {
+    setForbiden(command) {
+      this.$confirm(
+        `您确定要${command === 'enable' ? '启用' : '禁用'}文档《${
+          this.document.title
+        }》吗？`,
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      ).then(async () => {
         const doc = { ...this.document }
         delete doc.icon
-        doc.status = 4 // 更新文档状态为禁用状态
+        if (command === 'enable') {
+          doc.status = doc.pages > 0 ? 2 : 0 // 更新文档状态为启用状态
+        } else {
+          doc.status = 4 // 更新文档状态为禁用状态
+        }
         const res = await updateDocument(doc)
         if (res.status === 200) {
           this.$message({
             type: 'success',
-            message: '禁用成功!',
+            message: '操作成功!',
           })
           this.getDocument()
         } else {
@@ -1069,6 +1087,8 @@ export default {
           }
           return item
         })
+      } else {
+        this.tips = ''
       }
 
       let description = (doc.description || '-').trim()
