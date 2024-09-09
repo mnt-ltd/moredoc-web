@@ -271,9 +271,9 @@ export default {
     transition: width 0.2s;
     height: 100vh;
     border-right: 1px solid #e6e6e6;
-    .el-menu {
+    & > .el-menu {
       border-right: 0;
-      max-height: calc(100vh - 60px);
+      height: calc(100vh - 60px);
       overflow-y: auto;
     }
   }
