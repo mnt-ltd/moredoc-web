@@ -1,12 +1,18 @@
 <template>
   <el-card shadow="never">
     <el-alert title="Oauth配置提示" type="success" class="oauth-tips">
-      当前Oauth的回调地址是：{{ location.origin }}/oauth/{{ oauthType }}
+      <div>
+        当前Oauth的回调地址是：{{ location.origin }}/oauth/{{ oauthType }}
+      </div>
+      <div>
+        公众号Token验证 URL地址：
+        {{ location.origin }}/api/v1/oauth/officialaccount/token
+      </div>
     </el-alert>
     <el-tabs
       v-if="subActiveName && subCategories"
-      type="card"
       v-model="subActiveName"
+      type="card"
       @tab-click="subTabClick"
     >
       <el-tab-pane
@@ -16,8 +22,8 @@
         :name="item.value"
       >
         <el-alert
-          title="Oauth登录申请"
           v-if="item.apply"
+          title="Oauth登录申请"
           type="warning"
           class="oauth-tips"
         >
@@ -60,6 +66,11 @@ export default {
               apply: 'https://open.weixin.qq.com/',
             },
             {
+              label: '微信公众号',
+              value: 'oauthOfficialAccount',
+              apply: 'https://mp.weixin.qq.com/',
+            },
+            {
               label: 'QQ登录',
               value: 'oauthQQ',
               apply: 'https://connect.qq.com/manage.html#/',
@@ -83,22 +94,6 @@ export default {
               label: '自定义Oauth',
               value: 'oauthCustom',
             },
-            // {
-            //   label: '微博登录',
-            //   value: 'oauthWeibo',
-            // },
-            // {
-            //   label: '飞书登录',
-            //   value: 'oauthFeishu',
-            // },
-            // {
-            //   label: '钉钉登录',
-            //   value: 'oauthDingtalk',
-            // },
-            // {
-            //   label: '企业微信登录',
-            //   value: 'oauthWechatEnterprise',
-            // },
           ],
         },
       ],
@@ -164,19 +159,18 @@ export default {
               this.loadSubConfigs(item.value)
             }
           })
-        } else {
         }
       } else {
         this.configs = []
         this.$message.error(res.data.message)
       }
     },
-    async onChange(item) {
+    onChange(item) {
       if (this.activeName === 'sms') {
         this.loadSubConfigs(item.value)
       }
     },
-    async onSMSConfigSuccess(res) {
+    onSMSConfigSuccess(res) {
       console.log('onSMSConfigSuccess', res, this.$refs.sms)
       this.$nextTick(() => {
         this.$refs.sms.onSubmit()

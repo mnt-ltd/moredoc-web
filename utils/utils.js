@@ -363,3 +363,9 @@ export function genPrevPage(hash, pageNO, ext, enableGZIP) {
   }
   return `/view/page/${hash}/${pageNO}${ext}`
 }
+
+// 是否是微信客户端
+export function isWeixin() {
+  const ua = navigator.userAgent.toLowerCase()
+  return ua.includes('micromessenger')
+}

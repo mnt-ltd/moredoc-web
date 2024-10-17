@@ -321,7 +321,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import QRCode from 'qrcodejs2' // 引入qrcode
 import { getOrder, payOrder, getOrderStatus, closeOrder } from '~/api/order'
-import { formatDatetime, countDownTime } from '~/utils/utils'
+import { formatDatetime, countDownTime, isWeixin } from '~/utils/utils'
 import { paymentTypeOptions } from '~/utils/enum'
 import { downloadDocument } from '~/api/document'
 export default {
@@ -365,6 +365,7 @@ export default {
   methods: {
     ...mapActions('user', ['getUser']),
     formatDatetime,
+    isWeixin,
     // 获取订单详情
     async getOrder() {
       this.loading = true
