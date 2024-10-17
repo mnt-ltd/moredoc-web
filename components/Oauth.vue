@@ -5,11 +5,7 @@
     <a
       v-for="(oauth, idx) in enableOauths"
       :key="idx"
-      :href="
-        isBound(oauth.type) || oauth.type === oauthTypeOfficialAccount
-          ? 'javascript:;'
-          : oauth.authorize_url
-      "
+      :href="isBound(oauth.type) ? 'javascript:;' : oauth.authorize_url"
       rel="nofollow"
       :class="isBound(oauth.type) ? 'bound' : ''"
       @click="showLoginDialog(oauth)"
@@ -33,6 +29,7 @@ import {
   oauthTypeGoogle,
   oauthTypeOfficialAccount,
 } from '~/utils/enum'
+import { isWeixin } from '~/utils/utils'
 export default {
   name: 'Oauth',
   props: {
@@ -86,6 +83,7 @@ export default {
   },
   methods: {
     ...mapActions('user', ['setRedirectAfterOauth']),
+    isWeixin,
     async getOauths() {
       const res = await getOauths()
       if (res.status === 200 && res.data) {
@@ -118,6 +116,11 @@ export default {
           }
           return item
         })
+        oauths = oauths.filter(
+          (item) =>
+            item.type !== oauthTypeOfficialAccount ||
+            (item.type === oauthTypeOfficialAccount && isWeixin())
+        )
         this.oauths = oauths
         this.enableOauths = oauths.filter((item) => item.enable)
       }
