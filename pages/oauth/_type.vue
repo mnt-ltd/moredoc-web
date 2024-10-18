@@ -18,6 +18,7 @@ import {
   oauthTypeWechat,
   oauthTypeCustom,
   oauthTypeGoogle,
+  oauthTypeOfficialAccount,
 } from '~/utils/enum'
 export default {
   data() {
@@ -71,6 +72,9 @@ export default {
           break
         case 'google':
           oauthType = oauthTypeGoogle
+          break
+        case 'officialaccount':
+          oauthType = oauthTypeOfficialAccount
           break
         default:
           break

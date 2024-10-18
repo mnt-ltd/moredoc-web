@@ -117,9 +117,8 @@ export default {
           return item
         })
         oauths = oauths.filter(
-          (item) =>
-            item.type !== oauthTypeOfficialAccount ||
-            (item.type === oauthTypeOfficialAccount && isWeixin())
+          (item) => item.type !== oauthTypeOfficialAccount
+          //  || (item.type === oauthTypeOfficialAccount && isWeixin())
         )
         this.oauths = oauths
         this.enableOauths = oauths.filter((item) => item.enable)
