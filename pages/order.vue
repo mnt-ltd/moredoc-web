@@ -361,9 +361,14 @@ export default {
       return obj
     }, {})
     Promise.all([this.getUser(), this.getOrder()])
+    if (this.$route.query.code) {
+      this.paymentType = 1
+      this.execPayOrder()
+    }
   },
   methods: {
     ...mapActions('user', ['getUser']),
+    ...mapActions('setting', ['getSettings']),
     formatDatetime,
     isWeixin,
     // 获取订单详情
@@ -394,13 +399,32 @@ export default {
       this.loading = false
     },
     async payOrder() {
+      if (isWeixin()) {
+        if (
+          !this.settings.payment ||
+          !this.settings.payment.official_account_appid
+        ) {
+          await this.getSettings()
+        }
+        // 微信浏览器，需要先获取code
+        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${
+          this.settings.payment.official_account_appid
+        }&redirect_uri=${encodeURIComponent(
+          location.href
+        )}&response_type=code&scope=snsapi_base&state=state#wechat_redirect`
+      } else {
+        this.execPayOrder()
+      }
+    },
+    async execPayOrder() {
       this.paying = true
+      const code = this.$route.query.code || ''
       const res = await payOrder({
         order_no: this.$route.query.order_no,
         payment_type: this.paymentType,
         downcode: this.downcode,
         is_wap: this.isMobile,
-        code: this.$route.query.code || '',
+        code,
       })
       this.paying = false
       if (res.status !== 200) {
@@ -411,7 +435,10 @@ export default {
       if (res.data.order_status === 1) {
         // 微信支付，需要根据返回的链接生成二维码
         if (this.paymentType === 1) {
-          if (this.isMobile) {
+          if (isWeixin() && res.data.extra) {
+            // 如果是微信客户端，调用微信支付
+            this.onBridgeReady(res.data.extra)
+          } else if (this.isMobile) {
             location.href = res.data.payment_url
           } else {
             this.$nextTick(() => {
@@ -494,6 +521,18 @@ export default {
       } else {
         this.$message.error(res.data.message || '关闭订单失败')
       }
+    },
+    onBridgeReady(paydata) {
+      WeixinJSBridge.invoke('getBrandWCPayRequest', paydata, function (res) {
+        if (res.err_msg === 'get_brand_wcpay_request:ok') {
+          this.$message.success('支付成功')
+          // 支付成功
+          this.execAfterPaid()
+        } else {
+          // 支付失败
+          this.$message.error('支付失败' + res.err_msg)
+        }
+      })
     },
   },
 }
