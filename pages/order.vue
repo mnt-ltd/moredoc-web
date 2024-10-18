@@ -354,6 +354,15 @@ export default {
   computed: {
     ...mapGetters('setting', ['settings']),
     ...mapGetters('user', ['user']),
+    enablePayments() {
+      return this.payments.filter(
+        (item) =>
+          this.settings.payment['enable_' + item.name] ||
+          (item.name === 'downcode' &&
+            this.settings.download.enable_code_download &&
+            this.order.order_type === 1)
+      )
+    },
   },
   created() {
     this.paymentTypeMap = paymentTypeOptions.reduce((obj, item) => {
@@ -361,6 +370,9 @@ export default {
       return obj
     }, {})
     Promise.all([this.getUser(), this.getOrder()])
+    if (this.enablePayments.length > 0) {
+      this.paymentType = this.enablePayments[0].value
+    }
     if (this.$route.query.code) {
       this.paymentType = 1
       this.execPayOrder()
