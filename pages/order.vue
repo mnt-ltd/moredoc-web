@@ -344,7 +344,6 @@ export default {
       paying: false,
       payCheckVisible: false,
       intervaler: null,
-      payInterval: null,
       countdown: '-分-秒',
     }
   },
@@ -385,11 +384,6 @@ export default {
       clearInterval(this.intervaler)
     } catch (e) {
       console.error(e)
-    }
-    try {
-      clearInterval(this.payInterval)
-    } catch (error) {
-      console.log(error)
     }
     document.removeEventListener('WeixinJSBridgeReady', this.onBridgeReady)
   },
