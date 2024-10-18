@@ -11,6 +11,11 @@ body {
     width: 100%;
 }
 
+.el-message {
+    word-break: break-all !important;
+    overflow: wrap !important;
+}
+
 .el-dropdown [disabled] {
     color: #eee;
 }

@@ -410,7 +410,7 @@ export default {
         location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${
           this.settings.payment.official_account_appid
         }&redirect_uri=${encodeURIComponent(
-          location.href
+          location.origin + '/order?order_no=' + this.$route.query.order_no
         )}&response_type=code&scope=snsapi_base&state=state#wechat_redirect`
       } else {
         this.execPayOrder()
@@ -419,16 +419,20 @@ export default {
     async execPayOrder() {
       this.paying = true
       const code = this.$route.query.code || ''
-      const res = await payOrder({
+      const req = {
         order_no: this.$route.query.order_no,
         payment_type: this.paymentType,
         downcode: this.downcode,
         is_wap: this.isMobile,
         code,
-      })
+      }
+      const res = await payOrder(req)
       this.paying = false
       if (res.status !== 200) {
-        this.$message.error(res.data.message || '支付失败')
+        this.$message.error(
+          // 'PayOrder:' + res.data.message + JSON.stringify(req) || '支付失败'
+          res.data.message
+        )
         return
       }
 
@@ -443,6 +447,7 @@ export default {
           } else {
             this.$nextTick(() => {
               this.$refs.qrcode.innerHTML = ''
+              // eslint-disable-next-line no-new
               new QRCode(this.$refs.qrcode, {
                 width: 160,
                 height: 160,
