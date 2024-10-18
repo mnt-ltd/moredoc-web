@@ -400,6 +400,7 @@ export default {
         payment_type: this.paymentType,
         downcode: this.downcode,
         is_wap: this.isMobile,
+        code: this.$route.query.code || '',
       })
       this.paying = false
       if (res.status !== 200) {
