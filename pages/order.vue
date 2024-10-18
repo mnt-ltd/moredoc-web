@@ -435,7 +435,7 @@ export default {
       if (res.data.order_status === 1) {
         // 微信支付，需要根据返回的链接生成二维码
         if (this.paymentType === 1) {
-          if (isWeixin() && res.data.extra) {
+          if (isWeixin() && res.data.extra && this.isMobile) {
             // 如果是微信客户端，调用微信支付
             this.onBridgeReady(res.data.extra)
           } else if (this.isMobile) {
