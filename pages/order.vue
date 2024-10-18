@@ -320,6 +320,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import QRCode from 'qrcodejs2' // 引入qrcode
+import { remove } from 'xe-utils'
 import { getOrder, payOrder, getOrderStatus, closeOrder } from '~/api/order'
 import { formatDatetime, countDownTime, isWeixin } from '~/utils/utils'
 import { paymentTypeOptions } from '~/utils/enum'
@@ -343,6 +344,7 @@ export default {
       paying: false,
       payCheckVisible: false,
       intervaler: null,
+      payInterval: null,
       countdown: '-分-秒',
     }
   },
@@ -377,6 +379,19 @@ export default {
       this.paymentType = 1
       this.execPayOrder()
     }
+  },
+  beforeDestroy() {
+    try {
+      clearInterval(this.intervaler)
+    } catch (e) {
+      console.error(e)
+    }
+    try {
+      clearInterval(this.payInterval)
+    } catch (error) {
+      console.log(error)
+    }
+    document.removeEventListener('WeixinJSBridgeReady', this.onBridgeReady)
   },
   methods: {
     ...mapActions('user', ['getUser']),
@@ -540,14 +555,26 @@ export default {
       }
     },
     onBridgeReady(paydata) {
-      WeixinJSBridge.invoke('getBrandWCPayRequest', paydata, function (res) {
+      if (typeof WeixinJSBridge === 'undefined') {
+        if (document.addEventListener) {
+          document.addEventListener(
+            'WeixinJSBridgeReady',
+            this.onBridgeReady,
+            false
+          )
+        } else if (document.attachEvent) {
+          document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady)
+          document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady)
+        }
+      }
+
+      WeixinJSBridge.invoke('getBrandWCPayRequest', paydata, (res) => {
         if (res.err_msg === 'get_brand_wcpay_request:ok') {
           this.$message.success('支付成功')
-          // 支付成功
           this.execAfterPaid()
-        } else {
-          // 支付失败
-          this.$message.error('支付失败' + res.err_msg)
+          // } else {
+          //   // 支付失败
+          //   this.$message.error('支付失败' + res.err_msg)
         }
       })
     },
