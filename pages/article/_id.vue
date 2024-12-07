@@ -266,6 +266,14 @@
         </el-card>
       </el-col>
     </el-row>
+    <WxShare
+      v-if="article.id > 0"
+      :share-data="{
+        title: article.title,
+        imgUrl: shareImage,
+        desc: article.description,
+      }"
+    />
   </div>
 </template>
 
@@ -281,8 +289,9 @@ import {
 import ShareBox from '~/components/ShareBox.vue'
 import { getFavorite, createFavorite, deleteFavorite } from '~/api/favorite'
 import { categoryToTrees, formatRelativeTime } from '~/utils/utils'
+import WxShare from '~/components/WxShare.vue'
 export default {
-  components: { ShareBox },
+  components: { ShareBox, WxShare },
   data() {
     return {
       id: this.$route.params.id,
@@ -298,6 +307,7 @@ export default {
       relatedArticles: [],
       cardWidth: 0,
       cardOffsetTop: 0,
+      shareImage: '',
     }
   },
   head() {
@@ -402,7 +412,22 @@ export default {
             const viewer = this.$refs.viewer.$viewer
             viewer.options.url = 'src' // 设置图片地址，之前已经全局设置为了data-source，不过只在移动端应用。这里的修改是为了PC端应用
             viewer.update()
+
+            // 设置shareImage
+            document.querySelectorAll('article').forEach((item) => {
+              const img = item.querySelector('img')
+              if (!this.shareImage) {
+                this.shareImage = img.src
+              }
+            })
           } catch (error) {}
+          if (!this.shareImage) {
+            if (this.settings.system.logo.indexOf('http') === 0) {
+              this.shareImage = this.settings.system.logo
+            } else {
+              this.shareImage = location.origin + this.settings.system.logo
+            }
+          }
         }, 1000) // 设置延迟，等待内容渲染完成
       })
     },

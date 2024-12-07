@@ -66,7 +66,7 @@ export default {
 </script>
 
 <template>
-  <span>{{ shareData }}</span>
+  <span></span>
 </template>
 
 <style lang="scss" scoped></style>
