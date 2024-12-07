@@ -708,6 +708,16 @@
         />
       </div>
     </el-drawer>
+    <WxShare
+      v-if="document.id > 0"
+      :share-data="{
+        title: document.title,
+        imgUrl: document.attachment.hash
+          ? `${origin}/view/cover/${document.attachment.hash}`
+          : '',
+        desc: document.description || document.title,
+      }"
+    />
   </div>
 </template>
 
@@ -738,8 +748,9 @@ import {
 } from '~/utils/utils'
 import FormComment from '~/components/FormComment.vue'
 import CommentList from '~/components/CommentList.vue'
+import WxShare from '~/components/WxShare.vue'
 export default {
-  components: { DocumentSimpleList, FormComment, CommentList },
+  components: { DocumentSimpleList, FormComment, CommentList, WxShare },
   data() {
     return {
       documentStatusOptions,
@@ -792,6 +803,7 @@ export default {
       updateDocumentVisible: false,
       metaDescription: '',
       showUpdating: false,
+      origin: location.origin,
     }
   },
   head() {

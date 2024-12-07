@@ -33,6 +33,10 @@ export const getOauths = (params) => {
   })
 }
 
-
-
-
+export const getWxshareSignature = (params) => {
+  return service({
+    url: '/api/v1/oauth/wxshare/signature',
+    method: 'get',
+    params,
+  })
+}

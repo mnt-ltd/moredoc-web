@@ -320,7 +320,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import QRCode from 'qrcodejs2' // 引入qrcode
-import { remove } from 'xe-utils'
 import { getOrder, payOrder, getOrderStatus, closeOrder } from '~/api/order'
 import { formatDatetime, countDownTime, isWeixin } from '~/utils/utils'
 import { paymentTypeOptions } from '~/utils/enum'

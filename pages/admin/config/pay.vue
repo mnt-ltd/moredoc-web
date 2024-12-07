@@ -29,13 +29,19 @@
               >{{ location.origin }}/callback/{{ subActiveName }}</span
             >
           </li>
+          <li v-if="subActiveName == 'wechatpay'">
+            <strong style="font-size: 1.2em; color: red"
+              >如果需要用户可以在微信内支付，则请配置微信公众号登录！在 系统配置
+              -> Oauth配置 -> 微信公众号 进行配置！</strong
+            >
+          </li>
         </ul>
       </el-alert>
     </div>
     <el-tabs
       v-if="subActiveName && subCategories"
-      type="card"
       v-model="subActiveName"
+      type="card"
       @tab-click="subTabClick"
     >
       <el-tab-pane
@@ -47,7 +53,7 @@
       </el-tab-pane>
     </el-tabs>
     <FormConfig :init-configs="configs">
-      <template slot="buttons" v-if="subActiveName == 'wechatpay'">
+      <template v-if="subActiveName == 'wechatpay'" slot="buttons">
         <el-button
           type="success"
           icon="el-icon-refresh"
