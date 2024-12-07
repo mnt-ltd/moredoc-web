@@ -72,7 +72,7 @@
     </template>
 
     <el-row :gutter="20" class="mgt-20px">
-      <el-col :span="6" class="float-right right-at-recommend">
+      <el-col :span="7" class="float-right right-at-recommend">
         <el-card
           v-if="user.id > 0"
           class="box-card hidden-xs-only login-form"
@@ -191,7 +191,7 @@
           <ArticleSimpleList :articles="articles"></ArticleSimpleList>
         </el-card>
       </el-col>
-      <el-col :span="18" class="latest-recommend">
+      <el-col :span="17" class="latest-recommend">
         <el-card v-loading="loadingRecommend" shadow="never">
           <div slot="header">
             <div>
@@ -240,7 +240,6 @@
         </el-card>
       </el-col>
     </el-row>
-
     <template v-for="item in advertisements">
       <div
         v-if="item.position == 'index_category_top'"
@@ -248,7 +247,6 @@
         v-html="item.content"
       ></div>
     </template>
-
     <div
       v-if="settings.display.show_index_categories"
       class="categories mgt-20px"

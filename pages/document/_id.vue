@@ -1130,7 +1130,7 @@ export default {
           name: 'score',
         },
         {
-          label: '摘要',
+          label: '概览',
           value: doc.content || description,
           icon: 'el-icon-document',
           name: 'description',
