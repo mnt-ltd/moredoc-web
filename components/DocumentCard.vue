@@ -77,7 +77,7 @@
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-tickets"></i>
-              概览
+              摘要
             </template>
             <div class="description">{{ document.description }}</div>
           </el-descriptions-item>
