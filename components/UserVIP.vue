@@ -30,16 +30,17 @@
           {{ scope.row.times || '不限' }} <small>次/天</small>
         </template>
       </el-table-column>
-      <el-table-column prop="download" label="有效期" min-width="180">
+      <el-table-column
+        prop="download"
+        label="有效期"
+        min-width="195"
+        fixed="right"
+      >
         <template slot-scope="scope">
           <div class="vip-duration">
             <div>
-              <span>开始：</span><br />{{ formatDatetime(scope.row.joined_at) }}
-            </div>
-            <div>
-              <span>截止：</span><br />{{
-                formatDatetime(scope.row.expired_at)
-              }}
+              {{ formatDate(scope.row.joined_at) }} ~
+              {{ formatDate(scope.row.expired_at) }}
             </div>
           </div>
         </template>
@@ -51,6 +52,10 @@
             :to="`/order?order_no=${scope.row.order_no}`"
             ><small>{{ scope.row.order_no }}</small></nuxt-link
           >
+          <div>
+            <small><span>购买于：</span></small
+            >{{ formatDate(scope.row.created_at) }}
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -74,7 +79,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { formatDatetime, formatRelativeTime } from '~/utils/utils'
+import { formatDatetime, formatRelativeTime, formatDate } from '~/utils/utils'
 import { listUserVIP } from '~/api/user'
 export default {
   name: 'UserVIP',
@@ -107,6 +112,7 @@ export default {
   },
   methods: {
     formatDatetime,
+    formatDate,
     formatRelativeTime,
     // 查询用户自己的订单列表
     async listUserVIP() {
