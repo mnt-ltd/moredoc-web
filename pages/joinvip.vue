@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-joinvip" v-if="settings.vip.enable">
+  <div v-if="settings.vip.enable" class="page page-joinvip">
     <el-row :gutter="20">
       <el-col :span="24">
         <el-row :gutter="20">
@@ -34,7 +34,7 @@
                 <div>
                   <i class="el-icon-caret-right"></i> VIP专享免费下载：
                   <span>{{ settings.vip.year_download || 0 }}</span>
-                  次
+                  次/月
                 </div>
                 <div>
                   <i class="el-icon-caret-right"></i> 整站文档下载频次：
@@ -79,7 +79,7 @@
                 <div>
                   <i class="el-icon-caret-right"></i> VIP专享免费下载：
                   <span>{{ settings.vip.quarter_download || 0 }}</span>
-                  次
+                  次/月
                 </div>
                 <div>
                   <i class="el-icon-caret-right"></i> 整站文档下载频次：
@@ -122,9 +122,9 @@
                   折
                 </div>
                 <div>
-                  <i class="el-icon-caret-right"></i> VIP专享下载：
+                  <i class="el-icon-caret-right"></i> VIP专享免费下载：
                   <span>{{ settings.vip.month_download || 0 }}</span>
-                  次
+                  次/月
                 </div>
                 <div>
                   <i class="el-icon-caret-right"></i> 整站文档下载频次：
@@ -198,9 +198,9 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { createOrder } from '~/api/order'
 import { orderTypeBuyVIP } from '~/utils/enum'
-import { mapGetters } from 'vuex'
 export default {
   name: 'JoinVip',
   data() {

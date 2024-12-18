@@ -1,6 +1,6 @@
 <template>
   <!-- 商品卡片 -->
-  <div class="com-goods-card-vip" v-loading="loading">
+  <div v-loading="loading" class="com-goods-card-vip">
     <el-descriptions :column="isMobile ? 1 : 2" border>
       <el-descriptions-item
         v-for="(item, idx) in descriptions"
@@ -16,9 +16,9 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { formatBytes, formatDatetime } from '~/utils/utils'
 import { getUserVIPOrder } from '~/api/user'
-import { mapGetters } from 'vuex'
 export default {
   name: 'GoodsCardVIP',
   props: {
@@ -26,6 +26,12 @@ export default {
       type: Object,
       default: () => ({}),
     },
+  },
+  data() {
+    return {
+      loading: false,
+      descriptions: [],
+    }
   },
   watch: {
     order: {
@@ -89,7 +95,7 @@ export default {
           if (res.data.expired_at) endTime = formatDatetime(res.data.expired_at)
         }
 
-        let descriptions = [
+        const descriptions = [
           {
             label: '名称',
             value: val.product_name,
@@ -101,8 +107,8 @@ export default {
             icon: 'el-icon-download',
           },
           {
-            label: 'VIP专享下载',
-            value: `${download} 次`,
+            label: 'VIP专享免费下载',
+            value: `${download} 次/月`,
             icon: 'el-icon-download',
           },
           {
@@ -140,12 +146,6 @@ export default {
       },
       immediate: true,
     },
-  },
-  data() {
-    return {
-      loading: false,
-      descriptions: [],
-    }
   },
   computed: {
     ...mapGetters('setting', ['settings']),
