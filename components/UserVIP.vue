@@ -15,14 +15,14 @@
           {{ ((scope.row.discount || 0) / 10).toFixed(1) }} 折
         </template>
       </el-table-column>
-      <el-table-column prop="download" label="专享下载" width="80">
+      <el-table-column prop="download" label="专享免费下载" width="110">
         <template slot-scope="scope">
-          {{ scope.row.download || '0' }}
+          {{ scope.row.download || '0' }} 次/月
         </template>
       </el-table-column>
       <el-table-column prop="download" label="已用专享下载" width="110">
         <template slot-scope="scope">
-          {{ scope.row.download_used || '0' }}
+          {{ scope.row.download_used || '0' }} 次
         </template>
       </el-table-column>
       <el-table-column prop="download" label="下载频次" width="90">
@@ -34,10 +34,12 @@
         <template slot-scope="scope">
           <div class="vip-duration">
             <div>
-              <span>开始：</span>{{ formatDatetime(scope.row.joined_at) }}
+              <span>开始：</span><br />{{ formatDatetime(scope.row.joined_at) }}
             </div>
             <div>
-              <span>截止：</span>{{ formatDatetime(scope.row.expired_at) }}
+              <span>截止：</span><br />{{
+                formatDatetime(scope.row.expired_at)
+              }}
             </div>
           </div>
         </template>
@@ -64,8 +66,8 @@
       :pager-count="isMobile ? 5 : 7"
       :small="isMobile"
       :total="total"
-      @current-change="pageChange"
       class="mgt-20px"
+      @current-change="pageChange"
     >
     </el-pagination>
   </div>
