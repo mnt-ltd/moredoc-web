@@ -109,7 +109,7 @@ export default {
           icon: 'el-icon-download',
         },
         {
-          label: '安全设置',
+          label: '资料设置',
           value: '/me/profile',
           icon: 'fa fa-shield',
         },
