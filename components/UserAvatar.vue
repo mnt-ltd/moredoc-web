@@ -55,13 +55,9 @@ export default {
   display: inline-block;
   position: relative;
   .el-avatar {
-    border: 2px solid #ddd;
-    padding: 3px;
+    border: 2px solid #ddddddae;
     box-sizing: border-box;
     background-color: #fff;
-    &:hover {
-      border: 2px solid #409eff;
-    }
     img {
       // height: 100%;
       // width: 100%;
