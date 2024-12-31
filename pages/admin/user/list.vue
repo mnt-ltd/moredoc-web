@@ -124,20 +124,38 @@
         />
       </div>
     </el-drawer>
+    <el-drawer
+      :visible.sync="formDeleteUserVisible"
+      direction="rtl"
+      :size="isMobile ? '90%' : '50%'"
+      :wrapper-closable="false"
+    >
+      <div slot="title">
+        <el-page-header
+          content="删除用户"
+          @back="formDeleteUserVisible = false"
+        >
+        </el-page-header>
+      </div>
+      <div style="padding: 0 20px">
+        <FormDeleteUser :users="selectedRows" @success="successDelete" />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { deleteUser, getUser, listUser } from '~/api/user'
+import { getUser, listUser } from '~/api/user'
 import { listGroup } from '~/api/group'
 import { userStatusOptions } from '~/utils/enum'
 import { parseQueryIntArray, genLinkHTML } from '~/utils/utils'
 import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormUser from '~/components/FormUser.vue'
+import FormDeleteUser from '~/components/FormDeleteUser.vue'
 export default {
-  components: { TableList, FormSearch, FormUser },
+  components: { TableList, FormSearch, FormUser, FormDeleteUser },
   layout: 'admin',
   data() {
     return {
@@ -152,6 +170,7 @@ export default {
       },
       formUserVisible: false,
       formUserProfileVisible: false,
+      formDeleteUserVisible: false,
       formRechargeVisible: false,
       groups: [],
       users: [],
@@ -289,23 +308,13 @@ export default {
       this.$router.push(`/user/${row.id}`)
     },
     deleteRow(row) {
-      this.$confirm(
-        `您确定要删除用户【${row.username}】吗？删除之后不可恢复，请慎重操作！`,
-        '告警',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      ).then(async () => {
-        const res = await deleteUser({ id: row.id })
-        if (res.status === 200) {
-          this.$message.success('删除成功')
-          this.listUser()
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
+      this.formDeleteUserVisible = true
+      this.selectedRows = [row]
+    },
+    successDelete() {
+      this.formDeleteUserVisible = false
+      this.selectedRows = []
+      this.listUser()
     },
     selectRow(rows) {
       this.selectedRows = rows
@@ -323,24 +332,7 @@ export default {
       this.listUser()
     },
     batchDelete() {
-      this.$confirm(
-        `您确定要删除【${this.selectedRows.length}个】用户？删除之后不可恢复，请慎重操作！`,
-        '告警',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      ).then(async () => {
-        const ids = this.selectedRows.map((item) => item.id)
-        const res = await deleteUser({ id: ids })
-        if (res.status === 200) {
-          this.$message.success('删除成功')
-          this.listUser()
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
+      this.formDeleteUserVisible = true
     },
     initSearchForm() {
       this.searchFormFields = [
@@ -397,6 +389,7 @@ export default {
           width: 150,
         },
         { prop: 'doc_count', label: '文档', width: 80, type: 'number' },
+        { prop: 'article_count', label: '文章', width: 80, type: 'number' },
         { prop: 'credit_count', label: '积分', width: 100, type: 'number' },
         { prop: 'follow_count', label: '关注', width: 80, type: 'number' },
         { prop: 'fans_count', label: '粉丝', width: 80, type: 'number' },
