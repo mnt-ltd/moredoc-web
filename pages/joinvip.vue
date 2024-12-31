@@ -1,5 +1,9 @@
 <template>
-  <div v-if="settings.vip.enable" class="page page-joinvip">
+  <div
+    v-if="settings.vip.enable"
+    class="page page-joinvip"
+    style="margin-bottom: -20px"
+  >
     <el-row :gutter="20">
       <el-col :span="24">
         <el-row :gutter="20">
@@ -193,6 +197,20 @@
             >
           </el-col>
         </el-row>
+      </el-col>
+      <el-col :span="24">
+        <el-card shadow="never" class="mgt-20px">
+          <div slot="header">补充说明</div>
+          <div class="content">
+            <p>1. 本站VIP会员服务，购买后不支持<strong>退款</strong>。</p>
+            <p>2. VIP用户每月可免费下载VIP特享文档。</p>
+            <p>3. VIP用户通过下载免费的VIP文档不消耗VIP下载专享额度。</p>
+            <p>
+              4.
+              已购买过的文档，在购买有效期内再次下载，不消耗积分和VIP专享下载额度。
+            </p>
+          </div>
+        </el-card>
       </el-col>
     </el-row>
   </div>
