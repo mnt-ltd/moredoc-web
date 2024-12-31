@@ -17,7 +17,7 @@
       </el-table-column>
       <el-table-column prop="download" label="专享免费下载" width="110">
         <template slot-scope="scope">
-          {{ scope.row.download || '0' }} 次/月
+          {{ scope.row.download || '0' }} 次(总数)
         </template>
       </el-table-column>
       <el-table-column prop="download" label="已用专享下载" width="110">

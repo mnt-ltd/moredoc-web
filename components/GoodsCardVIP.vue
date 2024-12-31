@@ -108,7 +108,7 @@ export default {
           },
           {
             label: 'VIP专享免费下载',
-            value: `${download} 次/月`,
+            value: `${download} 次(总数)`,
             icon: 'el-icon-download',
           },
           {

@@ -38,7 +38,7 @@
                 <div>
                   <i class="el-icon-caret-right"></i> VIP专享免费下载：
                   <span>{{ settings.vip.year_download || 0 }}</span>
-                  次/月
+                  次(总数)
                 </div>
                 <div>
                   <i class="el-icon-caret-right"></i> 整站文档下载频次：
@@ -83,7 +83,7 @@
                 <div>
                   <i class="el-icon-caret-right"></i> VIP专享免费下载：
                   <span>{{ settings.vip.quarter_download || 0 }}</span>
-                  次/月
+                  次(总数)
                 </div>
                 <div>
                   <i class="el-icon-caret-right"></i> 整站文档下载频次：
@@ -128,7 +128,7 @@
                 <div>
                   <i class="el-icon-caret-right"></i> VIP专享免费下载：
                   <span>{{ settings.vip.month_download || 0 }}</span>
-                  次/月
+                  次(总数)
                 </div>
                 <div>
                   <i class="el-icon-caret-right"></i> 整站文档下载频次：
@@ -200,7 +200,7 @@
       </el-col>
       <el-col :span="24">
         <el-card shadow="never" class="mgt-20px">
-          <div slot="header">补充说明</div>
+          <div slot="header">购买须知</div>
           <div class="content">
             <p>1. 本站VIP会员服务，购买后不支持<strong>退款</strong>。</p>
             <p>2. VIP用户每月可免费下载VIP特享文档。</p>
@@ -208,6 +208,10 @@
             <p>
               4.
               已购买过的文档，在购买有效期内再次下载，不消耗积分和VIP专享下载额度。
+            </p>
+            <p>
+              5. 同时存在多个VIP权益时，权益大的优先启用，顺序：年卡 -> 季卡 ->
+              月卡。
             </p>
           </div>
         </el-card>
