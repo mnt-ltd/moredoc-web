@@ -485,7 +485,7 @@ import {
   getEnvs,
   updateSitemap,
   getLicense,
-  getDevice,
+  getDeviceInfo,
   setSQLMode,
   renewDocumentIndex,
   refreshLatestRelease,
@@ -789,7 +789,7 @@ export default {
         .catch(() => {})
     },
     async getDevice() {
-      const res = await getDevice()
+      const res = await getDeviceInfo()
       if (res.status === 200) {
         const gauges = [
           {

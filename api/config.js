@@ -1,16 +1,32 @@
 import service from '~/utils/request'
 
-export const updateConfig = (data) => {
+export const getSettings = (params) => {
   return service({
-    url: '/api/v1/config',
-    method: 'put',
-    data,
+    url: '/api/v1/settings',
+    method: 'get',
+    params,
   })
 }
 
-export const updateSitemap = (data) => {
+export const getSettingsVIP = (params) => {
   return service({
-    url: '/api/v1/sitemap',
+    url: '/api/v1/settings/vip',
+    method: 'get',
+    params,
+  })
+}
+
+export const getSettingsRecharge = (params) => {
+  return service({
+    url: '/api/v1/settings/recharge',
+    method: 'get',
+    params,
+  })
+}
+
+export const updateConfig = (data) => {
+  return service({
+    url: '/api/v1/config',
     method: 'put',
     data,
   })
@@ -24,46 +40,51 @@ export const listConfig = (params) => {
   })
 }
 
-export const getSettings = () => {
-  return service({
-    url: '/api/v1/settings',
-    method: 'get',
-  })
-}
-
-export const getStats = () => {
+export const getStats = (params) => {
   return service({
     url: '/api/v1/stats',
     method: 'get',
+    params,
   })
 }
 
-export const getEnvs = () => {
+export const getEnvs = (params) => {
   return service({
     url: '/api/v1/envs',
     method: 'get',
+    params,
   })
 }
 
-export const getLicense = () => {
+export const getLicense = (params) => {
   return service({
     url: '/api/v1/license',
     method: 'get',
+    params,
   })
 }
 
-export const getDevice = () => {
+export const updateSitemap = (data) => {
+  return service({
+    url: '/api/v1/sitemap',
+    method: 'put',
+    data,
+  })
+}
+
+export const getDeviceInfo = (params) => {
   return service({
     url: '/api/v1/device',
     method: 'get',
+    params,
   })
 }
 
-// 获取微信支付平台证书
-export const getWechatPayCert = () => {
+export const getWechatPayCert = (params) => {
   return service({
     url: '/api/v1/wechatpay/cert',
     method: 'get',
+    params,
   })
 }
 
@@ -90,10 +111,11 @@ export const getLatestRelease = () => {
   })
 }
 
-export const refreshLatestRelease = () => {
+export const refreshLatestRelease = (data) => {
   return service({
     url: '/api/v1/release',
     method: 'post',
+    data,
   })
 }
 
