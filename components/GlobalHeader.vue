@@ -155,6 +155,9 @@
                 <el-dropdown-item command="me"
                   ><i class="fa fa-user-o"></i> 个人中心</el-dropdown-item
                 >
+                <el-dropdown-item v-if="recharge.enable" command="recharge">
+                  <i class="el-icon-coin"></i> 积分充值
+                </el-dropdown-item>
                 <el-dropdown-item command="upload"
                   ><i class="el-icon-upload2 dropdown-upload"></i
                   >上传文档</el-dropdown-item
@@ -256,6 +259,11 @@
           <li>
             <div class="el-link el-link--default" @click="goToLink(`/me`)">
               <i class="fa fa-user-o"></i> &nbsp;个人中心
+            </div>
+          </li>
+          <li v-if="recharge.enable">
+            <div class="el-link el-link--default" @click="showRecharge">
+              <i class="el-icon-coin"></i> &nbsp;积分充值
             </div>
           </li>
           <li>
@@ -370,6 +378,16 @@
         </template>
       </el-menu>
     </el-drawer>
+    <el-dialog
+      title="积分充值"
+      :visible.sync="rechargeVisible"
+      :width="isMobile ? '90%' : '680px'"
+    >
+      <credit-recharge
+        :recharge="recharge"
+        @success="rechargeVisible = false"
+      ></credit-recharge>
+    </el-dialog>
   </div>
 </template>
 
@@ -378,6 +396,7 @@ import { mapGetters, mapActions } from 'vuex'
 import UserAvatar from '~/components/UserAvatar.vue'
 import { categoryToTrees, requireLogin } from '~/utils/utils'
 import { getSignedToday, signToday } from '~/api/user'
+import { getSettingsRecharge } from '~/api/config'
 
 export default {
   components: { UserAvatar },
@@ -396,6 +415,8 @@ export default {
       activeCollapse: 'categories',
       advertisements: [],
       activePath: '/',
+      rechargeVisible: false,
+      recharge: { enable: false },
     }
   },
   computed: {
@@ -415,6 +436,7 @@ export default {
       this.getSettings(),
       this.listNavigation(),
       this.getAdvertisements('global'),
+      this.getSettingsRecharge(),
     ])
     if (this.user.id > 0) {
       await Promise.all([
@@ -525,6 +547,17 @@ export default {
       // 更新导航栏
       this.listNavigation()
     },
+    async getSettingsRecharge() {
+      this.loading = true
+      const res = await getSettingsRecharge()
+      this.loading = false
+      if (res.status === 200) {
+        this.recharge = res.data
+      }
+    },
+    showRecharge() {
+      this.rechargeVisible = true
+    },
     async handleDropdown(command) {
       switch (command) {
         case 'logout':
@@ -545,6 +578,9 @@ export default {
           break
         case 'admin':
           this.$router.push('/admin')
+          break
+        case 'recharge':
+          this.showRecharge()
           break
         default:
           break
