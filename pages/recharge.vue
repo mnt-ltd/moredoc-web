@@ -8,10 +8,12 @@
           :key="'idx-' + idx"
           :xs="24"
           :sm="12"
-          :md="8"
+          :md="12"
           ><el-badge
             :value="
-              account.discount == 1 ? '无折扣' : account.discount * 100 + '折'
+              account.discount == 1
+                ? '无折扣'
+                : (account.discount * 10).toFixed(1) + '折'
             "
             class="recharge-item"
             :class="{ 'recharge-item-active': rechargeBox === idx }"
@@ -44,10 +46,12 @@
             </div>
           </el-badge>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8">
+        <el-col :xs="24" :sm="12" :md="12">
           <el-badge
             :value="
-              customDiscount == 1 ? '无折扣' : customDiscount * 100 + '折'
+              customDiscount == 1
+                ? '无折扣'
+                : (customDiscount * 10).toFixed(1) + '折'
             "
             class="recharge-item recharge-item-custom"
             :class="{
@@ -89,32 +93,11 @@
           </el-badge>
         </el-col>
       </el-row>
-    </el-card>
-    <el-card shadow="never" class="mgt-20px">
-      <div slot="header">支付方式</div>
-      <div class="payment-type">
-        <el-radio
-          v-for="item in payments"
-          v-show="settings.payment['enable_' + item.name]"
-          :key="'pt-' + item.value"
-          v-model="paymentType"
-          class="payment-type-radio"
-          :label="item.value"
-          border
-        >
-          <span v-if="item.name === 'xunhupay'">
-            {{ settings.payment.xunhupay_name || item.label }}
-          </span>
-          <span v-else>{{ item.label }}</span>
-          <img :src="`/static/images/pay-${item.name}.png`" :alt="item.label" />
-        </el-radio>
-      </div>
       <div class="text-right">
         <el-button
           type="danger"
-          :disabled="paymentType === 5 && user.credit_count < order.amount"
-          :loading="paying"
-          icon="el-icon-position"
+          icon="el-icon-shopping-cart-full"
+          @click="createOrder"
           >立即充值</el-button
         >
       </div>
@@ -123,7 +106,8 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { paymentTypeOptions } from '~/utils/enum'
+import { paymentTypeOptions, orderTypeRecharge } from '~/utils/enum'
+import { createOrder } from '~/api/order'
 import { getSettingsRecharge } from '~/api/config'
 export default {
   name: 'PageOrder',
@@ -196,13 +180,34 @@ export default {
       }
     },
     changeBox(idx) {
-      console.log(idx)
       this.rechargeBox = idx
+      if (idx < this.discounts.length) {
+        this.amount = this.discounts[idx].amount
+      }
+    },
+    async createOrder() {
+      const res = await createOrder({
+        order_type: orderTypeRecharge, // 积分充值
+        quantity:
+          this.rechargeBox >= this.discounts.length
+            ? this.amount
+            : this.discounts[this.rechargeBox].amount,
+      })
+      if (res.status === 200) {
+        this.$router.push(`/order?order_no=${res.data.order_no}`)
+      } else {
+        this.$message.error(res.data.message || res.message || '订单创建失败')
+      }
     },
   },
 }
 </script>
 <style lang="scss" scoped>
+.page-recharge {
+  max-width: 720px;
+  min-width: 720px !important;
+  margin: 0 auto;
+}
 .payment-type {
   img {
     width: 32px;
@@ -279,11 +284,6 @@ export default {
   display: block;
   & > div {
     display: block;
-  }
-}
-.recharge-list {
-  :deep(.el-card__body) {
-    padding-bottom: 0;
   }
 }
 </style>

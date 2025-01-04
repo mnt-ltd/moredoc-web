@@ -17,10 +17,10 @@
         ]"
       >
         <el-input-number
+          v-model="user.credit"
           type="number"
           :min="1"
           :max="1000000"
-          v-model="user.credit"
         ></el-input-number>
         <div>
           <div class="el-link el-link--info">
@@ -72,8 +72,8 @@
   </div>
 </template>
 <script>
-import { createSystemRecharge } from '~/api/order'
 import { mapGetters } from 'vuex'
+import { systemRecharge } from '~/api/order'
 export default {
   name: 'FormRecharge',
   props: {
@@ -141,7 +141,7 @@ export default {
           }
 
           this.loading = true
-          const res = await createSystemRecharge({
+          const res = await systemRecharge({
             user_id: this.user.id,
             credit: this.user.credit,
             remark: this.user.remark,

@@ -39,7 +39,7 @@
             <i class="el-icon-goods"></i>
             商品名称
           </template>
-          <template v-if="order.order_type === 1">
+          <template v-if="order.order_type === orderTypeBuyDocument">
             <nuxt-link
               class="el-link el-link--primary"
               target="_blank"
@@ -112,15 +112,29 @@
             <i class="el-icon-coin"></i>
             商品单价
           </template>
-          {{ order.price || '0' }} {{ settings.system.credit_name
-          }}<template v-if="settings.system.show_exchange"
-            >（
-            <span class="el-link el-link--danger price">{{
-              (
-                (order.price || 0) / (settings.system.credit_exchange || 1)
-              ).toFixed(2)
-            }}</span>
-            元）</template
+          <template v-if="order.order_type === orderTypeRecharge">
+            <span
+              class="el-link el-link--danger price"
+              style="margin-top: 2px"
+              >{{
+                (
+                  (order.price || 0) / (settings.system.credit_exchange || 1)
+                ).toFixed(2)
+              }}</span
+            >
+            元
+          </template>
+          <template v-else>
+            {{ order.price || '0' }} {{ settings.system.credit_name
+            }}<template v-if="settings.system.show_exchange"
+              >（
+              <span class="el-link el-link--danger price">{{
+                (
+                  (order.price || 0) / (settings.system.credit_exchange || 1)
+                ).toFixed(2)
+              }}</span>
+              元）</template
+            ></template
           >
         </el-descriptions-item>
         <el-descriptions-item>
@@ -129,20 +143,39 @@
             实付金额
           </template>
           <div class="actual-pay">
-            {{ order.amount || '0' }} {{ settings.system.credit_name
-            }}<template v-if="settings.system.show_exchange"
-              >（
+            <template v-if="order.order_type === orderTypeRecharge">
               <span class="el-link el-link--danger price">{{
                 (
                   (order.amount || 0) / (settings.system.credit_exchange || 1)
                 ).toFixed(2)
               }}</span>
-              元）</template
-            >
+              元
+            </template>
+            <template v-else>
+              {{ order.amount || '0' }} {{ settings.system.credit_name
+              }}<template v-if="settings.system.show_exchange"
+                >（
+                <span class="el-link el-link--danger price">{{
+                  (
+                    (order.amount || 0) / (settings.system.credit_exchange || 1)
+                  ).toFixed(2)
+                }}</span>
+                元）</template
+              >
+            </template>
           </div>
           <div>
             <del v-if="order.coupon_amount" class="text-muted">
-              <small>
+              <template v-if="order.order_type === orderTypeRecharge"
+                >{{
+                  (
+                    ((order.amount || 0) + order.coupon_amount || 0) /
+                    (settings.system.credit_exchange || 1)
+                  ).toFixed(2)
+                }}
+                元
+              </template>
+              <small v-else>
                 {{ (order.amount || 0) + order.coupon_amount }}
                 {{ settings.system.credit_name
                 }}<template v-if="settings.system.show_exchange"
@@ -180,11 +213,19 @@
       </el-descriptions>
     </el-card>
     <!-- 购买文档的商品信息 -->
-    <el-card v-if="order.order_type === 1" shadow="never" class="mgt-20px">
+    <el-card
+      v-if="order.order_type === orderTypeBuyDocument"
+      shadow="never"
+      class="mgt-20px"
+    >
       <div slot="header">商品信息</div>
       <goods-card :order="order" />
     </el-card>
-    <el-card v-else-if="order.order_type === 2" shadow="never" class="mgt-20px">
+    <el-card
+      v-else-if="order.order_type === orderTypeBuyVIP"
+      shadow="never"
+      class="mgt-20px"
+    >
       <div slot="header">商品信息</div>
       <!-- 购买VIP的商品信息 -->
       <GoodsCardVIP :order="order" />
@@ -194,7 +235,11 @@
       <div slot="header">支付方式</div>
       <div class="payment-type">
         <el-radio
-          v-if="order.order_type != 2 || settings.vip.enable_credit_pay"
+          v-if="
+            order.order_type === orderTypeBuyDocument ||
+            (order.order_type == orderTypeBuyVIP &&
+              settings.vip.enable_credit_pay)
+          "
           v-model="paymentType"
           class="payment-type-radio"
           :label="5"
@@ -212,7 +257,7 @@
             settings.payment['enable_' + item.name] ||
             (item.name === 'downcode' &&
               settings.download.enable_code_download &&
-              order.order_type === 1)
+              order.order_type === orderTypeBuyDocument)
           "
           :key="'pt-' + item.value"
           v-model="paymentType"
@@ -249,19 +294,31 @@
           class="downcode"
         ></el-input>
         <el-button type="text" class="btn-disabled" :disabled="true">
-          {{ order.amount || '0' }} {{ settings.system.credit_name
-          }}<template v-if="settings.system.show_exchange"
-            >（
+          <template v-if="order.order_type === orderTypeRecharge">
             <span class="el-link el-link--danger price"
               >{{
                 (
                   (order.amount || 0) / (settings.system.credit_exchange || 1)
                 ).toFixed(2)
               }}
-              元</span
-            >）</template
-          ></el-button
-        >
+              元
+            </span>
+          </template>
+          <template v-else>
+            {{ order.amount || '0' }} {{ settings.system.credit_name
+            }}<template v-if="settings.system.show_exchange"
+              >（
+              <span class="el-link el-link--danger price"
+                >{{
+                  (
+                    (order.amount || 0) / (settings.system.credit_exchange || 1)
+                  ).toFixed(2)
+                }}
+                元</span
+              >）</template
+            >
+          </template>
+        </el-button>
         <el-button
           type="danger"
           :disabled="paymentType === 5 && user.credit_count < order.amount"
@@ -322,7 +379,12 @@ import { mapGetters, mapActions } from 'vuex'
 import QRCode from 'qrcodejs2' // 引入qrcode
 import { getOrder, payOrder, getOrderStatus, closeOrder } from '~/api/order'
 import { formatDatetime, countDownTime, isWeixin } from '~/utils/utils'
-import { paymentTypeOptions } from '~/utils/enum'
+import {
+  paymentTypeOptions,
+  orderTypeBuyDocument,
+  orderTypeBuyVIP,
+  orderTypeRecharge,
+} from '~/utils/enum'
 import { downloadDocument } from '~/api/document'
 export default {
   name: 'PageOrder',
@@ -344,6 +406,9 @@ export default {
       payCheckVisible: false,
       intervaler: null,
       countdown: '-分-秒',
+      orderTypeBuyDocument,
+      orderTypeBuyVIP,
+      orderTypeRecharge,
     }
   },
   head() {
@@ -360,7 +425,7 @@ export default {
           this.settings.payment['enable_' + item.name] ||
           (item.name === 'downcode' &&
             this.settings.download.enable_code_download &&
-            this.order.order_type === 1)
+            this.order.order_type === orderTypeBuyDocument)
       )
     },
   },
@@ -513,7 +578,7 @@ export default {
     },
     execAfterPaid() {
       this.getOrder()
-      if (this.order.order_type === 1) {
+      if (this.order.order_type === orderTypeBuyDocument) {
         // 如果是下载文档，则跳转下载
         this.downloadDocument()
       } else {
