@@ -25,6 +25,8 @@ export default {
           'getLocation',
           'onMenuShareTimeline',
           'onMenuShareAppMessage',
+          'updateAppMessageShareData',
+          'updateTimelineShareData',
         ],
       },
       link: location.href,
