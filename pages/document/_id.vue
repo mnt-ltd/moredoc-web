@@ -852,8 +852,10 @@ export default {
     },
     async getDocument(withAllContent = false) {
       if (!this.documentId && !this.documentUUID) {
-        this.$message.error('文档不存在')
-        this.$router.replace('/404')
+        this.$nuxt.error({
+          statusCode: 404,
+          message: '文档不存在',
+        })
         return
       }
 
@@ -865,8 +867,10 @@ export default {
       })
 
       if (res.status !== 200) {
-        this.$message.error(res.data.message)
-        this.$router.replace('/404')
+        this.$nuxt.error({
+          statusCode: 404,
+          message: res.data.message || res.message || '文档不存在',
+        })
         return
       }
       const doc = {

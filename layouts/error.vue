@@ -24,12 +24,20 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'ErrorLayout',
   props: ['error'],
   head() {
     return {
       title: this.message,
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: this.settings.system.favicon,
+        },
+      ],
       meta: [
         {
           name: 'viewport',
@@ -38,7 +46,9 @@ export default {
       ],
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters('setting', ['settings']),
+  },
 }
 </script>
 <style>

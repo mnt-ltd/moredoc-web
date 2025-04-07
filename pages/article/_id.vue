@@ -360,8 +360,10 @@ export default {
     async getArticle() {
       const res = await getArticle({ identifier: this.$route.params.id })
       if (res.status !== 200) {
-        this.$message.error(res.data.message || '查询失败')
-        this.$router.push('/404')
+        this.$nuxt.error({
+          statusCode: 404,
+          message: res.data.message || '',
+        })
         return
       }
       const article = {

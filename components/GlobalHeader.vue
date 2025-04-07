@@ -398,6 +398,19 @@ export default {
       activePath: '/',
     }
   },
+  head() {
+    return {
+      title:
+        this.settings.system.title || this.settings.system.sitename || '文库',
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: this.settings.system.favicon,
+        },
+      ],
+    }
+  },
   computed: {
     ...mapGetters('user', ['user', 'token', 'allowPages', 'permissions']),
     ...mapGetters('setting', ['settings', 'navigations']),
