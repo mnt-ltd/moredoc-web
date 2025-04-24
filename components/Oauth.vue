@@ -27,6 +27,7 @@ import {
   oauthTypeQQ,
   oauthTypeWechat,
   oauthTypeGoogle,
+  oauthTypeWechatMini,
   oauthTypeOfficialAccount,
 } from '~/utils/enum'
 import { isWeixin } from '~/utils/utils'
@@ -110,6 +111,9 @@ export default {
               break
             case oauthTypeGoogle:
               item.authorize_url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${item.client_id}&redirect_uri=${item.redirect_url}&response_type=code&scope=openid%20email%20profile`
+              break
+            case oauthTypeWechatMini:
+              item.authorize_url = `/oauth/wechatmp`
               break
             default:
               break

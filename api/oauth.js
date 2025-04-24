@@ -40,3 +40,11 @@ export const getWxshareSignature = (params) => {
     params,
   })
 }
+
+export const loginWechatmpScan = (data) => {
+  return service({
+    url: '/api/v1/oauth/wechatmp/scan/login',
+    method: 'post',
+    data,
+  })
+}
