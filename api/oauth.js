@@ -1,13 +1,5 @@
 import service from '~/utils/request'
 
-export const loginOauthQQ = (data) => {
-  return service({
-    url: '/api/v1/oauth/qq',
-    method: 'post',
-    data,
-  })
-}
-
 export const loginOauth = (data) => {
   return service({
     url: '/api/v1/oauth/login',
@@ -16,7 +8,6 @@ export const loginOauth = (data) => {
   })
 }
 
-// 绑定oauth
 export const bindOauth = (data) => {
   return service({
     url: '/api/v1/oauth/bind',
@@ -33,6 +24,14 @@ export const getOauths = (params) => {
   })
 }
 
+export const loginWechatmp = (data) => {
+  return service({
+    url: '/api/v1/oauth/wechatmp/login',
+    method: 'post',
+    data,
+  })
+}
+
 export const getWxshareSignature = (params) => {
   return service({
     url: '/api/v1/oauth/wxshare/signature',
@@ -44,6 +43,22 @@ export const getWxshareSignature = (params) => {
 export const loginWechatmpScan = (data) => {
   return service({
     url: '/api/v1/oauth/wechatmp/scan/login',
+    method: 'post',
+    data,
+  })
+}
+
+export const getWechatmpScanCode = (params) => {
+  return service({
+    url: '/api/v1/oauth/wechatmp/scan/code',
+    method: 'get',
+    params,
+  })
+}
+
+export const checkWechatmpScanStatus = (data) => {
+  return service({
+    url: '/api/v1/oauth/wechatmp/scan/login/status',
     method: 'post',
     data,
   })
