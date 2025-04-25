@@ -337,7 +337,6 @@ export const adminMenus = [
     page: '/admin/navigation',
     title: '导航管理',
     icon: 'el-icon-guide',
-    is_public: true,
   },
   {
     page: '/admin/friendlink',
