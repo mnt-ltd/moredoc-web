@@ -124,6 +124,12 @@ const cumstomPermissionMap = {
     children: [],
     pages: ['/admin/user/punishment'],
   },
+  'api.v1.NavigationAPI': {
+    label: '导航管理',
+    path: 'ListNavigation',
+    children: [],
+    pages: ['/admin/navigation'],
+  },
   upload: {
     id: 0,
     label: '上传管理',
@@ -262,7 +268,6 @@ export const adminMenus = [
     page: '/admin/navigation',
     title: '导航管理',
     icon: 'el-icon-monitor',
-    is_public: true,
   },
   {
     page: '/admin/friendlink',
