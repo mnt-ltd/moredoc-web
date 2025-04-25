@@ -267,7 +267,7 @@ export const adminMenus = [
   {
     page: '/admin/navigation',
     title: '导航管理',
-    icon: 'el-icon-monitor',
+    icon: 'el-icon-guide',
   },
   {
     page: '/admin/friendlink',
