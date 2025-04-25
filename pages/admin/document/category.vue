@@ -27,6 +27,21 @@
         @editRow="editRow"
         @deleteRow="deleteRow"
       />
+      <div class="mgt-20px"></div>
+      <TableListV2
+        :table-data="trees"
+        :loading="loading"
+        :fields="tableListFields"
+        :show-actions="true"
+        :show-view="false"
+        :show-edit="true"
+        :show-delete="true"
+        :show-select="true"
+        :tree-props="{ children: 'children' }"
+        @selectRow="selectRow"
+        @editRow="editRow"
+        @deleteRow="deleteRow"
+      />
     </el-card>
     <el-drawer
       :visible.sync="formVisible"

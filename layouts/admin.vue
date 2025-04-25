@@ -336,4 +336,28 @@ export default {
   margin-right: 5px;
   text-align: center;
 }
+.layout-admin {
+  [class*='vxe-'] {
+    font-weight: normal;
+    .vxe-checkbox--icon {
+      font-weight: normal !important;
+      font-size: 1.2em;
+      color: #ccc;
+    }
+  }
+  .vxe-table--header-wrapper {
+    background-color: #f7fbff !important;
+    color: #000 !important;
+    .vxe-header--column {
+      padding: 15px 0;
+    }
+  }
+  .vxe-header--column .vxe-resizable.is--line:before {
+    background-color: rgba(218, 233, 248, 0.933) !important;
+  }
+  /* 行高自适应 */
+  .vxe-table .vxe-body--row {
+    height: auto !important; /* 禁用固定行高 */
+  }
+}
 </style>
