@@ -97,6 +97,7 @@
                       { label: '链接标题', value: 'title_from_href' },
                       { label: 'URL标题', value: 'title_from_url' },
                       { label: '附件标题', value: 'title_from_attachment' },
+                      { label: '替换为空', value: 'empty' },
                     ]"
                     :key="item.value"
                     :label="item.label"
@@ -283,7 +284,16 @@ export default {
     fillTitle() {
       this.spiderDocuments.map((item) => {
         if (item.editing) {
+          if (this.titleForm.field === 'empty') {
+            item.title = ''
+            return item
+          }
           item.title = item[this.titleForm.field]
+          const ext = item.ext || ''
+          if (ext) {
+            const reg = new RegExp(ext, 'i')
+            item.title = item.title.replace(reg, '')
+          }
         }
         return item
       })
@@ -291,10 +301,8 @@ export default {
     replaceTitle() {
       this.spiderDocuments.map((item) => {
         if (item.editing) {
-          item.title = (item.title || '').replace(
-            this.titleForm.search,
-            this.titleForm.replace
-          )
+          const reg = new RegExp(this.titleForm.search, 'g')
+          item.title = (item.title || '').replace(reg, this.titleForm.replace)
         }
         return item
       })
