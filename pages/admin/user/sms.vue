@@ -35,7 +35,7 @@
       </FormSearch>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
+      <TableListV2
         :loading="loading"
         :table-data="sms"
         :fields="tableListFields"
@@ -68,7 +68,7 @@
 <script>
 import { listSms } from '~/api/sms'
 import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import {
   smsTypeOptions,
@@ -78,7 +78,7 @@ import {
 import { listUser } from '~/api/user'
 import { mapGetters } from 'vuex'
 export default {
-  components: { TableList, FormSearch },
+  components: { TableListV2, FormSearch },
   layout: 'admin',
   data() {
     return {

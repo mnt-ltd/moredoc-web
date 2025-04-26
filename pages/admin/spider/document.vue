@@ -62,8 +62,8 @@
       </FormSearch>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
-        ref="tableList"
+      <TableListV2
+        ref="TableListV2"
         :loading="loading"
         :table-data="spiderDocuments"
         :fields="tableListFields"
@@ -139,7 +139,7 @@
             </el-tooltip>
           </el-popover>
         </template>
-      </TableList>
+      </TableListV2>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <div class="text-right">
@@ -187,12 +187,12 @@ import {
 } from '~/api/spiderdocument'
 import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
 import { spiderDocumentStatusOptions } from '~/utils/enum'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 // import FormSpiderDocument from '~/components/FormSpiderDocument.vue'
 export default {
   components: {
-    TableList,
+    TableListV2,
     FormSearch,
     // FormSpiderDocument,
   },

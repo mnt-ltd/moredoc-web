@@ -12,7 +12,7 @@
       />
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
+      <TableListV2
         :loading="loading"
         :table-data="orders"
         :fields="tableListFields"
@@ -48,7 +48,7 @@
             >
           </nuxt-link>
         </template>
-      </TableList>
+      </TableListV2>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <div class="text-right">
@@ -77,10 +77,10 @@ import {
   paymentTypeOptions,
   orderTypeOptions,
 } from '~/utils/enum'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 export default {
-  components: { TableList, FormSearch },
+  components: { TableListV2, FormSearch },
   layout: 'admin',
   data() {
     return {

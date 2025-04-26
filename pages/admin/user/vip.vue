@@ -34,7 +34,7 @@
       </FormSearch>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
+      <TableListV2
         :table-data="listData"
         :fields="tableListFields"
         :show-actions="false"
@@ -66,14 +66,14 @@
 
 <script>
 import { listUserVip } from '~/api/uservip'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import { vipTypeOptions } from '~/utils/enum'
 import { parseQueryIntArray, genLinkHTML } from '~/utils/utils'
 import { listUser } from '~/api/user'
 import { mapGetters } from 'vuex'
 export default {
-  components: { TableList, FormSearch },
+  components: { TableListV2, FormSearch },
   layout: 'admin',
   data() {
     return {

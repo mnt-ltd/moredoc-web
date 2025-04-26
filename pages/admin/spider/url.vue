@@ -14,7 +14,7 @@
       />
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
+      <TableListV2
         :loading="loading"
         :table-data="spiderUrls"
         :fields="tableListFields"
@@ -72,11 +72,11 @@ import { mapGetters } from 'vuex'
 import { listSpiderUrl, deleteSpiderUrl, getSpiderUrl } from '~/api/spiderurl'
 import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
 import { spiderUrlStatusOptions } from '~/utils/enum'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormSpiderUrl from '~/components/FormSpiderUrl.vue'
 export default {
-  components: { TableList, FormSearch, FormSpiderUrl },
+  components: { TableListV2, FormSearch, FormSpiderUrl },
   layout: 'admin',
   data() {
     return {
