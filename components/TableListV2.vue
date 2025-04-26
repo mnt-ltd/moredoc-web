@@ -32,6 +32,11 @@
         :fixed="item.fixed"
         :tree-node="item.prop === treeNode"
       >
+        <template #header="{ column }">
+          {{ column.title }}
+          <slot :row="column" name="header"></slot>
+        </template>
+
         <template #default="{ row }">
           <!-- 头像 -->
           <el-avatar
@@ -42,13 +47,20 @@
             <img src="/static/images/blank.png" />
           </el-avatar>
           <!-- 数字 -->
-          <span v-else-if="item.type === 'number'">{{
-            row[item.prop] || '0'
-          }}</span>
+          <div v-else-if="item.type === 'number'">
+            <el-input-number
+              v-if="item.editable && row['editing']"
+              :key="'number-' + item.prop + '-' + row.id"
+              v-model="row[item.prop]"
+              size="medium"
+            ></el-input-number>
+            <div v-else>{{ row[item.prop] || '0' }}</div>
+          </div>
           <el-tag
             v-else-if="item.type === 'bool'"
             :type="row[item.prop] ? 'success' : 'danger'"
             effect="dark"
+            size="medium"
           >
             {{ row[item.prop] ? '是' : '否' }}</el-tag
           >
@@ -56,16 +68,32 @@
             {{ formatBytes(row[item.prop]) }}
           </span>
           <!-- 枚举，键为数字 -->
-          <span v-else-if="item.type === 'enum'">
-            <el-tag
-              v-if="item.enum[row[item.prop] || 0]"
-              :type="item.enum[row[item.prop] || 0].type || 'info'"
-              :effect="item.enum[row[item.prop] || 0].effect || 'dark'"
+          <div v-else-if="item.type === 'enum'">
+            <el-select
+              v-if="item.editable && row['editing']"
+              :key="'select-' + item.prop + '-' + row.id"
+              v-model="row[item.prop]"
+              size="medium"
             >
-              {{ item.enum[row[item.prop] || 0].label }}
-            </el-tag>
-            <span v-else>{{ row[item.prop] || '-' }}</span>
-          </span>
+              <el-option
+                v-for="(option, index) in item.enum"
+                :key="'enum-' + item.prop + index"
+                :label="option.label"
+                :value="option.value"
+              ></el-option>
+            </el-select>
+            <template v-else>
+              <el-tag
+                v-if="item.enum[row[item.prop] || 0]"
+                size="medium"
+                :type="item.enum[row[item.prop] || 0].type || 'info'"
+                :effect="item.enum[row[item.prop] || 0].effect || 'dark'"
+              >
+                {{ item.enum[row[item.prop] || 0].label }}
+              </el-tag>
+              <span v-else>{{ row[item.prop] || '-' }}</span>
+            </template>
+          </div>
           <span v-else-if="item.type === 'datetime'">
             {{ formatDatetime(row[item.prop]) || '0000-00-00 00:00:00' }}
           </span>
@@ -95,6 +123,7 @@
               <el-tag
                 v-for="(value, idx) in row[item.prop]"
                 :key="item.prop + idx"
+                size="medium"
                 class="mgr-5px"
                 >{{ value }}</el-tag
               >
@@ -130,7 +159,17 @@
           <span v-else-if="item.type === 'html'">
             <span v-html="row[item.prop]"></span>
           </span>
-          <span v-else>{{ row[item.prop] || '-' }}</span>
+          <template v-else>
+            <el-input
+              v-if="item.editable && row['editing']"
+              v-model="row[item.prop]"
+              size="medium"
+              :placeholder="item.placeholder || '请输入' + item.label"
+              type="textarea"
+              :rows="3"
+            ></el-input>
+            <template v-else>{{ row[item.prop] || '-' }}</template>
+          </template>
         </template>
       </vxe-column>
 
