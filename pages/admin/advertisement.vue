@@ -76,11 +76,11 @@ import {
 } from '~/api/advertisement'
 import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
 import { advertisementPositions } from '~/utils/enum'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormAdvertisement from '~/components/FormAdvertisement.vue'
 export default {
-  components: { TableList, FormSearch, FormAdvertisement },
+  components: { TableListV2, FormSearch, FormAdvertisement },
   layout: 'admin',
   data() {
     return {

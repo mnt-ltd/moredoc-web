@@ -92,12 +92,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { listGroup, deleteGroup, getGroup } from '~/api/group'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormGroup from '~/components/FormGroup.vue'
 import FormGroupPermission from '~/components/FormGroupPermission.vue'
 export default {
-  components: { TableList, FormSearch, FormGroup, FormGroupPermission },
+  components: { TableListV2, FormSearch, FormGroup, FormGroupPermission },
   layout: 'admin',
   data() {
     return {

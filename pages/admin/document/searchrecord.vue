@@ -50,7 +50,7 @@
 
 <script>
 import { deleteSearchRecord, listSearchRecord } from '~/api/searchrecord'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import {
   parseQueryIntArray,
@@ -59,7 +59,7 @@ import {
 } from '~/utils/utils'
 import { mapGetters } from 'vuex'
 export default {
-  components: { TableList, FormSearch },
+  components: { TableListV2, FormSearch },
   layout: 'admin',
   data() {
     return {

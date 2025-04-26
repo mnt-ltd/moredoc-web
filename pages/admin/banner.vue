@@ -71,13 +71,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import { listBanner, deleteBanner, getBanner } from '~/api/banner'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormBanner from '~/components/FormBanner.vue'
 import { bannerTypeOptions } from '~/utils/enum'
 import { parseQueryIntArray } from '~/utils/utils'
 export default {
-  components: { TableList, FormSearch, FormBanner },
+  components: { TableListV2, FormSearch, FormBanner },
   layout: 'admin',
   data() {
     return {

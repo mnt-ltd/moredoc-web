@@ -125,12 +125,12 @@ import { getUser, listUser } from '~/api/user'
 import { listGroup } from '~/api/group'
 import { userStatusOptions } from '~/utils/enum'
 import { parseQueryIntArray, genLinkHTML } from '~/utils/utils'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormUser from '~/components/FormUser.vue'
 import FormDeleteUser from '~/components/FormDeleteUser.vue'
 export default {
-  components: { TableList, FormSearch, FormUser, FormDeleteUser },
+  components: { TableListV2, FormSearch, FormUser, FormDeleteUser },
   layout: 'admin',
   data() {
     return {

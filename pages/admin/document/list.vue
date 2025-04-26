@@ -260,7 +260,7 @@ import {
   downloadDocumentToBeReviewed,
 } from '~/api/document'
 import { listLanguage } from '~/api/language'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import {
   categoryToTrees,
@@ -271,7 +271,7 @@ import {
 import { documentStatusOptions, boolOptions } from '~/utils/enum'
 import FormUpdateDocument from '~/components/FormUpdateDocument.vue'
 export default {
-  components: { TableList, FormSearch, FormUpdateDocument },
+  components: { TableListV2, FormSearch, FormUpdateDocument },
   layout: 'admin',
   data() {
     return {

@@ -77,11 +77,11 @@ import {
   getNavigation,
 } from '~/api/navigation'
 import { genLinkHTML, parseQueryIntArray, categoryToTrees } from '~/utils/utils'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormNavigation from '~/components/FormNavigation.vue'
 export default {
-  components: { TableList, FormSearch, FormNavigation },
+  components: { TableListV2, FormSearch, FormNavigation },
   layout: 'admin',
   data() {
     return {

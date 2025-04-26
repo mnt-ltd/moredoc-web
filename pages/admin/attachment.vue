@@ -77,13 +77,13 @@ import {
   deleteAttachment,
   getAttachment,
 } from '~/api/attachment'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormAttachment from '~/components/FormAttachment.vue'
 import { attachmentTypeOptions } from '~/utils/enum'
 import { parseQueryIntArray } from '~/utils/utils'
 export default {
-  components: { TableList, FormSearch, FormAttachment },
+  components: { TableListV2, FormSearch, FormAttachment },
   layout: 'admin',
   data() {
     return {

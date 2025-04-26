@@ -115,13 +115,13 @@ import {
   cancelPunishment,
 } from '~/api/punishment'
 import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormPunishment from '~/components/FormPunishment.vue'
 import { punishmentTypeOptions } from '~/utils/enum'
 import { listUser } from '~/api/user'
 export default {
-  components: { TableList, FormSearch, FormPunishment },
+  components: { TableListV2, FormSearch, FormPunishment },
   layout: 'admin',
   data() {
     return {

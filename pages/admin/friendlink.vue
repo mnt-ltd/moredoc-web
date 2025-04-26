@@ -76,11 +76,11 @@ import {
   getFriendlink,
 } from '~/api/friendlink'
 import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormFriendlink from '~/components/FormFriendlink.vue'
 export default {
-  components: { TableList, FormSearch, FormFriendlink },
+  components: { TableListV2, FormSearch, FormFriendlink },
   layout: 'admin',
   data() {
     return {
