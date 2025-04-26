@@ -40,7 +40,7 @@
       </FormSearch>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
+      <TableListV2
         :loading="loading"
         :table-data="articles"
         :fields="tableListFields"
@@ -61,7 +61,7 @@
             >恢复</el-button
           >
         </template>
-      </TableList>
+      </TableListV2>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <div class="text-right">

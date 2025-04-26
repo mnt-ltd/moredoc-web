@@ -30,7 +30,7 @@
       </FormSearch>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
+      <TableListV2
         :loading="loading"
         :table-data="comments"
         :fields="tableListFields"

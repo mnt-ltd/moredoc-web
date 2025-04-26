@@ -15,7 +15,7 @@
       </FormSearch>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
+      <TableListV2
         :loading="loading"
         :table-data="records"
         :fields="tableListFields"
@@ -28,7 +28,7 @@
         @selectRow="selectRow"
         @deleteRow="deleteRow"
       >
-      </TableList>
+      </TableListV2>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <div class="text-right">
