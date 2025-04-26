@@ -175,7 +175,7 @@
 
       <!-- 操作列 -->
       <vxe-column
-        v-if="showActions"
+        v-if="showActions || showView || showDelete || showEdit"
         fixed="right"
         title="操作"
         :min-width="actionsMinWidth"
