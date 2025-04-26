@@ -14,7 +14,7 @@
       />
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
+      <TableListV2
         :table-data="groups"
         :fields="tableListFields"
         :show-actions="true"
@@ -39,7 +39,7 @@
             >
           </el-tooltip>
         </template>
-      </TableList>
+      </TableListV2>
     </el-card>
     <el-card v-if="total > 0" shadow="never" class="mgt-20px">
       <div class="text-right">

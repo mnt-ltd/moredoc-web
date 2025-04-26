@@ -13,7 +13,7 @@
       />
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
+      <TableListV2
         :table-data="trees"
         :loading="loading"
         :fields="tableListFields"

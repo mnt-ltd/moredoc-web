@@ -13,7 +13,7 @@
     </el-card>
 
     <el-card class="mgt-20px" shadow="never">
-      <TableList
+      <TableListV2
         :table-data="users"
         :loading="loading"
         :fields="listFields"
@@ -37,7 +37,7 @@
             >设置</el-button
           >
         </template>
-      </TableList>
+      </TableListV2>
     </el-card>
 
     <el-card shadow="never" class="mgt-20px">
