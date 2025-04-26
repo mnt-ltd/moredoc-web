@@ -89,12 +89,12 @@ import {
   getComment,
   checkComment,
 } from '~/api/comment'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import { parseQueryIntArray, genLinkHTML } from '~/utils/utils'
 import { categoryTypeOptions } from '~/utils/enum'
 export default {
-  components: { TableList, FormSearch },
+  components: { TableListV2, FormSearch },
   layout: 'admin',
   data() {
     return {

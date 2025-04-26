@@ -69,7 +69,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { listCategory, deleteCategory, getCategory } from '~/api/category'
-// import TableList from '~/components/TableList.vue'
+// import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormCategory from '~/components/FormCategory.vue'
 import { categoryToTrees, parseQueryIntArray } from '~/utils/utils'

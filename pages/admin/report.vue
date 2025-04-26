@@ -73,11 +73,11 @@ import { mapGetters } from 'vuex'
 import { listReport, deleteReport } from '~/api/report'
 import { reportOptions } from '~/utils/enum'
 import { parseQueryIntArray, genLinkHTML } from '~/utils/utils'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormReport from '~/components/FormReport.vue'
 export default {
-  components: { TableList, FormSearch, FormReport },
+  components: { TableListV2, FormSearch, FormReport },
   layout: 'admin',
   data() {
     return {

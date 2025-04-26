@@ -60,12 +60,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { listPermission, getPermission } from '~/api/permission'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormPermission from '~/components/FormPermission.vue'
 import { methodOptions } from '~/utils/enum'
 export default {
-  components: { TableList, FormSearch, FormPermission },
+  components: { TableListV2, FormSearch, FormPermission },
   layout: 'admin',
   data() {
     return {

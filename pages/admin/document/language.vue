@@ -94,11 +94,11 @@ import {
   deleteLanguage,
 } from '~/api/language'
 import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormLanguage from '~/components/FormLanguage.vue'
 export default {
-  components: { TableList, FormSearch, FormLanguage },
+  components: { TableListV2, FormSearch, FormLanguage },
   layout: 'admin',
   data() {
     return {

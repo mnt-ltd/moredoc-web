@@ -57,12 +57,12 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { listCategory, deleteCategory, getCategory } from '~/api/category'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import { categoryToTrees, parseQueryIntArray } from '~/utils/utils'
 import FormCategory from '~/components/FormCategory.vue'
 export default {
-  components: { TableList, FormSearch, FormCategory },
+  components: { TableListV2, FormSearch, FormCategory },
   layout: 'admin',
   data() {
     return {

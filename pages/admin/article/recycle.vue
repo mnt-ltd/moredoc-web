@@ -91,11 +91,11 @@ import {
   emptyRecycleArticle,
 } from '~/api/article'
 import { listCategory } from '~/api/category'
-import TableList from '~/components/TableList.vue'
+import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import { genLinkHTML, categoryToTrees } from '~/utils/utils'
 export default {
-  components: { TableList, FormSearch },
+  components: { TableListV2, FormSearch },
   layout: 'admin',
   data() {
     return {
