@@ -29,7 +29,7 @@
       />
       <div class="mgt-20px"></div>
       <TableListV2
-        :table-data="trees"
+        :table-data="categories"
         :loading="loading"
         :fields="tableListFields"
         :show-actions="true"
@@ -37,7 +37,6 @@
         :show-edit="true"
         :show-delete="true"
         :show-select="true"
-        :tree-props="{ children: 'children' }"
         @selectRow="selectRow"
         @editRow="editRow"
         @deleteRow="deleteRow"
@@ -135,7 +134,11 @@ export default {
           item.disable_delete = item.doc_count > 0
           return item
         })
-        this.categories = categories
+        this.categories = categories.map((item) => {
+          item.parent_id = item.parent_id || 0
+          item.children = []
+          return item
+        })
 
         this.trees = categoryToTrees(categories)
         this.total = res.data.total
