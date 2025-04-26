@@ -8,8 +8,9 @@
       :tree-config="treeProps"
       :row-config="{ isHover: true }"
       border="none"
+      :checkbox-config="checkboxConfig"
       @checkbox-change="selectRow"
-      @select-all="selectRow"
+      @checkbox-all="selectRow"
     >
       <!-- 选择列 -->
       <vxe-column
@@ -232,6 +233,18 @@ export default {
       default: true,
     },
   },
+  data() {
+    return {
+      checkboxConfig: {
+        checkMethod: ({ row }) => {
+          return !row.disable_delete
+        },
+        range: true,
+        highlight: true,
+        field: 'id',
+      },
+    }
+  },
   methods: {
     formatDatetime,
     formatBytes,
@@ -244,8 +257,8 @@ export default {
     deleteRow(row) {
       this.$emit('deleteRow', row)
     },
-    selectRow(rows) {
-      this.$emit('selectRow', rows)
+    selectRow({ records }) {
+      this.$emit('selectRow', records)
     },
     selectable(row) {
       // 取反，禁止删除的行，不可选中

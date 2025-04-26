@@ -359,5 +359,8 @@ export default {
   .vxe-table .vxe-body--row {
     height: auto !important; /* 禁用固定行高 */
   }
+  .vxe-table--render-default .vxe-cell {
+    white-space: normal;
+  }
 }
 </style>

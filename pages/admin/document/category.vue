@@ -13,21 +13,6 @@
       />
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
-        :table-data="trees"
-        :loading="loading"
-        :fields="tableListFields"
-        :show-actions="true"
-        :show-view="false"
-        :show-edit="true"
-        :show-delete="true"
-        :show-select="true"
-        :tree-props="{ children: 'children' }"
-        @selectRow="selectRow"
-        @editRow="editRow"
-        @deleteRow="deleteRow"
-      />
-      <div class="mgt-20px"></div>
       <TableListV2
         :table-data="categories"
         :loading="loading"
@@ -41,6 +26,20 @@
         @editRow="editRow"
         @deleteRow="deleteRow"
       />
+      <!-- <TableList
+        :table-data="trees"
+        :loading="loading"
+        :fields="tableListFields"
+        :show-actions="true"
+        :show-view="false"
+        :show-edit="true"
+        :show-delete="true"
+        :show-select="true"
+        :tree-props="{ children: 'children' }"
+        @selectRow="selectRow"
+        @editRow="editRow"
+        @deleteRow="deleteRow"
+      /> -->
     </el-card>
     <el-drawer
       :visible.sync="formVisible"
@@ -70,12 +69,12 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { listCategory, deleteCategory, getCategory } from '~/api/category'
-import TableList from '~/components/TableList.vue'
+// import TableList from '~/components/TableList.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormCategory from '~/components/FormCategory.vue'
 import { categoryToTrees, parseQueryIntArray } from '~/utils/utils'
 export default {
-  components: { TableList, FormSearch, FormCategory },
+  components: { FormSearch, FormCategory },
   layout: 'admin',
   data() {
     return {

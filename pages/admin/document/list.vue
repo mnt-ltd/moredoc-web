@@ -91,63 +91,6 @@
       </FormSearch>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
-      <TableList
-        :loading="loading"
-        :table-data="documents"
-        :fields="tableListFields"
-        :show-actions="true"
-        :show-view="false"
-        :show-edit="true"
-        :show-delete="true"
-        :show-select="true"
-        :actions-min-width="100"
-        @editRow="editRow"
-        @viewRow="viewRow"
-        @selectRow="selectRow"
-        @deleteRow="deleteRow"
-      >
-        <template slot="actions" slot-scope="scope">
-          <el-tooltip
-            v-if="scope.row.convert_error && scope.row.status === 3"
-            class="item"
-            effect="dark"
-            placement="top"
-          >
-            <div slot="content">
-              <div class="tooltip-box">
-                {{ scope.row.convert_error }}
-              </div>
-            </div>
-            <el-button
-              type="text"
-              size="small"
-              class="text-warning"
-              icon="el-icon-error"
-              >转换失败原因</el-button
-            >
-          </el-tooltip>
-          <el-button
-            type="text"
-            size="small"
-            icon="el-icon-s-check"
-            @click="recommendDocument(scope.row)"
-            >推荐</el-button
-          >
-          <el-button
-            v-if="
-              scope.row.status === 6 ||
-              scope.row.status === 7 ||
-              scope.row.status === 4
-            "
-            type="text"
-            icon="el-icon-download"
-            class="text-warning"
-            @click="download2review(scope.row)"
-            >下载审核</el-button
-          >
-        </template>
-      </TableList>
-      <div class="mgt-20px"></div>
       <TableListV2
         :loading="loading"
         :table-data="documents"
