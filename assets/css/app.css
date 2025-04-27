@@ -1,3 +1,4 @@
+@charset "UTF-8";
 body {
   margin: 0;
   padding: 0;
@@ -212,4 +213,40 @@ body {
 
 .custom-scrollbar ::-webkit-scrollbar-corner {
   background-color: rgba(50, 50, 50, 0.4);
+}
+
+.custom-vxe-table {
+  /* 行高自适应 */
+}
+
+.custom-vxe-table [class*="vxe-"] {
+  font-weight: normal;
+}
+
+.custom-vxe-table [class*="vxe-"] .vxe-checkbox--icon {
+  font-weight: normal !important;
+  font-size: 1.2em;
+  color: #ccc;
+}
+
+.custom-vxe-table .vxe-table--header-wrapper {
+  background-color: #f7fbff !important;
+  color: #000 !important;
+}
+
+.custom-vxe-table .vxe-table--header-wrapper .vxe-header--column {
+  padding: 15px 0;
+}
+
+.custom-vxe-table .vxe-header--column .vxe-resizable.is--line:before {
+  background-color: rgba(218, 233, 248, 0.933) !important;
+}
+
+.custom-vxe-table .vxe-table .vxe-body--row {
+  height: auto !important;
+  /* 禁用固定行高 */
+}
+
+.custom-vxe-table .vxe-table--render-default .vxe-cell {
+  white-space: normal;
 }
