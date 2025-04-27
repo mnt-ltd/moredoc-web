@@ -198,11 +198,7 @@ export default {
     },
     treeProps: {
       type: Object,
-      default: () => ({
-        rowField: 'id',
-        parentField: 'parent_id',
-        transform: true,
-      }),
+      default: () => ({}),
     },
     treeNode: {
       type: String,

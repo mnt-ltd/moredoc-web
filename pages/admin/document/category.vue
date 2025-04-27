@@ -14,19 +14,6 @@
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <TableListV2
-        :table-data="categories"
-        :loading="loading"
-        :fields="tableListFields"
-        :show-actions="true"
-        :show-view="false"
-        :show-edit="true"
-        :show-delete="true"
-        :show-select="true"
-        @selectRow="selectRow"
-        @editRow="editRow"
-        @deleteRow="deleteRow"
-      />
-      <!-- <TableListV2
         :table-data="trees"
         :loading="loading"
         :fields="tableListFields"
@@ -39,7 +26,7 @@
         @selectRow="selectRow"
         @editRow="editRow"
         @deleteRow="deleteRow"
-      /> -->
+      />
     </el-card>
     <el-drawer
       :visible.sync="formVisible"
