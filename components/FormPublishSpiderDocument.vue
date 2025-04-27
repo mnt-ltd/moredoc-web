@@ -190,6 +190,9 @@ export default {
             delete newItem.url_html
             delete newItem.editing
             delete newItem.disable_delete
+            delete newItem._X_ROW_CHILD
+            delete newItem._X_ROW_KEY
+            delete newItem.children
             return newItem
           })
 
