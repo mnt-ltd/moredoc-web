@@ -216,6 +216,7 @@ body {
 }
 
 .custom-vxe-table {
+  min-height: 100px;
   /* 行高自适应 */
 }
 

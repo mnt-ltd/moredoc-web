@@ -184,6 +184,7 @@ body {
     }
 }
 .custom-vxe-table {
+    min-height: 100px;
     [class*="vxe-"] {
         font-weight: normal;
         .vxe-checkbox--icon {
