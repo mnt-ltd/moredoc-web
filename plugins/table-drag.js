@@ -13,6 +13,9 @@ Vue.directive('table-drag', {
     let deltaX = 0
 
     tableBody.setAttribute('title', '按住鼠标左键可左右拖动表格以滚动内容')
+    setTimeout(() => {
+      tableBody.removeAttribute('title')
+    }, 3000)
 
     // 鼠标按下：初始化拖动
     tableBody.addEventListener('mousedown', function (e) {
