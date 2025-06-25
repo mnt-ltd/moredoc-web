@@ -12,6 +12,8 @@ Vue.directive('table-drag', {
     let isDragging = false
     let deltaX = 0
 
+    tableBody.setAttribute('title', '按住鼠标左键可左右拖动表格以滚动内容')
+
     // 鼠标按下：初始化拖动
     tableBody.addEventListener('mousedown', function (e) {
       if (e.button !== 0) return // 仅响应左键
