@@ -1,6 +1,7 @@
 <template>
   <div class="com-table-list-v2 custom-vxe-table">
     <vxe-table
+      v-table-drag
       resizable
       stripe
       :loading="loading"
