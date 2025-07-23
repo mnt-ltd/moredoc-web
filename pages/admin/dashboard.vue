@@ -127,7 +127,7 @@
             </span>
             （
             <a
-              href="https://www.bookstack.cn/read/moredoc/price.md"
+              href="https://mnt.ltd/moredoc.html"
               target="_blank"
               class="el-link el-link--primary"
               >版本划分与定价策略 <i class="el-icon-top-right"></i
@@ -136,6 +136,49 @@
           </span>
         </el-descriptions-item>
       </el-descriptions>
+      <div v-if="license.type != 1" class="tips">
+        <p>
+          <strong
+            >感谢使用【魔豆文库 ·
+            专业版】！当前为无试用期限制的免费试用版。</strong
+          >
+        </p>
+        <p>
+          <strong>试用期内，您可畅享以下核心功能：</strong>
+        </p>
+        <ul>
+          <li>文档管理（上限 10 万篇）</li>
+          <li>文章管理（上限 10 万篇）</li>
+          <li>评论功能</li>
+          <li>全文搜索</li>
+          <li>
+            配套小程序（
+            <a href="https://gitee.com/mnt-ltd/onedoc" target="_blank"
+              >https://gitee.com/mnt-ltd/onedoc</a
+            >
+            ）
+          </li>
+        </ul>
+        <p>
+          <strong>试用限制说明：</strong>
+        </p>
+        <ul>
+          <li>仅部分高级功能受限（如支付、采集等）。</li>
+          <li>最多可注册用户数：100。</li>
+        </ul>
+        <p>
+          <strong
+            >想获取完整功能？欢迎查看 [
+            <a
+              href="https://mnt.ltd/moredoc.html"
+              target="_blank"
+              class="el-link el-link--danger"
+              >版本划分与定价策略</a
+            >
+            ] 了解授权详情。</strong
+          >
+        </p>
+      </div>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <div slot="header">
@@ -960,6 +1003,17 @@ export default {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+  }
+  .tips {
+    border: 1px dashed #e6a23c;
+    border-radius: 4px;
+    padding: 0 10px;
+    margin-top: 20px;
+    a {
+      font-size: 16px;
+      position: relative;
+      top: -3px;
     }
   }
 }
