@@ -57,7 +57,7 @@ const cumstomPermissionMap = {
     label: '举报管理',
     path: 'ListReport',
     children: [],
-    pages: ['/admin/report'],
+    pages: ['/admin/biz', '/admin/report'],
   },
   'api.v1.BannerAPI': {
     label: '轮播图管理',
@@ -81,7 +81,7 @@ const cumstomPermissionMap = {
     label: '广告管理',
     path: 'ListAdvertisement',
     children: [],
-    pages: ['/admin/advertisement'],
+    pages: ['/admin/biz', '/admin/advertisement'],
   },
   'api.v1.ConfigAPI': {
     label: '系统设置',
@@ -116,7 +116,7 @@ const cumstomPermissionMap = {
     label: '评论管理',
     path: 'ListComment',
     children: [],
-    pages: ['/admin/comment'],
+    pages: ['/admin/biz', '/admin/comment'],
   },
   'api.v1.PunishmentAPI': {
     label: '惩罚管理',
@@ -260,6 +260,28 @@ export const adminMenus = [
     ],
   },
   {
+    title: '运营管理',
+    page: '/admin/biz',
+    icon: 'el-icon-suitcase',
+    children: [
+      {
+        page: '/admin/comment',
+        title: '评论管理',
+        icon: 'el-icon-chat-dot-square',
+      },
+      {
+        page: '/admin/report',
+        title: '举报管理',
+        icon: 'el-icon-warning-outline',
+      },
+      {
+        title: '广告管理',
+        page: '/admin/advertisement',
+        icon: 'el-icon-s-flag',
+      },
+    ],
+  },
+  {
     page: '/admin/banner',
     title: '轮播图管理',
     icon: 'el-icon-picture-outline',
@@ -273,21 +295,6 @@ export const adminMenus = [
     page: '/admin/friendlink',
     title: '友链管理',
     icon: 'el-icon-link',
-  },
-  {
-    page: '/admin/comment',
-    title: '评论管理',
-    icon: 'el-icon-chat-dot-square',
-  },
-  {
-    page: '/admin/report',
-    title: '举报管理',
-    icon: 'el-icon-warning-outline',
-  },
-  {
-    title: '广告管理',
-    page: '/admin/advertisement',
-    icon: 'el-icon-s-flag',
   },
   {
     page: '/admin/attachment',
