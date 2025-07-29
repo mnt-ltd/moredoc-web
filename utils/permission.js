@@ -373,6 +373,7 @@ export const adminMenus = [
   {
     title: '系统设置',
     icon: 'el-icon-setting',
+    page: '/admin/config',
     children: [
       {
         title: '基础配置',
