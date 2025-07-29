@@ -57,7 +57,7 @@ const cumstomPermissionMap = {
     label: '举报管理',
     path: 'ListReport',
     children: [],
-    pages: ['/admin/report'],
+    pages: ['/admin/biz', '/admin/report'],
   },
   'api.v1.UserVipAPI': {
     label: '会员管理',
@@ -69,7 +69,7 @@ const cumstomPermissionMap = {
     label: '订单管理',
     path: 'ListOrder',
     children: [],
-    pages: ['/admin/order'],
+    pages: ['/admin/biz', '/admin/order'],
   },
   'api.v1.BannerAPI': {
     label: '轮播图管理',
@@ -99,7 +99,7 @@ const cumstomPermissionMap = {
     label: '广告管理',
     path: 'ListAdvertisement',
     children: [],
-    pages: ['/admin/advertisement'],
+    pages: ['/admin/biz', '/admin/advertisement'],
   },
   'api.v1.ConfigAPI': {
     label: '系统设置',
@@ -141,7 +141,7 @@ const cumstomPermissionMap = {
     label: '评论管理',
     path: 'ListComment',
     children: [],
-    pages: ['/admin/comment'],
+    pages: ['/admin/biz', '/admin/comment'],
   },
   'api.v1.SpiderUrlAPI': {
     label: '采集链接管理',
@@ -324,9 +324,31 @@ export const adminMenus = [
     ],
   },
   {
-    page: '/admin/order',
-    title: '订单管理',
-    icon: 'el-icon-goods',
+    title: '运营管理',
+    icon: 'el-icon-suitcase',
+    page: '/admin/biz',
+    children: [
+      {
+        page: '/admin/report',
+        title: '举报管理',
+        icon: 'el-icon-warning',
+      },
+      {
+        page: '/admin/comment',
+        title: '评论管理',
+        icon: 'el-icon-chat-line-square',
+      },
+      {
+        page: '/admin/advertisement',
+        title: '广告管理',
+        icon: 'el-icon-s-promotion',
+      },
+      {
+        page: '/admin/order',
+        title: '订单管理',
+        icon: 'el-icon-goods',
+      },
+    ],
   },
   {
     page: '/admin/banner',
@@ -344,27 +366,11 @@ export const adminMenus = [
     icon: 'el-icon-link',
   },
   {
-    page: '/admin/comment',
-    title: '评论管理',
-    icon: 'el-icon-chat-dot-square',
-  },
-  {
-    page: '/admin/report',
-    title: '举报管理',
-    icon: 'el-icon-warning-outline',
-  },
-  {
-    title: '广告管理',
-    page: '/admin/advertisement',
-    icon: 'el-icon-s-flag',
-  },
-  {
     page: '/admin/attachment',
     title: '附件管理',
     icon: 'el-icon-paperclip',
   },
   {
-    page: '/admin/config',
     title: '系统设置',
     icon: 'el-icon-setting',
     children: [
