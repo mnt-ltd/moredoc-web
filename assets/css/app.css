@@ -251,3 +251,11 @@ body {
 .custom-vxe-table .vxe-table--render-default .vxe-cell {
   white-space: normal;
 }
+
+.el-descriptions .is-bordered .el-descriptions-item__cell {
+  border-color: #e9eef3;
+}
+
+.el-descriptions-item__label.is-bordered-label {
+  background-color: #e9eef3;
+}
