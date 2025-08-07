@@ -16,7 +16,7 @@
             <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
           </el-breadcrumb-item>
           <el-breadcrumb-item>
-            <nuxt-link to="/article">全部文章</nuxt-link>
+            <nuxt-link to="/article">全部内容</nuxt-link>
           </el-breadcrumb-item>
           <el-breadcrumb-item
             v-for="item in breadcrumbs"
@@ -174,13 +174,12 @@ export default {
       articles: [],
       breadcrumbs: [],
       activeCate: { id: 0, title: '全部文章', description: '', idStr: '' },
-      title: '全部文章',
     }
   },
   head() {
     return {
       title:
-        (this.title ? '[文章]' + this.title : '全部文章') +
+        (this.articleName ? this.articleName : '全部文章') +
         ' - ' +
         this.settings.system.sitename,
       meta: [
@@ -194,8 +193,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('setting', ['settings']),
+    ...mapGetters('setting', ['settings', 'navigations']),
     ...mapGetters('category', ['categoryMap', 'categoryTrees', 'categories']),
+    articleName() {
+      const nav = this.navigations.find((nav) => nav.href === '/article')
+      return nav ? nav.title : '文章资讯'
+    },
   },
   watch: {
     '$route.query': {
