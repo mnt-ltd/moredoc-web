@@ -226,6 +226,7 @@
             class="document-descriptions"
             :column="isMobile ? 1 : 3"
             border
+            direction="vertical"
           >
             <el-descriptions-item
               v-for="item in descriptions"
