@@ -175,7 +175,7 @@
         </el-card>
         <el-card shadow="never" class="index-articles mgt-20px">
           <div slot="header">
-            <i class="fa fa-newspaper-o"></i> 文章资讯
+            <i class="fa fa-newspaper-o"></i> {{ articleName }}
             <nuxt-link to="/article" target="_blank" class="float-right">
               <el-button type="text">更多</el-button>
             </nuxt-link>
@@ -460,7 +460,11 @@ export default {
   computed: {
     ...mapGetters('category', ['categoryTrees']),
     ...mapGetters('user', ['user']),
-    ...mapGetters('setting', ['settings']),
+    ...mapGetters('setting', ['settings', 'navigations']),
+    articleName() {
+      const nav = this.navigations.find((nav) => nav.href === '/article')
+      return nav ? nav.title : '文章资讯'
+    },
     categoryTreesV2() {
       const trees = (this.categoryTrees || []).filter((item) => {
         if (this.settings.display.hide_category_without_document) {

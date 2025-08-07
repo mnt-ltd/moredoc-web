@@ -290,7 +290,7 @@ export default {
   },
   head() {
     return {
-      title: `${this.article.title} - ${this.settings.system.sitename}`,
+      title: `[${this.articleName}] ${this.article.title} - ${this.settings.system.sitename}`,
       meta: [
         {
           hid: 'keywords',
@@ -306,9 +306,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('setting', ['settings']),
+    ...mapGetters('setting', ['settings', 'navigations']),
     ...mapGetters('category', ['categoryMap', 'categoryTrees', 'categories']),
     ...mapGetters('user', ['user', 'permissions']),
+    articleName() {
+      const nav = this.navigations.find((nav) => nav.href === '/article')
+      return nav ? nav.title : '文章资讯'
+    },
     accessUpdate() {
       if (this.user.id === this.article.user_id) {
         return true
