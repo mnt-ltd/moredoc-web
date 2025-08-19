@@ -60,6 +60,16 @@
           @click="getWechatPayCert"
           >获取平台证书</el-button
         >
+        <div>
+          <el-alert
+            type="warning"
+            class="mgt-20px"
+            title="注意"
+            :closable="false"
+            show-icon
+            >【微信支付公钥】与【平台证书】，二选一填写。</el-alert
+          >
+        </div>
       </template>
     </FormConfig>
   </el-card>
