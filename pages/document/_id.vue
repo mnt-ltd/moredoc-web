@@ -588,7 +588,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import QRCode from 'qrcodejs2' // 引入qrcode
 import DocumentSimpleList from '~/components/DocumentSimpleList.vue'
 import {
   getDocument,
@@ -739,7 +738,7 @@ export default {
         this.handleFullscreenScroll
       )
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
     window.addEventListener('fullscreenchange', this.fullscreenchange)
   },
@@ -1278,7 +1277,12 @@ export default {
         //   this.$message.error(res.data.message)
       }
     },
-    genQrcode() {
+    async genQrcode() {
+      if (!process.client) return
+
+      // 动态导入 QRCode 库
+      const QRCode = (await import('qrcodejs2')).default
+
       // 把之前可能存在的二维码清空
       this.$refs.qrcode.innerHTML =
         '<div style="margin-bottom:10px">手机扫码，畅享阅读</div>'

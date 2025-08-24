@@ -2,7 +2,18 @@ import axios from 'axios' // 引入axios
 import qs from 'qs'
 import store from '~/store/index'
 
+// SSR 环境下的 baseURL 配置
+const getBaseURL = () => {
+  // 在服务端渲染时，使用完整的后端 URL
+  if (process.server) {
+    return 'http://127.0.0.1:8880'
+  }
+  // 在客户端，使用相对路径（通过代理）
+  return ''
+}
+
 const service = axios.create({
+  baseURL: getBaseURL(),
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',

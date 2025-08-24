@@ -458,7 +458,7 @@ export default {
           }
         }
       } catch (error) {
-        console.log('handleScroll relArt', error)
+        // console.log('handleScroll relArt', error)
       }
     },
     async deleteFavorite() {

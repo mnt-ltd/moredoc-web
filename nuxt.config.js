@@ -1,6 +1,6 @@
 export default {
-  // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
+  // Enable server-side rendering: https://go.nuxtjs.dev/ssr-mode
+  ssr: true,
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -35,7 +35,11 @@ export default {
   },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['@/plugins/element-ui', '@/plugins/table-drag'],
+  plugins: [
+    '@/plugins/element-ui',
+    { src: '@/plugins/table-drag', mode: 'client' },
+    { src: '@/plugins/tinymce', mode: 'client' },
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -65,8 +69,10 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+    // 服务端请求直接指向后端服务器
+    baseURL: 'http://127.0.0.1:8880',
+    // 浏览器端使用代理
+    browserBaseURL: '/',
     proxy: true,
   },
   server: {
@@ -101,7 +107,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     postcss: null,
-    transpile: [/^element-ui/],
+    transpile: [/^element-ui/, /^@tinymce/, /^tinymce/],
     // 提取CSS到外部文件
     extractCSS: true,
   },

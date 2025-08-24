@@ -120,12 +120,24 @@
       ></el-input>
     </el-form-item>
     <el-form-item label="内容" class="editor-item">
-      <Editor
-        v-if="canIPublish"
-        v-model="article.content"
-        :init="init"
-      ></Editor>
-      <div v-else>
+      <client-only>
+        <Editor
+          v-if="canIPublish"
+          v-model="article.content"
+          :init="init"
+        ></Editor>
+        <template #placeholder>
+          <el-input
+            v-if="canIPublish"
+            v-model="article.content"
+            type="textarea"
+            rows="10"
+            placeholder="正在加载编辑器..."
+          ></el-input>
+        </template>
+      </client-only>
+      <div v-if="!canIPublish">
+        >
         <el-input
           v-model="article.content"
           type="textarea"
@@ -150,13 +162,12 @@
 </template>
 
 <script>
-import tinymce from 'tinymce/tinymce'
-import Editor from '@tinymce/tinymce-vue'
 import { createArticle, updateArticle } from '~/api/article'
 import { articleStatusOptions } from '~/utils/enum'
+
 export default {
   components: {
-    Editor,
+    Editor: () => (process.client ? import('@tinymce/tinymce-vue') : null),
   },
   props: {
     isAdmin: {
@@ -236,7 +247,9 @@ export default {
     },
   },
   mounted() {
-    tinymce.init({})
+    if (process.client && window.tinymce) {
+      window.tinymce.init({})
+    }
   },
   methods: {
     images_upload_handler(blobInfo, progress) {

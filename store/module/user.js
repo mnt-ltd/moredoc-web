@@ -45,7 +45,9 @@ export const user = {
       state.token = ''
       state.permissions = []
       state.allowPages = []
-      localStorage.clear()
+      if (process.client) {
+        localStorage.clear()
+      }
     },
     setPermissions(state, permissions) {
       state.permissions = permissions
@@ -146,18 +148,19 @@ export const user = {
       return res
     },
     checkAndRefreshUser({ commit, state }) {
+      if (!process.client) return
       try {
         const moredoc = JSON.parse(localStorage.getItem('moredoc'))
         if (state.token !== moredoc.user.token) {
           // 以 localStorage 存储的信息为准
-          console.log('exec checkAndRefreshUser')
+          // console.log('exec checkAndRefreshUser')
           commit('setUser', moredoc.user.user || {})
           commit('setToken', moredoc.user.token || '')
           commit('setPermissions', moredoc.user.permissions || [])
           commit('setAllowPages', moredoc.user.allowPages || [])
         }
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
     },
   },

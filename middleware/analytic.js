@@ -1,4 +1,6 @@
 export default function ({ store, route, redirect }) {
+  if (!process.client) return
+
   const settings = store.getters['setting/settings']
   window._hmt = window._hmt || []
   window.loaded_hmt = window.loaded_hmt || false
@@ -11,6 +13,6 @@ export default function ({ store, route, redirect }) {
     window._hmt = _hmt
     window.loaded_hmt = true
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
 }
