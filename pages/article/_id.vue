@@ -288,6 +288,13 @@ export default {
       cardOffsetTop: 0,
     }
   },
+  async fetch() {
+    if (this.categories.length === 0) {
+      await this.getCategories()
+    }
+    await this.getArticle()
+    await this.getFavorite()
+  },
   head() {
     return {
       title: `[${this.articleName}] ${this.article.title} - ${this.settings.system.sitename}`,
@@ -345,13 +352,7 @@ export default {
       )
     },
   },
-  async created() {
-    if (this.categories.length === 0) {
-      await this.getCategories()
-    }
-    await this.getArticle()
-    await this.getFavorite()
-  },
+
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
   },

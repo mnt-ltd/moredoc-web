@@ -440,6 +440,21 @@ export default {
       articles: [],
     }
   },
+  async fetch() {
+    const requests = [
+      this.getRecommendDocuments(),
+      this.getArticles(),
+      this.listBanner(),
+      this.getDocuments(),
+      this.getSignedToday(),
+      this.getStats(),
+      this.getAdvertisements('index'),
+    ]
+    if (this.user.id) {
+      requests.push(this.getUser())
+    }
+    await Promise.all(requests)
+  },
   head() {
     return {
       title: this.settings.system.title || 'MOREDOC · 魔豆文库',
@@ -486,21 +501,7 @@ export default {
       return trees
     },
   },
-  async created() {
-    const requests = [
-      this.getRecommendDocuments(),
-      this.getArticles(),
-      this.listBanner(),
-      this.getDocuments(),
-      this.getSignedToday(),
-      this.getStats(),
-      this.getAdvertisements('index'),
-    ]
-    if (this.user.id) {
-      requests.push(this.getUser())
-    }
-    await Promise.all(requests)
-  },
+
   methods: {
     ...mapActions('user', ['logout', 'getUser']),
     getIcon,
