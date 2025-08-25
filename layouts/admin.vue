@@ -140,6 +140,9 @@ export default {
       menus: adminMenus,
     }
   },
+  async fetch() {
+    await this.getSettings()
+  },
   head() {
     return {
       title:
@@ -185,6 +188,7 @@ export default {
   },
   methods: {
     ...mapActions('user', ['logout', 'getUserPermissions']),
+    ...mapActions('setting', ['getSettings']),
     profileSuccess() {
       this.formProfileVisible = false
     },

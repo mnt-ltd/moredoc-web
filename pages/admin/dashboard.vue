@@ -47,7 +47,9 @@
           :md="6"
           :lg="6"
         >
-          <v-chart class="chart" autoresize :option="gauge" />
+          <client-only>
+            <v-chart class="chart" autoresize :option="gauge" />
+          </client-only>
           <div class="text-center">
             <ul>
               <li v-for="(item, index) in gauge.labels" :key="'label-' + index">
@@ -411,17 +413,6 @@
 </template>
 
 <script>
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import { PieChart, GaugeChart } from 'echarts/charts'
-import { UniversalTransition } from 'echarts/features'
-import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent,
-} from 'echarts/components'
-import VChart from 'vue-echarts'
 import { formatDatetime, formatBytes } from '~/utils/utils'
 import {
   getStats,
@@ -434,21 +425,8 @@ import {
   setReleaseSource,
 } from '~/api/config'
 
-use([
-  CanvasRenderer,
-  PieChart,
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GaugeChart,
-  UniversalTransition,
-  GridComponent,
-])
-
 export default {
-  components: {
-    VChart,
-  },
+  components: {},
   layout: 'admin',
   data() {
     return {

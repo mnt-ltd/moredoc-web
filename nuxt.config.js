@@ -39,6 +39,7 @@ export default {
     '@/plugins/element-ui',
     { src: '@/plugins/table-drag', mode: 'client' },
     { src: '@/plugins/tinymce', mode: 'client' },
+    { src: '@/plugins/echarts', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -107,7 +108,13 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     postcss: null,
-    transpile: [/^element-ui/, /^@tinymce/, /^tinymce/],
+    transpile: [
+      /^element-ui/,
+      /^@tinymce/,
+      /^tinymce/,
+      /^echarts/,
+      /^vue-echarts/,
+    ],
     // 提取CSS到外部文件
     extractCSS: true,
   },
