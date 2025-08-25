@@ -398,30 +398,7 @@ export default {
       activePath: '/',
     }
   },
-  head() {
-    return {
-      title:
-        this.settings.system.title || this.settings.system.sitename || '文库',
-      link: [
-        {
-          rel: 'icon',
-          type: 'image/x-icon',
-          href: this.settings.system.favicon,
-        },
-      ],
-    }
-  },
-  computed: {
-    ...mapGetters('user', ['user', 'token', 'allowPages', 'permissions']),
-    ...mapGetters('setting', ['settings', 'navigations']),
-    ...mapGetters('category', ['categories']),
-  },
-  watch: {
-    $route(to, from) {
-      this.resetActivePath()
-    },
-  },
-  async created() {
+  async fetch() {
     this.resetActivePath()
     await Promise.all([
       this.getCategories(),
@@ -455,6 +432,29 @@ export default {
     if (requireLogin(this.settings, this.user, this.$route, this.permissions)) {
       this.$router.push('/login')
     }
+  },
+  head() {
+    return {
+      title:
+        this.settings.system.title || this.settings.system.sitename || '文库',
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: this.settings.system.favicon,
+        },
+      ],
+    }
+  },
+  computed: {
+    ...mapGetters('user', ['user', 'token', 'allowPages', 'permissions']),
+    ...mapGetters('setting', ['settings', 'navigations']),
+    ...mapGetters('category', ['categories']),
+  },
+  watch: {
+    $route(to, from) {
+      this.resetActivePath()
+    },
   },
   mounted() {
     window.addEventListener('focus', this.checkAndRefreshUser())

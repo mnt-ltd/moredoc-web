@@ -168,7 +168,7 @@ export default {
     ...mapGetters('setting', ['settings']),
     ...mapGetters('category', ['categories']),
   },
-  async created() {
+  async fetch() {
     await Promise.all([this.listFriendlink(), this.getAdvertisements('global')])
   },
   methods: {
