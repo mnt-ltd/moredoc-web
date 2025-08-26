@@ -154,7 +154,7 @@ export const user = {
       try {
         const token = state.token || Cookies.get('token') || ''
         if (state.token !== token && token) {
-          commit('setToken', token || '')
+          commit('setToken', token)
           await Promise.all([
             // 重新获取用户信息
             dispatch('getUser'),
