@@ -140,9 +140,6 @@ export default {
       menus: adminMenus,
     }
   },
-  async fetch() {
-    await Promise.all([this.getSettings(), this.checkAndRefreshUser()])
-  },
   head() {
     return {
       title:
@@ -180,11 +177,11 @@ export default {
     ]),
     ...mapGetters('setting', ['settings']),
   },
-  created() {
+  async created() {
     if (this.activeMenu.endsWith('/')) {
       this.activeMenu = this.activeMenu.slice(0, -1)
     }
-    this.getUserPermissions()
+    await Promise.all([this.getUserPermissions(), this.getSettings()])
   },
   mounted() {
     const screenWidth = document.body.clientWidth
