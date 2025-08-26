@@ -185,7 +185,6 @@
               v-html="item.content"
             ></div>
           </template>
-
           <el-descriptions
             v-if="settings.display.show_document_descriptions"
             class="document-descriptions"
@@ -199,7 +198,7 @@
               :span="item.name == 'description' ? 3 : 1"
               label-class-name="descriptions-label"
             >
-              <template #label>
+              <template slot="label">
                 <i :class="item.icon"></i>
                 {{ item.label }}
               </template>

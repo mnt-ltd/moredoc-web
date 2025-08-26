@@ -1,4 +1,5 @@
 import axios from 'axios' // 引入axios
+import Cookies from 'js-cookie'
 import store from '~/store/index'
 const cancelToken = axios.CancelToken // 取消请求
 
@@ -16,7 +17,7 @@ const fileService = axios.create({
 
 fileService.interceptors.request.use(
   (config) => {
-    const token = store().getters['user/token'] || ''
+    const token = store().getters['user/token'] || Cookies.get('token') || ''
     if (token) config.headers.authorization = `Bearer ${token}`
     config.cancelToken = new cancelToken((c) => {
       // 只在客户端添加取消请求

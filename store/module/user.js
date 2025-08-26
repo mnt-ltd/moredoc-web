@@ -152,12 +152,8 @@ export const user = {
     },
     async checkAndRefreshUser({ commit, state, dispatch }) {
       try {
-        console.log('exec checkAndRefreshUser')
-        // const moredoc = JSON.parse(localStorage.getItem('moredoc'))
         const token = state.token || Cookies.get('token') || ''
-        if (state.token !== token) {
-          // 以 localStorage 存储的信息为准
-          // console.log('exec checkAndRefreshUser')
+        if (state.token !== token && token) {
           commit('setToken', token || '')
           await Promise.all([
             // 重新获取用户信息
@@ -165,9 +161,6 @@ export const user = {
             dispatch('getUserGroups'),
             dispatch('getUserPermissions'),
           ])
-          // commit('setUser', moredoc.user.user || {})
-          // commit('setPermissions', moredoc.user.permissions || [])
-          // commit('setAllowPages', moredoc.user.allowPages || [])
         }
       } catch (error) {
         // console.log(error)

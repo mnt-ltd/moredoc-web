@@ -308,7 +308,6 @@ import { uploadDocument } from '~/api/attachment'
 export default {
   data() {
     return {
-      canIUploadDocument: false,
       document: {
         category_id: [],
         price: 0,
@@ -392,14 +391,12 @@ export default {
     ...mapGetters('user', ['token', 'user', 'groups']),
     ...mapGetters('category', ['categoryTrees']),
     ...mapGetters('setting', ['settings']),
+    canIUploadDocument() {
+      return this.groups.some((group) => group.enable_upload)
+    },
   },
   created() {
     this.getCategories()
-    this.groups.forEach((group) => {
-      if (group.enable_upload) {
-        this.canIUploadDocument = true
-      }
-    })
     try {
       this.maxDocumentSize =
         (this.settings.security.max_document_size || 50) * 1024 * 1024
