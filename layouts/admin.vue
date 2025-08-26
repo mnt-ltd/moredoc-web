@@ -141,7 +141,7 @@ export default {
     }
   },
   async fetch() {
-    await this.getSettings()
+    await Promise.all([this.getSettings(), this.checkAndRefreshUser()])
   },
   head() {
     return {
@@ -171,7 +171,13 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('user', ['user', 'token', 'permissions', 'allowPages']),
+    ...mapGetters('user', [
+      'user',
+      'token',
+      'permissions',
+      'allowPages',
+      'checkAndRefreshUser',
+    ]),
     ...mapGetters('setting', ['settings']),
   },
   created() {
@@ -187,7 +193,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions('user', ['logout', 'getUserPermissions']),
+    ...mapActions('user', [
+      'logout',
+      'getUserPermissions',
+      'checkAndRefreshUser',
+    ]),
     ...mapActions('setting', ['getSettings']),
     profileSuccess() {
       this.formProfileVisible = false

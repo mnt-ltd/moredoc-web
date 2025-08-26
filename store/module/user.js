@@ -1,4 +1,5 @@
 import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
 import {
   login,
   getUser,
@@ -39,15 +40,17 @@ export const user = {
     },
     setToken(state, token) {
       state.token = token
+      Cookies.set('token', token, { expires: 365 })
     },
     logout(state) {
       state.user = {}
       state.token = ''
       state.permissions = []
       state.allowPages = []
-      if (process.client) {
-        localStorage.clear()
-      }
+      Cookies.remove('token')
+      // if (process.client) {
+      //   localStorage.clear()
+      // }
     },
     setPermissions(state, permissions) {
       state.permissions = permissions
@@ -147,17 +150,24 @@ export const user = {
       }
       return res
     },
-    checkAndRefreshUser({ commit, state }) {
-      if (!process.client) return
+    async checkAndRefreshUser({ commit, state, dispatch }) {
       try {
-        const moredoc = JSON.parse(localStorage.getItem('moredoc'))
-        if (state.token !== moredoc.user.token) {
+        console.log('exec checkAndRefreshUser')
+        // const moredoc = JSON.parse(localStorage.getItem('moredoc'))
+        const token = state.token || Cookies.get('token') || ''
+        if (state.token !== token) {
           // 以 localStorage 存储的信息为准
           // console.log('exec checkAndRefreshUser')
-          commit('setUser', moredoc.user.user || {})
-          commit('setToken', moredoc.user.token || '')
-          commit('setPermissions', moredoc.user.permissions || [])
-          commit('setAllowPages', moredoc.user.allowPages || [])
+          commit('setToken', token || '')
+          await Promise.all([
+            // 重新获取用户信息
+            dispatch('getUser'),
+            dispatch('getUserGroups'),
+            dispatch('getUserPermissions'),
+          ])
+          // commit('setUser', moredoc.user.user || {})
+          // commit('setPermissions', moredoc.user.permissions || [])
+          // commit('setAllowPages', moredoc.user.allowPages || [])
         }
       } catch (error) {
         // console.log(error)
@@ -169,7 +179,7 @@ export const user = {
       return state.user || { id: 0 }
     },
     token(state) {
-      return state.token || ''
+      return state.token || Cookies.get('token') || ''
     },
     permissions(state) {
       return state.permissions || []

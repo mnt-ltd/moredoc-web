@@ -1,6 +1,9 @@
-export default function ({ store, route, redirect }) {
+export default async function ({ store, route, redirect }) {
+  await store.dispatch('user/checkAndRefreshUser')
   const token = store.getters['user/token']
   const allowPages = store.getters['user/allowPages'] || []
+
+  console.log('auth middleware', route.path, token, allowPages)
 
   // 未登录或没有权限
   if (!token || allowPages.length === 0) {

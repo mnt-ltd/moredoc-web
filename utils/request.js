@@ -1,5 +1,6 @@
 import axios from 'axios' // 引入axios
 import qs from 'qs'
+import Cookies from 'js-cookie'
 import store from '~/store/index'
 
 // SSR 环境下的 baseURL 配置
@@ -28,7 +29,7 @@ const service = axios.create({
 // http request 拦截器
 service.interceptors.request.use(
   (config) => {
-    const token = store().getters['user/token'] || ''
+    const token = store().getters['user/token'] || Cookies.get('token') || ''
     if (token) config.headers.authorization = `Bearer ${token}`
     return config
   },
