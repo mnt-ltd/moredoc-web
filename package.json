@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
+    "pack": "nuxt build && rm -rf webserver && mkdir webserver && cp -r .nuxt webserver/ && cp package.json webserver/ && cp package-lock.json webserver/ && cp -r static webserver/ && cp .env.example webserver/.env && cp nuxt.config.js webserver/",
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
