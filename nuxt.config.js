@@ -40,6 +40,7 @@ export default {
     { src: '@/plugins/table-drag', mode: 'client' },
     { src: '@/plugins/tinymce', mode: 'client' },
     { src: '@/plugins/echarts', mode: 'client' },
+    { src: '@/plugins/auth.client.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -76,6 +77,7 @@ export default {
     // 浏览器端使用代理
     browserBaseURL: '/',
     proxy: true,
+    credentials: true, // 发送请求时携带cookie
   },
   server: {
     port: 3000, // default: 3000

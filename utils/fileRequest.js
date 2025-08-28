@@ -1,7 +1,7 @@
 import axios from 'axios' // 引入axios
 import Cookies from 'js-cookie'
 import store from '~/store/index'
-const cancelToken = axios.CancelToken // 取消请求
+const CancelToken = axios.CancelToken // 取消请求
 
 // 只在客户端设置取消上传文件请求
 if (process.client) {
@@ -10,6 +10,7 @@ if (process.client) {
 
 const fileService = axios.create({
   timeout: 6000000, // 文件上传超时时间，100分钟
+  withCredentials: true, // 发送跨域请求时携带cookie
   headers: {
     'Content-Type': 'multipart/form-data',
   },
@@ -17,9 +18,21 @@ const fileService = axios.create({
 
 fileService.interceptors.request.use(
   (config) => {
-    const token = store().getters['user/token'] || Cookies.get('token') || ''
-    if (token) config.headers.authorization = `Bearer ${token}`
-    config.cancelToken = new cancelToken((c) => {
+    let token = ''
+
+    // 在服务端，从store中获取token（通过nuxtServerInit设置）
+    if (process.server) {
+      token = store().getters['user/token'] || ''
+    } else {
+      // 在客户端，优先从store获取，然后从cookie获取
+      token = store().getters['user/token'] || Cookies.get('token') || ''
+    }
+
+    if (token) {
+      config.headers.authorization = `Bearer ${token}`
+    }
+
+    config.cancelToken = new CancelToken((c) => {
       // 只在客户端添加取消请求
       if (process.client && window.uploadDocumentCancel) {
         window.uploadDocumentCancel.push(c)

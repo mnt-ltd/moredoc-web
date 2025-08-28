@@ -16,6 +16,7 @@ const getBaseURL = () => {
 const service = axios.create({
   baseURL: getBaseURL(),
   timeout: 30000,
+  withCredentials: true, // 发送跨域请求时携带cookie
   headers: {
     'Content-Type': 'application/json',
   },
@@ -29,8 +30,20 @@ const service = axios.create({
 // http request 拦截器
 service.interceptors.request.use(
   (config) => {
-    const token = store().getters['user/token'] || Cookies.get('token') || ''
-    if (token) config.headers.authorization = `Bearer ${token}`
+    let token = ''
+
+    // 在服务端，从store中获取token（通过nuxtServerInit设置）
+    if (process.server) {
+      token = store().getters['user/token'] || ''
+    } else {
+      // 在客户端，优先从store获取，然后从cookie获取
+      token = store().getters['user/token'] || Cookies.get('token') || ''
+    }
+
+    if (token) {
+      config.headers.authorization = `Bearer ${token}`
+    }
+
     return config
   },
   (error) => {
