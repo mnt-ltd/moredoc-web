@@ -153,6 +153,10 @@ export default {
       ],
     }
   },
+  computed: {
+    ...mapGetters('user', ['user', 'token', 'permissions', 'allowPages']),
+    ...mapGetters('setting', ['settings']),
+  },
   watch: {
     $route(to, from) {
       // main 滚动到顶部
@@ -166,16 +170,6 @@ export default {
         }
       })
     },
-  },
-  computed: {
-    ...mapGetters('user', [
-      'user',
-      'token',
-      'permissions',
-      'allowPages',
-      'checkAndRefreshUser',
-    ]),
-    ...mapGetters('setting', ['settings']),
   },
   async created() {
     if (this.activeMenu.endsWith('/')) {
@@ -209,18 +203,6 @@ export default {
           break
         case 'password':
           this.formPasswordVisible = true
-          break
-        case 'copyjwt':
-          // 将用户的token复制到剪贴板
-          const input = document.createElement('input')
-          input.setAttribute('readonly', 'readonly')
-          input.setAttribute('value', this.token)
-          document.body.appendChild(input)
-          input.select()
-          input.setSelectionRange(0, 9999)
-          document.execCommand('copy')
-          document.body.removeChild(input)
-          this.$message.success('您的 JSON Web Token 已复制到剪贴板')
           break
         case 'logout':
           this.logout()
