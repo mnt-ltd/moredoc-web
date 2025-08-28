@@ -457,7 +457,7 @@ export default {
   },
   head() {
     return {
-      title: this.settings.system.title || 'MOREDOC · 魔豆文库',
+      title: this.settings.system.title,
       meta: [
         {
           hid: 'keywords',
