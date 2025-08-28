@@ -305,6 +305,21 @@ export default {
       ],
     }
   },
+  async fetch() {
+    // SSR数据预取
+    if (this.categories.length === 0) {
+      await this.$store.dispatch('category/getCategories')
+    }
+
+    // 初始化面包屑和分类数据
+    this.initializeBreadcrumbsAndCategories()
+
+    // 设置查询参数
+    this.setQuery()
+
+    // 并行加载数据
+    await Promise.all([this.loadData(), this.getAdvertisements('list')])
+  },
   head() {
     return {
       title: this.title + ' - ' + this.settings.system.sitename,
@@ -336,69 +351,17 @@ export default {
     },
   },
   async created() {
-    if (this.categories.length === 0) {
-      await this.$store.dispatch('category/getCategories')
-    }
-    const breadcrumbs = []
-    let category = { siblings: [], ...this.categoryMap[this.categoryId] }
-    if (category.id) {
-      // 查询当前分类的兄弟分类
-      category.siblings = this.filterCategorySiblings(category)
-      breadcrumbs.push(category)
-      while (category.parent_id) {
-        // 查询当前分类的父级分类的兄弟分类
-        category = { siblings: [], ...this.categoryMap[category.parent_id] }
-        if (category.id) {
-          category.siblings = this.filterCategorySiblings(category)
-          breadcrumbs.splice(0, 0, category)
-        }
+    // 在客户端渲染时，如果数据尚未加载，则加载数据
+    if (process.client && !this.$fetchState.pending) {
+      if (this.categories.length === 0) {
+        await this.$store.dispatch('category/getCategories')
+      }
+      this.initializeBreadcrumbsAndCategories()
+      this.setQuery()
+      if (this.documents.length === 0) {
+        await Promise.all([this.loadData(), this.getAdvertisements('list')])
       }
     }
-
-    const titles = []
-    breadcrumbs.forEach((x) => {
-      titles.push(x.title)
-    })
-    this.title = titles.join(' · ')
-
-    // 查找当前最后一个面包屑导航的子分类
-    let categoryChildren = []
-    if (breadcrumbs.length > 0) {
-      categoryChildren = this.categories.filter((x) => {
-        if (
-          this.settings.display &&
-          this.settings.display.hide_category_without_document
-        ) {
-          return (
-            x.parent_id === breadcrumbs[breadcrumbs.length - 1].id &&
-            x.doc_count > 0 &&
-            !x.type
-          )
-        }
-        return x.parent_id === breadcrumbs[breadcrumbs.length - 1].id
-      })
-    }
-
-    if (
-      categoryChildren.length === 0 &&
-      (!this.$route.params.id || this.$route.params.id === '0')
-    ) {
-      this.title = '全部文档'
-      categoryChildren = this.categories.filter((x) => {
-        if (
-          this.settings.display &&
-          this.settings.display.hide_category_without_document
-        ) {
-          return x.doc_count > 0 && !x.type && !x.parent_id
-        }
-        return !x.type && !x.parent_id
-      })
-    }
-
-    this.breadcrumbs = breadcrumbs
-    this.categoryChildren = categoryChildren
-    this.setQuery()
-    Promise.all([this.loadData(), this.getAdvertisements('list')])
   },
   mounted() {
     this.$nextTick(() => {
@@ -413,6 +376,66 @@ export default {
   },
   methods: {
     ...mapGetters('category', ['getCategories']),
+    initializeBreadcrumbsAndCategories() {
+      const breadcrumbs = []
+      let category = { siblings: [], ...this.categoryMap[this.categoryId] }
+      if (category.id) {
+        // 查询当前分类的兄弟分类
+        category.siblings = this.filterCategorySiblings(category)
+        breadcrumbs.push(category)
+        while (category.parent_id) {
+          // 查询当前分类的父级分类的兄弟分类
+          category = { siblings: [], ...this.categoryMap[category.parent_id] }
+          if (category.id) {
+            category.siblings = this.filterCategorySiblings(category)
+            breadcrumbs.splice(0, 0, category)
+          }
+        }
+      }
+
+      const titles = []
+      breadcrumbs.forEach((x) => {
+        titles.push(x.title)
+      })
+      this.title = titles.join(' · ')
+
+      // 查找当前最后一个面包屑导航的子分类
+      let categoryChildren = []
+      if (breadcrumbs.length > 0) {
+        categoryChildren = this.categories.filter((x) => {
+          if (
+            this.settings.display &&
+            this.settings.display.hide_category_without_document
+          ) {
+            return (
+              x.parent_id === breadcrumbs[breadcrumbs.length - 1].id &&
+              x.doc_count > 0 &&
+              !x.type
+            )
+          }
+          return x.parent_id === breadcrumbs[breadcrumbs.length - 1].id
+        })
+      }
+
+      if (
+        categoryChildren.length === 0 &&
+        (!this.$route.params.id || this.$route.params.id === '0')
+      ) {
+        this.title = '全部文档'
+        categoryChildren = this.categories.filter((x) => {
+          if (
+            this.settings.display &&
+            this.settings.display.hide_category_without_document
+          ) {
+            return x.doc_count > 0 && !x.type && !x.parent_id
+          }
+          return !x.type && !x.parent_id
+        })
+      }
+
+      this.breadcrumbs = breadcrumbs
+      this.categoryChildren = categoryChildren
+    },
     filterTree(value, data) {
       if (!value) return true
       return data.title.toLowerCase().includes(value.toLowerCase())
@@ -728,6 +751,7 @@ export default {
       width: 100%;
       font-size: 14px;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       height: 48px;
       line-height: 160%;
       padding-top: 8px;
