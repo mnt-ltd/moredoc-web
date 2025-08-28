@@ -214,7 +214,7 @@ export default {
       immediate: true,
     },
   },
-  async created() {
+  async fetch() {
     await Promise.all([this.getRecommendArticles()])
   },
   methods: {

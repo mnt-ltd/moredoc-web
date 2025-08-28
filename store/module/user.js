@@ -1,4 +1,5 @@
 import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
 import {
   login,
   getUser,
@@ -43,13 +44,19 @@ export const user = {
     },
     setToken(state, token) {
       state.token = token
+      if (process.client) {
+        Cookies.set('token', token, { expires: 365 })
+      }
     },
     logout(state) {
       state.user = {}
       state.token = ''
       state.permissions = []
       state.allowPages = []
-      localStorage.clear()
+      Cookies.remove('token')
+      // if (process.client) {
+      //   localStorage.clear()
+      // }
     },
     setPermissions(state, permissions) {
       state.permissions = permissions
@@ -221,19 +228,35 @@ export const user = {
       }
       return res
     },
-    checkAndRefreshUser({ commit, state }) {
+    async checkAndRefreshUser({ commit, state, dispatch }) {
       try {
-        const moredoc = JSON.parse(localStorage.getItem('moredoc'))
-        if (state.token !== moredoc.user.token) {
-          // 以 localStorage 存储的信息为准
-          console.log('exec checkAndRefreshUser')
-          commit('setUser', moredoc.user.user || {})
-          commit('setToken', moredoc.user.token || '')
-          commit('setPermissions', moredoc.user.permissions || [])
-          commit('setAllowPages', moredoc.user.allowPages || [])
+        const token = state.token || Cookies.get('token') || ''
+        const user = state.user || { id: 0 }
+
+        // 如果有token但没有用户信息，或者token不匹配，则需要重新获取
+        if (token && (!user.id || state.token !== token)) {
+          if (state.token !== token) {
+            commit('setToken', token)
+          }
+
+          await Promise.all([
+            // 重新获取用户信息
+            dispatch('getUser'),
+            dispatch('getUserGroups'),
+            dispatch('getUserPermissions'),
+          ])
         }
       } catch (error) {
-        console.log(error)
+        // 如果获取失败，清除无效的token
+        if (error.response && error.response.status === 401) {
+          commit('logout')
+        }
+      }
+    },
+    // 从cookie中设置token（服务端用）
+    setTokenFromCookie({ commit }, token) {
+      if (token) {
+        commit('setToken', token)
       }
     },
   },
@@ -242,7 +265,7 @@ export const user = {
       return state.user || { id: 0 }
     },
     token(state) {
-      return state.token || ''
+      return state.token || Cookies.get('token') || ''
     },
     permissions(state) {
       return state.permissions || []

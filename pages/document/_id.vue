@@ -126,9 +126,9 @@
               </div>
             </h1>
             <el-skeleton v-else animated>
-              <template slot="template"
-                ><el-skeleton-item variant="h1" style="width: 70%"
-              /></template>
+              <template #template>
+                <el-skeleton-item variant="h1" style="width: 70%" />
+              </template>
             </el-skeleton>
             <el-breadcrumb separator-class="el-icon-arrow-right">
               <el-breadcrumb-item>
@@ -220,7 +220,6 @@
               v-html="item.content"
             ></div>
           </template>
-
           <el-descriptions
             v-if="settings.display.show_document_descriptions"
             class="document-descriptions"
@@ -300,7 +299,7 @@
           </el-descriptions>
           <div ref="docPages" class="doc-pages" @contextmenu.prevent>
             <el-skeleton v-if="!document.id" animated>
-              <template slot="template">
+              <template #template>
                 <div style="background-color: #f6f6f6; padding: 5px">
                   <el-skeleton-item
                     variant="image"
@@ -724,7 +723,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import QRCode from 'qrcodejs2' // 引入qrcode
 import { createOrder } from '~/api/order'
 import DocumentSimpleList from '~/components/DocumentSimpleList.vue'
 import {
@@ -758,9 +756,24 @@ export default {
       docs: [],
       document: {
         id: 0,
+        title: '',
         score: 4.0,
+        pages: 0,
+        preview: 0,
+        width: 800,
+        height: 600,
+        icon: 'pdf',
+        recommend_at: '',
+        size: 0,
+        download_count: 0,
+        view_count: 0,
+        comment_count: 0,
+        favorite_count: 0,
+        price: 0,
+        user_id: 0,
         user: {
           id: 0,
+          username: '',
         },
         attachment: {
           hash: '',
@@ -771,11 +784,8 @@ export default {
       score: null,
       disabledScore: false,
       downloading: false,
-      documentId:
-        this.$route.params.id.length === 16
-          ? 0
-          : parseInt(this.$route.params.id),
-      documentUUID: this.$route.params.id || '',
+      documentId: 0,
+      documentUUID: '',
       pages: [],
       pagesPerRead: 10,
       pageHeight: 0,
@@ -801,11 +811,25 @@ export default {
       downloadVisible: false,
       descriptions: [],
       orderNO: '',
+      advertisements: [],
       updateDocumentVisible: false,
       metaDescription: '',
       showUpdating: false,
-      origin: location.origin,
+      origin: '',
     }
+  },
+  async fetch() {
+    // 初始化路由参数
+    const routeId = this.$route.params.id || ''
+    this.documentUUID = routeId
+    this.documentId = routeId.length === 16 ? 0 : parseInt(routeId)
+
+    await this.getDocument()
+    const requests = [this.getRelatedDocuments(), this.getDocumentScore()]
+    if (this.user.id) {
+      requests.push(this.getFavorite())
+    }
+    await Promise.all(requests)
   },
   head() {
     return {
@@ -888,19 +912,8 @@ export default {
       )
     },
   },
-  async created() {
-    await this.getDocument()
-    const requests = [
-      this.getRelatedDocuments(),
-      this.getDocumentScore(),
-      this.getAdvertisements('document'),
-    ]
-    if (this.user.id) {
-      requests.push(this.getFavorite())
-    }
-    Promise.all(requests)
-  },
-  mounted() {
+  async mounted() {
+    await this.calcPageSize()
     window.addEventListener('scroll', this.handleScroll)
     window.addEventListener('resize', this.handleResize)
     try {
@@ -909,7 +922,7 @@ export default {
         this.handleFullscreenScroll
       )
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
     window.addEventListener('fullscreenchange', this.fullscreenchange)
   },
@@ -1092,9 +1105,17 @@ export default {
       doc.icon = getIcon(doc.ext)
       this.pages = pages
       this.document = doc
-      this.pageWidth = this.$refs.docPages.offsetWidth
-      this.pageHeight =
-        (this.$refs.docPages.offsetWidth / doc.width) * doc.height
+
+      // 只在客户端设置页面尺寸
+      if (process.client && this.$refs.docPages) {
+        this.pageWidth = this.$refs.docPages.offsetWidth
+        this.pageHeight =
+          (this.$refs.docPages.offsetWidth / doc.width) * doc.height
+      } else {
+        // 服务端渲染时使用默认尺寸
+        this.pageWidth = 800
+        this.pageHeight = (800 / doc.width) * doc.height
+      }
 
       if (doc.status !== 2) {
         // 2 为文档已转换成功，不需要展示提示
@@ -1507,7 +1528,12 @@ export default {
         //   this.$message.error(res.data.message)
       }
     },
-    genQrcode() {
+    async genQrcode() {
+      if (!process.client) return
+
+      // 动态导入 QRCode 库
+      const QRCode = (await import('qrcodejs2')).default
+
       // 把之前可能存在的二维码清空
       this.$refs.qrcode.innerHTML =
         '<div style="margin-bottom:10px">手机扫码，畅享阅读</div>'

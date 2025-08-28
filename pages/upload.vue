@@ -400,7 +400,6 @@ import { uploadDocument } from '~/api/attachment'
 export default {
   data() {
     return {
-      canIUploadDocument: false,
       document: {
         category_id: [],
         price: 0,
@@ -488,14 +487,12 @@ export default {
     ...mapGetters('user', ['token', 'user', 'groups']),
     ...mapGetters('category', ['categoryTrees']),
     ...mapGetters('setting', ['settings']),
+    canIUploadDocument() {
+      return this.groups.some((group) => group.enable_upload)
+    },
   },
   created() {
     this.getCategories()
-    this.groups.forEach((group) => {
-      if (group.enable_upload) {
-        this.canIUploadDocument = true
-      }
-    })
     try {
       this.maxDocumentSize =
         (this.settings.security.max_document_size || 50) * 1024 * 1024
@@ -595,8 +592,10 @@ export default {
           this.loading = true
           try {
             // 取消之前上传的请求，不然一直pending，新请求会没法发送
-            window.uploadDocumentCancel.map((c) => c())
-            window.uploadDocumentCancel = []
+            if (process.client && window.uploadDocumentCancel) {
+              window.uploadDocumentCancel.map((c) => c())
+              window.uploadDocumentCancel = []
+            }
           } catch (error) {}
 
           // chrome 等浏览器同一域名下最多只能同时发起 6 个请求，所以这里将 fileList 拆分成多个数组，每个数组的长度为 2，以便控制并发，每次只同时上传 2 个文件

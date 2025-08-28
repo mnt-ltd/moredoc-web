@@ -39,7 +39,6 @@
   </div>
 </template>
 <script>
-import QRCode from 'qrcodejs2' // 引入qrcode
 export default {
   props: {
     title: {
@@ -49,15 +48,23 @@ export default {
   },
   computed: {
     currentURL() {
-      return window.location.href
+      if (process.client) {
+        return window.location.href
+      }
+      return ''
     },
   },
   mounted() {
     this.qrcode()
   },
   methods: {
-    qrcode() {
-      console.log('qrcode')
+    async qrcode() {
+      if (!process.client) return
+
+      // 动态导入 QRCode 库
+      const QRCode = (await import('qrcodejs2')).default
+
+      // console.log('qrcode')
       // 把之前可能存在的二维码清空
       this.$refs.qrcode.innerHTML =
         '<div class="mgb-5px">打开微信 扫码分享</div>'
