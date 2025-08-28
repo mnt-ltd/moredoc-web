@@ -708,16 +708,19 @@
         />
       </div>
     </el-drawer>
-    <WxShare
-      v-if="document.id > 0"
-      :share-data="{
-        title: document.title,
-        imgUrl: document.attachment.hash
-          ? `${origin}/view/cover/${document.attachment.hash}`
-          : '',
-        desc: document.description || document.title,
-      }"
-    />
+
+    <client-only>
+      <WxShare
+        v-if="document.id > 0"
+        :share-data="{
+          title: document.title,
+          imgUrl: document.attachment.hash
+            ? `${origin}/view/cover/${document.attachment.hash}`
+            : '',
+          desc: document.description || document.title,
+        }"
+      />
+    </client-only>
   </div>
 </template>
 

@@ -266,14 +266,16 @@
         </el-card>
       </el-col>
     </el-row>
-    <WxShare
-      v-if="article.id > 0"
-      :share-data="{
-        title: article.title,
-        imgUrl: shareImage,
-        desc: article.description,
-      }"
-    />
+    <client-only>
+      <WxShare
+        v-if="article.id > 0"
+        :share-data="{
+          title: article.title,
+          imgUrl: shareImage,
+          desc: article.description,
+        }"
+      />
+    </client-only>
   </div>
 </template>
 
@@ -412,6 +414,7 @@ export default {
       this.getRelatedArticles()
 
       this.$nextTick(() => {
+        if (!process.client) return
         setTimeout(() => {
           try {
             // 如果是移动端，则直接返回
