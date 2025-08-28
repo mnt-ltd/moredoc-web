@@ -469,7 +469,7 @@ export default {
   },
   head() {
     return {
-      title: '上传文档 - ' + this.settings.system.title || 'MOREDOC · 魔豆文库',
+      title: '上传文档 - ' + this.settings.system.title,
       meta: [
         {
           hid: 'keywords',
