@@ -7,7 +7,7 @@ import store from '~/store/index'
 const getBaseURL = () => {
   // 在服务端渲染时，使用完整的后端 URL
   if (process.server) {
-    return 'http://127.0.0.1:8880'
+    return process.env.API_BASE_URL || ''
   }
   // 在客户端，使用相对路径（通过代理）
   return ''
