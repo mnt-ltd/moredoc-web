@@ -928,6 +928,7 @@ export default {
       // console.log(error)
     }
     window.addEventListener('fullscreenchange', this.fullscreenchange)
+    this.genQrcode()
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleScroll)
@@ -1177,9 +1178,6 @@ export default {
           name: 'description',
         },
       ]
-      this.$nextTick(() => {
-        this.genQrcode()
-      })
     },
     handleResize() {
       this.calcPageSize()
