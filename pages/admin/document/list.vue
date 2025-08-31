@@ -72,6 +72,24 @@
             </el-tooltip>
           </el-form-item>
           <el-form-item>
+            <el-dropdown
+              :disabled="selectedRow.length === 0"
+              @command="batchRecommend"
+            >
+              <el-button
+                type="warning"
+                icon="el-icon-s-check"
+                :disabled="selectedRow.length === 0"
+              >
+                批量推荐 <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="1">设为推荐</el-dropdown-item>
+                <el-dropdown-item :command="0">取消推荐</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-form-item>
+          <el-form-item>
             <el-tooltip
               class="item"
               effect="dark"
@@ -258,6 +276,7 @@ import {
   setDocumentReconvert,
   checkDocument,
   downloadDocumentToBeReviewed,
+  setDocumentRecommend,
 } from '~/api/document'
 import { listLanguage } from '~/api/language'
 import TableListV2 from '~/components/TableListV2.vue'
@@ -494,6 +513,32 @@ export default {
         })
         .catch(() => {})
     },
+    batchRecommend(cmd) {
+      const tips = cmd === 1 ? '设为推荐' : '取消推荐'
+      const typ = cmd === 1 ? 2 : 0
+      this.$confirm(
+        `您确定要将选中的【${this.selectedRow.length}个】文档【${tips}】吗？请仔细检查，以免误操作。`,
+        '温馨提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(async () => {
+          const res = await setDocumentRecommend({
+            id: this.selectedRow.map((item) => item.id),
+            type: typ,
+          })
+          if (res.status === 200) {
+            this.$message.success('操作成功')
+            this.listDocument()
+            return
+          }
+          this.$message.error(res.data.message || '操作失败')
+        })
+        .catch(() => {})
+    },
     batchUpdateDocumentsCategory() {
       this.categoryDocuments = this.selectedRow
       this.formDocumentsCategoryVisible = true
@@ -527,7 +572,6 @@ export default {
       this.selectedRow = rows
     },
     checkDocument(cmd) {
-      console.log(cmd)
       this.$confirm(
         `您确定要将选中的【${this.selectedRow.length}个】文档状态变更为【${this.documentStatusOptions[cmd].label}】吗？请仔细检查，以免误操作。`,
         '温馨提示',
@@ -544,7 +588,7 @@ export default {
           })
           if (res.status === 200) {
             this.$message.success('审批成功')
-            this.listComment()
+            this.listDocument()
             return
           }
           this.$message.error(res.data.message || '审批失败')
