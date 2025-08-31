@@ -278,7 +278,6 @@
                   field="price"
                   :title="`💰 售价(${settings.system.credit_name || '魔豆'})`"
                   width="130"
-                  sortable
                 >
                   <template #default="{ row }">
                     <el-input-number
@@ -344,35 +343,38 @@
                 {{ message }}
               </div>
             </el-alert>
-
-            <!-- 上传按钮 -->
-            <div class="upload-actions">
-              <el-button
-                v-if="canIUploadDocument"
-                type="primary"
-                size="large"
-                :loading="loading"
-                class="upload-btn"
-                @click="onSubmit"
-              >
-                <i class="el-icon-upload2"></i>
-                <span v-if="loading">请勿刷新页面，文档上传中...</span>
-                <span v-else>确定上传 {{ fileList.length }} 个文件</span>
-              </el-button>
-              <el-button
-                v-else
-                type="primary"
-                size="large"
-                icon="el-icon-lock"
-                disabled
-                class="upload-btn"
-              >
-                <span v-if="user.id > 0">您暂无权限上传文档</span>
-                <span v-else>您未登录，请先登录</span>
-              </el-button>
-            </div>
           </div>
-
+          <!-- 上传按钮 -->
+          <div class="upload-actions">
+            <el-button
+              v-if="canIUploadDocument"
+              type="primary"
+              size="large"
+              :loading="loading"
+              class="upload-btn"
+              :disabled="fileList.length === 0 || loading"
+              @click="onSubmit"
+            >
+              <i class="el-icon-upload2"></i>
+              <span v-if="loading">请勿刷新页面，文档上传中...</span>
+              <span v-else
+                >确定上传<span v-if="fileList.length > 0">
+                  {{ fileList.length }} 个文档</span
+                ></span
+              >
+            </el-button>
+            <el-button
+              v-else
+              type="primary"
+              size="large"
+              icon="el-icon-lock"
+              disabled
+              class="upload-btn"
+            >
+              <span v-if="user.id > 0">您暂无权限上传文档</span>
+              <span v-else>您未登录，请先登录再上传</span>
+            </el-button>
+          </div>
           <!-- 帮助提示 -->
           <div class="upload-section help-section">
             <el-collapse>
@@ -573,7 +575,9 @@ export default {
         (this.allowExt.length > 8 ? '等' : '')
       )
     },
-
+    canIUploadDocument() {
+      return this.groups.some((group) => group.enable_upload)
+    },
     // 当前步骤计算
     currentStepComputed() {
       if (this.fileList.length === 0) {
