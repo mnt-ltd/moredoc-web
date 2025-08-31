@@ -121,6 +121,17 @@
                     </el-checkbox>
                   </el-form-item>
                 </el-col>
+                <el-col v-if="settings.vip.enable" :lg="6" :md="12" :sm="24">
+                  <el-form-item prop="is_vip">
+                    <el-checkbox
+                      v-model="isVIP"
+                      :disabled="loading"
+                      @change="changeVIP"
+                    >
+                      👑 加入VIP文档
+                    </el-checkbox>
+                  </el-form-item>
+                </el-col>
                 <el-col :lg="6" :md="12" :sm="24">
                   <el-form-item>
                     <el-checkbox
@@ -190,9 +201,7 @@
                 stripe
                 border="inner"
                 :column-config="{ resizable: true }"
-                :row-config="{
-                  height: setKeywordsAndDescription ? 130 : 80,
-                }"
+                :row-config="{ height: setKeywordsAndDescription ? 130 : 80 }"
                 class="enhanced-file-table"
               >
                 <vxe-column type="seq" width="60">
@@ -259,6 +268,15 @@
                         <span class="file-size">{{
                           formatBytes(row.size)
                         }}</span>
+                        <el-checkbox
+                          v-if="settings.vip.enable"
+                          v-model="row.is_vip"
+                          class="is-vip-checkbox"
+                          :disabled="loading"
+                          size="small"
+                        >
+                          👑 VIP
+                        </el-checkbox>
                         <el-button
                           size="mini"
                           type="text"
@@ -850,6 +868,7 @@ export default {
         return acc
       }, {})
     },
+    // 切换VIP状态
     changeVIP() {
       this.fileList.forEach((file) => {
         file.is_vip = this.isVIP
@@ -974,6 +993,14 @@ export default {
           font-size: 12px;
         }
 
+        .is-vip-checkbox {
+          margin: 0;
+          .el-checkbox__label {
+            padding-left: 5px;
+            font-size: 12px;
+          }
+        }
+
         .remove-btn {
           color: #f56c6c;
           font-size: 12px;
@@ -1096,6 +1123,12 @@ export default {
   .language-select .el-input {
     width: 110px;
   }
+  .is-vip-checkbox {
+    margin: 0 10px;
+    .el-checkbox__label {
+      padding-left: 5px;
+    }
+  }
   .vxe-table {
     .el-input-number {
       width: 100%;
@@ -1197,6 +1230,10 @@ export default {
     }
 
     .enhanced-upload {
+      .el-upload-dragger {
+        height: 150px;
+      }
+
       .upload-content {
         padding: 30px 15px;
 
