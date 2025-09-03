@@ -384,12 +384,14 @@
                       <div class="stat-name">文档</div>
                     </div>
                     <div class="stat-col">
-                      <div class="stat-value">{{ user.credit || 0 }}</div>
-                      <div class="stat-name">积分</div>
+                      <div class="stat-value">
+                        {{ user.article_count || 0 }}
+                      </div>
+                      <div class="stat-name">文章</div>
                     </div>
                     <div class="stat-col">
-                      <div class="stat-value">{{ user.follow_count || 0 }}</div>
-                      <div class="stat-name">关注</div>
+                      <div class="stat-value">{{ user.credit_count || 0 }}</div>
+                      <div class="stat-name">积分</div>
                     </div>
                   </div>
                 </div>
@@ -466,7 +468,7 @@
             <aside class="latest-updates">
               <el-card shadow="never">
                 <div slot="header">
-                  <h3><i class="el-icon-time"></i> 最新更新</h3>
+                  <h3><i class="el-icon-time"></i> 最新文档</h3>
                 </div>
                 <div class="updates-list">
                   <div
@@ -1415,8 +1417,11 @@ $background-color: #f5f7fa;
           color: $text-primary;
           margin: 0 0 5px 0;
           overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
+          -webkit-box-orient: vertical;
+          line-height: 1.4;
         }
 
         .cdoc-pages {
