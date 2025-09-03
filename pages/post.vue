@@ -61,20 +61,6 @@
       <div v-if="canIPublish" class="content-grid">
         <!-- 表单容器 -->
         <div class="form-container">
-          <!-- 页面标题区域 -->
-          <div class="page-title-area">
-            <h1 class="page-title">
-              {{ article.id > 0 ? '编辑文章' : '发布文章' }}
-            </h1>
-            <p class="page-subtitle">
-              {{
-                article.id > 0
-                  ? '完善文章内容，让更多人受益'
-                  : '创作优质内容，分享你的知识和见解'
-              }}
-            </p>
-          </div>
-
           <FormArticle
             v-loading="loading"
             :init-article="article"
@@ -352,30 +338,6 @@ export default {
     grid-template-columns: 1fr 300px;
     gap: 20px;
     align-items: start;
-
-    .form-container {
-      // 页面标题区域 - 简洁版
-      .page-title-area {
-        margin-bottom: 32px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #f0f0f0;
-
-        .page-title {
-          font-size: 24px;
-          font-weight: 600;
-          color: #303133;
-          margin: 0 0 8px 0;
-          line-height: 1.3;
-        }
-
-        .page-subtitle {
-          font-size: 14px;
-          color: #909399;
-          margin: 0;
-          line-height: 1.5;
-        }
-      }
-    }
 
     .help-sidebar {
       position: sticky;

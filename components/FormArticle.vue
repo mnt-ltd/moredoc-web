@@ -590,9 +590,13 @@ export default {
 
 // 编辑器样式优化
 .editor-item {
+  margin-bottom: 0;
   ::v-deep .tox-tinymce {
     border-radius: 4px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
     border: 1px solid #dcdfe6;
+    border-top: 0;
     overflow: hidden;
   }
 
