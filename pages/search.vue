@@ -58,7 +58,7 @@
     </el-row>
     <div ref="searchBox" class="search-box">
       <el-row :gutter="20">
-        <el-col :span="4" class="logo hidden-xs-only">
+        <el-col :span="5" class="logo hidden-xs-only">
           <nuxt-link to="/" :title="settings.system.sitename"
             ><img
               :src="settings.system.logo || '/static/images/logo-empty.png'"
@@ -66,7 +66,7 @@
               :alt="settings.system.sitename"
           /></nuxt-link>
         </el-col>
-        <el-col :span="14" class="search-form">
+        <el-col :span="13" class="search-form">
           <el-input
             v-model="query.wd"
             class="search-input"
@@ -108,7 +108,7 @@
         </el-col>
       </template>
       <!-- 左侧过滤条件 -->
-      <el-col ref="searchLeft" :span="4" class="search-left hidden-xs-only">
+      <el-col ref="searchLeft" :span="5" class="search-left hidden-xs-only">
         <!-- 文档分类 -->
         <div class="filter-section">
           <h4>
@@ -141,10 +141,6 @@
               }"
             >
               <span class="option-text">{{ item.title }}</span>
-              <i
-                v-if="item.id == query.category_id"
-                class="el-icon-check option-check"
-              ></i>
             </nuxt-link>
           </div>
         </div>
@@ -180,10 +176,6 @@
               }"
             >
               <span class="option-text">{{ item.language }}</span>
-              <i
-                v-if="item.code == query.language"
-                class="el-icon-check option-check"
-              ></i>
             </nuxt-link>
           </div>
         </div>
@@ -214,14 +206,9 @@
                 :alt="`${item.label}文档`"
               />
               <span class="option-text">{{ item.label }}</span>
-              <i
-                v-if="item.value == query.ext"
-                class="el-icon-check option-check"
-              ></i>
             </nuxt-link>
           </div>
         </div>
-
         <!-- 清除筛选 -->
         <div v-if="hasActiveFilters()" class="filter-actions">
           <el-button
@@ -436,7 +423,7 @@
           </el-pagination>
         </el-card>
       </el-col>
-      <el-col v-if="keywords.length > 0" :span="6" class="search-right">
+      <el-col v-if="keywords.length > 0" :span="5" class="search-right">
         <div ref="searchRight" class="scroll">
           <el-card shadow="never">
             <div slot="header" class="clearfix">
@@ -969,7 +956,7 @@ export default {
       overflow: hidden;
     }
     .el-card__header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      // background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       font-weight: 600;
       font-size: 16px;
@@ -1039,31 +1026,17 @@ export default {
       }
       .filter-options {
         .filter-option {
-          display: flex;
+          display: inline-flex;
           align-items: center;
           justify-content: space-between;
-          padding: 8px 12px;
+          padding: 8px;
           font-size: 13px;
           text-decoration: none;
           border-radius: 4px;
           margin-bottom: 4px;
-          transition: all 0.2s ease;
-          border: 1px solid transparent;
           position: relative;
-          &:hover {
-            background-color: #f8f9fa;
-            border-color: #e9ecef;
-            transform: translateX(2px);
-          }
           &.el-link--primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white !important;
             font-weight: 500;
-            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
-            &:hover {
-              transform: translateX(2px) translateY(-1px);
-              box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
-            }
           }
           &.el-link--default {
             color: #5a6c7d;
@@ -1261,6 +1234,10 @@ export default {
       }
     }
   }
+}
+.filter-options {
+  max-height: 320px;
+  overflow: auto;
 }
 .header {
   display: flex;
