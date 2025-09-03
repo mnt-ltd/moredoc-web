@@ -7,6 +7,19 @@
       :model="article"
       class="article-form"
     >
+      <el-card
+        v-if="isAdmin || canICrawlArticle"
+        class="form-section"
+        shadow="never"
+      >
+        <template #header>
+          <div class="section-title">
+            <i class="el-icon-truck"></i>
+            <span>爬虫助手</span>
+          </div>
+        </template>
+        <FormCrawlArticle @success="crawlArticleSuccess"></FormCrawlArticle>
+      </el-card>
       <!-- 基础信息卡片 -->
       <el-card class="form-section" shadow="never">
         <template #header>

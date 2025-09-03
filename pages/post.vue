@@ -66,8 +66,9 @@
             :init-article="article"
             :category-trees="trees"
             :can-i-publish="canIPublish"
+            :can-i-crawl-article="canICrawlArticle"
             @success="success"
-          />
+          ></FormArticle>
         </div>
 
         <!-- 帮助信息侧边栏（桌面端显示） -->
