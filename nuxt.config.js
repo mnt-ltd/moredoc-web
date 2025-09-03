@@ -41,6 +41,7 @@ export default {
     { src: '@/plugins/tinymce', mode: 'client' },
     { src: '@/plugins/echarts', mode: 'client' },
     { src: '@/plugins/auth.client.js', mode: 'client' },
+    { src: '@/plugins/ssr-state-isolation.js', mode: 'server' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
