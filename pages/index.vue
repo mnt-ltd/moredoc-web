@@ -147,11 +147,11 @@
           <div v-loading="loadingRecommends" class="documents-container">
             <!-- Grid View -->
             <div v-if="viewMode === 'grid'" class="documents-grid">
-              <div
+              <nuxt-link
                 v-for="doc in recommendedDocuments"
                 :key="'rec-' + doc.id"
+                :to="`/document/${doc.uuid}`"
                 class="document-card"
-                @click="$router.push(`/document/${doc.uuid}`)"
               >
                 <div class="doc-cover">
                   <document-cover :document="doc" />
@@ -184,16 +184,16 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </nuxt-link>
             </div>
 
             <!-- List View -->
             <div v-else class="documents-list">
-              <div
+              <nuxt-link
                 v-for="doc in recommendedDocuments"
                 :key="'list-' + doc.id"
+                :to="`/document/${doc.uuid}`"
                 class="document-list-item"
-                @click="$router.push(`/document/${doc.uuid}`)"
               >
                 <div class="list-cover">
                   <document-cover :document="doc" :width="80" />
@@ -228,7 +228,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </nuxt-link>
             </div>
           </div>
         </section>
@@ -247,11 +247,11 @@
           </div>
 
           <div class="categories-grid">
-            <div
+            <nuxt-link
               v-for="category in featuredCategories"
               :key="'cat-' + category.id"
+              :to="`/category/${category.id}`"
               class="category-card"
-              @click="$router.push(`/category/${category.id}`)"
             >
               <div class="category-icon">
                 <img
@@ -268,7 +268,7 @@
               <div class="category-arrow">
                 <i class="el-icon-arrow-right"></i>
               </div>
-            </div>
+            </nuxt-link>
           </div>
         </section>
 
@@ -290,11 +290,11 @@
                 </nuxt-link>
               </div>
               <div class="articles-grid">
-                <article
+                <nuxt-link
                   v-for="article in latestArticles"
                   :key="'art-' + article.id"
+                  :to="`/article/${article.identifier}`"
                   class="article-card"
-                  @click="$router.push(`/article/${article.id}`)"
                 >
                   <div class="article-cover">
                     <img
@@ -321,7 +321,7 @@
                       </span>
                     </div>
                   </div>
-                </article>
+                </nuxt-link>
               </div>
             </section>
 
@@ -343,11 +343,11 @@
                 </nuxt-link>
               </div>
               <div class="category-docs-grid">
-                <div
+                <nuxt-link
                   v-for="doc in categoryDoc.document"
                   :key="'cdoc-' + doc.id"
+                  :to="`/document/${doc.uuid}`"
                   class="category-doc-item"
-                  @click="$router.push(`/document/${doc.uuid}`)"
                 >
                   <div class="cdoc-cover">
                     <document-cover :document="doc" :width="60" />
@@ -356,7 +356,7 @@
                     <h5 class="cdoc-title">{{ doc.title }}</h5>
                     <p class="cdoc-pages">{{ doc.pages || 0 }} 页</p>
                   </div>
-                </div>
+                </nuxt-link>
               </div>
             </section>
           </el-col>
@@ -843,6 +843,12 @@ $background-color: #f5f7fa;
   :deep(.el-card) {
     border: 1px solid #ebeef5;
   }
+  a {
+    text-decoration: none;
+  }
+  h3 {
+    margin: 0;
+  }
 }
 
 // Hero Section
@@ -1011,7 +1017,7 @@ $background-color: #f5f7fa;
 
 // Featured Categories
 .featured-categories {
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 
   .categories-grid {
     display: grid;
@@ -1077,7 +1083,7 @@ $background-color: #f5f7fa;
 
 // Featured Documents
 .featured-documents {
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 
   .documents-container {
     min-height: 400px;
@@ -1252,7 +1258,7 @@ $background-color: #f5f7fa;
 
 // Content Section
 .content-section {
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
 // Latest Articles
