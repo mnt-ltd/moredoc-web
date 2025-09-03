@@ -453,12 +453,10 @@
                 </div>
                 <div class="guest-actions">
                   <nuxt-link to="/login">
-                    <el-button type="primary" style="width: 48%"
-                      >登录</el-button
-                    >
+                    <el-button type="primary">登录</el-button>
                   </nuxt-link>
                   <nuxt-link to="/register">
-                    <el-button style="width: 48%">注册</el-button>
+                    <el-button>注册</el-button>
                   </nuxt-link>
                 </div>
               </el-card>
@@ -979,7 +977,7 @@ $background-color: #f5f7fa;
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 40px 20px 0;
 }
 
 // Section Headers
@@ -1260,6 +1258,9 @@ $background-color: #f5f7fa;
 // Content Section
 .content-section {
   margin-bottom: 30px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 }
 
 // Latest Articles
