@@ -6,8 +6,15 @@ export default async function ({ store, route, redirect, $cookies }) {
       redirect('/')
       return
     }
-    // 如果store中没有token，设置一下
-    if (!store.getters['user/token']) {
+
+    // 检查 store 中的 token 是否与请求中的 token 一致
+    const storeToken = store.getters['user/token']
+    if (storeToken && storeToken !== token) {
+      // 如果不一致，清空状态并重新设置
+      store.commit('user/logout')
+      store.dispatch('user/setTokenFromCookie', token)
+    } else if (!storeToken) {
+      // 如果store中没有token，设置一下
       store.dispatch('user/setTokenFromCookie', token)
     }
     return

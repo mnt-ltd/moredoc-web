@@ -8,6 +8,7 @@ import {
   getUserPermissions,
   register,
   listUserGroup,
+  createContextualAPI,
 } from '~/api/user'
 import { permissionsToTree } from '~/utils/permission'
 export const user = {
@@ -40,6 +41,7 @@ export const user = {
     },
     setToken(state, token) {
       state.token = token
+      // 只在客户端设置 Cookie
       if (process.client) {
         Cookies.set('token', token, { expires: 365 })
       }
@@ -49,7 +51,10 @@ export const user = {
       state.token = ''
       state.permissions = []
       state.allowPages = []
-      Cookies.remove('token')
+      // 只在客户端删除 Cookie
+      if (process.client) {
+        Cookies.remove('token')
+      }
       // if (process.client) {
       //   localStorage.clear()
       // }
@@ -63,15 +68,33 @@ export const user = {
   },
   actions: {
     // 获取用户信息
-    async getUser({ commit }) {
-      const res = await getUser()
+    async getUser({ commit }, context) {
+      let res
+      if (process.server && context) {
+        // 服务端使用上下文API
+        const contextAPI = createContextualAPI(context)
+        res = await contextAPI.getUser()
+      } else {
+        // 客户端使用普通API
+        res = await getUser()
+      }
+
       if (res.status === 200) {
         commit('setUser', res.data)
       }
       return res
     },
-    async getUserGroups({ commit }) {
-      const res = await listUserGroup()
+    async getUserGroups({ commit }, context) {
+      let res
+      if (process.server && context) {
+        // 服务端使用上下文API
+        const contextAPI = createContextualAPI(context)
+        res = await contextAPI.listUserGroup()
+      } else {
+        // 客户端使用普通API
+        res = await listUserGroup()
+      }
+
       if (res.status === 200) {
         commit('setGroups', res.data.group || [])
       }
@@ -130,8 +153,17 @@ export const user = {
       commit('logout')
       return res
     },
-    async getUserPermissions({ commit }) {
-      const res = await getUserPermissions()
+    async getUserPermissions({ commit }, context) {
+      let res
+      if (process.server && context) {
+        // 服务端使用上下文API
+        const contextAPI = createContextualAPI(context)
+        res = await contextAPI.getUserPermissions()
+      } else {
+        // 客户端使用普通API
+        res = await getUserPermissions()
+      }
+
       if (res.status === 200) {
         commit('setPermissions', res.data.permission)
         const allowPages = []
@@ -144,7 +176,8 @@ export const user = {
           })
         } catch (error) {}
         commit('setAllowPages', allowPages)
-      } else {
+      } else if (process.client) {
+        // 只在客户端显示错误信息
         Message({
           type: 'error',
           message: res.data.message || '获取权限失败',
