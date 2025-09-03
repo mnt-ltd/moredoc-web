@@ -107,112 +107,255 @@
           <div v-html="item.content"></div>
         </el-col>
       </template>
-      <el-col ref="searchMain" :span="18" class="search-main">
+      <!-- 左侧过滤条件 -->
+      <el-col ref="searchLeft" :span="4" class="search-left hidden-xs-only">
+        <!-- 文档分类 -->
+        <div class="filter-section">
+          <h4>
+            <i class="el-icon-folder-opened"></i>
+            文档分类
+          </h4>
+          <div class="filter-options">
+            <nuxt-link
+              v-for="item in [
+                { id: 0, title: '全部分类' },
+                ...categoryTrees.filter(
+                  (item) =>
+                    (!searchType && !item.type) ||
+                    (searchType && item.type == searchType)
+                ),
+              ]"
+              :key="'cate-' + item.id"
+              class="el-link filter-option"
+              :class="
+                item.id == query.category_id
+                  ? 'el-link--primary active'
+                  : 'el-link--default'
+              "
+              :to="{
+                query: {
+                  ...$route.query,
+                  category_id: item.id,
+                  page: 1,
+                },
+              }"
+            >
+              <span class="option-text">{{ item.title }}</span>
+              <i
+                v-if="item.id == query.category_id"
+                class="el-icon-check option-check"
+              ></i>
+            </nuxt-link>
+          </div>
+        </div>
+
+        <!-- 文档语言 -->
+        <div
+          v-if="(settings.language || []).length > 0 && !searchType"
+          class="filter-section"
+        >
+          <h4>
+            <i class="el-icon-s-flag"></i>
+            文档语言
+          </h4>
+          <div class="filter-options">
+            <nuxt-link
+              v-for="item in [
+                { code: '', language: '全部语言' },
+                ...(settings.language || []),
+              ]"
+              :key="'lang-' + item.code"
+              class="el-link filter-option"
+              :class="
+                item.code == query.language
+                  ? 'el-link--primary active'
+                  : 'el-link--default'
+              "
+              :to="{
+                query: {
+                  ...$route.query,
+                  language: item.code,
+                  page: 1,
+                },
+              }"
+            >
+              <span class="option-text">{{ item.language }}</span>
+              <i
+                v-if="item.code == query.language"
+                class="el-icon-check option-check"
+              ></i>
+            </nuxt-link>
+          </div>
+        </div>
+
+        <!-- 文档格式 -->
+        <div v-if="!searchType" class="filter-section">
+          <h4>
+            <i class="el-icon-document"></i>
+            文档格式
+          </h4>
+          <div class="filter-options">
+            <nuxt-link
+              v-for="item in searchExts"
+              :key="'se-' + item.value"
+              class="el-link filter-option"
+              :class="
+                item.value == query.ext
+                  ? 'el-link--primary active'
+                  : 'el-link--default'
+              "
+              :to="{
+                query: { ...$route.query, ext: item.value, page: 1 },
+              }"
+            >
+              <img
+                v-if="item.value != 'all' && item.value != ''"
+                :src="`/static/images/${item.value}_24.png`"
+                :alt="`${item.label}文档`"
+              />
+              <span class="option-text">{{ item.label }}</span>
+              <i
+                v-if="item.value == query.ext"
+                class="el-icon-check option-check"
+              ></i>
+            </nuxt-link>
+          </div>
+        </div>
+
+        <!-- 清除筛选 -->
+        <div v-if="hasActiveFilters()" class="filter-actions">
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-refresh-left"
+            class="clear-filters-btn"
+            @click="clearAllFilters"
+          >
+            清除所有筛选
+          </el-button>
+        </div>
+      </el-col>
+
+      <el-col ref="searchMain" :span="14" class="search-main">
         <el-card v-loading="loading" shadow="never">
-          <div slot="header">
+          <div slot="header" class="header">
+            <div class="search-tips hidden-xs-only">
+              本次搜索耗时
+              <span class="el-link el-link--danger">{{
+                spend || '0.000'
+              }}</span>
+              秒，为您找到相关结果约
+              <span class="el-link el-link--danger">{{ total || 0 }}</span> 个.
+            </div>
             <div class="search-filter">
-              <el-dropdown :show-timeout="showTimeout">
-                <el-button type="text" :size="filterSize">
-                  {{ filterCategoryName(query.category_id)
-                  }}<i class="el-icon-arrow-down el-icon--right"></i>
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    v-for="item in [
-                      { id: 0, title: '全部分类' },
-                      ...categoryTrees.filter(
-                        (item) =>
-                          (!searchType && !item.type) ||
-                          (searchType && item.type == searchType)
-                      ),
-                    ]"
-                    :key="'cate-' + item.id"
-                    :value="item.id"
-                  >
-                    <nuxt-link
-                      class="el-link el-link--default"
-                      :class="
-                        item.id == query.category_id ? 'el-link--primary' : ''
-                      "
-                      :to="{
-                        query: {
-                          ...$route.query,
-                          category_id: item.id,
-                          page: 1,
-                        },
-                      }"
-                      >{{ item.title }}</nuxt-link
+              <!-- 移动端显示所有筛选条件 -->
+              <div class="hidden-sm-and-up mobile-filters">
+                <el-dropdown :show-timeout="showTimeout">
+                  <el-button type="text" :size="filterSize">
+                    {{ filterCategoryName(query.category_id)
+                    }}<i class="el-icon-arrow-down el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                      v-for="item in [
+                        { id: 0, title: '全部分类' },
+                        ...categoryTrees.filter(
+                          (item) =>
+                            (!searchType && !item.type) ||
+                            (searchType && item.type == searchType)
+                        ),
+                      ]"
+                      :key="'cate-' + item.id"
+                      :value="item.id"
                     >
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-              <el-dropdown
-                v-if="(settings.language || []).length > 0 && !searchType"
-                :show-timeout="showTimeout"
-              >
-                <el-button type="text" :size="filterSize">
-                  {{ filterLanguageName(query.language) }}
-                  <i class="el-icon-arrow-down el-icon--right"></i>
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    v-for="item in [
-                      { code: '', language: '全部语言' },
-                      ...(settings.language || []),
-                    ]"
-                    :key="'lang-' + item.code"
-                    :value="item.code"
-                  >
-                    <nuxt-link
-                      class="el-link el-link--default"
-                      :class="
-                        item.code == query.language ? 'el-link--primary' : ''
-                      "
-                      :to="{
-                        query: {
-                          ...$route.query,
-                          language: item.code,
-                          page: 1,
-                        },
-                      }"
-                      >{{ item.language }}</nuxt-link
+                      <nuxt-link
+                        class="el-link el-link--default"
+                        :class="
+                          item.id == query.category_id ? 'el-link--primary' : ''
+                        "
+                        :to="{
+                          query: {
+                            ...$route.query,
+                            category_id: item.id,
+                            page: 1,
+                          },
+                        }"
+                        >{{ item.title }}</nuxt-link
+                      >
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+                <el-dropdown
+                  v-if="(settings.language || []).length > 0 && !searchType"
+                  :show-timeout="showTimeout"
+                >
+                  <el-button type="text" :size="filterSize">
+                    {{ filterLanguageName(query.language) }}
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                      v-for="item in [
+                        { code: '', language: '全部语言' },
+                        ...(settings.language || []),
+                      ]"
+                      :key="'lang-' + item.code"
+                      :value="item.code"
                     >
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-              <el-dropdown v-if="!searchType" :show-timeout="showTimeout">
-                <el-button type="text" :size="filterSize">
-                  <img
-                    v-if="query.ext != 'all' && query.ext != ''"
-                    :src="`/static/images/${query.ext}_24.png`"
-                    :alt="`${query.ext}文档`"
-                  />
-                  {{ filterExtName(query.ext)
-                  }}<i class="el-icon-arrow-down el-icon--right"></i>
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    v-for="item in searchExts"
-                    :key="'se-' + item.value"
-                  >
-                    <nuxt-link
-                      class="el-link el-link--default"
-                      :class="item.value == query.ext ? 'el-link--primary' : ''"
-                      :to="{
-                        query: { ...$route.query, ext: item.value, page: 1 },
-                      }"
+                      <nuxt-link
+                        class="el-link el-link--default"
+                        :class="
+                          item.code == query.language ? 'el-link--primary' : ''
+                        "
+                        :to="{
+                          query: {
+                            ...$route.query,
+                            language: item.code,
+                            page: 1,
+                          },
+                        }"
+                        >{{ item.language }}</nuxt-link
+                      >
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+                <el-dropdown v-if="!searchType" :show-timeout="showTimeout">
+                  <el-button type="text" :size="filterSize">
+                    <img
+                      v-if="query.ext != 'all' && query.ext != ''"
+                      :src="`/static/images/${query.ext}_24.png`"
+                      :alt="`${query.ext}文档`"
+                    />
+                    {{ filterExtName(query.ext)
+                    }}<i class="el-icon-arrow-down el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                      v-for="item in searchExts"
+                      :key="'se-' + item.value"
                     >
-                      <img
-                        v-if="item.value != 'all' && item.value != ''"
-                        :src="`/static/images/${item.value}_24.png`"
-                        :alt="`${item.label}文档`"
-                      />
-                      {{ item.label }}</nuxt-link
-                    >
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-              <el-dropdown :show-timeout="showTimeout">
+                      <nuxt-link
+                        class="el-link el-link--default"
+                        :class="
+                          item.value == query.ext ? 'el-link--primary' : ''
+                        "
+                        :to="{
+                          query: { ...$route.query, ext: item.value, page: 1 },
+                        }"
+                      >
+                        <img
+                          v-if="item.value != 'all' && item.value != ''"
+                          :src="`/static/images/${item.value}_24.png`"
+                          :alt="`${item.label}文档`"
+                        />
+                        {{ item.label }}</nuxt-link
+                      >
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <!-- 排序和时间范围 -->
+              <el-dropdown class="hidden-xs-only" :show-timeout="showTimeout">
                 <el-button type="text" :size="filterSize">
                   {{ filterSortName(query.sort)
                   }}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -241,7 +384,7 @@
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <el-dropdown :show-timeout="showTimeout">
+              <el-dropdown class="hidden-xs-only" :show-timeout="showTimeout">
                 <el-button type="text" :size="filterSize">
                   {{ filterDurationName(query.duration) }}
                   <i class="el-icon-arrow-down el-icon--right"></i>
@@ -270,12 +413,7 @@
               </el-dropdown>
             </div>
           </div>
-          <div class="search-tips">
-            本次搜索耗时
-            <span class="el-link el-link--danger">{{ spend || '0.000' }}</span>
-            秒，为您找到相关结果约
-            <span class="el-link el-link--danger">{{ total || 0 }}</span> 个.
-          </div>
+
           <!-- <div class="search-result-none">没有搜索到内容...</div> -->
           <div class="search-result">
             <SearchResultArticle v-if="searchType === 1" :articles="articles" />
@@ -536,7 +674,7 @@ export default {
       const searchRight = this.$refs.searchRight
       const searchBox = this.$refs.searchBox
 
-      if (searchLeft) {
+      if (searchLeft && searchMain) {
         let maxHeight = 0
         try {
           maxHeight = searchMain.$el.offsetHeight - scrollTop - 70
@@ -546,7 +684,9 @@ export default {
 
         if (this.searchLeftWidth === 0) {
           this.searchLeftWidth = searchLeft.offsetWidth
-          this.searchRightWidth = searchRight.offsetWidth
+          if (searchRight) {
+            this.searchRightWidth = searchRight.offsetWidth
+          }
         }
 
         const fixed = 'fixed'
@@ -559,19 +699,25 @@ export default {
           searchLeft.style.width = this.searchLeftWidth + 'px'
           if (maxHeight > 0) {
             searchLeft.style.maxHeight = maxHeight + 'px'
-            searchRight.style.maxHeight = maxHeight + 'px'
+            if (searchRight) {
+              searchRight.style.maxHeight = maxHeight + 'px'
+            }
           }
 
-          searchRight.style.position = fixed
-          searchRight.style.top = top
-          searchRight.style.zIndex = zIndex
-          searchRight.style.width = this.searchRightWidth + 'px'
+          if (searchRight) {
+            searchRight.style.position = fixed
+            searchRight.style.top = top
+            searchRight.style.zIndex = zIndex
+            searchRight.style.width = this.searchRightWidth + 'px'
+          }
           searchBox.style.top = '0'
           searchBox.style.position = fixed
           searchBox.style.zIndex = zIndex
         } else {
           searchLeft.style = null
-          searchRight.style = null
+          if (searchRight) {
+            searchRight.style = null
+          }
           searchBox.style = null
         }
       }
@@ -676,6 +822,35 @@ export default {
     filterExtName(value) {
       const ext = this.searchExts.find((item) => item.value === value)
       return ext ? ext.label : '全部格式'
+    },
+    getActiveFiltersCount() {
+      let count = 0
+      if (this.query.category_id && this.query.category_id !== 0) count++
+      if (this.query.language && this.query.language !== '') count++
+      if (this.query.ext && this.query.ext !== 'all' && this.query.ext !== '')
+        count++
+      if (this.query.sort && this.query.sort !== 'default') count++
+      if (this.query.duration && this.query.duration !== 'all') count++
+      return count
+    },
+    hasActiveFilters() {
+      return this.getActiveFiltersCount() > 0
+    },
+    clearAllFilters() {
+      this.$router.push({
+        path: '/search',
+        query: {
+          wd: this.query.wd,
+          type: this.searchType,
+          page: 1,
+          size: 10,
+          sort: 'default',
+          ext: 'all',
+          category_id: 0,
+          language: '',
+          duration: 'all',
+        },
+      })
     },
   },
 }
@@ -787,6 +962,156 @@ export default {
       min-height: 540px;
     }
   }
+  .search-left {
+    .el-card {
+      border-radius: 8px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+    }
+    .el-card__header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 22px;
+      padding: 15px 20px;
+      border-radius: 8px 8px 0 0;
+      border-bottom: none;
+      .clearfix {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        span {
+          display: flex;
+          align-items: center;
+          &:before {
+            content: '🔍';
+            margin-right: 8px;
+            font-size: 18px;
+          }
+        }
+        .filter-count {
+          background: rgba(255, 255, 255, 0.2);
+          padding: 2px 8px;
+          border-radius: 10px;
+          font-size: 11px;
+          font-weight: 500;
+        }
+      }
+    }
+    .el-card__body {
+      padding: 20px;
+      background-color: #fafbfc;
+    }
+    .filter-section {
+      margin-bottom: 25px;
+      background: white;
+      border-radius: 6px;
+      padding: 15px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      &:last-child {
+        margin-bottom: 0;
+      }
+      h4 {
+        margin: 0 0 16px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #2c3e50;
+        padding-bottom: 16px;
+        padding-top: 2px;
+        border-bottom: 1px solid #ecf0f1;
+        position: relative;
+        display: flex;
+        align-items: center;
+        i {
+          margin-right: 6px;
+          color: #667eea;
+        }
+        &:after {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: 30px;
+          height: 2px;
+          background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+      }
+      .filter-options {
+        .filter-option {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 12px;
+          font-size: 13px;
+          text-decoration: none;
+          border-radius: 4px;
+          margin-bottom: 4px;
+          transition: all 0.2s ease;
+          border: 1px solid transparent;
+          position: relative;
+          &:hover {
+            background-color: #f8f9fa;
+            border-color: #e9ecef;
+            transform: translateX(2px);
+          }
+          &.el-link--primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+            &:hover {
+              transform: translateX(2px) translateY(-1px);
+              box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+            }
+          }
+          &.el-link--default {
+            color: #5a6c7d;
+            &:hover {
+              color: #667eea;
+            }
+          }
+          .option-text {
+            flex: 1;
+            display: flex;
+            align-items: center;
+          }
+          .option-check {
+            margin-left: 8px;
+            font-size: 14px;
+            color: white;
+          }
+          img {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+            vertical-align: middle;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+          }
+        }
+      }
+    }
+    .filter-actions {
+      margin-top: 20px;
+      text-align: center;
+      padding: 15px;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      .clear-filters-btn {
+        color: #f56565;
+        font-size: 12px;
+        padding: 8px 16px;
+        border: 1px solid #f56565;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        &:hover {
+          background: #f56565;
+          color: white;
+        }
+      }
+    }
+  }
   .search-tips {
     font-size: 14px;
     margin-top: 10px;
@@ -824,6 +1149,10 @@ export default {
         width: 100% !important;
         padding-top: 55px;
       }
+    }
+
+    .search-left {
+      display: none; // 移动端隐藏左侧过滤
     }
 
     .search-left-col {
@@ -866,6 +1195,75 @@ export default {
       padding-right: 0 !important;
       margin-top: 15px;
     }
+
+    // 移动端显示原来的筛选条件在头部
+    .search-main .search-filter {
+      .el-dropdown {
+        margin-right: 5px;
+        margin-bottom: 5px;
+      }
+      // 在移动端恢复所有筛选条件
+      .mobile-filters {
+        .el-dropdown {
+          margin-right: 5px;
+          margin-bottom: 5px;
+        }
+        .el-button--text {
+          background: #f8f9fa;
+          border: 1px solid #e9ecef;
+          border-radius: 4px;
+          padding: 6px 12px;
+          font-size: 12px;
+          &:hover {
+            background: #e9ecef;
+          }
+        }
+      }
+    }
   }
+}
+
+// 大屏幕优化
+@media screen and (min-width: 1400px) {
+  .page-search {
+    .search-left {
+      .filter-section {
+        .filter-options {
+          .filter-option {
+            padding: 10px 15px;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 平板适配
+@media screen and (max-width: 1024px) and (min-width: 768px) {
+  .page-search {
+    .search-left {
+      .el-card__body {
+        padding: 15px;
+      }
+      .filter-section {
+        padding: 12px;
+        margin-bottom: 20px;
+        h4 {
+          font-size: 14px;
+        }
+        .filter-options {
+          .filter-option {
+            padding: 6px 10px;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}
+.header {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
