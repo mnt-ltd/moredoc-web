@@ -18,7 +18,9 @@
             <span>爬虫助手</span>
           </div>
         </template>
-        <FormCrawlArticle @success="crawlArticleSuccess"></FormCrawlArticle>
+        <client-only>
+          <FormCrawlArticle @success="crawlArticleSuccess"></FormCrawlArticle>
+        </client-only>
       </el-card>
       <!-- 基础信息卡片 -->
       <el-card class="form-section" shadow="never">
@@ -138,9 +140,10 @@
         </template>
 
         <el-row :gutter="20">
-          <el-col :span="12" :md="12" :sm="24" :xs="24">
+          <el-col :span="4" :xs="8">
+            <!-- 审核状态 -->
             <el-form-item label="审核状态">
-              <el-select v-model="article.status" style="width: 100%">
+              <el-select v-model="article.status">
                 <el-option
                   v-for="item in articleStatusOptions"
                   :key="'s-' + item.value"
@@ -150,36 +153,50 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12" :md="12" :sm="24" :xs="24">
-            <el-form-item label="推荐">
-              <div class="switch-wrapper">
-                <el-switch
-                  v-model="article.is_recommend"
-                  active-text="是"
-                  inactive-text="否"
-                  active-color="#67C23A"
-                  inactive-color="#F56C6C"
-                ></el-switch>
+          <el-col :span="5">
+            <el-form-item>
+              <div slot="label">
+                公告值
+                <el-tooltip
+                  content="大于0表示该文章为公告内容，值越大越靠前"
+                  placement="top"
+                >
+                  <el-button type="text" icon="el-icon-info"></el-button>
+                </el-tooltip>
               </div>
+              <el-input-number
+                v-model="article.notice"
+                :min="0"
+                clearable
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" :xs="24">
+            <!-- 推荐 -->
+            <el-form-item label="推荐">
+              <el-switch
+                v-model="article.is_recommend"
+                active-text="是"
+                inactive-text="否"
+              ></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <!-- 如果是审核拒绝，则填写拒绝原因 -->
+            <el-form-item
+              v-if="article.status === 2"
+              label="拒绝原因"
+              prop="reject_reason"
+            >
+              <el-input
+                v-model="article.reject_reason"
+                placeholder="请输入拒绝原因"
+                type="textarea"
+                rows="3"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-
-        <!-- 拒绝原因 -->
-        <el-form-item
-          v-if="article.status === 2"
-          label="拒绝原因"
-          prop="reject_reason"
-        >
-          <el-input
-            v-model="article.reject_reason"
-            placeholder="请输入拒绝原因"
-            type="textarea"
-            :rows="3"
-            show-word-limit
-            maxlength="200"
-          ></el-input>
-        </el-form-item>
       </el-card>
 
       <!-- 内容编辑卡片 -->
