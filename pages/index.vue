@@ -7,7 +7,7 @@
           :interval="5000"
           arrow="hover"
           indicator-position="outside"
-          height="100vh"
+          height="480px"
           @change="onCarouselChange"
         >
           <el-carousel-item
@@ -112,56 +112,12 @@
           </el-carousel-item>
         </el-carousel>
       </div>
-
-      <!-- Scroll Down Indicator -->
-      <div class="scroll-indicator" @click="scrollToContent">
-        <i class="el-icon-arrow-down"></i>
-      </div>
     </section>
 
     <!-- Main Content -->
     <div ref="mainContent" class="main-content">
       <div class="container">
-        <!-- Featured Categories Section -->
-        <section
-          v-if="settings.display.show_index_categories"
-          class="featured-categories"
-        >
-          <div class="section-header">
-            <h2 class="section-title">
-              <i class="el-icon-menu"></i>
-              热门分类
-            </h2>
-            <p class="section-subtitle">探索丰富的文档资源分类</p>
-          </div>
-
-          <div class="categories-grid">
-            <div
-              v-for="category in featuredCategories"
-              :key="'cat-' + category.id"
-              class="category-card"
-              @click="$router.push(`/category/${category.id}`)"
-            >
-              <div class="category-icon">
-                <img
-                  :src="category.icon || '/static/images/logo-icon.png'"
-                  :alt="category.title"
-                />
-              </div>
-              <div class="category-info">
-                <h3 class="category-title">{{ category.title }}</h3>
-                <p class="category-count">
-                  {{ category.doc_count || 0 }} 个文档
-                </p>
-              </div>
-              <div class="category-arrow">
-                <i class="el-icon-arrow-right"></i>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Featured Documents Section -->
+        <!-- Important Content First: Featured Documents Section -->
         <section class="featured-documents">
           <div class="section-header">
             <h2 class="section-title">
@@ -277,6 +233,45 @@
           </div>
         </section>
 
+        <!-- Featured Categories Section -->
+        <section
+          v-if="settings.display.show_index_categories"
+          class="featured-categories"
+        >
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="el-icon-menu"></i>
+              热门分类
+            </h2>
+            <p class="section-subtitle">探索丰富的文档资源分类</p>
+          </div>
+
+          <div class="categories-grid">
+            <div
+              v-for="category in featuredCategories"
+              :key="'cat-' + category.id"
+              class="category-card"
+              @click="$router.push(`/category/${category.id}`)"
+            >
+              <div class="category-icon">
+                <img
+                  :src="category.icon || '/static/images/logo-icon.png'"
+                  :alt="category.title"
+                />
+              </div>
+              <div class="category-info">
+                <h3 class="category-title">{{ category.title }}</h3>
+                <p class="category-count">
+                  {{ category.doc_count || 0 }} 个文档
+                </p>
+              </div>
+              <div class="category-arrow">
+                <i class="el-icon-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Two Column Layout -->
         <el-row :gutter="30" class="content-section">
           <!-- Left Column -->
@@ -370,7 +365,7 @@
           <el-col :span="8" :xs="24">
             <!-- User Panel -->
             <aside class="user-panel">
-              <el-card v-if="user.id" class="user-card" shadow="hover">
+              <el-card v-if="user.id" class="user-card" shadow="never">
                 <div class="user-info">
                   <div class="user-avatar">
                     <user-avatar :size="60" :user="user" />
@@ -445,7 +440,7 @@
               </el-card>
 
               <!-- Guest Panel -->
-              <el-card v-else class="guest-card" shadow="hover">
+              <el-card v-else class="guest-card" shadow="never">
                 <div class="guest-content">
                   <div class="guest-avatar">
                     <user-avatar :size="60" :user="{}" />
@@ -470,7 +465,7 @@
 
             <!-- Latest Updates -->
             <aside class="latest-updates">
-              <el-card shadow="hover">
+              <el-card shadow="never">
                 <div slot="header">
                   <h3><i class="el-icon-time"></i> 最新更新</h3>
                 </div>
@@ -497,7 +492,7 @@
 
             <!-- Quick Links -->
             <aside class="quick-links">
-              <el-card shadow="hover">
+              <el-card shadow="never">
                 <div slot="header">
                   <h3><i class="el-icon-link"></i> 快捷入口</h3>
                 </div>
@@ -778,10 +773,6 @@ export default {
       }
     },
 
-    scrollToContent() {
-      this.$refs.mainContent.scrollIntoView({ behavior: 'smooth' })
-    },
-
     // Utility Methods
     formatLargeNumber(num) {
       if (!num) return '0'
@@ -849,21 +840,24 @@ $background-color: #f5f7fa;
 .homepage {
   min-height: 100vh;
   background: $background-color;
+  :deep(.el-card) {
+    border: 1px solid #ebeef5;
+  }
 }
 
 // Hero Section
 .hero-section {
   position: relative;
-  height: 100vh;
+  height: 480px;
   overflow: hidden;
 
   .hero-background {
     .el-carousel {
-      height: 100vh;
+      height: 480px;
     }
 
     .hero-slide {
-      height: 100vh;
+      height: 480px;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -883,22 +877,21 @@ $background-color: #f5f7fa;
 
     .hero-text {
       .hero-title {
-        font-size: 3.5rem;
+        font-size: 2.8rem;
         font-weight: 700;
-        margin-bottom: 1rem;
+        margin-bottom: 0.8rem;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
       }
 
       .hero-subtitle {
-        font-size: 1.5rem;
-        margin-bottom: 3rem;
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
         opacity: 0.9;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
       }
     }
-
     .hero-search {
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
 
       .search-container {
         .search-input {
@@ -949,62 +942,29 @@ $background-color: #f5f7fa;
     .hero-stats {
       display: flex;
       justify-content: center;
-      gap: 60px;
+      gap: 40px;
 
       .stat-item {
         text-align: center;
 
         .stat-number {
-          font-size: 2.5rem;
+          font-size: 2rem;
           font-weight: 700;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.3rem;
         }
 
         .stat-label {
-          font-size: 1rem;
+          font-size: 0.9rem;
           opacity: 0.8;
         }
       }
     }
-  }
-
-  .scroll-indicator {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    cursor: pointer;
-    color: white;
-    font-size: 2rem;
-    animation: bounce 2s infinite;
-
-    &:hover {
-      color: $primary-color;
-    }
-  }
-}
-
-@keyframes bounce {
-  0%,
-  20%,
-  50%,
-  80%,
-  100% {
-    transform: translateX(-50%) translateY(0);
-  }
-  40% {
-    transform: translateX(-50%) translateY(-10px);
-  }
-  60% {
-    transform: translateX(-50%) translateY(-5px);
   }
 }
 
 // Main Content
 .main-content {
   background: white;
-  border-radius: 20px 20px 0 0;
-  margin-top: -20px;
   position: relative;
   z-index: 100;
 }
@@ -1125,8 +1085,8 @@ $background-color: #f5f7fa;
 
   .documents-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
 
     .document-card {
       background: white;
@@ -1147,7 +1107,7 @@ $background-color: #f5f7fa;
 
       .doc-cover {
         position: relative;
-        height: 220px;
+        height: 180px;
         overflow: hidden;
 
         .el-image {
@@ -1176,14 +1136,14 @@ $background-color: #f5f7fa;
       }
 
       .doc-info {
-        padding: 20px;
+        padding: 15px;
 
         .doc-title {
-          font-size: 1rem;
+          font-size: 0.9rem;
           font-weight: 600;
           color: $text-primary;
-          margin: 0 0 15px 0;
-          height: 48px;
+          margin: 0 0 12px 0;
+          height: 40px;
           overflow: hidden;
           display: -webkit-box;
           -webkit-line-clamp: 2;
@@ -1301,8 +1261,8 @@ $background-color: #f5f7fa;
 
   .articles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
 
     .article-card {
       background: white;
@@ -1597,25 +1557,56 @@ $background-color: #f5f7fa;
   }
 }
 
+// Medium screen responsive design (tablets)
+@media (max-width: 1200px) and (min-width: 769px) {
+  .documents-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+
+  .articles-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
 // Responsive Design
 @media (max-width: 768px) {
+  .hero-section {
+    height: 320px;
+
+    .hero-background {
+      .el-carousel {
+        height: 320px;
+      }
+
+      .hero-slide {
+        height: 320px;
+      }
+    }
+  }
+
   .hero-content {
     .hero-text {
       .hero-title {
-        font-size: 2.5rem;
+        font-size: 2rem;
       }
 
       .hero-subtitle {
-        font-size: 1.2rem;
+        font-size: 1rem;
       }
     }
 
     .hero-stats {
-      gap: 30px;
+      gap: 20px;
 
       .stat-item {
         .stat-number {
-          font-size: 2rem;
+          font-size: 1.5rem;
+        }
+
+        .stat-label {
+          font-size: 0.8rem;
         }
       }
     }
@@ -1630,11 +1621,13 @@ $background-color: #f5f7fa;
   }
 
   .documents-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
   }
 
   .articles-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
   }
 
   .category-docs-grid {
