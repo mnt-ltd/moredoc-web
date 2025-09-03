@@ -80,7 +80,6 @@
             :init-article="article"
             :category-trees="trees"
             :can-i-publish="canIPublish"
-            :is-admin="isAdmin"
             @success="success"
           />
         </div>
@@ -200,9 +199,6 @@ export default {
     ...mapGetters('setting', ['settings']),
     trees() {
       return this.categoryTrees.filter((item) => item.type === 1)
-    },
-    isAdmin() {
-      return this.user && (this.user.is_admin || this.user.is_super_admin)
     },
   },
   created() {
