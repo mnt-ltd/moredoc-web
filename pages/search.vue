@@ -441,39 +441,15 @@ export default {
   },
   watch: {
     '$route.query': {
-      handler(val) {
-        const query = {
-          page: 1,
-          size: 10,
-          sort: 'default',
-          ext: 'all',
-          duration: 'all',
-          ...val,
-        }
-        try {
-          query.category_id = parseInt(query.category_id) || 0
-        } catch (error) {
-          console.log(error)
-        }
-        query.page = parseInt(query.page) || 1
-        query.size = parseInt(query.size) || 10
-        this.searchType = parseInt(query.type) || 0
-        this.query = query
-        this.execSearch()
+      async handler() {
+        await this.parseQuery()
+        await this.execSearch()
       },
       immediate: true,
     },
   },
   created() {
-    const query = { ...this.query, ...this.$route.query }
-    query.page = parseInt(query.page) || 1
-    query.size = parseInt(query.size) || 10
-    try {
-      query.category_id = parseInt(query.category_id) || 0
-    } catch (error) {
-      console.log(error)
-    }
-    this.query = query
+    this.parseQuery()
     Promise.all([this.getStats(), this.getAdvertisements('search')])
   },
   mounted() {
@@ -485,6 +461,25 @@ export default {
   methods: {
     formatBytes,
     formatRelativeTime,
+    parseQuery() {
+      const query = {
+        page: 1,
+        size: 10,
+        sort: 'default',
+        ext: 'all',
+        duration: 'all',
+        ...this.$route.query,
+      }
+      try {
+        query.category_id = parseInt(query.category_id) || 0
+      } catch (error) {
+        console.log(error)
+      }
+      query.page = parseInt(query.page) || 1
+      query.size = parseInt(query.size) || 10
+      this.searchType = parseInt(query.type) || 0
+      this.query = query
+    },
     onSearch() {
       this.$router.push({
         path: '/search',
