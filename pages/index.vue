@@ -401,23 +401,30 @@
                     v-if="!todaySign.id"
                     style="width: 48%"
                     type="success"
-                    size="small"
+                    size="medium"
+                    class="sign-btn"
                     @click="signIn"
                   >
-                    <i class="el-icon-calendar-check"></i> 签到
+                    <i class="el-icon-s-opportunity"></i> 签到
                   </el-button>
                   <el-button
                     v-else
                     type="success"
-                    size="small"
+                    size="medium"
                     disabled
                     style="width: 48%"
+                    class="signed-btn"
                   >
-                    <i class="el-icon-check"></i> 已签到
+                    <i class="el-icon-circle-check"></i> 已签到
                   </el-button>
                   <el-dropdown trigger="click" style="width: 48%">
-                    <el-button size="small" style="width: 100%">
-                      更多 <i class="el-icon-arrow-down"></i>
+                    <el-button
+                      size="medium"
+                      style="width: 100%"
+                      class="more-btn"
+                    >
+                      <i class="el-icon-more"></i> 更多
+                      <i class="el-icon-arrow-down"></i>
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item>
@@ -452,11 +459,21 @@
                   </div>
                 </div>
                 <div class="guest-actions">
-                  <nuxt-link to="/login">
-                    <el-button type="primary">登录</el-button>
+                  <nuxt-link to="/login" class="guest-action-item">
+                    <el-button type="primary" size="medium" class="login-btn">
+                      <i class="el-icon-user"></i>
+                      登录
+                    </el-button>
                   </nuxt-link>
-                  <nuxt-link to="/register">
-                    <el-button>注册</el-button>
+                  <nuxt-link to="/register" class="guest-action-item">
+                    <el-button
+                      type="default"
+                      size="medium"
+                      class="register-btn"
+                    >
+                      <i class="el-icon-plus"></i>
+                      注册
+                    </el-button>
                   </nuxt-link>
                 </div>
               </el-card>
@@ -1506,8 +1523,110 @@ $background-color: #f5f7fa;
   .user-actions,
   .guest-actions {
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
+
+    .guest-action-item {
+      flex: 1;
+      display: block;
+    }
+
+    .login-btn,
+    .register-btn,
+    .sign-btn,
+    .signed-btn,
+    .more-btn {
+      width: 100%;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+
+      i {
+        margin-right: 6px;
+
+        &:last-child {
+          margin-right: 0;
+          margin-left: 6px;
+        }
+      }
+
+      &:not(:disabled):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    .login-btn {
+      background-color: #409eff;
+      border-color: #409eff;
+      color: white;
+
+      &:hover {
+        background-color: #66b1ff;
+        border-color: #66b1ff;
+      }
+
+      &:active {
+        background-color: #3a8ee6;
+        border-color: #3a8ee6;
+      }
+    }
+
+    .register-btn {
+      background-color: white;
+      border-color: #dcdfe6;
+      color: #606266;
+
+      &:hover {
+        background-color: #409eff;
+        border-color: #409eff;
+        color: white;
+      }
+
+      &:active {
+        background-color: #3a8ee6;
+        border-color: #3a8ee6;
+        color: white;
+      }
+    }
+
+    .sign-btn {
+      background-color: #67c23a;
+      border-color: #67c23a;
+      color: white;
+
+      &:hover {
+        background-color: #85ce61;
+        border-color: #85ce61;
+      }
+
+      &:active {
+        background-color: #5daf34;
+        border-color: #5daf34;
+      }
+    }
+
+    .signed-btn {
+      background-color: #f0f9ff;
+      border-color: #67c23a;
+      color: #67c23a;
+      opacity: 0.8;
+    }
+
+    .more-btn {
+      background-color: #909399;
+      border-color: #909399;
+      color: white;
+
+      &:hover {
+        background-color: #a6aeb7;
+        border-color: #a6aeb7;
+      }
+
+      &:active {
+        background-color: #82898f;
+        border-color: #82898f;
+      }
+    }
   }
 }
 
