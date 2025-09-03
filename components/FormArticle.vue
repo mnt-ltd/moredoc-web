@@ -178,7 +178,7 @@
           </div>
         </template>
 
-        <el-form-item label="内容" class="editor-item">
+        <el-form-item class="editor-item">
           <Editor
             v-if="canIPublish"
             v-model="article.content"
@@ -410,6 +410,10 @@ export default {
 
     &.editor-section {
       margin-bottom: 32px;
+      border: 0;
+      :deep(.el-card__body) {
+        padding: 0;
+      }
     }
 
     ::v-deep .el-card__header {
