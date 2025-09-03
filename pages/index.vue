@@ -289,35 +289,34 @@
                   ></el-button>
                 </nuxt-link>
               </div>
-              <div class="articles-grid">
+              <div class="articles-list">
                 <nuxt-link
                   v-for="article in latestArticles"
                   :key="'art-' + article.id"
                   :to="`/article/${article.identifier}`"
-                  class="article-card"
+                  class="article-list-item"
                 >
-                  <div class="article-cover">
-                    <img
-                      :src="article.cover || '/static/images/default-cover.png'"
-                      :alt="article.title"
-                    />
+                  <div class="article-meta-date">
+                    <span class="date">{{
+                      formatDate(article.created_at)
+                    }}</span>
+                    <span class="view-count">
+                      <i class="el-icon-view"></i>
+                      {{ article.view_count || 0 }}
+                    </span>
                   </div>
                   <div class="article-content">
                     <h4 class="article-title">{{ article.title }}</h4>
-                    <p class="article-excerpt">
-                      {{
-                        article.description ||
-                        article.content?.substring(0, 100) + '...'
-                      }}
+                    <p v-if="article.description" class="article-excerpt">
+                      {{ article.description }}
                     </p>
                     <div class="article-meta">
                       <span class="author">
                         <i class="el-icon-user"></i>
                         {{ article.user?.username || '匿名用户' }}
                       </span>
-                      <span class="date">
-                        <i class="el-icon-time"></i>
-                        {{ formatDate(article.created_at) }}
+                      <span class="read-more">
+                        阅读全文 <i class="el-icon-arrow-right"></i>
                       </span>
                     </div>
                   </div>
@@ -1265,54 +1264,69 @@ $background-color: #f5f7fa;
 .latest-articles {
   margin-bottom: 40px;
 
-  .articles-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-
-    .article-card {
+  .articles-list {
+    .article-list-item {
       background: white;
-      border-radius: 12px;
-      overflow: hidden;
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
       cursor: pointer;
       transition: all 0.3s ease;
-      border: 1px solid $border-color;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
 
       &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-color: $primary-color;
+        box-shadow: 0 5px 15px rgba(64, 158, 255, 0.1);
+        transform: translateY(-2px);
       }
 
-      .article-cover {
-        height: 180px;
-        overflow: hidden;
+      .article-meta-date {
+        flex-shrink: 0;
+        width: 100px;
+        text-align: center;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
 
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.3s ease;
+        .date {
+          display: block;
+          font-size: 0.85rem;
+          color: $text-primary;
+          font-weight: 500;
+          margin-bottom: 8px;
+          line-height: 1.3;
         }
 
-        &:hover img {
-          transform: scale(1.05);
+        .view-count {
+          display: block;
+          font-size: 0.75rem;
+          color: $text-secondary;
+
+          i {
+            margin-right: 3px;
+          }
         }
       }
 
       .article-content {
-        padding: 20px;
+        flex: 1;
+        min-width: 0;
 
         .article-title {
           font-size: 1.1rem;
           font-weight: 600;
           color: $text-primary;
           margin: 0 0 10px 0;
-          height: 50px;
           overflow: hidden;
           display: -webkit-box;
           -webkit-line-clamp: 2;
           line-clamp: 2;
           -webkit-box-orient: vertical;
+          line-height: 1.4;
         }
 
         .article-excerpt {
@@ -1320,23 +1334,41 @@ $background-color: #f5f7fa;
           margin: 0 0 15px 0;
           font-size: 0.9rem;
           line-height: 1.5;
-          height: 60px;
           overflow: hidden;
           display: -webkit-box;
-          -webkit-line-clamp: 3;
-          line-clamp: 3;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
           -webkit-box-orient: vertical;
         }
 
         .article-meta {
           display: flex;
           justify-content: space-between;
-          font-size: 0.8rem;
-          color: $text-secondary;
+          align-items: center;
+          font-size: 0.85rem;
 
-          span i {
-            margin-right: 4px;
+          .author {
+            color: $text-secondary;
+
+            i {
+              margin-right: 4px;
+            }
           }
+
+          .read-more {
+            color: $primary-color;
+            font-weight: 500;
+            transition: all 0.3s ease;
+
+            i {
+              margin-left: 3px;
+              transition: transform 0.3s ease;
+            }
+          }
+        }
+
+        &:hover .read-more i {
+          transform: translateX(3px);
         }
       }
     }
@@ -1569,11 +1601,6 @@ $background-color: #f5f7fa;
     grid-template-columns: repeat(4, 1fr);
     gap: 18px;
   }
-
-  .articles-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-  }
 }
 
 // Responsive Design
@@ -1631,9 +1658,26 @@ $background-color: #f5f7fa;
     gap: 15px;
   }
 
-  .articles-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+  .latest-articles {
+    .articles-list {
+      .article-list-item {
+        flex-direction: column;
+        gap: 15px;
+
+        .article-meta-date {
+          width: 100%;
+          text-align: left;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 15px;
+
+          .date {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
   }
 
   .category-docs-grid {
