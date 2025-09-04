@@ -528,6 +528,9 @@ export default {
       categoryDocuments: [],
       featuredCategories: [],
       loadingRecommends: false,
+      search: {
+        wd: '',
+      },
       searchForm: {
         keyword: '',
         type: 'all',
@@ -541,6 +544,7 @@ export default {
       todaySign: { id: 0 },
       viewMode: 'grid',
       advertisements: [],
+      carouselIndexes: [0], // 轮播图索引，用于懒加载
     }
   },
   head() {
@@ -568,6 +572,10 @@ export default {
     articleName() {
       const nav = this.navigations.find((nav) => nav.href === '/article')
       return nav ? nav.title : '最新文章'
+    },
+
+    isMobile() {
+      return this.$device.isMobile
     },
   },
   async created() {
@@ -703,16 +711,21 @@ export default {
     },
 
     // Event Handlers
+    changeCarousel(index) {
+      const carouselIndexes = this.carouselIndexes
+      if (!carouselIndexes.includes(index)) {
+        carouselIndexes.push(index)
+      }
+      this.carouselIndexes = carouselIndexes
+    },
+
     onCarouselChange(index) {
       // Handle carousel change if needed
     },
 
     onSearch() {
-      if (this.searchForm.keyword.trim()) {
-        const query = { wd: this.searchForm.keyword }
-        if (this.searchForm.type !== 'all') {
-          query.type = this.searchForm.type
-        }
+      if (this.search.wd.trim()) {
+        const query = { wd: this.search.wd }
         this.$router.push({ path: '/search', query })
       }
     },
@@ -816,6 +829,101 @@ $background-color: #f5f7fa;
   }
   h3 {
     margin: 0;
+  }
+
+  & > .el-row {
+    width: 1200px;
+    max-width: 100%;
+    margin: 0 auto !important;
+  }
+}
+
+.el-carousel__button {
+  width: 20px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.searchbox {
+  position: relative;
+  margin-bottom: 20px;
+
+  a {
+    display: inline-block;
+  }
+
+  .el-carousel__item {
+    background-size: cover !important;
+  }
+
+  // 搜索表单垂直居中显示
+  .search-form {
+    position: absolute;
+    z-index: 99;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 640px;
+    color: #fff;
+
+    .el-form-item {
+      margin-bottom: 0;
+    }
+
+    .recommend-label {
+      margin-right: 10px;
+      font-size: 14px;
+    }
+
+    .recommend-tags {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .recommend-tag-link {
+        text-decoration: none;
+
+        .recommend-tag {
+          cursor: pointer;
+          transition: all 0.3s ease;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.2);
+          }
+
+          i {
+            margin-right: 4px;
+          }
+        }
+      }
+    }
+
+    .el-tag {
+      margin-left: 5px;
+    }
+
+    .el-input__icon {
+      color: #666;
+    }
+
+    .el-input__inner {
+      border-right: 0;
+      height: 45px;
+      line-height: 45px;
+      font-size: 15px;
+
+      &:focus {
+        border-color: #dcdfe6;
+      }
+    }
+
+    .el-input-group__append {
+      background-color: #fff;
+      border-left: 0;
+    }
   }
 }
 
@@ -2396,5 +2504,28 @@ $background-color: #f5f7fa;
 .ad-section {
   margin: 40px 0;
   text-align: center;
+}
+
+// Searchbox mobile responsive
+@media (max-width: 768px) {
+  .searchbox {
+    .search-form {
+      width: 90%;
+      max-width: 500px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .searchbox {
+    .search-form {
+      width: 95%;
+      max-width: 400px;
+
+      .recommend-tags {
+        justify-content: center;
+      }
+    }
+  }
 }
 </style>
