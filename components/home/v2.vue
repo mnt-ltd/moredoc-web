@@ -1239,7 +1239,7 @@ $background-color: #f5f7fa;
 // Main Content
 .main-content {
   background: white;
-  position: relative;
+  // position: relative;
   z-index: 100;
 }
 
