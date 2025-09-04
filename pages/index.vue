@@ -1,118 +1,70 @@
 <template>
   <div class="homepage">
     <!-- Hero Section with Background Video/Image -->
-    <section class="hero-section">
-      <div class="hero-background">
-        <el-carousel
-          :interval="5000"
-          arrow="hover"
-          indicator-position="outside"
-          height="480px"
-          @change="onCarouselChange"
+    <div class="searchbox">
+      <el-carousel
+        :interval="3000"
+        arrow="always"
+        :height="isMobile ? '250px' : '420px'"
+        @change="changeCarousel"
+      >
+        <a
+          v-for="(banner, index) in banners"
+          :key="'banner-' + banner.id"
+          :href="banner.url ? banner.url : 'javascript:;'"
+          :target="banner.url ? '_blank' : ''"
+          :title="banner.title"
         >
           <el-carousel-item
-            v-for="banner in banners"
-            :key="'banner-' + banner.id"
+            :style="
+              'background: url(' +
+              (carouselIndexes.indexOf(index) > -1 ? banner.path : '') +
+              ') center center no-repeat;'
+            "
+          ></el-carousel-item>
+        </a>
+      </el-carousel>
+      <el-form :model="search" class="search-form" @submit.native.prevent>
+        <el-form-item>
+          <el-input
+            v-model="search.wd"
+            size="large"
+            placeholder="搜索文档..."
+            @keydown.native.enter="onSearch"
           >
-            <div
-              class="hero-slide"
-              :style="{
-                backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${banner.path})`,
+            <i
+              slot="suffix"
+              class="el-input__icon el-icon-search btn-search"
+              @click="onSearch"
+            ></i>
+          </el-input>
+        </el-form-item>
+        <el-form-item v-if="settings.system.recommend_words">
+          <span class="hidden-xs-only recommend-label">大家在搜:</span>
+          <div class="recommend-tags">
+            <nuxt-link
+              v-for="(word, index) in settings.system.recommend_words"
+              :key="'kw-' + word"
+              target="_blank"
+              :to="{
+                path: '/search',
+                query: { wd: word },
               }"
+              class="recommend-tag-link"
             >
-              <div class="hero-content">
-                <div class="hero-text">
-                  <h1 class="hero-title">{{ settings.system.sitename }}</h1>
-                  <p class="hero-subtitle">{{ settings.system.description }}</p>
-
-                  <!-- Enhanced Search Box -->
-                  <div class="hero-search">
-                    <el-form
-                      :model="searchForm"
-                      @submit.native.prevent="onSearch"
-                    >
-                      <div class="search-container">
-                        <el-input
-                          v-model="searchForm.keyword"
-                          size="large"
-                          placeholder="搜索文档、文章、用户..."
-                          class="search-input"
-                          @keydown.native.enter="onSearch"
-                        >
-                          <el-select
-                            slot="prepend"
-                            v-model="searchForm.type"
-                            placeholder="类型"
-                            style="width: 120px"
-                          >
-                            <el-option label="全部" value="all"></el-option>
-                            <el-option
-                              label="文档"
-                              value="document"
-                            ></el-option>
-                            <el-option label="文章" value="article"></el-option>
-                          </el-select>
-                          <el-button
-                            slot="append"
-                            type="primary"
-                            icon="el-icon-search"
-                            @click="onSearch"
-                          >
-                            搜索
-                          </el-button>
-                        </el-input>
-                      </div>
-                    </el-form>
-
-                    <!-- Hot Keywords -->
-                    <div
-                      v-if="settings.system.recommend_words"
-                      class="hot-keywords"
-                    >
-                      <span class="hot-label">热门搜索：</span>
-                      <el-tag
-                        v-for="(
-                          word, idx
-                        ) in settings.system.recommend_words.slice(0, 6)"
-                        :key="'hot-' + idx"
-                        :type="getTagType(idx)"
-                        size="small"
-                        class="hot-tag"
-                        @click="searchKeyword(word)"
-                      >
-                        {{ word }}
-                      </el-tag>
-                    </div>
-                  </div>
-
-                  <!-- Quick Stats -->
-                  <div class="hero-stats">
-                    <div class="stat-item">
-                      <div class="stat-number">
-                        {{ formatLargeNumber(stats.document_count) }}
-                      </div>
-                      <div class="stat-label">文档资源</div>
-                    </div>
-                    <div class="stat-item">
-                      <div class="stat-number">
-                        {{ formatLargeNumber(stats.user_count) }}
-                      </div>
-                      <div class="stat-label">注册用户</div>
-                    </div>
-                    <div class="stat-item">
-                      <div class="stat-number">
-                        {{ formatLargeNumber(stats.download_count) }}
-                      </div>
-                      <div class="stat-label">下载次数</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </el-carousel-item>
-        </el-carousel>
-      </div>
-    </section>
+              <el-tag
+                size="small"
+                :type="getTagType(index)"
+                effect="plain"
+                class="recommend-tag"
+              >
+                <i class="el-icon-search"></i> {{ word }}
+              </el-tag>
+            </nuxt-link>
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
 
     <!-- Main Content -->
     <div ref="mainContent" class="main-content">
@@ -870,16 +822,49 @@ $background-color: #f5f7fa;
 // Hero Section
 .hero-section {
   position: relative;
-  height: 480px;
+  height: 520px;
   overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
   .hero-background {
     .el-carousel {
-      height: 480px;
+      height: 520px;
+
+      :deep(.el-carousel__container) {
+        height: 520px;
+      }
+
+      :deep(.el-carousel__arrow) {
+        background: rgba(255, 255, 255, 0.8);
+        color: #409eff;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+
+        &:hover {
+          background: white;
+          transform: scale(1.1);
+        }
+      }
+
+      :deep(.el-carousel__indicators) {
+        .el-carousel__indicator {
+          .el-carousel__button {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 2px;
+            width: 20px;
+            height: 3px;
+          }
+
+          &.is-active .el-carousel__button {
+            background: white;
+          }
+        }
+      }
     }
 
     .hero-slide {
-      height: 480px;
+      height: 520px;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -887,6 +872,22 @@ $background-color: #f5f7fa;
       align-items: center;
       justify-content: center;
       position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.2) 0%,
+          rgba(64, 158, 255, 0.1) 50%,
+          rgba(0, 0, 0, 0.2) 100%
+        );
+        z-index: 1;
+      }
     }
   }
 
@@ -894,68 +895,155 @@ $background-color: #f5f7fa;
     text-align: center;
     color: white;
     z-index: 10;
-    max-width: 800px;
+    max-width: 900px;
     padding: 0 20px;
+    position: relative;
 
     .hero-text {
       .hero-title {
-        font-size: 2.8rem;
+        font-size: 3.2rem;
         font-weight: 700;
-        margin-bottom: 0.8rem;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, #fff 0%, #e3f2fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
       .hero-subtitle {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        opacity: 0.9;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+        line-height: 1.5;
       }
     }
+
     .hero-search {
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
+
+      .search-wrapper {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 60px;
+        padding: 8px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
 
       .search-container {
-        .search-input {
-          .el-input__inner {
-            height: 50px;
-            font-size: 16px;
-            border-radius: 25px 0 0 25px;
-          }
+        .search-input-wrapper {
+          .search-input {
+            .el-input__inner {
+              height: 60px;
+              font-size: 16px;
+              border: none;
+              background: transparent;
+              color: #333;
+              padding-left: 50px;
 
-          .el-input-group__prepend {
-            border-radius: 25px 0 0 25px;
-          }
+              &::placeholder {
+                color: #999;
+              }
+            }
 
-          .el-input-group__append {
-            border-radius: 0 25px 25px 0;
+            .el-input__prefix {
+              left: 20px;
+              color: #409eff;
+              font-size: 18px;
+            }
 
-            .el-button {
-              border-radius: 0 25px 25px 0;
-              padding: 0 30px;
+            .el-input-group__prepend {
+              background: transparent;
+              border: none;
+              border-radius: 50px 0 0 50px;
+
+              .search-type-select {
+                width: 130px;
+
+                .el-input__inner {
+                  background: transparent;
+                  border: none;
+                  color: #409eff;
+                  font-weight: 500;
+                  height: 60px;
+                  line-height: 60px;
+                  padding-left: 20px;
+                }
+              }
+            }
+
+            .el-input-group__append {
+              background: transparent;
+              border: none;
+              border-radius: 0 50px 50px 0;
+              padding: 0;
+
+              .search-btn {
+                height: 60px;
+                border-radius: 50px;
+                padding: 0 35px;
+                background: linear-gradient(135deg, #409eff 0%, #67c23a 100%);
+                border: none;
+                font-weight: 600;
+                font-size: 16px;
+                box-shadow: 0 8px 25px rgba(64, 158, 255, 0.3);
+                transition: all 0.3s ease;
+
+                &:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 12px 35px rgba(64, 158, 255, 0.4);
+                  background: linear-gradient(135deg, #66b1ff 0%, #85ce61 100%);
+                }
+
+                &:active {
+                  transform: translateY(0);
+                }
+              }
             }
           }
         }
       }
 
       .hot-keywords {
-        margin-top: 20px;
+        margin-top: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
 
         .hot-label {
-          color: rgba(255, 255, 255, 0.8);
-          margin-right: 10px;
+          color: rgba(255, 255, 255, 0.9);
+          margin-right: 15px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+
+          i {
+            margin-right: 5px;
+            color: #ffd700;
+          }
         }
 
         .hot-tag {
-          margin: 0 5px;
+          margin: 0;
           cursor: pointer;
-          background: rgba(255, 255, 255, 0.2);
-          border: 1px solid rgba(255, 255, 255, 0.3);
+          background: rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.25);
           color: white;
+          border-radius: 20px;
+          padding: 6px 15px;
+          font-size: 0.85rem;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(5px);
 
           &:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
           }
         }
       }
@@ -2075,30 +2163,166 @@ $background-color: #f5f7fa;
   }
 }
 
-// Responsive Design
-@media (max-width: 768px) {
+// Tablet responsive design
+@media (max-width: 1024px) and (min-width: 769px) {
   .hero-section {
-    height: 320px;
+    height: 480px;
 
     .hero-background {
       .el-carousel {
-        height: 320px;
+        height: 480px;
+
+        :deep(.el-carousel__container) {
+          height: 480px;
+        }
       }
 
       .hero-slide {
-        height: 320px;
+        height: 480px;
       }
     }
   }
 
   .hero-content {
+    max-width: 90%;
+
     .hero-text {
       .hero-title {
-        font-size: 2rem;
+        font-size: 2.8rem;
       }
 
       .hero-subtitle {
-        font-size: 1rem;
+        font-size: 1.2rem;
+      }
+    }
+
+    .hero-search {
+      .search-container {
+        .search-input-wrapper {
+          .search-input {
+            .el-input-group__prepend {
+              .search-type-select {
+                width: 120px;
+              }
+            }
+
+            .el-input-group__append {
+              .search-btn {
+                padding: 0 30px;
+              }
+            }
+          }
+        }
+      }
+
+      .hot-keywords {
+        .hot-tag {
+          padding: 5px 14px;
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .hero-section {
+    height: 420px;
+
+    .hero-background {
+      .el-carousel {
+        height: 420px;
+
+        :deep(.el-carousel__container) {
+          height: 420px;
+        }
+
+        :deep(.el-carousel__arrow) {
+          width: 40px;
+          height: 40px;
+        }
+      }
+
+      .hero-slide {
+        height: 420px;
+      }
+    }
+  }
+
+  .hero-content {
+    max-width: 95%;
+
+    .hero-text {
+      .hero-title {
+        font-size: 2.2rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+      }
+    }
+
+    .hero-search {
+      margin-bottom: 2rem;
+
+      .search-wrapper {
+        border-radius: 50px;
+        padding: 6px;
+      }
+
+      .search-container {
+        .search-input-wrapper {
+          .search-input {
+            .el-input__inner {
+              height: 50px;
+              font-size: 15px;
+              padding-left: 45px;
+            }
+
+            .el-input__prefix {
+              left: 15px;
+              font-size: 16px;
+            }
+
+            .el-input-group__prepend {
+              .search-type-select {
+                width: 110px;
+
+                .el-input__inner {
+                  height: 50px;
+                  line-height: 50px;
+                  font-size: 14px;
+                  padding-left: 15px;
+                }
+              }
+            }
+
+            .el-input-group__append {
+              .search-btn {
+                height: 50px;
+                padding: 0 25px;
+                font-size: 14px;
+              }
+            }
+          }
+        }
+      }
+
+      .hot-keywords {
+        margin-top: 20px;
+
+        .hot-label {
+          margin-right: 10px;
+          font-size: 0.9rem;
+        }
+
+        .hot-tag {
+          padding: 4px 12px;
+          font-size: 0.8rem;
+          margin: 2px;
+        }
       }
     }
 
