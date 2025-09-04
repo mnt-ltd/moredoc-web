@@ -120,7 +120,7 @@
                 </div>
                 <div class="doc-info">
                   <h4 class="doc-title">{{ doc.title }}</h4>
-                  <div class="doc-meta">
+                  <!-- <div class="doc-meta">
                     <el-tag v-if="doc.category_name" size="mini" type="info">
                       {{ doc.category_name }}
                     </el-tag>
@@ -134,7 +134,7 @@
                         {{ doc.download_count || 0 }}</span
                       >
                     </div>
-                  </div>
+                  </div> -->
                 </div>
               </nuxt-link>
             </div>
@@ -681,9 +681,14 @@ export default {
 
     loadFeaturedCategories() {
       if (this.categoryTrees) {
-        this.featuredCategories = this.categoryTrees
+        let featuredCategories = this.categoryTrees
           .filter((cat) => cat.enable && cat.doc_count > 0)
           .slice(0, 8)
+        if (featuredCategories.length < 8) {
+          // 只取前4个
+          featuredCategories = featuredCategories.slice(0, 4)
+        }
+        this.featuredCategories = featuredCategories
       }
     },
 
@@ -846,8 +851,8 @@ $background-color: #f5f7fa;
 
 .searchbox {
   position: relative;
-  margin-bottom: 20px;
-
+  margin-bottom: 0;
+  margin-top: -20px;
   a {
     display: inline-block;
   }
@@ -1339,8 +1344,11 @@ $background-color: #f5f7fa;
 
       .doc-cover {
         position: relative;
-        height: 180px;
+        // height: 180px;
         overflow: hidden;
+        :deep(.com-document-cover) {
+          border: 0;
+        }
 
         .el-image {
           width: 100%;
@@ -1354,6 +1362,7 @@ $background-color: #f5f7fa;
           right: 0;
           bottom: 0;
           background: rgba(0, 0, 0, 0.6);
+          border-bottom: 1px solid #efefef;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1374,7 +1383,7 @@ $background-color: #f5f7fa;
           font-size: 0.9rem;
           font-weight: 600;
           color: $text-primary;
-          margin: 0 0 12px 0;
+          margin: 0;
           height: 40px;
           overflow: hidden;
           display: -webkit-box;
