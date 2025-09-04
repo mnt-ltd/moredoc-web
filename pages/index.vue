@@ -1347,13 +1347,18 @@ $background-color: #f5f7fa;
       .doc-cover {
         position: relative;
         overflow: hidden;
+        aspect-ratio: 1 / 1;
+        width: 100%;
         :deep(.com-document-cover) {
           border: 0;
+          width: 100%;
+          height: 100%;
         }
 
         .el-image {
           width: 100%;
           height: 100%;
+          object-fit: cover;
         }
 
         .doc-overlay {
@@ -1991,10 +1996,6 @@ $background-color: #f5f7fa;
       gap: 12px;
 
       .document-card {
-        .doc-cover {
-          height: 140px;
-        }
-
         .doc-info {
           padding: 8px 10px;
 
@@ -2074,10 +2075,6 @@ $background-color: #f5f7fa;
       gap: 10px;
 
       .document-card {
-        .doc-cover {
-          height: 120px;
-        }
-
         .doc-info {
           padding: 8px;
 
@@ -2194,8 +2191,9 @@ $background-color: #f5f7fa;
 
         .doc-cover {
           width: 100px;
-          height: 120px;
+          height: 100px;
           flex-shrink: 0;
+          aspect-ratio: 1 / 1;
         }
 
         .doc-info {
