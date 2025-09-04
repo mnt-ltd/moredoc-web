@@ -70,66 +70,8 @@
             @success="success"
           ></FormArticle>
         </div>
-
-        <!-- 帮助信息侧边栏（桌面端显示） -->
-        <div class="help-sidebar">
-          <el-card shadow="never" class="help-card">
-            <template #header>
-              <div class="help-title">
-                <i class="el-icon-question"></i>
-                <span>发布指南</span>
-              </div>
-            </template>
-
-            <div class="help-content">
-              <div class="help-item">
-                <h4><i class="el-icon-edit-outline"></i> 标题建议</h4>
-                <p>使用清晰、描述性的标题，避免标题党</p>
-              </div>
-
-              <div class="help-item">
-                <h4><i class="el-icon-folder"></i> 选择分类</h4>
-                <p>为文章选择合适的分类，便于读者发现</p>
-              </div>
-
-              <div class="help-item">
-                <h4><i class="el-icon-price-tag"></i> 关键词</h4>
-                <p>添加相关关键词，用逗号分隔，提升文章可发现性</p>
-              </div>
-
-              <div class="help-item">
-                <h4><i class="el-icon-document"></i> 内容编写</h4>
-                <p>使用丰富的格式，添加图片、链接等增强可读性</p>
-              </div>
-            </div>
-          </el-card>
-        </div>
       </div>
     </div>
-
-    <!-- 写作帮助对话框 -->
-    <el-dialog
-      title="写作帮助"
-      :visible.sync="showHelp"
-      width="600px"
-      :before-close="handleCloseHelp"
-    >
-      <div class="help-dialog-content">
-        <h3>Markdown 语法参考</h3>
-        <el-table :data="markdownHelp" style="width: 100%" size="small">
-          <el-table-column
-            prop="syntax"
-            label="语法"
-            width="120"
-          ></el-table-column>
-          <el-table-column prop="description" label="说明"></el-table-column>
-        </el-table>
-      </div>
-
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="showHelp = false">关闭</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -139,7 +81,6 @@ export default {
   data() {
     return {
       loading: false,
-      showHelp: false,
       previewMode: false,
       article: {
         title: '',
@@ -150,16 +91,6 @@ export default {
         id: 0,
         category_id: [],
       },
-      markdownHelp: [
-        { syntax: '# 标题', description: '一级标题' },
-        { syntax: '## 标题', description: '二级标题' },
-        { syntax: '**粗体**', description: '粗体文字' },
-        { syntax: '*斜体*', description: '斜体文字' },
-        { syntax: '[链接](url)', description: '插入链接' },
-        { syntax: '![图片](url)', description: '插入图片' },
-        { syntax: '`代码`', description: '行内代码' },
-        { syntax: '```代码块```', description: '代码块' },
-      ],
     }
   },
   head() {
@@ -221,18 +152,12 @@ export default {
         this.$router.push('/')
       }
     },
-    saveDraft() {
-      this.$message.success('草稿保存功能开发中...')
-    },
-    handleCloseHelp() {
-      this.showHelp = false
-    },
   },
 }
 </script>
 <style lang="scss">
 .page-post {
-  min-height: 100vh;
+  min-height: calc(100vh - 150px);
   background-color: #f8f9fa;
 }
 
@@ -327,171 +252,6 @@ export default {
     margin-bottom: 24px;
     border-radius: 6px;
   }
-
-  // 主内容网格布局
-  .content-grid {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 20px;
-    align-items: start;
-
-    .help-sidebar {
-      position: sticky;
-      top: 20px;
-
-      .help-card,
-      .quick-actions-card {
-        margin-bottom: 20px;
-        border: 1px solid #e4e7ed;
-        border-radius: 6px;
-        transition: all 0.3s ease;
-
-        &:hover {
-          box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06);
-        }
-
-        ::v-deep .el-card__header {
-          background-color: #fafbfc;
-          border-bottom: 1px solid #e4e7ed;
-          padding: 16px 20px;
-
-          .help-title {
-            display: flex;
-            align-items: center;
-            font-weight: 600;
-            color: #303133;
-            font-size: 14px;
-
-            i {
-              margin-right: 8px;
-              color: #409eff;
-              font-size: 16px;
-            }
-          }
-        }
-
-        ::v-deep .el-card__body {
-          padding: 20px;
-        }
-      }
-
-      .help-content {
-        .help-item {
-          margin-bottom: 16px;
-          padding: 12px;
-          background-color: #f8f9fa;
-          border: 1px solid #f0f0f0;
-          border-radius: 6px;
-          transition: all 0.3s ease;
-
-          &:hover {
-            border-color: #c6e2ff;
-            background-color: #ecf5ff;
-          }
-
-          &:last-child {
-            margin-bottom: 0;
-          }
-
-          h4 {
-            margin: 0 0 6px 0;
-            font-size: 13px;
-            color: #303133;
-            display: flex;
-            align-items: center;
-            font-weight: 600;
-
-            i {
-              margin-right: 6px;
-              color: #409eff;
-              font-size: 14px;
-            }
-          }
-
-          p {
-            margin: 0;
-            font-size: 12px;
-            color: #606266;
-            line-height: 1.4;
-          }
-        }
-      }
-
-      .quick-actions {
-        .quick-btn {
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          width: 100%;
-          padding: 10px 16px;
-          margin-bottom: 4px;
-          color: #606266;
-          border-radius: 4px;
-          transition: all 0.3s ease;
-          font-weight: 500;
-
-          &:hover {
-            color: #409eff;
-            background-color: #ecf5ff;
-          }
-
-          i {
-            margin-right: 8px;
-            font-size: 14px;
-          }
-        }
-      }
-    }
-  }
-}
-
-// 帮助对话框
-.help-dialog-content {
-  h3 {
-    margin-top: 0;
-    color: #303133;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-
-  ::v-deep .el-table {
-    .el-table__header {
-      th {
-        background-color: #409eff;
-        color: white;
-        font-weight: 600;
-        border: none;
-      }
-    }
-
-    .el-table__body {
-      tr {
-        &:hover {
-          background-color: #ecf5ff;
-        }
-
-        td {
-          border-bottom: 1px solid #ebeef5;
-        }
-      }
-    }
-  }
-}
-
-// 响应式设计
-@media (max-width: 1024px) {
-  .page-content {
-    .content-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-
-      .help-sidebar {
-        position: static;
-        display: none;
-      }
-    }
-  }
 }
 
 @media (max-width: 768px) {
@@ -512,8 +272,6 @@ export default {
     }
 
     .content-grid {
-      gap: 16px;
-
       .form-container {
         .page-title-area {
           margin-bottom: 20px;
