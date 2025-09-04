@@ -28,7 +28,7 @@
           <el-input
             v-model="search.wd"
             size="large"
-            placeholder="搜索文档..."
+            placeholder="搜索内容..."
             @keydown.native.enter="onSearch"
           >
             <i
@@ -47,6 +47,7 @@
             :to="{
               path: '/search',
               query: { wd: word },
+              // query: { wd: word, type: -1 },
             }"
           >
             <el-tag size="small">{{ word }}</el-tag>
@@ -54,6 +55,13 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-row v-if="notices.length > 0" :gutter="20" class="notice-board">
+      <el-col :span="24">
+        <el-card shadow="never">
+          <notice-board :notices="notices" />
+        </el-card>
+      </el-col>
+    </el-row>
 
     <template v-for="item in advertisements">
       <div
@@ -414,8 +422,8 @@ import { listDocument, listDocumentForHome } from '~/api/document'
 import { getSignedToday, signToday } from '~/api/user'
 import { getStats } from '~/api/config'
 import { getIcon } from '~/utils/utils'
-import { advertisementPositions } from '~/utils/enum'
 import { listArticle } from '~/api/article'
+import { advertisementPositions } from '~/utils/enum'
 export default {
   name: 'HomeV1',
   components: { UserAvatar },
@@ -435,6 +443,7 @@ export default {
         document_count: '-',
         user_count: '-',
       },
+      notices: [], // 公告
       carouselIndexes: [0], // 跑马灯index，用于跑马灯图片的懒加载
       advertisementPositions,
       activeIndex: '0',
@@ -495,6 +504,7 @@ export default {
       this.getDocuments(),
       this.getSignedToday(),
       this.getStats(),
+      this.getNotices(),
       this.getAdvertisements('index'),
     ]
     if (this.user.id) {
@@ -521,6 +531,16 @@ export default {
     onSearch() {
       if (this.search.wd) {
         location.href = '/search?wd=' + encodeURIComponent(this.search.wd)
+      }
+    },
+    async getNotices() {
+      const res = await listArticle({
+        page: 1,
+        size: 100,
+        is_notice: [1],
+      })
+      if (res.status === 200) {
+        this.notices = res.data.article || []
       }
     },
     async getArticles() {
@@ -563,7 +583,7 @@ export default {
     async getRecommendDocuments() {
       this.loadingRecommend = true
       const res = await listDocument({
-        field: ['id', 'title', 'uuid'],
+        field: ['id', 'title', 'is_vip', 'uuid'],
         is_recommend: true,
         order: 'recommend_at desc',
         limit: 12,
@@ -648,7 +668,7 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 640px;
+      width: 520px;
       color: #fff;
 
       .el-form-item {
@@ -948,6 +968,17 @@ export default {
     }
   }
 
+  .notice-board {
+    margin-bottom: 20px !important;
+    margin-top: -45px !important;
+    position: relative;
+    z-index: 90; // 小于100，避免对顶部导航栏的遮挡
+
+    .el-card__body {
+      padding: 0 20px;
+    }
+  }
+
   .category-item-card {
     .el-card__body {
       padding-bottom: 15px;
@@ -1018,6 +1049,10 @@ export default {
           line-height: 40px;
         }
       }
+    }
+
+    .index-articles {
+      margin-top: 20px !important;
     }
 
     .el-carousel__arrow {
@@ -1097,6 +1132,19 @@ export default {
             }
           }
         }
+      }
+    }
+
+    .notice-board {
+      margin-top: -41px !important;
+      margin-bottom: 15px !important;
+
+      .el-card {
+        border-radius: 4px;
+      }
+
+      .el-card__body {
+        padding: 0 10px;
       }
     }
 

@@ -66,6 +66,15 @@
       </el-form>
     </div>
 
+    <!-- 网站公告 -->
+    <div v-if="notices.length > 0" class="notice-board">
+      <div class="container">
+        <el-card shadow="never">
+          <notice-board :notices="notices" />
+        </el-card>
+      </div>
+    </div>
+
     <!-- Main Content -->
     <div ref="mainContent" class="main-content">
       <div class="container">
@@ -507,6 +516,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import UserAvatar from '~/components/UserAvatar.vue'
 import DocumentCover from '~/components/DocumentCover.vue'
+import NoticeBoard from '~/components/NoticeBoard.vue'
 import { listBanner } from '~/api/banner'
 import { listDocument, listDocumentForHome } from '~/api/document'
 import { listArticle } from '~/api/article'
@@ -518,6 +528,7 @@ export default {
   components: {
     UserAvatar,
     DocumentCover,
+    NoticeBoard,
   },
   data() {
     return {
@@ -545,6 +556,7 @@ export default {
       viewMode: 'grid',
       advertisements: [],
       carouselIndexes: [0], // 轮播图索引，用于懒加载
+      notices: [], // 公告
     }
   },
   head() {
@@ -588,6 +600,7 @@ export default {
       this.loadFeaturedCategories(),
       this.loadStats(),
       this.loadTodaySign(),
+      this.loadNotices(),
     ])
   },
   methods: {
@@ -712,6 +725,21 @@ export default {
         }
       } catch (error) {
         // Failed to load sign status
+      }
+    },
+
+    async loadNotices() {
+      try {
+        const res = await listArticle({
+          page: 1,
+          size: 100,
+          is_notice: [1],
+        })
+        if (res.status === 200) {
+          this.notices = res.data.article || []
+        }
+      } catch (error) {
+        // Failed to load notices
       }
     },
 
@@ -1181,6 +1209,29 @@ $background-color: #f5f7fa;
           opacity: 0.8;
         }
       }
+    }
+  }
+}
+
+// Notice Board
+.notice-board {
+  background: white;
+  position: relative;
+  z-index: 90;
+  margin-bottom: 20px;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  :deep(.el-card) {
+    border: 0;
+    border-radius: 8px;
+
+    .el-card__body {
+      padding: 0 20px;
     }
   }
 }
@@ -2533,6 +2584,25 @@ $background-color: #f5f7fa;
 
       .recommend-tags {
         justify-content: center;
+      }
+    }
+  }
+}
+
+// Notice Board Mobile
+@media (max-width: 768px) {
+  .notice-board {
+    margin-bottom: 15px;
+
+    .container {
+      padding: 0 15px;
+    }
+
+    .el-card {
+      border-radius: 4px;
+
+      .el-card__body {
+        padding: 0 10px;
       }
     }
   }
