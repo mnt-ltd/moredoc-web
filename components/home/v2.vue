@@ -473,7 +473,7 @@
                     <i class="el-icon-edit"></i>
                     <span>发布文章</span>
                   </nuxt-link>
-                  <nuxt-link to="/document" class="link-item">
+                  <nuxt-link to="/category" class="link-item">
                     <i class="el-icon-document"></i>
                     <span>浏览文档</span>
                   </nuxt-link>
