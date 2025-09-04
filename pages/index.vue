@@ -625,7 +625,7 @@ export default {
           ],
           is_recommend: true,
           order: 'recommend_at desc',
-          limit: 12,
+          limit: 14,
         })
         if (res.status === 200) {
           this.recommendedDocuments = res.data.document || []
@@ -1300,16 +1300,18 @@ $background-color: #f5f7fa;
 
 // Featured Documents
 .featured-documents {
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 
   .section-header {
+    margin-bottom: 20px;
+
     .section-actions {
       .view-toggle {
         .el-button {
-          padding: 8px 15px;
+          padding: 6px 12px;
 
           i {
-            margin-right: 4px;
+            margin-right: 3px;
           }
         }
       }
@@ -1317,25 +1319,25 @@ $background-color: #f5f7fa;
   }
 
   .documents-container {
-    min-height: 400px;
+    min-height: 300px;
   }
 
   .documents-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 20px;
+    gap: 16px;
 
     .document-card {
       background: white;
-      border-radius: 12px;
+      border-radius: 8px;
       overflow: hidden;
       cursor: pointer;
       transition: all 0.3s ease;
       border: 1px solid $border-color;
 
       &:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 
         .doc-overlay {
           opacity: 1;
@@ -1344,7 +1346,6 @@ $background-color: #f5f7fa;
 
       .doc-cover {
         position: relative;
-        // height: 180px;
         overflow: hidden;
         :deep(.com-document-cover) {
           border: 0;
@@ -1371,25 +1372,26 @@ $background-color: #f5f7fa;
 
           .overlay-content {
             display: flex;
-            gap: 10px;
+            gap: 8px;
           }
         }
       }
 
       .doc-info {
-        padding: 15px;
+        padding: 10px 12px;
 
         .doc-title {
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           font-weight: 600;
           color: $text-primary;
           margin: 0;
-          height: 40px;
+          height: 32px;
           overflow: hidden;
           display: -webkit-box;
           -webkit-line-clamp: 2;
           line-clamp: 2;
           -webkit-box-orient: vertical;
+          line-height: 1.3;
         }
 
         .doc-meta {
@@ -1399,12 +1401,12 @@ $background-color: #f5f7fa;
 
           .doc-stats {
             display: flex;
-            gap: 15px;
-            font-size: 0.8rem;
+            gap: 10px;
+            font-size: 0.7rem;
             color: $text-secondary;
 
             span i {
-              margin-right: 4px;
+              margin-right: 3px;
             }
           }
         }
@@ -1416,20 +1418,20 @@ $background-color: #f5f7fa;
     .document-list-item {
       background: white;
       border: 1px solid $border-color;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
 
       &:hover {
         border-color: $primary-color;
-        box-shadow: 0 5px 15px rgba(64, 158, 255, 0.1);
+        box-shadow: 0 3px 10px rgba(64, 158, 255, 0.08);
       }
 
       .list-cover {
-        margin-right: 20px;
+        margin-right: 15px;
         flex-shrink: 0;
       }
 
@@ -1437,17 +1439,17 @@ $background-color: #f5f7fa;
         flex: 1;
 
         .list-title {
-          font-size: 1.1rem;
+          font-size: 1rem;
           font-weight: 600;
           color: $text-primary;
-          margin: 0 0 10px 0;
+          margin: 0 0 8px 0;
         }
 
         .list-description {
           color: $text-regular;
-          margin: 0 0 15px 0;
-          font-size: 0.9rem;
-          line-height: 1.5;
+          margin: 0 0 10px 0;
+          font-size: 0.85rem;
+          line-height: 1.4;
           overflow: hidden;
           display: -webkit-box;
           -webkit-line-clamp: 2;
@@ -1463,7 +1465,7 @@ $background-color: #f5f7fa;
           .meta-tags {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
 
             .pages-count {
               font-size: 0.8rem;
@@ -1943,8 +1945,8 @@ $background-color: #f5f7fa;
 @media (min-width: 1440px) {
   .featured-documents {
     .documents-grid {
-      grid-template-columns: repeat(6, 1fr);
-      gap: 24px;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 18px;
     }
   }
 }
@@ -1953,8 +1955,8 @@ $background-color: #f5f7fa;
 @media (max-width: 1439px) and (min-width: 1200px) {
   .featured-documents {
     .documents-grid {
-      grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
     }
   }
 }
@@ -1963,8 +1965,8 @@ $background-color: #f5f7fa;
 @media (max-width: 1199px) and (min-width: 992px) {
   .featured-documents {
     .documents-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
     }
   }
 }
@@ -1975,7 +1977,7 @@ $background-color: #f5f7fa;
     .section-header {
       flex-direction: column;
       align-items: flex-start;
-      gap: 15px;
+      gap: 12px;
 
       .section-actions {
         width: 100%;
@@ -1985,26 +1987,26 @@ $background-color: #f5f7fa;
     }
 
     .documents-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
 
       .document-card {
         .doc-cover {
-          height: 160px;
+          height: 140px;
         }
 
         .doc-info {
-          padding: 12px;
+          padding: 8px 10px;
 
           .doc-title {
-            font-size: 0.85rem;
-            height: 36px;
+            font-size: 0.8rem;
+            height: 28px;
           }
 
           .doc-meta {
             .doc-stats {
-              gap: 8px;
-              font-size: 0.75rem;
+              gap: 6px;
+              font-size: 0.65rem;
             }
           }
         }
@@ -2013,19 +2015,19 @@ $background-color: #f5f7fa;
 
     .documents-list {
       .document-list-item {
-        padding: 15px;
+        padding: 12px;
 
         .list-cover {
-          margin-right: 15px;
+          margin-right: 12px;
         }
 
         .list-content {
           .list-title {
-            font-size: 1rem;
+            font-size: 0.95rem;
           }
 
           .list-description {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
           }
         }
       }
@@ -2039,10 +2041,10 @@ $background-color: #f5f7fa;
     .section-header {
       flex-direction: column;
       align-items: flex-start;
-      gap: 15px;
+      gap: 12px;
 
       .section-title {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
       }
 
       .section-actions {
@@ -2052,11 +2054,11 @@ $background-color: #f5f7fa;
 
         .view-toggle {
           .el-button {
-            padding: 6px 12px;
-            font-size: 0.85rem;
+            padding: 5px 10px;
+            font-size: 0.8rem;
 
             i {
-              margin-right: 3px;
+              margin-right: 2px;
             }
           }
         }
@@ -2064,24 +2066,24 @@ $background-color: #f5f7fa;
     }
 
     .documents-container {
-      min-height: 300px;
+      min-height: 250px;
     }
 
     .documents-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
 
       .document-card {
         .doc-cover {
-          height: 140px;
+          height: 120px;
         }
 
         .doc-info {
-          padding: 10px;
+          padding: 8px;
 
           .doc-title {
-            font-size: 0.8rem;
-            height: 32px;
+            font-size: 0.75rem;
+            height: 28px;
             -webkit-line-clamp: 2;
             line-clamp: 2;
           }
@@ -2089,11 +2091,11 @@ $background-color: #f5f7fa;
           .doc-meta {
             flex-direction: column;
             align-items: flex-start;
-            gap: 8px;
+            gap: 6px;
 
             .doc-stats {
-              gap: 12px;
-              font-size: 0.7rem;
+              gap: 8px;
+              font-size: 0.65rem;
             }
           }
         }
@@ -2102,22 +2104,22 @@ $background-color: #f5f7fa;
 
     .documents-list {
       .document-list-item {
-        padding: 12px;
+        padding: 10px;
         flex-direction: column;
         text-align: center;
 
         .list-cover {
-          margin: 0 auto 10px auto;
+          margin: 0 auto 8px auto;
         }
 
         .list-content {
           .list-title {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             text-align: center;
           }
 
           .list-description {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-align: center;
             -webkit-line-clamp: 3;
             line-clamp: 3;
@@ -2125,7 +2127,7 @@ $background-color: #f5f7fa;
 
           .list-meta {
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
 
             .meta-tags {
               justify-content: center;
@@ -2133,7 +2135,7 @@ $background-color: #f5f7fa;
 
             .meta-stats {
               justify-content: center;
-              gap: 12px;
+              gap: 10px;
             }
           }
         }
