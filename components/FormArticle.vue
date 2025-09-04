@@ -150,25 +150,47 @@
           <div v-if="isAdmin" class="wp-meta-box">
             <h3 class="wp-meta-title">管理设置</h3>
             <div class="wp-meta-content">
-              <el-form-item label="审核状态">
-                <el-select v-model="article.status" style="width: 100%">
-                  <el-option
-                    v-for="item in articleStatusOptions"
-                    :key="'s-' + item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item label="审核状态">
+                    <el-select v-model="article.status" style="width: 100%">
+                      <el-option
+                        v-for="item in articleStatusOptions"
+                        :key="'s-' + item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="推荐文章">
+                    <el-switch
+                      v-model="article.is_recommend"
+                      active-text="是"
+                      inactive-text="否"
+                      active-color="#67C23A"
+                      inactive-color="#F56C6C"
+                    />
+                  </el-form-item>
+                </el-col>
+              </el-row>
 
-              <el-form-item label="推荐文章">
-                <el-switch
-                  v-model="article.is_recommend"
-                  active-text="是"
-                  inactive-text="否"
-                  active-color="#67C23A"
-                  inactive-color="#F56C6C"
-                />
+              <el-form-item>
+                <div slot="label">
+                  公告值
+                  <el-tooltip
+                    content="大于0表示该文章为公告内容，值越大越靠前"
+                    placement="top"
+                  >
+                    <el-button type="text" icon="el-icon-info"></el-button>
+                  </el-tooltip>
+                </div>
+                <el-input-number
+                  v-model="article.notice"
+                  :min="0"
+                  clearable
+                ></el-input-number>
               </el-form-item>
 
               <el-form-item v-if="isAdmin" label="文章标识" prop="identifier">
