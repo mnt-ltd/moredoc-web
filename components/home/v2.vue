@@ -547,6 +547,18 @@ export default {
       carouselIndexes: [0], // 轮播图索引，用于懒加载
     }
   },
+  async fetch() {
+    await Promise.all([
+      this.loadBanners(),
+      this.loadRecommendedDocuments(),
+      this.loadLatestDocuments(),
+      this.loadLatestArticles(),
+      this.loadCategoryDocuments(),
+      this.loadFeaturedCategories(),
+      this.loadStats(),
+      this.loadTodaySign(),
+    ])
+  },
   head() {
     return {
       title: this.settings.system.title,
@@ -578,18 +590,7 @@ export default {
       return this.$device.isMobile
     },
   },
-  async created() {
-    await Promise.all([
-      this.loadBanners(),
-      this.loadRecommendedDocuments(),
-      this.loadLatestDocuments(),
-      this.loadLatestArticles(),
-      this.loadCategoryDocuments(),
-      this.loadFeaturedCategories(),
-      this.loadStats(),
-      this.loadTodaySign(),
-    ])
-  },
+
   methods: {
     ...mapActions('user', ['logout', 'getUser']),
 
