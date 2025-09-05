@@ -530,6 +530,21 @@ export default {
       totalDone: 0, // 完成个数
       fileMessages: [],
       isDir: false,
+      allowExt: [
+        '.doc',
+        '.docx',
+        '.pdf',
+        '.ppt',
+        '.pptx',
+        '.epub',
+        '.xls',
+        '.xlsx',
+        ...wordExtEnum,
+        ...pptExtEnum,
+        ...excelExtEnum,
+        ...otherExtEnum,
+        ...textExtEnum,
+      ],
     }
   },
   head() {
@@ -553,23 +568,6 @@ export default {
     ...mapGetters('user', ['token', 'user', 'groups']),
     ...mapGetters('category', ['categoryTrees']),
     ...mapGetters('setting', ['settings']),
-    allowExt() {
-      return [
-        '.doc',
-        '.docx',
-        '.pdf',
-        '.ppt',
-        '.pptx',
-        '.epub',
-        '.xls',
-        '.xlsx',
-        ...this.wordExtEnum,
-        ...this.pptExtEnum,
-        ...this.excelExtEnum,
-        ...this.otherExtEnum,
-        ...this.textExtEnum,
-      ]
-    },
     // 允许的文件扩展名显示文本
     allowExtDisplay() {
       return (

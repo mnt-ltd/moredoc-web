@@ -598,10 +598,6 @@ export default {
       const nav = this.navigations.find((nav) => nav.href === '/article')
       return nav ? nav.title : '最新文章'
     },
-
-    isMobile() {
-      return this.$device.isMobile
-    },
   },
   methods: {
     ...mapActions('user', ['logout', 'getUser']),
