@@ -113,21 +113,14 @@
       <!-- 左侧过滤条件 -->
       <el-col ref="searchLeft" :span="5" class="search-left hidden-xs-only">
         <!-- 文档分类 -->
-        <div class="filter-section">
+        <div v-if="availableCategories.length > 1" class="filter-section">
           <h4>
             <i class="el-icon-folder-opened"></i>
-            文档分类
+            分类
           </h4>
           <div class="filter-options">
             <nuxt-link
-              v-for="item in [
-                { id: 0, title: '全部分类' },
-                ...categoryTrees.filter(
-                  (item) =>
-                    (!searchType && !item.type) ||
-                    (searchType && item.type == searchType)
-                ),
-              ]"
+              v-for="item in availableCategories"
               :key="'cate-' + item.id"
               class="el-link filter-option"
               :class="
@@ -143,26 +136,26 @@
                 },
               }"
             >
-              <span class="option-text">{{ item.title }}</span>
+              <span class="option-text"
+                >{{ item.title
+                }}<span v-if="item.count > 0"
+                  >(<small class="text-danger">{{ item.count }}</small
+                  >)</span
+                ></span
+              >
             </nuxt-link>
           </div>
         </div>
 
         <!-- 文档语言 -->
-        <div
-          v-if="(settings.language || []).length > 0 && !searchType"
-          class="filter-section"
-        >
+        <div v-if="availableLangs.length > 1" class="filter-section">
           <h4>
             <i class="el-icon-s-flag"></i>
-            文档语言
+            语言
           </h4>
           <div class="filter-options">
             <nuxt-link
-              v-for="item in [
-                { code: '', language: '全部语言' },
-                ...(settings.language || []),
-              ]"
+              v-for="item in availableLangs"
               :key="'lang-' + item.code"
               class="el-link filter-option"
               :class="
@@ -178,20 +171,26 @@
                 },
               }"
             >
-              <span class="option-text">{{ item.language }}</span>
+              <span class="option-text"
+                >{{ item.language
+                }}<span v-if="item.count > 0"
+                  >(<small class="text-danger">{{ item.count }}</small
+                  >)</span
+                ></span
+              >
             </nuxt-link>
           </div>
         </div>
 
         <!-- 文档格式 -->
-        <div v-if="!searchType" class="filter-section">
+        <div v-if="availableExts.length > 1" class="filter-section">
           <h4>
             <i class="el-icon-document"></i>
-            文档格式
+            格式
           </h4>
           <div class="filter-options">
             <nuxt-link
-              v-for="item in searchExts"
+              v-for="item in availableExts"
               :key="'se-' + item.value"
               class="el-link filter-option"
               :class="
@@ -208,12 +207,18 @@
                 :src="`/static/images/${item.value}_24.png`"
                 :alt="`${item.label}文档`"
               />
-              <span class="option-text">{{ item.label }}</span>
+              <span class="option-text"
+                >{{ item.label
+                }}<span v-if="item.count > 0"
+                  >(<small class="text-danger">{{ item.count }}</small
+                  >)</span
+                ></span
+              >
             </nuxt-link>
           </div>
         </div>
         <!-- 清除筛选 -->
-        <div v-if="hasActiveFilters()" class="filter-actions">
+        <!-- <div v-if="hasActiveFilters()" class="filter-actions">
           <el-button
             type="text"
             size="small"
@@ -223,7 +228,9 @@
           >
             清除所有筛选
           </el-button>
-        </div>
+        </div> -->
+        <!-- 防止左侧分栏抖动 -->
+        <div>&nbsp;</div>
       </el-col>
 
       <el-col ref="searchMain" :span="14" class="search-main">
@@ -240,21 +247,17 @@
             <div class="search-filter">
               <!-- 移动端显示所有筛选条件 -->
               <div class="hidden-sm-and-up mobile-filters">
-                <el-dropdown :show-timeout="showTimeout">
+                <el-dropdown
+                  v-if="availableCategories.length > 1"
+                  :show-timeout="showTimeout"
+                >
                   <el-button type="text" :size="filterSize">
                     {{ filterCategoryName(query.category_id)
                     }}<i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
-                      v-for="item in [
-                        { id: 0, title: '全部分类' },
-                        ...categoryTrees.filter(
-                          (item) =>
-                            (!searchType && !item.type) ||
-                            (searchType && item.type == searchType)
-                        ),
-                      ]"
+                      v-for="item in availableCategories"
                       :key="'cate-' + item.id"
                       :value="item.id"
                     >
@@ -276,7 +279,7 @@
                   </el-dropdown-menu>
                 </el-dropdown>
                 <el-dropdown
-                  v-if="(settings.language || []).length > 0 && !searchType"
+                  v-if="availableLangs.length > 1"
                   :show-timeout="showTimeout"
                 >
                   <el-button type="text" :size="filterSize">
@@ -285,10 +288,7 @@
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
-                      v-for="item in [
-                        { code: '', language: '全部语言' },
-                        ...(settings.language || []),
-                      ]"
+                      v-for="item in availableLangs"
                       :key="'lang-' + item.code"
                       :value="item.code"
                     >
@@ -309,7 +309,10 @@
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-                <el-dropdown v-if="!searchType" :show-timeout="showTimeout">
+                <el-dropdown
+                  v-if="availableExts.length > 1"
+                  :show-timeout="showTimeout"
+                >
                   <el-button type="text" :size="filterSize">
                     <img
                       v-if="query.ext != 'all' && query.ext != ''"
@@ -321,7 +324,7 @@
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
-                      v-for="item in searchExts"
+                      v-for="item in availableExts"
                       :key="'se-' + item.value"
                     >
                       <nuxt-link
@@ -485,7 +488,15 @@ import {
   formatRelativeTime,
   genTimeDuration,
 } from '~/utils/utils'
-import { datetimePickerOptions, categoryTypeOptions } from '~/utils/enum'
+import {
+  datetimePickerOptions,
+  categoryTypeOptions,
+  wordExtEnum,
+  excelExtEnum,
+  pdfExtEnum,
+  pptExtEnum,
+  textExtEnum,
+} from '~/utils/enum'
 export default {
   data() {
     return {
@@ -513,11 +524,7 @@ export default {
         { label: '默认排序', value: 'default' },
         { label: '最新排序', value: 'latest' },
         { label: '页数排序', value: 'pages' },
-        // { label: '评分排序', value: 'score' },
         { label: '大小排序', value: 'size' },
-        // { label: '下载排序', value: 'download_count' },
-        // { label: '浏览排序', value: 'view_count' },
-        // { label: '收藏排序', value: 'favorite_count' },
       ],
       durationOptions: [
         { label: '全部时间', value: 'all' },
@@ -542,6 +549,9 @@ export default {
       cardOffsetTop: 35,
       datetimePickerOptions,
       showTimeout: 50,
+      aggExt: [],
+      aggLang: [],
+      aggCategory: [],
     }
   },
   head() {
@@ -566,10 +576,94 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['user']),
-    ...mapGetters('category', ['categoryTrees']),
+    ...mapGetters('category', ['categoryTrees', 'categoryMap']),
     ...mapGetters('setting', ['settings', 'navigations']),
     filterSize() {
       return this.isMobile ? 'mini' : 'medium'
+    },
+    availableCategories() {
+      const cates = this.aggCategory.map((item) => {
+        return {
+          id: item.category_id,
+          title: this.categoryMap[item.category_id]
+            ? `${this.categoryMap[item.category_id].title}`
+            : `未知${item.category_id}`,
+          count: item.count,
+        }
+      })
+      return [{ id: 0, title: '全部', count: 0 }, ...cates]
+    },
+    availableExts() {
+      const extMap = {
+        pdf: {
+          label: 'PDF',
+          value: 'pdf',
+          count: 0,
+        },
+        doc: {
+          label: 'DOC',
+          value: 'doc',
+          count: 0,
+        },
+        txt: {
+          label: 'TXT',
+          value: 'txt',
+          count: 0,
+        },
+        xls: {
+          label: 'XLS',
+          value: 'xls',
+          count: 0,
+        },
+        ppt: {
+          label: 'PPT',
+          value: 'ppt',
+          count: 0,
+        },
+        other: {
+          label: '其他',
+          value: 'other',
+          count: 0,
+        },
+      }
+      this.aggExt
+        .filter((item) => item.ext)
+        .forEach((item) => {
+          if (wordExtEnum.includes(item.ext)) {
+            extMap.doc.count += item.count
+          } else if (pdfExtEnum.includes(item.ext)) {
+            extMap.pdf.count += item.count
+          } else if (pptExtEnum.includes(item.ext)) {
+            extMap.ppt.count += item.count
+          } else if (excelExtEnum.includes(item.ext)) {
+            extMap.xls.count += item.count
+          } else if (textExtEnum.includes(item.ext)) {
+            extMap.txt.count += item.count
+          } else {
+            extMap.other.count += item.count
+          }
+        })
+
+      // 从 extMap 中获取可用的文件类型，并按照count降序排序
+      const exts = Object.values(extMap)
+        .filter((item) => item.count > 0)
+        .sort((a, b) => b.count - a.count)
+
+      return [{ label: '全部', value: '', count: 0 }, ...exts]
+    },
+    availableLangs() {
+      const langs = this.aggLang
+        .filter((item) => item.code)
+        .map((item) => {
+          let lang = this.filterLanguageName(item.code)
+          lang = lang === '全部语言' ? item.code : lang
+          return {
+            code: item.code,
+            language: `${lang}`,
+            count: item.count,
+          }
+        })
+      return [{ code: 'all', language: '全部', count: 0 }, ...langs]
     },
   },
   watch: {
@@ -601,6 +695,7 @@ export default {
         sort: 'default',
         ext: 'all',
         duration: 'all',
+        language: 'all',
         ...this.$route.query,
       }
       try {
@@ -745,6 +840,9 @@ export default {
         this.total = res.data.total
         this.spend = res.data.spend
         const docs = res.data.document || []
+        this.aggExt = res.data.agg_ext || []
+        this.aggCategory = res.data.agg_category || []
+        this.aggLang = res.data.agg_language || []
         const keywords = []
         this.docs = docs.map((doc) => {
           doc.icon = getIcon(doc.ext)
@@ -769,6 +867,9 @@ export default {
       if (res.status === 200) {
         this.total = res.data.total
         this.spend = res.data.spend
+        this.aggExt = res.data.agg_ext || []
+        this.aggCategory = res.data.agg_category || []
+        this.aggLang = res.data.agg_language || []
         const docs = res.data.document || []
         const keywords = []
         this.docs = docs.map((doc) => {
@@ -794,6 +895,9 @@ export default {
       if (res.status === 200) {
         this.total = res.data.total
         this.spend = res.data.spend
+        this.aggExt = res.data.agg_ext || []
+        this.aggCategory = res.data.agg_category || []
+        this.aggLang = res.data.agg_language || []
         const articles = res.data.article || []
         const keywords = []
         articles.map((article) => {
@@ -1066,7 +1170,7 @@ export default {
           display: inline-flex;
           align-items: center;
           justify-content: space-between;
-          padding: 8px;
+          padding: 8px 5px;
           font-size: 13px;
           text-decoration: none;
           border-radius: 4px;

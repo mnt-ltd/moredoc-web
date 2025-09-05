@@ -1,5 +1,9 @@
 <template>
   <div class="wp-admin-container">
+    <!-- 爬虫功能 -->
+    <div v-if="isAdmin || canICrawlArticle" class="wp-crawl-section">
+      <FormCrawlArticle @success="crawlArticleSuccess"></FormCrawlArticle>
+    </div>
     <el-form
       ref="formArticle"
       label-position="top"
