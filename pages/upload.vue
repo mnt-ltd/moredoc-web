@@ -472,6 +472,14 @@ import { mapActions, mapGetters } from 'vuex'
 import { formatBytes } from '~/utils/utils'
 import { createDocument } from '~/api/document'
 import { uploadDocument } from '~/api/attachment'
+import {
+  wordExtEnum,
+  excelExtEnum,
+  pptExtEnum,
+  otherExtEnum,
+  pdfExtEnum,
+  textExtEnum,
+} from '~/utils/enum'
 export default {
   data() {
     return {
@@ -487,53 +495,12 @@ export default {
       filesMap: {},
       loading: false,
       percentAge: 0,
-      allowExt: [
-        '.doc',
-        '.docx',
-        '.pdf',
-        '.ppt',
-        '.pptx',
-        '.epub',
-        '.xls',
-        '.xlsx',
-        '.rtf',
-        '.wps',
-        '.odt',
-        '.dot',
-        '.ppt',
-        '.pptx',
-        '.pps',
-        '.ppsx',
-        '.dps',
-        '.odp',
-        '.pot',
-        '.xls',
-        '.xlsx',
-        '.csv',
-        '.tsv',
-        '.et',
-        '.ods',
-        '.epub',
-        '.umd',
-        '.chm',
-        '.mobi',
-        '.txt',
-        '.azw',
-        '.azw3',
-        '.azw4',
-      ],
-      wordExtEnum: ['.doc', '.docx', '.rtf', '.wps', '.odt', '.dot'],
-      pptExtEnum: ['.ppt', '.pptx', '.pps', '.ppsx', '.dps', '.odp', '.pot'],
-      excelExtEnum: ['.xls', '.xlsx', '.csv', '.tsv', '.et', '.ods'],
-      otherExtEnum: [
-        '.epub',
-        '.umd',
-        '.chm',
-        '.mobi',
-        '.azw',
-        '.azw3',
-        '.azw4',
-      ],
+      wordExtEnum,
+      pptExtEnum,
+      excelExtEnum,
+      otherExtEnum,
+      textExtEnum,
+      pdfExtEnum,
       wordExt: [],
       pptExt: [],
       excelExt: [],
@@ -567,7 +534,23 @@ export default {
     ...mapGetters('user', ['token', 'user', 'groups']),
     ...mapGetters('category', ['categoryTrees']),
     ...mapGetters('setting', ['settings']),
-
+    allowExt() {
+      return [
+        '.doc',
+        '.docx',
+        '.pdf',
+        '.ppt',
+        '.pptx',
+        '.epub',
+        '.xls',
+        '.xlsx',
+        ...this.wordExtEnum,
+        ...this.pptExtEnum,
+        ...this.excelExtEnum,
+        ...this.otherExtEnum,
+        ...this.textExtEnum,
+      ]
+    },
     // 允许的文件扩展名显示文本
     allowExtDisplay() {
       return (
