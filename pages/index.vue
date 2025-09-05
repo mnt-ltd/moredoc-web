@@ -6,8 +6,14 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import HomeV1 from '~/components/home/v1.vue'
+import HomeV2 from '~/components/home/v2.vue'
 
 export default {
+  components: {
+    HomeV1,
+    HomeV2,
+  },
   computed: {
     ...mapGetters('setting', ['settings']),
     loading() {
