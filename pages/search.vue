@@ -113,7 +113,7 @@
       <!-- 左侧过滤条件 -->
       <el-col ref="searchLeft" :span="5" class="search-left hidden-xs-only">
         <!-- 文档分类 -->
-        <div class="filter-section">
+        <div v-if="availableCategories.length > 1" class="filter-section">
           <h4>
             <i class="el-icon-folder-opened"></i>
             分类
@@ -148,7 +148,7 @@
         </div>
 
         <!-- 文档语言 -->
-        <div v-if="availableLangs.length > 0" class="filter-section">
+        <div v-if="availableLangs.length > 1" class="filter-section">
           <h4>
             <i class="el-icon-s-flag"></i>
             语言
@@ -183,7 +183,7 @@
         </div>
 
         <!-- 文档格式 -->
-        <div v-if="availableExts.length > 0" class="filter-section">
+        <div v-if="availableExts.length > 1" class="filter-section">
           <h4>
             <i class="el-icon-document"></i>
             格式
@@ -218,7 +218,7 @@
           </div>
         </div>
         <!-- 清除筛选 -->
-        <div v-if="hasActiveFilters()" class="filter-actions">
+        <!-- <div v-if="hasActiveFilters()" class="filter-actions">
           <el-button
             type="text"
             size="small"
@@ -228,7 +228,7 @@
           >
             清除所有筛选
           </el-button>
-        </div>
+        </div> -->
       </el-col>
 
       <el-col ref="searchMain" :span="14" class="search-main">
@@ -245,7 +245,10 @@
             <div class="search-filter">
               <!-- 移动端显示所有筛选条件 -->
               <div class="hidden-sm-and-up mobile-filters">
-                <el-dropdown :show-timeout="showTimeout">
+                <el-dropdown
+                  v-if="availableCategories.length > 1"
+                  :show-timeout="showTimeout"
+                >
                   <el-button type="text" :size="filterSize">
                     {{ filterCategoryName(query.category_id)
                     }}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -274,7 +277,7 @@
                   </el-dropdown-menu>
                 </el-dropdown>
                 <el-dropdown
-                  v-if="availableLangs.length > 0"
+                  v-if="availableLangs.length > 1"
                   :show-timeout="showTimeout"
                 >
                   <el-button type="text" :size="filterSize">
@@ -304,7 +307,10 @@
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-                <el-dropdown :show-timeout="showTimeout">
+                <el-dropdown
+                  v-if="availableExts.length > 1"
+                  :show-timeout="showTimeout"
+                >
                   <el-button type="text" :size="filterSize">
                     <img
                       v-if="query.ext != 'all' && query.ext != ''"
@@ -665,7 +671,8 @@ export default {
           page: 1,
           size: 10,
           sort: 'default',
-          ext: 'all',
+          ext: '',
+          language: 'all',
           duration: 'all',
           ...val,
         }
@@ -863,6 +870,9 @@ export default {
       if (res.status === 200) {
         this.total = res.data.total
         this.spend = res.data.spend
+        this.aggExt = res.data.agg_ext || []
+        this.aggCategory = res.data.agg_category || []
+        this.aggLang = res.data.agg_language || []
         const docs = res.data.document || []
         const keywords = []
         this.docs = docs.map((doc) => {
@@ -888,6 +898,9 @@ export default {
       if (res.status === 200) {
         this.total = res.data.total
         this.spend = res.data.spend
+        this.aggExt = res.data.agg_ext || []
+        this.aggCategory = res.data.agg_category || []
+        this.aggLang = res.data.agg_language || []
         const articles = res.data.article || []
         const keywords = []
         articles.map((article) => {
