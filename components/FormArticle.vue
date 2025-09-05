@@ -32,11 +32,11 @@
           <!-- 内容编辑器 -->
           <div class="wp-editor-section">
             <el-form-item class="wp-editor-item">
-              <Editor
-                v-if="canIPublish"
-                v-model="article.content"
-                :init="init"
-              />
+              <div v-if="canIPublish">
+                <client-only>
+                  <Editor v-model="article.content" :init="init" />
+                </client-only>
+              </div>
               <div v-else class="wp-no-permission-editor">
                 <div class="wp-no-permission-hint">
                   <i class="el-icon-lock"></i>
