@@ -229,6 +229,8 @@
             清除所有筛选
           </el-button>
         </div> -->
+        <!-- 防止左侧分栏抖动 -->
+        <div>&nbsp;</div>
       </el-col>
 
       <el-col ref="searchMain" :span="14" class="search-main">
