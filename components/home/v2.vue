@@ -729,9 +729,8 @@ export default {
     },
 
     onSearch() {
-      if (this.search.wd.trim()) {
-        const query = { wd: this.search.wd }
-        this.$router.push({ path: '/search', query })
+      if (this.search.wd) {
+        location.href = '/search?wd=' + encodeURIComponent(this.search.wd)
       }
     },
 
