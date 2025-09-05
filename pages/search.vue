@@ -844,6 +844,11 @@ export default {
 </script>
 <style lang="scss">
 .search-page {
+  .logo {
+    img {
+      height: 40px;
+    }
+  }
   .layout-default {
     padding-top: 0;
     .el-main {
