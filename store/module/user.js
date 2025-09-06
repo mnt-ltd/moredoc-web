@@ -10,8 +10,8 @@ import {
   registerByMobile,
   loginByMobile,
   listUserGroup,
-  createContextualAPI,
 } from '~/api/user'
+import { createContextualAPI } from '~/api/userCtx'
 import { permissionsToTree } from '~/utils/permission'
 import { loginOauth, bindOauth } from '~/api/oauth'
 export const user = {
