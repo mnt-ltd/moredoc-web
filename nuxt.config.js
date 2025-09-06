@@ -36,6 +36,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '@/plugins/axios',
     '@/plugins/element-ui',
     { src: '@/plugins/table-drag', mode: 'client' },
     { src: '@/plugins/tinymce', mode: 'client' },

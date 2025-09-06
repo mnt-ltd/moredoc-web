@@ -8,8 +8,8 @@ import {
   getUserPermissions,
   register,
   listUserGroup,
-  createContextualAPI,
 } from '~/api/user'
+import { createContextualAPI } from '~/api/userCtx'
 import { permissionsToTree } from '~/utils/permission'
 export const user = {
   namespaced: true,
