@@ -280,7 +280,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import {
   getArticle,
   getRelatedArticles,
@@ -313,11 +313,7 @@ export default {
     }
   },
   async fetch() {
-    if (this.categories.length === 0) {
-      await this.getCategories()
-    }
     await this.getArticle()
-    await this.getFavorite()
   },
   head() {
     return {
@@ -338,7 +334,6 @@ export default {
   },
   computed: {
     ...mapGetters('setting', ['settings', 'navigations']),
-    ...mapGetters('category', ['categoryMap', 'categoryTrees', 'categories']),
     ...mapGetters('user', ['user', 'permissions']),
     articleName() {
       const nav = this.navigations.find((nav) => nav.href === '/article')
@@ -377,14 +372,14 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
+    await this.getFavorite()
     window.addEventListener('scroll', this.handleScroll)
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
-    ...mapActions('category', ['getCategories']),
     formatRelativeTime,
     async getArticle() {
       const res = await getArticle({ identifier: this.$route.params.id })
