@@ -113,7 +113,7 @@
       <!-- 左侧过滤条件 -->
       <el-col ref="searchLeft" :span="5" class="search-left hidden-xs-only">
         <!-- 文档分类 -->
-        <div v-if="availableCategories.length > 1" class="filter-section">
+        <div v-if="availableCategories.length > 0" class="filter-section">
           <h4>
             <i class="el-icon-folder-opened"></i>
             分类
@@ -148,7 +148,7 @@
         </div>
 
         <!-- 文档语言 -->
-        <div v-if="availableLangs.length > 1" class="filter-section">
+        <div v-if="availableLangs.length > 0" class="filter-section">
           <h4>
             <i class="el-icon-s-flag"></i>
             语言
@@ -183,7 +183,7 @@
         </div>
 
         <!-- 文档格式 -->
-        <div v-if="availableExts.length > 1" class="filter-section">
+        <div v-if="availableExts.length > 0" class="filter-section">
           <h4>
             <i class="el-icon-document"></i>
             格式
@@ -248,7 +248,7 @@
               <!-- 移动端显示所有筛选条件 -->
               <div class="hidden-sm-and-up mobile-filters">
                 <el-dropdown
-                  v-if="availableCategories.length > 1"
+                  v-if="availableCategories.length > 0"
                   :show-timeout="showTimeout"
                 >
                   <el-button type="text" :size="filterSize">
@@ -279,7 +279,7 @@
                   </el-dropdown-menu>
                 </el-dropdown>
                 <el-dropdown
-                  v-if="availableLangs.length > 1"
+                  v-if="availableLangs.length > 0"
                   :show-timeout="showTimeout"
                 >
                   <el-button type="text" :size="filterSize">
@@ -310,7 +310,7 @@
                   </el-dropdown-menu>
                 </el-dropdown>
                 <el-dropdown
-                  v-if="availableExts.length > 1"
+                  v-if="availableExts.length > 0"
                   :show-timeout="showTimeout"
                 >
                   <el-button type="text" :size="filterSize">
