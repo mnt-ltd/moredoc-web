@@ -1386,10 +1386,6 @@ export default {
     }
   }
 }
-.filter-options {
-  max-height: 320px;
-  overflow: auto;
-}
 .header {
   display: flex;
   justify-content: space-between;
