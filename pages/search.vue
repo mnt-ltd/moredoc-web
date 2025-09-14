@@ -829,7 +829,7 @@ export default {
         this.stats = res.data
       }
     },
-    execSearch() {
+    async execSearch() {
       const query = { ...this.query }
       if (!query.category_id) {
         delete query.category_id
@@ -838,13 +838,13 @@ export default {
       delete query.duration
       switch (this.searchType) {
         case 1:
-          this.execSearchArticle(query)
+          await this.execSearchArticle(query)
           break
         case -1:
-          this.execAggregateSearch(query)
+          await this.execAggregateSearch(query)
           break
         default:
-          this.execSearchDocument(query)
+          await this.execSearchDocument(query)
           break
       }
     },
