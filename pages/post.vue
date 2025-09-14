@@ -185,7 +185,7 @@ export default {
     margin-bottom: 32px;
 
     .breadcrumb {
-      ::v-deep .el-breadcrumb {
+      :v-deep(.el-breadcrumb) {
         .el-breadcrumb__item {
           .el-breadcrumb__inner {
             color: #606266;
@@ -300,7 +300,7 @@ export default {
 
     .top-nav {
       .breadcrumb {
-        ::v-deep .el-breadcrumb {
+        :v-deep(.el-breadcrumb) {
           .el-breadcrumb__item {
             .el-breadcrumb__inner {
               font-size: 13px;
