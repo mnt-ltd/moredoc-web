@@ -536,6 +536,18 @@ export default {
       showTimeout: 50,
     }
   },
+  async fetch() {
+    // 解析查询参数
+    await this.parseQuery()
+
+    // 并行获取基础数据
+    await Promise.all([this.getStats(), this.getAdvertisements('search')])
+
+    // 如果有搜索关键词，执行搜索
+    if (this.query.wd) {
+      await this.execSearch()
+    }
+  },
   head() {
     return {
       bodyAttrs: {
@@ -567,15 +579,18 @@ export default {
   watch: {
     '$route.query': {
       async handler() {
-        await this.parseQuery()
-        await this.execSearch()
+        // 在客户端路由变化时重新获取数据
+        if (process.client) {
+          await this.parseQuery()
+          await this.execSearch()
+        }
       },
-      immediate: true,
+      immediate: false, // 避免与 fetch 重复执行
     },
   },
   created() {
+    // 只保留必要的初始化逻辑
     this.parseQuery()
-    Promise.all([this.getStats(), this.getAdvertisements('search')])
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
@@ -598,7 +613,8 @@ export default {
       try {
         query.category_id = parseInt(query.category_id) || 0
       } catch (error) {
-        console.log(error)
+        // 解析失败时使用默认值
+        query.category_id = 0
       }
       query.page = parseInt(query.page) || 1
       query.size = parseInt(query.size) || 10
@@ -661,7 +677,8 @@ export default {
         try {
           maxHeight = searchMain.$el.offsetHeight - scrollTop - 70
         } catch (error) {
-          console.log(error)
+          // 计算失败时使用默认值
+          maxHeight = 500
         }
 
         if (this.searchLeftWidth === 0) {
@@ -710,23 +727,33 @@ export default {
         this.stats = res.data
       }
     },
-    execSearch() {
+    async execSearch() {
       const query = { ...this.query }
       if (!query.category_id) {
         delete query.category_id
       }
       query.created_at = genTimeDuration(query.duration)
       delete query.duration
-      if (this.searchType === 1) {
-        this.execSearchArticle(query)
-      } else {
-        this.execSearchDocument(query)
+
+      // 只在客户端设置 loading 状态
+      if (process.client) {
+        this.loading = true
+      }
+
+      try {
+        if (this.searchType === 1) {
+          await this.execSearchArticle(query)
+        } else {
+          await this.execSearchDocument(query)
+        }
+      } finally {
+        if (process.client) {
+          this.loading = false
+        }
       }
     },
     async execSearchDocument(query) {
-      this.loading = true
       const res = await searchDocument(query)
-      this.loading = false
       if (res.status === 200) {
         this.total = res.data.total
         this.spend = res.data.spend
@@ -749,7 +776,6 @@ export default {
           return doc
         })
       }
-      this.loading = false
     },
     async execSearchArticle(query) {
       const res = await searchArticle(query)
