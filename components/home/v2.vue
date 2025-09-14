@@ -792,15 +792,6 @@ export default {
       const types = ['primary', 'success', 'info', 'warning', 'danger']
       return types[index % types.length]
     },
-
-    getUserTagType(groupName) {
-      const typeMap = {
-        管理员: 'danger',
-        VIP用户: 'warning',
-        普通用户: 'info',
-      }
-      return typeMap[groupName] || 'info'
-    },
   },
 }
 </script>

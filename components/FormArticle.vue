@@ -467,7 +467,7 @@ export default {
   border-bottom: 1px solid #e4e7ed;
 
   .wp-title-input {
-    ::v-deep .el-input__inner {
+    :v-deep(.el-input__inner) {
       border: none;
       font-size: 1.7em;
       font-weight: 500;
@@ -490,7 +490,7 @@ export default {
     }
   }
 
-  ::v-deep .el-form-item {
+  :v-deep(.el-form-item) {
     margin-bottom: 0;
   }
 }
@@ -502,16 +502,16 @@ export default {
   .wp-editor-item {
     margin-bottom: 0;
 
-    ::v-deep .el-form-item__content {
+    :v-deep(.el-form-item__content) {
       line-height: normal;
     }
 
-    ::v-deep .tox-tinymce {
+    :v-deep(.tox-tinymce) {
       border: none;
       border-radius: 0;
     }
 
-    ::v-deep .tox-toolbar-overlord {
+    :v-deep(.tox-toolbar-overlord) {
       background: #fafafa;
       border-bottom: 1px solid #e4e7ed;
     }
@@ -557,11 +557,11 @@ export default {
     color: #303133;
   }
 
-  ::v-deep .el-form-item {
+  :v-deep(.el-form-item) {
     margin-bottom: 0;
   }
 
-  ::v-deep .el-textarea__inner {
+  :v-deep(.el-textarea__inner) {
     border: 1px solid #dcdfe6;
     border-radius: 4px;
     font-size: 14px;
@@ -643,7 +643,7 @@ export default {
   }
 
   // 表单项样式调整
-  ::v-deep .el-form-item {
+  :v-deep(.el-form-item) {
     margin-bottom: 18px;
 
     &:last-child {
@@ -696,7 +696,7 @@ export default {
 }
 
 // 隐藏TinyMCE推广信息
-::v-deep .tox-promotion {
+:v-deep(.tox-promotion) {
   display: none !important;
 }
 
@@ -732,7 +732,7 @@ export default {
     padding: 16px;
 
     .wp-title-input {
-      ::v-deep .el-input__inner {
+      :v-deep(.el-input__inner) {
         font-size: 1.4em;
         padding: 12px 0;
       }
@@ -774,7 +774,7 @@ export default {
     padding: 12px;
 
     .wp-title-input {
-      ::v-deep .el-input__inner {
+      :v-deep(.el-input__inner) {
         font-size: 1.2em;
         padding: 10px 0;
       }
