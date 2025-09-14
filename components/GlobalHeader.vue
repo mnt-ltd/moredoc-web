@@ -451,13 +451,7 @@ export default {
       this.getAdvertisements('global'),
       this.getSettingsRecharge(),
     ])
-    if (this.user.id > 0) {
-      await Promise.all([
-        this.getUser(),
-        this.getUserPermissions(),
-        this.getUserGroups(),
-      ])
-    }
+    await this.checkAndRefreshUser()
 
     const trees = categoryToTrees(this.categories)
     this.categoryDocumentTrees = trees.filter((item) => {
