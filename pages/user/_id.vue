@@ -62,7 +62,7 @@ export default {
       user: {
         id: 0,
       },
-      activeTab: this.$route.name,
+      activeTab: this.$route.name || '',
     }
   },
   head() {

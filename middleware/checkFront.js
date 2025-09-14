@@ -2,7 +2,10 @@ import { requireLogin } from '~/utils/utils'
 export default function ({ store, route, redirect, from }) {
   // Every time the route changes (fired on initialization too)
   // 如果是注册或者登录，则带个redirect参数，用于登录后跳转
+  // 修复SSR环境下route.name和from.name可能为undefined的问题
   if (
+    route &&
+    from &&
     (route.name === 'login' || route.name === 'register') &&
     !(from.name === 'login' || from.name === 'register')
   ) {
