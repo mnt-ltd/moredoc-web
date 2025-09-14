@@ -9,7 +9,8 @@ export default function ({ store, route, redirect }) {
       permissions.length === 0
     ) {
       // 关站了，且不是管理员
-      if (route.name !== 'login') {
+      // 修复SSR环境下route.name可能为undefined的问题
+      if (route && route.name !== 'login') {
         redirect('/login')
       }
       return

@@ -9,7 +9,7 @@
         ></div>
       </div>
     </template>
-    <el-header v-if="$route.name !== 'search' || isMobile">
+    <el-header v-if="($route && $route.name !== 'search') || isMobile">
       <div>
         <el-menu
           :default-active="activePath"
