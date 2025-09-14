@@ -323,9 +323,8 @@
                   </div>
                   <div class="user-details">
                     <h3 class="username">{{ user.username }}</h3>
-                    <el-tag size="mini" :type="getUserTagType(user.group_name)">
-                      {{ user.group_name || '普通用户' }}
-                    </el-tag>
+                    <el-tag size="mini" type="info"> 个性签名 </el-tag>
+                    <small>{{ user.signature || '暂无个性签名' }}</small>
                   </div>
                 </div>
 
@@ -380,12 +379,12 @@
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item>
-                        <nuxt-link to="/upload"
+                        <nuxt-link to="/upload" class="el-link el-link--default"
                           ><i class="el-icon-upload"></i> 上传文档</nuxt-link
                         >
                       </el-dropdown-item>
                       <el-dropdown-item>
-                        <nuxt-link to="/me"
+                        <nuxt-link to="/me" class="el-link el-link--default"
                           ><i class="el-icon-user"></i> 个人中心</nuxt-link
                         >
                       </el-dropdown-item>
