@@ -234,7 +234,7 @@
       </el-col>
 
       <el-col ref="searchMain" :span="14" class="search-main">
-        <el-card v-loading="loading" shadow="never">
+        <el-card shadow="never">
           <div slot="header" class="header">
             <div class="search-tips hidden-xs-only">
               本次搜索耗时
@@ -501,7 +501,6 @@ export default {
   data() {
     return {
       categoryTypeOptions,
-      loading: false,
       query: {
         wd: this.$route.query.wd || '',
         page: 1,
@@ -552,6 +551,18 @@ export default {
       aggExt: [],
       aggLang: [],
       aggCategory: [],
+    }
+  },
+  async fetch() {
+    // 解析查询参数
+    await this.parseQuery()
+
+    // 并行获取基础数据
+    await Promise.all([this.getStats(), this.getAdvertisements('search')])
+
+    // 如果有搜索关键词，执行搜索
+    if (this.query.wd) {
+      await this.execSearch()
     }
   },
   head() {
@@ -669,15 +680,18 @@ export default {
   watch: {
     '$route.query': {
       async handler() {
-        await this.parseQuery()
-        await this.execSearch()
+        // 在客户端路由变化时重新获取数据
+        if (process.client) {
+          await this.parseQuery()
+          await this.execSearch()
+        }
       },
-      immediate: true,
+      immediate: false, // 避免与 fetch 重复执行
     },
   },
   created() {
+    // 只保留必要的初始化逻辑
     this.parseQuery()
-    Promise.all([this.getStats(), this.getAdvertisements('search')])
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
@@ -701,7 +715,8 @@ export default {
       try {
         query.category_id = parseInt(query.category_id) || 0
       } catch (error) {
-        console.log(error)
+        // 解析失败时使用默认值
+        query.category_id = 0
       }
       query.page = parseInt(query.page) || 1
       query.size = parseInt(query.size) || 10
@@ -764,7 +779,8 @@ export default {
         try {
           maxHeight = searchMain.$el.offsetHeight - scrollTop - 70
         } catch (error) {
-          console.log(error)
+          // 计算失败时使用默认值
+          maxHeight = 500
         }
 
         if (this.searchLeftWidth === 0) {
@@ -833,9 +849,7 @@ export default {
       }
     },
     async execAggregateSearch(query) {
-      this.loading = true
       const res = await search(query)
-      this.loading = false
       if (res.status === 200) {
         this.total = res.data.total
         this.spend = res.data.spend
@@ -861,9 +875,7 @@ export default {
       }
     },
     async execSearchDocument(query) {
-      this.loading = true
       const res = await searchDocument(query)
-      this.loading = false
       if (res.status === 200) {
         this.total = res.data.total
         this.spend = res.data.spend
