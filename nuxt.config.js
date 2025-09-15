@@ -74,31 +74,31 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // 服务端请求直接指向后端服务器
-    baseURL: 'http://127.0.0.1:8880',
+    baseURL: process.env.API_BASE_URL,
     // 浏览器端使用代理
     browserBaseURL: '/',
     proxy: true,
     credentials: true, // 发送请求时携带cookie
   },
   server: {
-    port: 3000, // default: 3000
-    host: '0.0.0.0', // default: localhost
+    port: process.env.SERVER_PORT || 3000, // default: 3000
+    host: process.env.SERVER_HOST || '0.0.0.0', // default: localhost
   },
   proxy: {
     '/api': {
-      target: 'http://127.0.0.1:8880', // 目标服务器
+      target: process.env.API_BASE_URL, // 目标服务器
       changeOrigin: true,
     },
     '/view': {
-      target: 'http://127.0.0.1:8880', // 目标服务器
+      target: process.env.API_BASE_URL, // 目标服务器
       changeOrigin: true,
     },
     '/uploads': {
-      target: 'http://127.0.0.1:8880', // 目标服务器
+      target: process.env.API_BASE_URL, // 目标服务器
       changeOrigin: true,
     },
     '/download': {
-      target: 'http://127.0.0.1:8880', // 目标服务器
+      target: process.env.API_BASE_URL, // 目标服务器
       changeOrigin: true,
     },
   },
