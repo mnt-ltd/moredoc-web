@@ -96,7 +96,6 @@ const cumstomPermissionMap = {
       '/admin/config/converter',
       '/admin/config/download',
       '/admin/config/score',
-      '/admin/config/ssr',
       '/admin/config/email',
       '/admin/config/captcha',
     ],
@@ -345,11 +344,6 @@ export const adminMenus = [
         title: '积分配置',
         page: '/admin/config/score',
         icon: 'el-icon-coin',
-      },
-      {
-        title: 'SSR配置',
-        page: '/admin/config/ssr',
-        icon: 'el-icon-discover',
       },
       {
         title: '邮箱配置',
