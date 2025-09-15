@@ -121,5 +121,12 @@ export default {
     ],
     // 提取CSS到外部文件
     extractCSS: true,
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        automaticNameDelimiter: '-',
+        maxSize: 300000, // 尝试将超过300KB的块拆分成更小的文件
+      },
+    },
   },
 }
