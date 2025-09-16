@@ -21,15 +21,48 @@
         <div v-if="settings.security.is_close" class="close-tips">
           <div v-html="settings.security.close_statement"></div>
         </div>
-        <el-tabs type="card" v-if="settings.system.enable_sms">
-          <el-tab-pane label="密码登录">
-            <form-login :redirect="redirect"></form-login>
-          </el-tab-pane>
-          <el-tab-pane label="短信登录">
+        <!-- 优先显示小程序扫码登录 -->
+        <div class="wechatmp-login">
+          <div class="login-tabs">
+            <el-button-group>
+              <el-button
+                v-if="
+                  settings.security &&
+                  settings.security.enable_wechatmp_pc_login
+                "
+                :type="activeTab === 'wechatmp' ? 'primary' : 'default'"
+                @click="activeTab = 'wechatmp'"
+                >微信扫码登录</el-button
+              >
+              <el-button
+                :type="activeTab === 'password' ? 'primary' : 'default'"
+                @click="activeTab = 'password'"
+                >账号登录</el-button
+              >
+              <el-button
+                v-if="settings.system.enable_sms"
+                :type="activeTab === 'sms' ? 'primary' : 'default'"
+                @click="activeTab = 'sms'"
+                >短信登录</el-button
+              >
+            </el-button-group>
+          </div>
+
+          <!-- 小程序扫码登录 -->
+          <div v-if="activeTab === 'wechatmp'" class="wechatmp-scan">
+            <WechatMPLogin
+              :is-bind-mode="false"
+              :redirect="redirect"
+              :show-header="false"
+            />
+          </div>
+          <div v-else-if="activeTab === 'sms' && settings.system.enable_sms">
             <form-login-mobile :redirect="redirect"></form-login-mobile>
-          </el-tab-pane>
-        </el-tabs>
-        <form-login v-else :redirect="redirect"></form-login>
+          </div>
+          <div v-else>
+            <form-login :redirect="redirect"></form-login>
+          </div>
+        </div>
         <div class="reg">
           <nuxt-link to="/findpassword" class="el-link el-link--default"
             >找回密码</nuxt-link
@@ -41,7 +74,10 @@
             >注册账户</nuxt-link
           >
         </div>
-        <Oauth v-if="!settings.security.is_close" :redirect="redirect"/>
+        <Oauth
+          v-if="!settings.security.is_close && activeTab !== 'wechatmp'"
+          :redirect="redirect"
+        />
       </el-card>
     </div>
   </div>
@@ -49,12 +85,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import WechatMPLogin from '~/components/WechatMPLogin.vue'
 export default {
+  components: {
+    WechatMPLogin,
+  },
   // 已登录用户，直接跳转到个人中心
   middleware: ['checklogin'],
   data() {
     return {
       redirect: this.$route.query.redirect || '/me',
+      activeTab: '',
     }
   },
   head() {
@@ -84,7 +125,12 @@ export default {
   created() {
     if (this.user.id > 0) {
       this.$router.push(this.redirect)
+      return
     }
+    this.activeTab =
+      this.settings.security && this.settings.security.enable_wechatmp_pc_login
+        ? 'wechatmp'
+        : 'password' // 默认显示小程序扫码登录
   },
 }
 </script>
@@ -115,11 +161,30 @@ export default {
         font-size: 15px;
       }
     }
-    .el-card__body{
+    .el-card__body {
       padding-bottom: 0;
     }
-    .reg{
+    .reg {
       margin: -10px auto 10px;
+    }
+    .wechatmp-login {
+      .login-tabs {
+        margin-bottom: 20px;
+        text-align: center;
+
+        .el-button-group .el-button {
+          padding: 12px 20px;
+        }
+      }
+
+      .wechatmp-scan {
+        text-align: center;
+
+        iframe {
+          border-radius: 4px;
+          min-height: 400px;
+        }
+      }
     }
   }
 }

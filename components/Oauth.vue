@@ -8,7 +8,6 @@
       :href="isBound(oauth.type) ? 'javascript:;' : oauth.authorize_url"
       rel="nofollow"
       :class="isBound(oauth.type) ? 'bound' : ''"
-      @click="showLoginDialog(oauth)"
     >
       <el-tooltip class="item" effect="dark" :content="oauth.name">
         <img :src="oauth.icon" :alt="oauth.name" />
@@ -124,6 +123,19 @@ export default {
           (item) => item.type !== oauthTypeOfficialAccount
           //  || (item.type === oauthTypeOfficialAccount && isWeixin())
         )
+
+        // 如果启用了小程序PC登录，将小程序登录选项放在最前面
+        const settings = this.$store.getters['setting/settings']
+        if (settings.security && settings.security.enable_wechatmp_pc_login) {
+          const wechatMpIndex = oauths.findIndex(
+            (item) => item.type === oauthTypeWechatMini && item.enable
+          )
+          if (wechatMpIndex > -1) {
+            const wechatMpOauth = oauths.splice(wechatMpIndex, 1)[0]
+            oauths.unshift(wechatMpOauth)
+          }
+        }
+
         this.oauths = oauths
         this.enableOauths = oauths.filter((item) => item.enable)
       }
@@ -139,8 +151,10 @@ export default {
     isBound(type) {
       return this.bound[type]
     },
-    showLoginDialog(oauth) {
-      console.log(oauth)
+    showWechatMpBindDialog(oauth) {
+      // 小程序绑定，在新窗口打开绑定页面
+      const bindUrl = `/oauth/wechatmp?bind=true&redirect=/me/profile?tab=oauth`
+      this.newWindow(bindUrl)
     },
   },
 }
