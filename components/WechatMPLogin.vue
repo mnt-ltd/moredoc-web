@@ -60,6 +60,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    isBindMode: {
+      type: Boolean,
+      default: false,
+    },
     redirect: {
       type: String,
       default: '/me',
@@ -72,12 +76,9 @@ export default {
       error: '',
       loading: false,
       timeouter: null,
-      isBindMode: false, // 是否为绑定模式
     }
   },
   async created() {
-    // 检测是否为绑定模式
-    this.isBindMode = this.$route.query.bind === 'true'
     await Promise.all([this.getQrCode(), this.checkLoginStatus()])
   },
   beforeDestroy() {
@@ -90,7 +91,7 @@ export default {
   methods: {
     async getQrCode() {
       this.loading = true
-      const res = await getWechatmpScanCode()
+      const res = await getWechatmpScanCode({ is_bind: this.isBindMode })
       this.loading = false
       if (res.status === 200) {
         this.qrcode = `data:image/png;base64,${res.data.code}` || ''
