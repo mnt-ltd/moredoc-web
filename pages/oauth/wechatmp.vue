@@ -1,23 +1,11 @@
 <template>
-  <div v-if="user && user.id">
-    <WechatMPLogin :show-header="true" :is-bind-mode="true" />
-  </div>
+  <WechatMPLogin :show-header="true" />
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import WechatMPLogin from '~/components/WechatMPLogin.vue'
 export default {
   components: {
     WechatMPLogin,
-  },
-  computed: {
-    ...mapGetters('user', ['user']),
-  },
-  created() {
-    // 未登录，则不允许绑定
-    if (!this.user || this.user.id <= 0) {
-      this.$router.push('/')
-    }
   },
 }
 </script>

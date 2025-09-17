@@ -54,7 +54,7 @@ export default {
     return {
       oauths: [],
       enableOauths: [],
-      bound: {},
+      bound: {}, // 已绑定的第三方登录类型
       oauthTypeOfficialAccount,
     }
   },

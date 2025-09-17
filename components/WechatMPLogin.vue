@@ -52,6 +52,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { checkWechatmpScanStatus, getWechatmpScanCode } from '~/api/oauth'
 export default {
   layout: 'empty',
@@ -60,10 +61,11 @@ export default {
       type: Boolean,
       default: true,
     },
-    isBindMode: {
-      type: Boolean,
-      default: false,
-    },
+    // 已登录用户，则就是绑定，否则就是登录
+    // isBindMode: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     redirect: {
       type: String,
       default: '/me',
@@ -76,6 +78,17 @@ export default {
       error: '',
       loading: false,
       timeouter: null,
+    }
+  },
+  computed: {
+    ...mapGetters('user', ['user']),
+    isBindMode() {
+      return this.user && this.user.id > 0
+    },
+  },
+  head() {
+    return {
+      title: this.isBindMode ? '微信绑定' : '微信登录',
     }
   },
   async created() {
