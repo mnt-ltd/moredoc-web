@@ -14,7 +14,7 @@
         <div slot="header" class="clearfix">
           <span>用户注册</span>
         </div>
-        <el-tabs type="card" v-if="settings.system.enable_sms">
+        <el-tabs v-if="settings.system.enable_sms" type="card">
           <el-tab-pane label="邮箱注册">
             <form-register :redirect="redirect"></form-register>
           </el-tab-pane>
@@ -33,7 +33,7 @@
             >马上登录</nuxt-link
           >
         </div>
-        <Oauth :redirect="redirect"/>
+        <Oauth :redirect="redirect" />
       </el-card>
     </div>
   </div>
@@ -90,10 +90,10 @@ export default {
     max-width: 100%;
     margin: 100px auto;
     margin-right: 0;
-    .el-card__body{
+    .el-card__body {
       padding-bottom: 0;
     }
-    .login{
+    .login {
       margin: -10px auto 10px;
     }
   }
