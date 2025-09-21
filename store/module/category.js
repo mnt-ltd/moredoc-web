@@ -3,10 +3,10 @@ import { categoryToTrees } from '~/utils/utils'
 import { categoryTypeOptions } from '~/utils/enum'
 export const category = {
   namespaced: true,
-  state: {
+  state: () => ({
     categories: [],
     categoryMap: {},
-  },
+  }),
   mutations: {
     setCategories(state, categories) {
       state.categories = categories || []

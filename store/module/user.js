@@ -13,7 +13,7 @@ import { createContextualAPI } from '~/api/userCtx'
 import { permissionsToTree } from '~/utils/permission'
 export const user = {
   namespaced: true,
-  state: {
+  state: () => ({
     user: {
       id: 0,
       username: '',
@@ -28,7 +28,7 @@ export const user = {
     permissions: [],
     allowPages: [],
     groups: [],
-  },
+  }),
   mutations: {
     setUser(state, user) {
       state.user = user
