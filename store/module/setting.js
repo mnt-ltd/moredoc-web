@@ -4,7 +4,7 @@ import { listNavigation } from '~/api/navigation'
 import { categoryToTrees } from '~/utils/utils'
 export const setting = {
   namespaced: true,
-  state: {
+  state: () => ({
     settings: {
       system: {},
       footer: {},
@@ -19,7 +19,7 @@ export const setting = {
       language: [],
     },
     navigations: [],
-  },
+  }),
   mutations: {
     setSettings(state, settings) {
       state.settings = settings

@@ -16,7 +16,7 @@ import { permissionsToTree } from '~/utils/permission'
 import { loginOauth, bindOauth } from '~/api/oauth'
 export const user = {
   namespaced: true,
-  state: {
+  state: () => ({
     user: {
       id: 0,
       username: '',
@@ -32,7 +32,7 @@ export const user = {
     allowPages: [],
     redirectAfterOauth: '/me', // oauth 登录后的跳转页面
     groups: [],
-  },
+  }),
   mutations: {
     setUser(state, user) {
       state.user = user
