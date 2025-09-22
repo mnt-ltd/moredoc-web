@@ -274,6 +274,7 @@ export default {
         category_id: this.$route.query.category_id || undefined,
         order: this.$route.query.tab === 'popular' ? 'view_count desc' : '',
         status: 1, // 审核通过的文章
+        _headers: this._headers,
       })
       if (res.status !== 200) {
         this.$message.error(res.data.message || '获取文章列表失败')
