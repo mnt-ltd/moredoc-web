@@ -1,5 +1,5 @@
 import { requireLogin } from '~/utils/utils'
-export default function ({ store, route, redirect, from }) {
+export default async function ({ store, route, redirect, from }) {
   // Every time the route changes (fired on initialization too)
   // 如果是注册或者登录，则带个redirect参数，用于登录后跳转
   if (
@@ -13,7 +13,10 @@ export default function ({ store, route, redirect, from }) {
     }
   }
 
-  store.dispatch('user/checkAndRefreshUser')
+  await Promise.all([
+    store.dispatch('user/checkAndRefreshUser'),
+    store.dispatch('setting/getSettings'),
+  ])
   const settings = store.getters['setting/settings']
   const user = store.getters['user/user']
   const permissions = store.getters['user/permissions'] || []
