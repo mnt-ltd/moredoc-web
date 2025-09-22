@@ -299,3 +299,14 @@ export function genPrevPage(hash, pageNO, ext, enableGZIP) {
   }
   return `/view/page/${hash}/${pageNO}${ext}`
 }
+
+export function setHeadersFromCookies(cookies = {}) {
+  const headers = {}
+  if (cookies.token) {
+    headers.authorization = `Bearer ${cookies.token}`
+  }
+  headers.cookie = Object.keys(cookies)
+    .map((key) => `${key}=${cookies[key]}`)
+    .join('; ')
+  return headers
+}

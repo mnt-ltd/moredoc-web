@@ -511,6 +511,7 @@ import { listDocument, listDocumentForHome } from '~/api/document'
 import { listArticle } from '~/api/article'
 import { getSignedToday, signToday } from '~/api/user'
 import { getStats } from '~/api/config'
+import { setHeadersFromCookies } from '~/utils/utils'
 
 export default {
   name: 'HomePage',
@@ -622,6 +623,7 @@ export default {
           is_recommend: true,
           order: 'recommend_at desc',
           limit: 14,
+          _headers: setHeadersFromCookies(this.$nuxt.context.$cookies.getAll()),
         })
         if (res.status === 200) {
           this.recommendedDocuments = res.data.document || []

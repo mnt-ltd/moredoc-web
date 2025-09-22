@@ -74,6 +74,22 @@ const getBaseURL = () => {
   return ''
 }
 
+// 删除下划线的无效参数
+const removeUnderscoreParams = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => removeUnderscoreParams(item))
+  } else if (obj !== null && typeof obj === 'object') {
+    const newObj = {}
+    Object.keys(obj).forEach((key) => {
+      if (!key.startsWith('_')) {
+        newObj[key] = removeUnderscoreParams(obj[key])
+      }
+    })
+    return newObj
+  }
+  return obj
+}
+
 const service = axios.create({
   baseURL: getBaseURL(),
   timeout: 30000,
@@ -92,20 +108,26 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     let token = ''
-
-    // 在服务端避免直接访问 store，使用默认行为
-    if (process.server) {
-      // 服务端不设置 token，由带上下文的服务处理
-      token = ''
-    } else {
-      // 在客户端，优先从store获取，然后从cookie获取
+    try {
       token = store().getters['user/token'] || Cookies.get('token') || ''
+    } catch (error) {
+      console.log('获取token失败:', error)
     }
-
     if (token) {
       config.headers.authorization = `Bearer ${token}`
     }
 
+    let headers = {}
+    if (config.params && config.params._headers) {
+      headers = { ...config.params._headers }
+    }
+    if (config.data && config.data._headers) {
+      headers = { ...headers, ...config.data._headers }
+    }
+
+    config.headers = { ...config.headers, ...headers }
+    config.params = removeUnderscoreParams(config.params)
+    config.data = removeUnderscoreParams(config.data)
     return config
   },
   (error) => {
