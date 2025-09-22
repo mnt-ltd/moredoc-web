@@ -160,10 +160,10 @@ export const datetimePickerOptions = {
 }
 
 export const spiderUrlStatusOptions = [
-  { label: '待采集', value: 0, type: 'info' },
-  { label: '采集中', value: 1, type: 'primary' },
-  { label: '采集完成', value: 2, type: 'success' },
-  { label: '采集失败', value: 3, type: 'warning' },
+  { label: '待嗅探', value: 0, type: 'info' },
+  { label: '嗅探中', value: 1, type: 'primary' },
+  { label: '嗅探完成', value: 2, type: 'success' },
+  { label: '嗅探失败', value: 3, type: 'warning' },
 ]
 
 export const spiderDocumentStatusOptions = [

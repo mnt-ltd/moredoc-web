@@ -99,7 +99,7 @@ export default {
   },
   head() {
     return {
-      title: `链接管理 - ${this.settings.system.sitename}`,
+      title: `文档嗅探 - ${this.settings.system.sitename}`,
     }
   },
   computed: {
