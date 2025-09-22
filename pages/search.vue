@@ -836,6 +836,7 @@ export default {
       }
       query.created_at = genTimeDuration(query.duration)
       delete query.duration
+      query._headers = this._headers
       switch (this.searchType) {
         case 1:
           await this.execSearchArticle(query)

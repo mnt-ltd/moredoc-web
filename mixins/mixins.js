@@ -1,5 +1,6 @@
 import { advertisementPositions } from '~/utils/enum'
 import { getAdvertisementByPosition } from '~/api/advertisement'
+import { setHeadersFromCookies } from '~/utils/utils'
 export default {
   data() {
     return {
@@ -10,6 +11,11 @@ export default {
       advertisements: [], // 广告
       footerTop: 0, // footer距离顶部的高度
     }
+  },
+  computed: {
+    _headers() {
+      return setHeadersFromCookies(this.$cookies.getAll())
+    },
   },
   mounted() {
     this.handleScreenResize()
@@ -53,11 +59,14 @@ export default {
         if (item.value === page) {
           ;(item.children || []).map((child) => {
             positions.push(child.value)
+            return child
           })
         }
+        return item
       })
       const res = await getAdvertisementByPosition({
         position: positions,
+        _headers: this._headers,
       })
       if (res.status === 200) {
         this.advertisements = res.data.advertisement || []

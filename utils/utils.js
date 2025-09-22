@@ -378,3 +378,14 @@ export function isWeixin() {
   const ua = navigator.userAgent.toLowerCase()
   return ua.includes('micromessenger')
 }
+
+export function setHeadersFromCookies(cookies = {}) {
+  const headers = {}
+  if (cookies.token) {
+    headers.authorization = `Bearer ${cookies.token}`
+  }
+  headers.cookie = Object.keys(cookies)
+    .map((key) => `${key}=${cookies[key]}`)
+    .join('; ')
+  return headers
+}

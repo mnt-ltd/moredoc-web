@@ -1055,6 +1055,7 @@ export default {
         uuid: this.documentUUID,
         with_author: !withAllContent, // 不需要获取作者信息
         with_all_content: withAllContent,
+        _headers: this._headers,
       })
 
       if (res.status !== 200) {
@@ -1328,6 +1329,7 @@ export default {
     async getRelatedDocuments() {
       const res = await getRelatedDocuments({
         id: this.document.id,
+        _headers: this._headers,
       })
       if (res.status === 200) {
         this.relatedDocuments = res.data.document || []
@@ -1437,6 +1439,7 @@ export default {
     async getFavorite() {
       const res = await getFavorite({
         document_id: this.document.id,
+        _headers: this._headers,
       })
       if (res.status === 200) {
         this.favorite = res.data || { id: 0 }
@@ -1520,6 +1523,7 @@ export default {
       }
       const res = await getDocumentScore({
         document_id: this.document.id,
+        _headers: this._headers,
       })
       if (res.status === 200) {
         const score = res.data.score / 100 || null

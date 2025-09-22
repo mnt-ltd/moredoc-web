@@ -113,6 +113,7 @@ export default {
       tableListFields: [],
       selectedRow: [],
       formLanguageVisible: false,
+      total: 0,
     }
   },
   head() {

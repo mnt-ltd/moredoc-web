@@ -544,6 +544,7 @@ export default {
           break
       }
       const res = await listDocument({
+        _headers: this._headers,
         order,
         status,
         page: this.query.page,

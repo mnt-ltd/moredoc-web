@@ -176,6 +176,9 @@ export default {
       activeCate: { id: 0, title: '全部文章', description: '', idStr: '' },
     }
   },
+  async fetch() {
+    await Promise.all([this.getArticles(), this.getRecommendArticles()])
+  },
   head() {
     return {
       title:
@@ -208,14 +211,9 @@ export default {
         this.query.is_notice = this.$route.query.is_notice
           ? [this.$route.query.is_notice]
           : []
-        this.setActiveCate()
         this.getArticles()
       },
-      immediate: true,
     },
-  },
-  async fetch() {
-    await Promise.all([this.getRecommendArticles()])
   },
   methods: {
     setActiveCate() {
@@ -283,6 +281,7 @@ export default {
       }
       this.articles = res.data.article || []
       this.total = res.data.total || 0
+      this.setActiveCate()
     },
     async getRecommendArticles() {
       this.loading = true
@@ -291,6 +290,7 @@ export default {
         size: this.recommend.size,
         is_recommend: true,
         status: 1, // 审核通过的文章
+        _headers: this._headers,
       })
       this.loading = false
       if (res.status !== 200) {
