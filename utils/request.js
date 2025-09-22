@@ -2,6 +2,22 @@ import axios from 'axios' // 引入axios
 import qs from 'qs'
 import store from '~/store/index'
 
+// 删除下划线的无效参数
+const removeUnderscoreParams = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => removeUnderscoreParams(item))
+  } else if (obj !== null && typeof obj === 'object') {
+    const newObj = {}
+    Object.keys(obj).forEach((key) => {
+      if (!key.startsWith('_')) {
+        newObj[key] = removeUnderscoreParams(obj[key])
+      }
+    })
+    return newObj
+  }
+  return obj
+}
+
 const service = axios.create({
   timeout: 30000,
   headers: {
@@ -17,6 +33,8 @@ const service = axios.create({
 // http request 拦截器
 service.interceptors.request.use(
   (config) => {
+    config.params = removeUnderscoreParams(config.params)
+    config.data = removeUnderscoreParams(config.data)
     const token = store().getters['user/token'] || ''
     if (token) config.headers.authorization = `Bearer ${token}`
     return config
