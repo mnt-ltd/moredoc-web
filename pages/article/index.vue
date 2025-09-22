@@ -175,6 +175,9 @@ export default {
       activeCate: { id: 0, title: '全部文章', description: '', idStr: '' },
     }
   },
+  async fetch() {
+    await Promise.all([this.getArticles(), this.getRecommendArticles()])
+  },
   head() {
     return {
       title:
@@ -204,14 +207,9 @@ export default {
       handler() {
         const page = this.$route.query.page || 1
         this.query.page = parseInt(page) || 1
-        this.setActiveCate()
         this.getArticles()
       },
-      immediate: true,
     },
-  },
-  async fetch() {
-    await Promise.all([this.getRecommendArticles()])
   },
   methods: {
     setActiveCate() {
@@ -278,6 +276,7 @@ export default {
       }
       this.articles = res.data.article || []
       this.total = res.data.total || 0
+      this.setActiveCate()
     },
     async getRecommendArticles() {
       this.loading = true
