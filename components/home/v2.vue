@@ -597,6 +597,7 @@ export default {
           enable: true,
           field: ['id', 'title', 'path', 'url'],
           type: 0,
+          _headers: this._headers,
         })
         if (res.status === 200) {
           this.banners = res.data.banner || []
@@ -623,7 +624,7 @@ export default {
           is_recommend: true,
           order: 'recommend_at desc',
           limit: 14,
-          _headers: setHeadersFromCookies(this.$nuxt.context.$cookies.getAll()),
+          _headers: this._headers,
         })
         if (res.status === 200) {
           this.recommendedDocuments = res.data.document || []
@@ -641,6 +642,7 @@ export default {
           field: ['id', 'title', 'uuid', 'category_name', 'created_at'],
           order: 'id desc',
           limit: 8,
+          _headers: this._headers,
         })
         if (res.status === 200) {
           this.latestDocuments = res.data.document || []
@@ -655,6 +657,7 @@ export default {
         const res = await listArticle({
           page: 1,
           size: 6,
+          _headers: this._headers,
         })
         if (res.status === 200) {
           this.latestArticles = res.data.article || []
@@ -666,7 +669,10 @@ export default {
 
     async loadCategoryDocuments() {
       try {
-        const res = await listDocumentForHome({ limit: 6 })
+        const res = await listDocumentForHome({
+          limit: 6,
+          _headers: this._headers,
+        })
         if (res.status === 200) {
           this.categoryDocuments = (res.data.document || []).filter(
             (item) => item.document && item.document.length > 0

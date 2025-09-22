@@ -177,6 +177,7 @@ export default {
       const res = await listFriendlink({
         enable: true,
         field: ['id', 'title', 'link'],
+        _headers: this._headers,
       })
       if (res.status === 200) {
         this.friendlinks = res.data.friendlink || []

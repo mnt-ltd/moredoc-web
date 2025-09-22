@@ -286,6 +286,7 @@ export default {
         size: this.recommend.size,
         is_recommend: true,
         status: 1, // 审核通过的文章
+        _headers: this._headers,
       })
       this.loading = false
       if (res.status !== 200) {

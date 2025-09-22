@@ -740,6 +740,7 @@ export default {
         this.loading = true
       }
 
+      query._headers = this._headers
       try {
         if (this.searchType === 1) {
           await this.execSearchArticle(query)

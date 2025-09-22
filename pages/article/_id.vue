@@ -358,7 +358,10 @@ export default {
   methods: {
     formatRelativeTime,
     async getArticle() {
-      const res = await getArticle({ identifier: this.$route.params.id })
+      const res = await getArticle({
+        identifier: this.$route.params.id,
+        _headers: this._headers,
+      })
       if (res.status !== 200) {
         this.$nuxt.error({
           statusCode: 404,

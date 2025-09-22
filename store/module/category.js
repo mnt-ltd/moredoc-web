@@ -1,5 +1,5 @@
 import { listCategory } from '~/api/category'
-import { categoryToTrees } from '~/utils/utils'
+import { categoryToTrees, setHeadersFromCookies } from '~/utils/utils'
 import { categoryTypeOptions } from '~/utils/enum'
 export const category = {
   namespaced: true,
@@ -36,6 +36,7 @@ export const category = {
           'type',
         ],
         type: types,
+        _headers: setHeadersFromCookies(this.$cookies.getAll()),
       })
       if (res.status === 200) {
         commit('setCategories', res.data.category || [])
