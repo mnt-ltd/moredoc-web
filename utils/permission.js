@@ -312,7 +312,7 @@ export const adminMenus = [
     children: [
       {
         page: '/admin/spider/url',
-        title: '链接采集',
+        title: '文档嗅探',
         icon: 'el-icon-link',
       },
       {

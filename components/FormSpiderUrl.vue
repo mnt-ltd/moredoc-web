@@ -6,7 +6,7 @@
       label-width="80px"
       :model="spiderurl"
     >
-      <el-form-item label="采集链接">
+      <el-form-item label="嗅探链接">
         <el-input
           v-model="spiderurl.url"
           :type="spiderurl.id > 0 ? 'text' : 'textarea'"
@@ -15,12 +15,12 @@
           :placeholder="
             spiderurl.id > 0
               ? ''
-              : '请输入链接地址，支持文档链接和网页链接。多个链接请换行，每行一个'
+              : '请输入需要嗅探的链接地址，支持文档链接和网页链接。多个链接请换行，每行一个'
           "
         ></el-input>
       </el-form-item>
-      <el-form-item label="状态" v-if="spiderurl.id > 0">
-        <el-select v-model="spiderurl.status" placeholder="请选择状态">
+      <el-form-item v-if="spiderurl.id > 0" label="状态">
+        <el-select v-model="spiderurl.status" placeholder="请选择嗅探状态">
           <el-option
             v-for="item in spiderUrlStatusOptions"
             :key="item.value"
