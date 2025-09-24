@@ -415,6 +415,15 @@ export default {
     'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
 }
 
+// 爬虫功能区域
+.wp-crawl-section {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e4e7ed;
+  border-radius: 4px;
+}
+
 .wp-category-section {
   margin-bottom: 16px;
 }
