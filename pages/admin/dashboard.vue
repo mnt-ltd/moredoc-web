@@ -138,7 +138,11 @@
           </span>
         </el-descriptions-item>
       </el-descriptions>
-      <div v-if="license.type != 1" class="tips">
+      <div
+        v-if="license.type != 1 && !loadingLicense"
+        v-show="showTips"
+        class="tips"
+      >
         <p>
           <strong
             >感谢使用【魔豆文库 ·
@@ -564,6 +568,7 @@ export default {
       loading: false,
       articleIndexloading: false,
       loadingLicense: false,
+      showTips: false,
       envLoading: false,
       gauges: [],
       devices: [],
@@ -687,6 +692,12 @@ export default {
         this.license = res.data || {}
       }
       this.loadingLicense = false
+      if (this.license.type !== 1) {
+        setTimeout(() => {
+          // 非专业版授权
+          this.showTips = true
+        }, 500)
+      }
     },
     async updateDocumentIndexes() {
       this.loading = true
