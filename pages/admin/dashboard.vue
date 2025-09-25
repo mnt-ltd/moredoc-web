@@ -385,7 +385,12 @@
             >
           </template>
         </el-table-column>
-        <el-table-column prop="version" label="版本" min-width="100">
+        <el-table-column
+          prop="version"
+          show-overflow-tooltip
+          label="版本"
+          min-width="100"
+        >
           <template slot-scope="scope">
             {{ scope.row.version || '-' }}
           </template>
