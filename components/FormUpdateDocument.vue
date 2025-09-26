@@ -33,6 +33,7 @@
             :show-file-list="true"
             :auto-upload="true"
             :on-change="onChange"
+            :on-error="onError"
             :before-upload="beforeUpload"
             :on-remove="onRemove"
             :disabled="loading"
@@ -254,6 +255,12 @@ export default {
           ...this.getInitialDocumentData(),
           ...val,
         }
+        // 清除已上传的文件列表
+        try {
+          this.$refs.upload.clearFiles()
+        } catch (error) {
+          console.log(error)
+        }
       },
       immediate: true,
     },
@@ -306,7 +313,17 @@ export default {
         }
       })
     },
+    onError(err, file, fileList) {
+      try {
+        const message = JSON.parse(err.message)
+        this.$message.error(message.message || '上传失败')
+      } catch (error) {}
+    },
     onChange(file) {
+      if (file.status === 'fail') {
+        this.uploading = false
+        return
+      }
       if (!file.response) {
         this.uploading = true
       } else {
