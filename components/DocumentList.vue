@@ -113,11 +113,12 @@ export default {
     margin: 0;
     a {
       font-size: 18px;
-      font-weight: 400;
+      font-weight: 500;
       display: inline-block;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: #333;
       max-width: 100%;
       img {
         height: 18px;
@@ -148,7 +149,7 @@ export default {
   }
   .doc-desc {
     font-size: 14px;
-    color: #999;
+    color: #606266;
     line-height: 180%;
     overflow: hidden;
     text-overflow: ellipsis;
