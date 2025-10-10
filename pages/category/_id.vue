@@ -591,7 +591,7 @@ export default {
     .item-name {
       width: 60px;
       font-size: 15px;
-      color: #bbb;
+      color: #909399;
     }
 
     .item-content {

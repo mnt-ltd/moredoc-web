@@ -1142,9 +1142,9 @@ export default {
       background-color: #fafbfc;
     }
     .filter-section {
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       background: white;
-      border-radius: 6px;
+      border-radius: 12px;
       padding: 15px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       &:last-child {

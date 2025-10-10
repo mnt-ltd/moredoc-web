@@ -159,6 +159,7 @@ export default {
 .page-post {
   min-height: calc(100vh - 150px);
   background-color: #f8f9fa;
+  border-radius: 12px;
 }
 
 // 主要内容区域
