@@ -124,12 +124,16 @@ export default {
       return this.groups.some((group) => group.enable_article_crawl)
     },
   },
-  created() {
-    this.getArticle()
-    this.getCategories()
+  async created() {
+    await Promise.all([
+      this.getArticle(),
+      this.getCategories(),
+      this.getUserGroups(),
+    ])
   },
   methods: {
     ...mapActions('category', ['getCategories']),
+    ...mapActions('user', ['getUserGroups']),
     async getArticle() {
       const identifier = this.$route.query.identifier
       if (!identifier) {
