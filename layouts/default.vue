@@ -69,7 +69,7 @@ export default {
   }
   padding-top: 60px;
   .el-card {
-    border-radius: 5px;
+    border-radius: 12px;
     border: 0;
   }
   .nav-ucenter {
