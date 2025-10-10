@@ -206,6 +206,7 @@
 <script>
 import tinymce from 'tinymce/tinymce'
 import Editor from '@tinymce/tinymce-vue'
+import MarkdownIt from 'markdown-it'
 import { createArticle, updateArticle } from '~/api/article'
 import { articleStatusOptions } from '~/utils/enum'
 export default {
@@ -244,6 +245,12 @@ export default {
     },
   },
   data() {
+    const markdownParser = new MarkdownIt({
+      html: false,
+      linkify: true,
+      typographer: true,
+    })
+    const vm = this
     return {
       articleStatusOptions,
       init: {
@@ -258,9 +265,12 @@ export default {
         toolbar:
           'undo redo | styleselect blocks | kityformula-editor codesample code table link bold italic | bullist numlist alignleft aligncenter alignright alignjustify indent outdent | image media | searchreplace preview fullscreen help',
         plugins:
-          'kityformula-editor image media wordcount codesample code link charmap emoticons table searchreplace visualblocks fullscreen table help wordcount lists preview',
+          'kityformula-editor image media wordcount codesample code link charmap emoticons table searchreplace visualblocks fullscreen table help wordcount lists preview paste',
         relative_urls: false, // 是否使用相对路径
         images_upload_handler: this.images_upload_handler,
+        setup(editor) {
+          editor.on('Paste', (event) => vm.handleEditorPaste(event, editor))
+        },
       },
       loading: false,
       article: {
@@ -273,6 +283,7 @@ export default {
         category_id: [],
         status: 0,
       },
+      markdownParser,
     }
   },
   watch: {
@@ -333,6 +344,43 @@ export default {
         formData.append('file', blobInfo.blob(), blobInfo.filename())
         xhr.send(formData)
       })
+    },
+    handleEditorPaste(event, editor) {
+      const clipboardData = event.clipboardData
+      if (!clipboardData) {
+        return
+      }
+
+      const plaintext = clipboardData.getData('text/plain')
+      // const htmlData = clipboardData.getData('text/html')
+
+      if (!plaintext) {
+        return
+      }
+
+      if (!this.shouldTreatAsMarkdown(plaintext)) {
+        return
+      }
+
+      event.preventDefault()
+      const converted = this.markdownParser.render(plaintext)
+      editor.insertContent(converted)
+    },
+    containsHtml(content) {
+      const htmlTagPattern = /<\/?[a-z][\s\S]*?>/i
+      return htmlTagPattern.test(content)
+    },
+    shouldTreatAsMarkdown(content) {
+      const text = content.trim()
+      if (!text) {
+        return false
+      }
+      if (this.containsHtml(text)) {
+        return false
+      }
+      const markdownIndicators =
+        /(^|\n)(#{1,6}\s.+|[-*+]\s.+|\d+\.\s.+|>\s.+|`{3}|\[[^\]]+\]\([^)]+\)|\*{1,2}[^*]+\*{1,2})/
+      return markdownIndicators.test(text)
     },
     onSubmit() {
       this.$refs.formArticle.validate(async (valid) => {
