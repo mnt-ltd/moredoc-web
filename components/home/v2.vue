@@ -690,7 +690,7 @@ export default {
     loadFeaturedCategories() {
       if (this.categoryTrees) {
         let featuredCategories = this.categoryTrees
-          .filter((cat) => cat.enable && cat.doc_count > 0)
+          .filter((cat) => cat.enable && cat.doc_count > 0 && !cat.type)
           .slice(0, 8)
         if (featuredCategories.length < 8) {
           // 只取前4个
