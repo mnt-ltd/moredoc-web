@@ -369,3 +369,16 @@ export function isWeixin() {
   const ua = navigator.userAgent.toLowerCase()
   return ua.includes('micromessenger')
 }
+
+export function extractScripts(scriptContent) {
+  // 从多个 <script> 标签中提取内容
+  const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gi
+  const scripts = []
+  let match
+
+  while ((match = scriptRegex.exec(scriptContent)) !== null) {
+    scripts.push(match[1])
+  }
+
+  return scripts
+}
