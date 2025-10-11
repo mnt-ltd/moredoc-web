@@ -23,6 +23,7 @@
     "echarts": "^5.4.2",
     "element-ui": "^2.15.13",
     "hotkeys-js": "^3.10.0",
+    "markdown-it": "^14.1.0",
     "nuxt": "^2.15.8",
     "qrcodejs2": "0.0.2",
     "qs": "^6.11.0",
