@@ -376,7 +376,6 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import QRCode from 'qrcodejs2' // 引入qrcode
 import { getOrder, payOrder, getOrderStatus, closeOrder } from '~/api/order'
 import { formatDatetime, countDownTime, isWeixin } from '~/utils/utils'
 import {
@@ -530,8 +529,11 @@ export default {
           } else if (this.isMobile) {
             location.href = res.data.payment_url
           } else {
-            this.$nextTick(() => {
+            this.$nextTick(async () => {
+              if (!process.client) return
               this.$refs.qrcode.innerHTML = ''
+              // 动态导入 QRCode 库
+              const QRCode = (await import('qrcodejs2')).default
               // eslint-disable-next-line no-new
               new QRCode(this.$refs.qrcode, {
                 width: 160,
