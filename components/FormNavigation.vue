@@ -171,6 +171,10 @@ export default {
             navigation.parent_id[navigation.parent_id.length - 1]
         }
 
+        if (navigation.parent_id === undefined || navigation.parent_id === '') {
+          navigation.parent_id = 0
+        }
+
         if (this.navigation.id > 0) {
           const res = await updateNavigation(navigation)
           if (res.status === 200) {
