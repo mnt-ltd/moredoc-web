@@ -17,7 +17,7 @@
             <el-tooltip
               class="item"
               effect="dark"
-              content="批量修改选中的文档分类"
+              content="批量修改选中的文章分类"
               placement="top"
             >
               <el-button

@@ -136,14 +136,27 @@ export default {
       if (res.status === 200) {
         const navigations = res.data.navigation || []
         navigations.map((item) => {
-          item.title_html = genLinkHTML(item.title, item.href)
-          if (item.color) {
-            // 增加链接颜色
-            item.title_html = item.title_html.replace(
-              '<a',
-              `<a style="color:${item.color}" `
-            )
+          // item.title_html = genLinkHTML(item.title, item.href)
+          // if (item.color) {
+          //   // 增加链接颜色
+          //   item.title_html = item.title_html.replace(
+          //     '<a',
+          //     `<a style="color:${item.color}" `
+          //   )
+          // }
+          if (item.href) {
+            item.href_html = genLinkHTML(item.href, item.href)
+            if (item.color) {
+              // 增加链接颜色
+              item.href_html = item.href_html.replace(
+                '<a',
+                `<a style="color:${item.color}" `
+              )
+            }
+          } else {
+            item.href_html = '-'
           }
+
           item.disable_delete = item.fixed
           return item
         })
@@ -263,7 +276,7 @@ export default {
       this.tableListFields = [
         // { prop: 'id', label: 'ID', width: 80, type: 'number', fixed: 'left' },
         {
-          prop: 'title_html',
+          prop: 'title',
           label: '名称',
           minWidth: 200,
           fixed: 'left',
@@ -275,7 +288,8 @@ export default {
           width: 80,
           type: 'bool',
         },
-        { prop: 'href', label: '链接', minWidth: 200 },
+        // { prop: 'href', label: '链接', minWidth: 200 },
+        { prop: 'href_html', label: '链接', minWidth: 200, type: 'html' },
         { prop: 'target', label: '打开方式', width: 80 },
         { prop: 'sort', label: '排序', width: 80, type: 'number' },
         { prop: 'description', label: '描述', minWidth: 200 },
