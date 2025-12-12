@@ -483,7 +483,8 @@ export default {
       this.loading = false
     },
     async payOrder() {
-      if (isWeixin()) {
+      if (isWeixin() && this.paymentType === 1) {
+        // 如果是在微信浏览器中，且选择的是微信支付
         if (
           !this.settings.payment ||
           !this.settings.payment.official_account_appid
