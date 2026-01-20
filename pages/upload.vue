@@ -575,8 +575,8 @@ export default {
       immediate: true,
     },
   },
-  created() {
-    this.getCategories()
+  async created() {
+    await Promise.all([this.getCategories(), this.getUserGroups()])
     try {
       this.maxDocumentSize =
         (this.settings.security.max_document_size || 50) * 1024 * 1024
@@ -605,7 +605,7 @@ export default {
   },
   methods: {
     formatBytes,
-    ...mapActions('user', ['getUser']),
+    ...mapActions('user', ['getUser', 'getUserGroups']),
     ...mapActions('category', ['getCategories']),
 
     // 设置是否允许选择文件夹上传
