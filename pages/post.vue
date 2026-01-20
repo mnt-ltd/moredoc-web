@@ -80,7 +80,7 @@ export default {
   data() {
     return {
       canIPublish: false,
-      loading: false,
+      loading: true,
       previewMode: false,
       article: {
         title: '',
@@ -118,12 +118,14 @@ export default {
       return this.categoryTrees.filter((item) => item.type === 1)
     },
   },
-  created() {
-    this.canIPublishArticle()
-    this.getCategories()
+  async created() {
+    await this.getUserGroups()
+    await Promise.all([this.canIPublishArticle(), this.getCategories()])
+    this.loading = false
   },
   methods: {
     ...mapActions('category', ['getCategories']),
+    ...mapActions('user', ['getUserGroups']),
     canIPublishArticle() {
       this.groups.forEach((group) => {
         if (group.enable_article) {
