@@ -80,7 +80,7 @@ import { getArticle } from '~/api/article'
 export default {
   data() {
     return {
-      loading: false,
+      loading: true,
       previewMode: false,
       article: {
         title: '',
@@ -125,11 +125,9 @@ export default {
     },
   },
   async created() {
-    await Promise.all([
-      this.getArticle(),
-      this.getCategories(),
-      this.getUserGroups(),
-    ])
+    await this.getUserGroups()
+    await Promise.all([this.getArticle(), this.getCategories()])
+    this.loading = false
   },
   methods: {
     ...mapActions('category', ['getCategories']),
