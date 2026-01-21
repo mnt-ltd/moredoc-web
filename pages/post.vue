@@ -127,6 +127,10 @@ export default {
     ...mapActions('category', ['getCategories']),
     ...mapActions('user', ['getUserGroups']),
     canIPublishArticle() {
+      if (!this.user || !this.user.id) {
+        this.canIPublish = false
+        return
+      }
       this.groups.forEach((group) => {
         if (group.enable_article) {
           this.canIPublish = true
