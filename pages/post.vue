@@ -118,6 +118,7 @@ export default {
       return this.categoryTrees.filter((item) => item.type === 1)
     },
     canIPublish() {
+      if (!this.user || this.user.id <= 0) return false
       return this.groups.some((group) => group.enable_article)
     },
     canICrawlArticle() {
