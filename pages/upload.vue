@@ -576,6 +576,7 @@ export default {
       )
     },
     canIUploadDocument() {
+      if (!this.user || !this.user.id) return false
       return this.groups.some((group) => group.enable_upload)
     },
     // 当前步骤计算
