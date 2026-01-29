@@ -355,7 +355,12 @@ export default {
   },
   methods: {
     async listLanguage() {
-      const res = await listLanguage({ field: ['language', 'code'] })
+      const res = await listLanguage({
+        field: ['language', 'code'],
+        enable: 1,
+        page: 1,
+        size: 1000,
+      })
       if (res.status === 200) {
         this.languages = res.data.language || []
       } else {
