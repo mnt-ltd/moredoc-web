@@ -301,5 +301,9 @@ export function extractScripts(scriptContent) {
     scripts.push(match[1])
   }
 
+  if (scripts.length === 0 && scriptContent.trim() !== '') {
+    scripts.push(scriptContent)
+  }
+
   return scripts
 }
