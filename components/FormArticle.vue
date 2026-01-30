@@ -86,7 +86,9 @@
 
           <!-- 分类设置 -->
           <div class="wp-meta-box">
-            <h3 class="wp-meta-title">分类</h3>
+            <h3 class="wp-meta-title">
+              分类 <span class="text-danger">*</span>
+            </h3>
             <div class="wp-meta-content">
               <el-form-item
                 prop="category_id"
@@ -145,6 +147,27 @@
                   :autosize="{ minRows: 3, maxRows: 6 }"
                   show-word-limit
                   maxlength="500"
+                />
+              </el-form-item>
+            </div>
+          </div>
+
+          <!-- 摘要 -->
+          <div class="wp-meta-box">
+            <h3 class="wp-meta-title">来源信息</h3>
+            <div class="wp-meta-content">
+              <el-form-item>
+                <el-input
+                  v-model="article.source"
+                  placeholder="来源名称，如：xx网站名称"
+                  :disabled="!canIPublish"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-input
+                  v-model="article.source_url"
+                  placeholder="来源地址，如：https://www.example.com"
+                  :disabled="!canIPublish"
                 />
               </el-form-item>
             </div>
@@ -288,7 +311,7 @@ export default {
         language_url: '/static/tinymce/langs/zh-Hans.js', // 语言包的路径
         language: 'zh-Hans', // 语言
         skin_url: '/static/tinymce/skins/ui/oxide', // skin路径
-        height: 980, // 编辑器高度
+        height: 1213, // 编辑器高度
         branding: true, // 是否禁用“Powered by TinyMCE”
         placeholder: '请输入内容',
         menubar: true, // 顶部菜单栏显示,

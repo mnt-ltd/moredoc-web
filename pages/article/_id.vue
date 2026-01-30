@@ -195,13 +195,14 @@
             <div v-if="!article.id" style="min-height: 100vh"></div>
           </article>
           <div v-if="article.source || article.source_url" class="source">
-            <span>来源:</span>
-            <div v-if="article.source">{{ article.source }}</div>
-            <div v-if="article.source_url">
+            <el-divider content-position="left">来源</el-divider>
+            <div>
+              <span>{{ article.source }}</span>
               <a
-                class="el-link el-link--default"
-                target="_blank"
+                v-if="article.source_url"
                 :href="article.source_url"
+                target="_blank"
+                rel="noopener noreferrer"
                 >{{ article.source_url }}</a
               >
             </div>
@@ -616,7 +617,7 @@ export default {
   }
   article {
     line-height: 180%;
-    min-height: 300px;
+    // min-height: 300px;
     word-wrap: break-word;
     img {
       max-width: 100% !important;
@@ -648,10 +649,6 @@ export default {
     position: relative;
     color: #666;
     border-left: 5px solid #ddd;
-    span {
-      color: #ccc;
-      display: block;
-    }
     a {
       color: #409eff;
     }
@@ -685,6 +682,21 @@ export default {
       position: relative !important;
       width: 100% !important;
       top: 0 !important;
+    }
+  }
+  .source {
+    font-size: 15px;
+    color: #555;
+    background-color: #f9f9f9;
+    padding: 1px 15px 15px;
+    border-radius: 6px;
+    margin: 10px 0;
+    a {
+      // margin-left: 10px;
+      color: #409eff;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }
