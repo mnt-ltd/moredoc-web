@@ -301,7 +301,7 @@
                         </el-button>
                       </div>
                     </div>
-                    <div class="file-item mgt-20px">
+                    <div v-show="setMoreInfo" class="file-item mgt-20px">
                       <el-row :gutter="10">
                         <el-col :span="10">
                           <el-input
