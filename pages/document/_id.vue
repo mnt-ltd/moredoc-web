@@ -965,18 +965,19 @@ export default {
 
       let description = (doc.description || '-').trim()
       if (description) description = description + '...'
-      this.metaDescription = description.replace(' ', '').substr(0, 200)
+      this.metaDescription = description.replace(' ', '').substr(0, 200) // header meta 使用
+      let language = doc.language
       ;(this.settings.language || []).map((item) => {
         if (item.code === doc.language) {
-          doc.language = item.language
+          language = item.language
         }
         return item
       })
 
-      const item = doc.language
+      const item = language
         ? {
             label: '语言',
-            value: doc.language,
+            value: language,
             icon: 'fa fa-language',
             name: 'language',
           }
