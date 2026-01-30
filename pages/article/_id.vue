@@ -649,6 +649,7 @@ export default {
     border-left: 5px solid #ddd;
     a {
       color: #409eff;
+      word-break: break-all;
     }
   }
   .m-userinfo {
