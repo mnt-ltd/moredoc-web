@@ -279,24 +279,6 @@
               </div>
               <div v-else>{{ item.value }}</div>
             </el-descriptions-item>
-            <el-descriptions-item
-              v-if="document.source"
-              :span="5"
-              label-class-name="descriptions-label"
-            >
-              <template slot="label">
-                <i class="el-icon-link"></i>
-                来源
-              </template>
-              <a
-                :href="`https://${document.source}`"
-                rel="nofollow"
-                target="_blank"
-                class="el-link el-link--default"
-              >
-                {{ document.source }}
-              </a>
-            </el-descriptions-item>
           </el-descriptions>
           <el-descriptions
             v-if="
