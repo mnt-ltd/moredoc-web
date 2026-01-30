@@ -278,24 +278,6 @@
               </div>
               <div v-else>{{ item.value }}</div>
             </el-descriptions-item>
-            <el-descriptions-item
-              v-if="document.source"
-              :span="5"
-              label-class-name="descriptions-label"
-            >
-              <template slot="label">
-                <i class="el-icon-link"></i>
-                来源
-              </template>
-              <a
-                :href="`https://${document.source}`"
-                rel="nofollow"
-                target="_blank"
-                class="el-link el-link--default"
-              >
-                {{ document.source }}
-              </a>
-            </el-descriptions-item>
           </el-descriptions>
           <el-descriptions
             v-if="
@@ -1164,18 +1146,19 @@ export default {
 
       let description = (doc.description || '-').trim()
       if (description) description = description + '...'
-      this.metaDescription = description.replace(' ', '').substr(0, 200)
+      this.metaDescription = description.replace(' ', '').substr(0, 200) // header meta 使用
+      let language = doc.language
       ;(this.settings.language || []).map((item) => {
         if (item.code === doc.language) {
-          doc.language = item.language
+          language = item.language
         }
         return item
       })
 
-      const item = doc.language
+      const item = language
         ? {
             label: '语言',
-            value: doc.language,
+            value: language,
             icon: 'fa fa-language',
             name: 'language',
           }
