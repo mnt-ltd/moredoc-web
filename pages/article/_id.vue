@@ -693,6 +693,7 @@ export default {
     a {
       // margin-left: 10px;
       color: #409eff;
+      word-break: break-all;
       &:hover {
         text-decoration: underline;
       }
