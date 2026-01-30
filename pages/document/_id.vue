@@ -298,6 +298,34 @@
               </a>
             </el-descriptions-item>
           </el-descriptions>
+          <el-descriptions
+            v-if="
+              settings.display.show_document_descriptions &&
+              (document.source || document.source_url)
+            "
+            class="document-descriptions"
+            border
+            style="margin-top: -21px"
+          >
+            <el-descriptions-item label-class-name="descriptions-label">
+              <template slot="label">
+                <i class="el-icon-link"></i>
+                来源
+              </template>
+              <a
+                v-if="document.source_url"
+                :href="document.source_url"
+                rel="nofollow"
+                target="_blank"
+                class="el-link el-link--default"
+              >
+                {{ document.source || document.source_url }}
+              </a>
+              <span v-else>
+                {{ document.source }}
+              </span>
+            </el-descriptions-item>
+          </el-descriptions>
           <div ref="docPages" class="doc-pages" @contextmenu.prevent>
             <el-skeleton v-if="!document.id" animated>
               <template slot="template">
