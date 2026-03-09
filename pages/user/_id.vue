@@ -71,6 +71,13 @@ export default {
       activeTab: this.$route.name || '',
     }
   },
+  async fetch() {
+    try {
+      const id = parseInt(this.$route.params.id)
+      this.user.id = id
+      await Promise.all([this.getUser(), this.getAdvertisements('user')])
+    } catch (error) {}
+  },
   head() {
     return {
       title: `[个人主页] ${this.user.username} - ${this.settings.system.sitename}`,
@@ -96,13 +103,7 @@ export default {
       this.activeTab = value
     },
   },
-  created() {
-    try {
-      const id = parseInt(this.$route.params.id)
-      this.user.id = id
-      Promise.all([this.getUser(), this.getAdvertisements('user')])
-    } catch (error) {}
-  },
+
   methods: {
     tabClick(e) {
       this.$router.push({

@@ -476,6 +476,37 @@ export default {
       lastScrollTop: 0,
     }
   },
+  async fetch() {
+    this.resetActivePath()
+    this.syncSearchType()
+    await Promise.all([
+      this.getCategories(),
+      this.getSettings(),
+      this.listNavigation(),
+      this.getAdvertisements('global'),
+      this.getSettingsRecharge(),
+    ])
+    await this.checkAndRefreshUser()
+
+    const trees = categoryToTrees(this.categories)
+    this.categoryDocumentTrees = trees.filter((item) => {
+      if (
+        this.settings.display &&
+        this.settings.display.hide_category_without_document
+      ) {
+        return item.enable && item.doc_count > 0 && !item.type
+      }
+      return item.enable && !item.type
+    })
+
+    this.categoryArticleTrees = trees.filter((item) => {
+      return item.enable && item.type
+    })
+
+    if (requireLogin(this.settings, this.user, this.$route, this.permissions)) {
+      this.$router.push('/login')
+    }
+  },
   head() {
     return {
       title:
@@ -513,45 +544,13 @@ export default {
       }
     },
   },
-  async created() {
-    this.resetActivePath()
-    this.syncSearchType()
-    await Promise.all([
-      this.getCategories(),
-      this.getSettings(),
-      this.listNavigation(),
-      this.getAdvertisements('global'),
-      this.getSettingsRecharge(),
-    ])
-    await this.checkAndRefreshUser()
-
-    if (this.user.id > 0) {
-      await this.getSignedToday()
-    }
-
-    const trees = categoryToTrees(this.categories)
-    this.categoryDocumentTrees = trees.filter((item) => {
-      if (
-        this.settings.display &&
-        this.settings.display.hide_category_without_document
-      ) {
-        return item.enable && item.doc_count > 0 && !item.type
-      }
-      return item.enable && !item.type
-    })
-
-    this.categoryArticleTrees = trees.filter((item) => {
-      return item.enable && item.type
-    })
-
-    if (requireLogin(this.settings, this.user, this.$route, this.permissions)) {
-      this.$router.push('/login')
-    }
-  },
   mounted() {
     window.addEventListener('focus', this.handleWindowFocus)
     window.addEventListener('scroll', this.handleScroll, { passive: true })
     this.handleScroll()
+    if (this.user.id > 0) {
+      this.getSignedToday()
+    }
   },
   beforeDestroy() {
     window.removeEventListener('focus', this.handleWindowFocus)
@@ -667,15 +666,6 @@ export default {
         },
       })
       this.search.wd = ''
-    },
-    updateVuex() {
-      this.checkAndRefreshUser()
-      // 更新系统配置信息
-      this.getSettings()
-      // 更新分类信息
-      this.getCategories()
-      // 更新导航栏
-      this.listNavigation()
     },
     async getSettingsRecharge() {
       this.loading = true

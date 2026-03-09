@@ -198,7 +198,6 @@
           </div>
         </div>
       </section>
-
       <section
         v-if="
           settings.display.show_index_categories && featuredCategories.length
@@ -268,7 +267,6 @@ import { listDocument } from '~/api/document'
 import { listArticle } from '~/api/article'
 
 export default {
-  name: 'HomeIndexPage',
   data() {
     return {
       banners: [],
@@ -283,6 +281,15 @@ export default {
       notices: [],
       recommendBatch: 0,
     }
+  },
+  async fetch() {
+    await Promise.all([
+      this.listBanner(),
+      this.getRecommendDocuments(),
+      this.getLatestDocuments(),
+      this.getArticles(),
+      this.getNotices(),
+    ])
   },
   head() {
     return {
@@ -337,15 +344,6 @@ export default {
         }))
       // .slice(0, 4)
     },
-  },
-  async created() {
-    await Promise.all([
-      this.listBanner(),
-      this.getRecommendDocuments(),
-      this.getLatestDocuments(),
-      this.getArticles(),
-      this.getNotices(),
-    ])
   },
   methods: {
     async listBanner() {

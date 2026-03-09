@@ -10,10 +10,6 @@
       <div v-if="!hideSignature" class="user-card__signature">
         {{ user.signature || '这个人很懒，暂时还没有留下个性签名。' }}
       </div>
-      <!-- <div class="user-card__joined">
-        <i class="el-icon-date"></i>
-        <span>{{ formatJoinDate(user.created_at) }} 加入</span>
-      </div> -->
     </div>
     <div class="user-card__divider"></div>
     <div class="user-card__stats">

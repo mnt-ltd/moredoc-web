@@ -309,7 +309,8 @@ export default {
     }
 
     // 初始化面包屑和分类数据
-    this.initializeBreadcrumbsAndCategories()
+    // this.initializeBreadcrumbsAndCategories()
+    this.refreshCategoryContext()
 
     // 设置查询参数
     this.setQuery()
@@ -344,14 +345,6 @@ export default {
       this.refreshCategoryContext()
       await this.loadData()
     },
-  },
-  async created() {
-    if (this.categories.length === 0) {
-      await this.$store.dispatch('category/getCategories')
-    }
-    this.setQuery()
-    this.refreshCategoryContext()
-    await Promise.all([this.loadData(), this.getAdvertisements('list')])
   },
   methods: {
     refreshCategoryContext() {

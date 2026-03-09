@@ -69,7 +69,6 @@
         >共 <strong>{{ total }}</strong> 个文档</span
       >
     </div>
-
     <div
       class="document-list"
       :class="{ 'without-actions': !canManageDocuments }"
@@ -288,6 +287,9 @@ export default {
       showAdvancedFilters: false,
     }
   },
+  async fetch() {
+    await this.loadData()
+  },
   computed: {
     ...mapGetters('user', ['user', 'permissions']),
     ...mapGetters('category', ['categoryTrees']),
@@ -302,18 +304,10 @@ export default {
   },
   watch: {
     '$route.query': {
-      handler() {
-        this.query = {
-          wd: this.$route.query.wd || '',
-          page: parseInt(this.$route.query.page) || 1,
-          size: parseInt(this.$route.query.size) || 10,
-          created_at: Array.isArray(this.$route.query.created_at)
-            ? this.$route.query.created_at
-            : [],
-        }
-        this.getDocuments()
+      async handler() {
+        await this.loadData()
       },
-      immediate: true,
+      // immediate: true,
     },
   },
   created() {
@@ -328,6 +322,17 @@ export default {
     formatRelativeTime,
     toggleAdvancedFilters() {
       this.showAdvancedFilters = !this.showAdvancedFilters
+    },
+    async loadData() {
+      this.query = {
+        wd: this.$route.query.wd || '',
+        page: parseInt(this.$route.query.page) || 1,
+        size: parseInt(this.$route.query.size) || 10,
+        created_at: Array.isArray(this.$route.query.created_at)
+          ? this.$route.query.created_at
+          : [],
+      }
+      await this.getDocuments()
     },
     buildQuery() {
       const query = {
