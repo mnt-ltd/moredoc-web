@@ -121,8 +121,6 @@ export default {
 </script>
 <style lang="scss">
 .page-user {
-  padding: 24px 0 36px;
-
   .user-layout {
     display: flex;
     align-items: flex-start;

@@ -181,9 +181,18 @@
           <el-menu-item
             v-else
             index="/login"
-            class="float-right hidden-xs-only"
+            class="float-right hidden-xs-only login"
           >
-            <nuxt-link to="/login"><i class="el-icon-user"></i> 登录</nuxt-link>
+            <nuxt-link to="/login">
+              <el-button type="primary" round>
+                &nbsp;
+                <i
+                  class="el-icon el-icon-user"
+                  style="color: #fff; font-size: 1.2em"
+                ></i>
+                登录 &nbsp;
+              </el-button>
+            </nuxt-link>
           </el-menu-item>
           <el-menu-item
             v-if="isMobile"
@@ -700,7 +709,8 @@ export default {
       transform: translateY(-100%);
     }
 
-    .logo {
+    .logo,
+    .login {
       &.is-active {
         border-color: transparent !important;
       }
@@ -724,6 +734,7 @@ export default {
       min-width: $min-width;
       .float-right {
         float: right;
+        padding-right: 15px;
         a {
           padding: 0 15px;
         }

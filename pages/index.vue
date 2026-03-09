@@ -135,7 +135,7 @@
                 <span class="panel-icon doc-icon el-icon-document"></span>
                 <strong>文档资料</strong>
               </div>
-              <nuxt-link to="/search" target="_blank" class="panel-more">
+              <nuxt-link to="/category" target="_blank" class="panel-more">
                 查看更多 <i class="el-icon el-icon-arrow-right"></i>
               </nuxt-link>
             </div>
