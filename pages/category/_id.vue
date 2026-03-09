@@ -7,149 +7,53 @@
         v-html="item.content"
       ></div>
     </template>
-    <el-row>
-      <el-col :span="24">
-        <el-card ref="breadcrumb" shadow="never">
-          <div slot="header" class="clearfix">
-            <el-breadcrumb separator="/">
-              <el-breadcrumb-item>
-                <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
-              </el-breadcrumb-item>
-              <el-breadcrumb-item>
-                <nuxt-link to="/category">全部文档</nuxt-link>
-              </el-breadcrumb-item>
-              <el-breadcrumb-item
-                v-for="item in breadcrumbs"
-                :key="'bread1-' + item.id"
-              >
-                <el-dropdown v-if="item.siblings.length > 0">
-                  <span class="el-dropdown-link">
-                    {{ item.title
-                    }}<i class="el-icon-arrow-down el-icon--right"></i>
-                  </span>
-                  <el-dropdown-menu slot="dropdown" class="breadcrumb-dropdown">
-                    <el-dropdown-item
-                      v-for="ss in item.siblings.filter((x) => !x.type)"
-                      :key="'s1-' + ss.id"
-                    >
-                      <nuxt-link
-                        class="el-link el-link--default block"
-                        :class="{
-                          'el-link--primary': ss.id === item.id,
-                        }"
-                        :to="`/category/${ss.id}`"
-                        >{{ ss.title }}</nuxt-link
-                      ></el-dropdown-item
-                    >
-                  </el-dropdown-menu>
-                </el-dropdown>
-                <span v-else>{{ item.title }}</span>
-              </el-breadcrumb-item>
-            </el-breadcrumb>
-          </div>
-          <div
-            v-if="
-              breadcrumbs.length > 0 &&
-              breadcrumbs[breadcrumbs.length - 1].show_description
-            "
-            class="category-description"
-          >
-            {{ breadcrumbs[breadcrumbs.length - 1].description }}
-          </div>
-          <div v-if="categoryChildren.length > 0" class="item-row">
-            <div class="item-name">分类</div>
-            <div class="item-content">
-              <el-popover
-                v-for="child in categoryChildren"
-                :key="'tree-pop-' + child.id"
-                placement="top-start"
-                :title="child.title"
-                width="200"
-                trigger="hover"
-                :disabled="!child.description"
-                :content="child.description"
+
+    <el-card shadow="never" class="breadcrumb-card">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item>
+          <nuxt-link to="/"><i class="fa fa-home"></i> 首页</nuxt-link>
+        </el-breadcrumb-item>
+        <el-breadcrumb-item>
+          <nuxt-link to="/category">全部文档</nuxt-link>
+        </el-breadcrumb-item>
+        <el-breadcrumb-item
+          v-for="item in breadcrumbs"
+          :key="'bread1-' + item.id"
+        >
+          <el-dropdown v-if="item.siblings.length > 0">
+            <span class="el-dropdown-link">
+              {{ item.title }}<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown" class="breadcrumb-dropdown">
+              <el-dropdown-item
+                v-for="ss in item.siblings.filter((x) => !x.type)"
+                :key="'s1-' + ss.id"
               >
                 <nuxt-link
-                  slot="reference"
-                  :to="`/category/${child.id}`"
-                  :title="child.title"
-                  class="el-link el-link--default"
-                  >{{ child.title }}</nuxt-link
-                >
-              </el-popover>
-            </div>
-          </div>
-          <div class="item-row">
-            <div class="item-name">类型</div>
-            <div class="item-content">
-              <nuxt-link
-                v-for="item in exts"
-                :key="item.value"
-                :to="{ query: { ext: item.value } }"
-                class="el-link"
-                :class="
-                  item.value === $route.query.ext ||
-                  (!item.value && !$route.query.ext)
-                    ? 'el-link--primary'
-                    : 'el-link--default'
-                "
-                >{{ item.label }}</nuxt-link
+                  class="el-link el-link--default block"
+                  :class="{
+                    'el-link--primary': ss.id === item.id,
+                  }"
+                  :to="`/category/${ss.id}`"
+                  >{{ ss.title }}</nuxt-link
+                ></el-dropdown-item
               >
-            </div>
-          </div>
-          <div class="item-row">
-            <div class="item-name">费用</div>
-            <div class="item-content">
-              <nuxt-link
-                v-for="item in feeTypeOptions"
-                :key="item.value"
-                :to="{ query: { ...$route.query, fee_type: item.value } }"
-                class="el-link"
-                v-show="
-                  item.value != 'vip' ||
-                  (item.value == 'vip' && settings.vip.enable)
-                "
-                :class="
-                  item.value === $route.query.fee_type ||
-                  (!item.value && !$route.query.fee_type)
-                    ? 'el-link--primary'
-                    : 'el-link--default'
-                "
-                >{{ item.label }}</nuxt-link
-              >
-            </div>
-          </div>
-          <div v-if="(settings.language || []).length > 0" class="item-row">
-            <div class="item-name">语言</div>
-            <div class="item-content">
-              <nuxt-link
-                :to="{ query: { ...$route.query, language: '' } }"
-                class="el-link"
-                :class="
-                  !$route.query.language
-                    ? 'el-link--primary'
-                    : 'el-link--default'
-                "
-                >不限</nuxt-link
-              >
-              <nuxt-link
-                v-for="item in settings.language"
-                :key="item.code"
-                :to="{ query: { ...$route.query, language: item.code } }"
-                class="el-link"
-                :class="
-                  item.code === $route.query.language ||
-                  (!item.code && !$route.query.language)
-                    ? 'el-link--primary'
-                    : 'el-link--default'
-                "
-                >{{ item.language }}</nuxt-link
-              >
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <span v-else>{{ item.title }}</span>
+        </el-breadcrumb-item>
+      </el-breadcrumb>
+      <div
+        v-if="
+          breadcrumbs.length > 0 &&
+          breadcrumbs[breadcrumbs.length - 1].show_description &&
+          breadcrumbs[breadcrumbs.length - 1].description
+        "
+        class="category-description mgt-20px"
+      >
+        {{ breadcrumbs[breadcrumbs.length - 1].description }}
+      </div>
+    </el-card>
 
     <template v-for="item in advertisements">
       <div
@@ -159,11 +63,138 @@
       ></div>
     </template>
 
-    <el-row :gutter="20" class="mgt-20px">
-      <el-col :span="!settings.display.hide_keywords_on_lists ? 18 : 24">
-        <el-card ref="docList" shadow="never" class="doc-list">
-          <div slot="header">
-            <el-tabs v-model="query.sort" @tab-click="sortClick">
+    <div class="category-layout mgt-20px">
+      <aside class="filter-sidebar">
+        <div class="filter-sidebar-inner">
+          <el-card shadow="never" class="filter-card">
+            <div slot="header" class="panel-header">
+              <span class="panel-title">
+                <i class="el-icon-s-operation"></i>
+                筛选条件
+              </span>
+            </div>
+
+            <div v-if="categoryChildren.length > 0" class="filter-group">
+              <div class="filter-group-title">
+                <i class="el-icon-folder-opened"></i>
+                分类
+              </div>
+              <div class="filter-links">
+                <el-popover
+                  v-for="child in categoryChildren"
+                  :key="'tree-pop-' + child.id"
+                  placement="top-start"
+                  :title="child.title"
+                  width="200"
+                  trigger="hover"
+                  :disabled="!child.description"
+                  :content="child.description"
+                >
+                  <nuxt-link
+                    slot="reference"
+                    :to="`/category/${child.id}`"
+                    :title="child.title"
+                    class="filter-link"
+                    >{{ child.title }}</nuxt-link
+                  >
+                </el-popover>
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <div class="filter-group-title">
+                <i class="el-icon-document"></i>
+                类型
+              </div>
+              <div class="filter-links">
+                <nuxt-link
+                  v-for="item in exts"
+                  :key="item.value"
+                  :to="buildFilterLink('ext', item.value)"
+                  class="filter-link"
+                  :class="{
+                    active:
+                      item.value === ($route.query.ext || '') ||
+                      (!item.value && !$route.query.ext),
+                  }"
+                  >{{ item.label }}</nuxt-link
+                >
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <div class="filter-group-title">
+                <i class="el-icon-wallet"></i>
+                费用
+              </div>
+              <div class="filter-links">
+                <nuxt-link
+                  v-for="item in feeTypeOptions"
+                  :key="item.value"
+                  :to="buildFilterLink('fee_type', item.value)"
+                  class="filter-link"
+                  :class="{
+                    active:
+                      item.value === ($route.query.fee_type || '') ||
+                      (!item.value && !$route.query.fee_type),
+                  }"
+                  >{{ item.label }}</nuxt-link
+                >
+              </div>
+            </div>
+
+            <div
+              v-if="(settings.language || []).length > 0"
+              class="filter-group"
+            >
+              <div class="filter-group-title">
+                <i class="el-icon-collection-tag"></i>
+                语言
+              </div>
+              <div class="filter-links">
+                <nuxt-link
+                  :to="buildFilterLink('language', '')"
+                  class="filter-link"
+                  :class="{
+                    active: !$route.query.language,
+                  }"
+                  >不限</nuxt-link
+                >
+                <nuxt-link
+                  v-for="item in settings.language"
+                  :key="item.code"
+                  :to="buildFilterLink('language', item.code)"
+                  class="filter-link"
+                  :class="{
+                    active:
+                      item.code === $route.query.language ||
+                      (!item.code && !$route.query.language),
+                  }"
+                  >{{ item.language }}</nuxt-link
+                >
+              </div>
+            </div>
+          </el-card>
+        </div>
+      </aside>
+
+      <section class="doc-panel">
+        <el-card shadow="never" class="doc-list">
+          <div slot="header" class="doc-list-header">
+            <div class="doc-list-toolbar">
+              <div class="panel-title">
+                <i class="el-icon-sort"></i>
+                排序方式
+              </div>
+              <div class="doc-total">
+                共 <span>{{ total }}</span> 个文档
+              </div>
+            </div>
+            <el-tabs
+              v-model="query.sort"
+              class="sort-tabs"
+              @tab-click="sortClick"
+            >
               <el-tab-pane name="default">
                 <span slot="label"
                   ><i class="el-icon-coffee-cup"></i> 综合</span
@@ -217,38 +248,8 @@
           >
           </el-pagination>
         </el-card>
-      </el-col>
-      <el-col
-        v-if="!settings.display.hide_keywords_on_lists"
-        :span="6"
-        class="hidden-xs-only"
-      >
-        <el-card ref="keywords" shadow="never" class="keywords">
-          <div slot="header">
-            <el-row>
-              <el-col :span="8" class="header-title">关键词</el-col>
-            </el-row>
-          </div>
-          <div
-            v-loading="loading"
-            :style="`max-height: ${footerTop - 188}px;overflow:auto`"
-          >
-            <nuxt-link
-              v-for="keyword in keywords"
-              :key="'kw' + keyword"
-              :to="{ path: '/search', query: { wd: keyword } }"
-              target="_blank"
-              rel="nofollow"
-            >
-              <el-tag effect="plain"> {{ keyword }}</el-tag>
-            </nuxt-link>
-            <div v-if="keywords.length === 0">
-              <el-empty description="暂无相关关键词"></el-empty>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+      </section>
+    </div>
 
     <template v-for="item in advertisements">
       <div
@@ -265,34 +266,25 @@ import { mapGetters } from 'vuex'
 import DocumentList from '~/components/DocumentList.vue'
 import { listDocument } from '~/api/document'
 import { getIcon } from '~/utils/utils'
+
 export default {
   components: { DocumentList },
   data() {
     return {
-      filterText: '',
-      defaultProps: {
-        children: 'children',
-        label: 'title',
-      },
       query: {
         id: 0,
         sort: 'default',
         page: 1,
       },
       size: 10,
-      breadcrumbs: [], // 面包屑
-      trees: [],
+      breadcrumbs: [],
       categoryChildren: [],
       documents: [],
       categoryId: parseInt(this.$route.params.id) || 0,
       total: 0,
-      keywords: [],
       loading: false,
       empty: false,
-      cardOffsetTop: 0,
-      cardWidth: 0,
       title: '',
-      hasExpand: false,
       exts: [
         { label: '不限', value: '' },
         { label: 'PDF', value: 'pdf' },
@@ -332,7 +324,7 @@ export default {
         {
           hid: 'keywords',
           name: 'keywords',
-          content: this.keywords.join(','),
+          content: this.breadcrumbs.map((item) => item.title).join(','),
         },
         {
           hid: 'description',
@@ -347,49 +339,30 @@ export default {
     ...mapGetters('setting', ['settings']),
   },
   watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val)
-    },
-    $route() {
+    async $route() {
       this.setQuery()
-      this.loadData()
+      this.refreshCategoryContext()
+      await this.loadData()
     },
   },
   async created() {
-    // 在客户端渲染时，如果数据尚未加载，则加载数据
-    if (process.client && !this.$fetchState.pending) {
-      if (this.categories.length === 0) {
-        await this.$store.dispatch('category/getCategories')
-      }
-      this.initializeBreadcrumbsAndCategories()
-      this.setQuery()
-      if (this.documents.length === 0) {
-        await Promise.all([this.loadData(), this.getAdvertisements('list')])
-      }
+    if (this.categories.length === 0) {
+      await this.$store.dispatch('category/getCategories')
     }
-  },
-  mounted() {
-    this.$nextTick(() => {
-      try {
-        this.cardOffsetTop = this.$refs.breadcrumb.$el.offsetHeight
-      } catch (error) {}
-    })
-    window.addEventListener('scroll', this.handleScroll)
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.handleScroll)
+    this.setQuery()
+    this.refreshCategoryContext()
+    await Promise.all([this.loadData(), this.getAdvertisements('list')])
   },
   methods: {
-    ...mapGetters('category', ['getCategories']),
-    initializeBreadcrumbsAndCategories() {
+    refreshCategoryContext() {
       const breadcrumbs = []
       let category = { siblings: [], ...this.categoryMap[this.categoryId] }
+
       if (category.id) {
-        // 查询当前分类的兄弟分类
         category.siblings = this.filterCategorySiblings(category)
         breadcrumbs.push(category)
+
         while (category.parent_id) {
-          // 查询当前分类的父级分类的兄弟分类
           category = { siblings: [], ...this.categoryMap[category.parent_id] }
           if (category.id) {
             category.siblings = this.filterCategorySiblings(category)
@@ -398,27 +371,26 @@ export default {
         }
       }
 
-      const titles = []
-      breadcrumbs.forEach((x) => {
-        titles.push(x.title)
-      })
-      this.title = titles.join(' · ')
+      this.title =
+        breadcrumbs.map((item) => item.title).join(' · ') || '全部文档'
 
-      // 查找当前最后一个面包屑导航的子分类
       let categoryChildren = []
       if (breadcrumbs.length > 0) {
-        categoryChildren = this.categories.filter((x) => {
+        categoryChildren = this.categories.filter((item) => {
           if (
             this.settings.display &&
             this.settings.display.hide_category_without_document
           ) {
             return (
-              x.parent_id === breadcrumbs[breadcrumbs.length - 1].id &&
-              x.doc_count > 0 &&
-              !x.type
+              item.parent_id === breadcrumbs[breadcrumbs.length - 1].id &&
+              item.doc_count > 0 &&
+              !item.type
             )
           }
-          return x.parent_id === breadcrumbs[breadcrumbs.length - 1].id
+          return (
+            item.parent_id === breadcrumbs[breadcrumbs.length - 1].id &&
+            !item.type
+          )
         })
       }
 
@@ -426,85 +398,69 @@ export default {
         categoryChildren.length === 0 &&
         (!this.$route.params.id || this.$route.params.id === '0')
       ) {
-        this.title = '全部文档'
-        categoryChildren = this.categories.filter((x) => {
+        categoryChildren = this.categories.filter((item) => {
           if (
             this.settings.display &&
             this.settings.display.hide_category_without_document
           ) {
-            return x.doc_count > 0 && !x.type && !x.parent_id
+            return item.doc_count > 0 && !item.type && !item.parent_id
           }
-          return !x.type && !x.parent_id
+          return !item.type && !item.parent_id
         })
       }
 
       this.breadcrumbs = breadcrumbs
       this.categoryChildren = categoryChildren
     },
-    filterTree(value, data) {
-      if (!value) return true
-      return data.title.toLowerCase().includes(value.toLowerCase())
-    },
-    handleNodeClick(category) {
-      this.$router.push({
-        path: '/category/' + category.id,
-      })
-    },
     filterCategorySiblings(category) {
       try {
-        return this.categories.filter((x) => {
+        return this.categories.filter((item) => {
           if (
             this.settings.display &&
             this.settings.display.hide_category_without_document
           ) {
-            return x.parent_id === category.parent_id && x.doc_count > 0
+            return item.parent_id === category.parent_id && item.doc_count > 0
           }
-          return x.parent_id === category.parent_id
+          return item.parent_id === category.parent_id
         })
       } catch (error) {}
       return []
     },
     setQuery() {
-      this.query.id = parseInt(this.$route.params.id) || 0
-      this.query.sort = this.$route.query.sort || this.query.sort
+      this.categoryId = parseInt(this.$route.params.id) || 0
+      this.query.id = this.categoryId
+      this.query.sort = this.$route.query.sort || 'default'
       this.query.page = parseInt(this.$route.query.page) || 1
     },
-    go2cate(id) {
-      this.$router.push({
-        path: '/category/' + id,
-      })
-    },
-    handleScroll() {
-      const scrollTop =
-        document.documentElement.scrollTop || document.body.scrollTop
-      const keywords = this.$refs.keywords.$el
-      if (keywords) {
-        if (this.cardWidth === 0) {
-          this.cardWidth = keywords.offsetWidth
-        }
+    buildFilterLink(field, value) {
+      const query = {
+        ...this.$route.query,
+        [field]: value,
+        page: 1,
+      }
 
-        if (scrollTop > this.cardOffsetTop) {
-          keywords.style.position = 'fixed'
-          keywords.style.top = '80px'
-          keywords.style.zIndex = '1000'
-          keywords.style.width = this.cardWidth + 'px'
-        } else {
-          keywords.style = null
-        }
+      if (!query[field]) {
+        delete query[field]
+      }
+
+      return {
+        path: this.$route.path,
+        query,
       }
     },
     sortClick(tab) {
       this.$router.push({
-        path: `/category/${this.categoryId}`,
+        path: this.$route.path,
         query: {
           ...this.$route.query,
           sort: tab.name,
+          page: 1,
         },
       })
     },
     pageChange(page) {
       this.$router.push({
-        path: `/category/${this.categoryId}`,
+        path: this.$route.path,
         query: {
           ...this.$route.query,
           sort: this.query.sort,
@@ -514,8 +470,11 @@ export default {
     },
     async loadData() {
       this.loading = true
+      this.empty = false
+
       let order = 'id desc'
       let status = []
+
       switch (this.query.sort) {
         case 'latest':
           order = 'id desc'
@@ -539,10 +498,10 @@ export default {
           order = 'download_count desc'
           break
         default:
-          // 已转换完成的文档，基本有封面，展示的时候不会显得空落落的
           status = [2]
           break
       }
+
       const res = await listDocument({
         _headers: this._headers,
         order,
@@ -572,25 +531,17 @@ export default {
         fee_type: this.$route.query.fee_type,
         language: this.$route.query.language,
       })
+
       if (res.status === 200) {
         this.total = res.data.total
         const documents = res.data.document || []
-        const keywords = []
-        this.documents = documents.map((x) => {
-          x.icon = getIcon(x.ext)
-          if (x.keywords) {
-            x.keywords.split(',').forEach((keyword) => {
-              keyword = keyword.trim()
-              if (keyword && !keywords.includes(keyword)) {
-                keywords.push(keyword)
-              }
-            })
-          }
-          x.score = parseFloat(x.score) / 100 || 4.0
-          return x
+        this.documents = documents.map((item) => {
+          item.icon = getIcon(item.ext)
+          item.score = parseFloat(item.score) / 100 || 4.0
+          return item
         })
-        this.keywords = keywords
       }
+
       this.loading = false
       if (this.query.page === 1 && this.documents.length === 0) {
         this.empty = true
@@ -599,6 +550,7 @@ export default {
   },
 }
 </script>
+
 <style lang="scss">
 .page-category {
   .el-breadcrumb__inner {
@@ -609,201 +561,374 @@ export default {
     }
   }
 
-  .item-row {
+  .breadcrumb-card,
+  .filter-card,
+  .doc-list {
+    // border: 1px solid #e7edf4;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: none;
+    background: #fff;
+  }
+
+  .breadcrumb-card {
+    .el-card__header {
+      border-bottom: 1px solid #eef3f8;
+      padding: 16px 20px;
+    }
+
+    .el-card__body {
+      padding: 18px 20px;
+    }
+  }
+
+  .category-layout {
     display: flex;
-    margin-bottom: 10px;
-    .item-name {
-      width: 60px;
-      font-size: 15px;
-      color: #909399;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .filter-sidebar {
+    width: 300px;
+    flex: 0 0 300px;
+  }
+
+  .filter-sidebar-inner {
+    position: sticky;
+    top: 80px;
+  }
+
+  .doc-panel {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .panel-header,
+  .doc-list-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .panel-header {
+    padding-bottom: 0;
+    border: 0;
+  }
+
+  .panel-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #5a6b7b;
+
+    i {
+      color: #409eff;
+      font-size: 14px;
+    }
+  }
+
+  .filter-card {
+    .el-card__header {
+      padding: 16px 18px;
+      border-bottom: 1px solid #eef3f8;
+      background: linear-gradient(180deg, #f9fbfe 0%, #f5f8fc 100%);
     }
 
-    .item-content {
-      flex: 1;
+    .el-card__body {
+      padding: 18px;
+    }
+  }
+
+  .filter-group {
+    & + .filter-group {
+      margin-top: 22px;
+      padding-top: 22px;
+      border-top: 1px dashed #e6edf5;
+    }
+  }
+
+  .filter-group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    color: #607080;
+    font-size: 14px;
+    font-weight: 600;
+
+    i {
+      color: #8fb3d9;
+      font-size: 13px;
+    }
+  }
+
+  .filter-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .filter-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 46px;
+    padding: 0 12px;
+    height: 30px;
+    border-radius: 15px;
+    border: 1px solid transparent;
+    background: #f2f5f9;
+    color: #6f7f90;
+    font-size: 13px;
+    line-height: 1;
+    transition: all 0.2s ease;
+    text-decoration: none;
+
+    &:hover {
+      color: #409eff;
+      border-color: #cfe3fb;
+      background: #f4f9ff;
     }
 
-    a {
-      display: inline-block;
-      margin-right: 20px;
-      margin-bottom: 10px;
-      font-weight: normal;
-    }
-
-    &:last-of-type {
-      margin-bottom: -10px;
+    &.active {
+      background: #409eff;
+      border-color: #409eff;
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(64, 158, 255, 0.22);
     }
   }
 
   .category-description {
-    border: 1px dashed #ddd;
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 4px;
+    border: 1px dashed #d8e4f2;
+    background: #f9fbfe;
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: 10px;
     font-size: 14px;
-    color: #888;
-    line-height: 180%;
+    color: #7d8ea0;
+    line-height: 1.8;
+  }
+
+  .doc-list {
+    .el-card__header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid #eef3f8;
+    }
+
+    .el-card__body {
+      padding: 0 22px 22px;
+    }
+  }
+
+  .doc-list-header {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .doc-total {
+    color: #7f8c9b;
+    font-size: 13px;
+
+    span {
+      color: #409eff;
+      font-weight: 600;
+    }
+  }
+
+  .sort-tabs {
+    .el-tabs__header {
+      margin: 0;
+    }
+
+    .el-tabs__nav-wrap {
+      &::after {
+        display: none;
+      }
+    }
+
+    .el-tabs__active-bar {
+      display: none;
+    }
+
+    .el-tabs__nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .el-tabs__item {
+      height: 34px;
+      line-height: 34px;
+      padding: 0 14px !important;
+      border-radius: 17px;
+      color: #6f7f90;
+      background: #f2f5f9;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: #409eff;
+      }
+
+      &.is-active {
+        color: #fff;
+        background: #409eff;
+        box-shadow: 0 8px 16px rgba(64, 158, 255, 0.22);
+      }
+    }
   }
 
   .doc-list-data {
-    min-height: 200px;
+    min-height: 320px;
+    padding-top: 22px;
 
     .no-data {
       text-align: center;
       font-size: 14px;
       color: #aaa;
-    }
-  }
-
-  .doc-list {
-    .el-card__header {
-      padding: 0 20px;
-
-      .el-tabs__header {
-        margin: 0;
-      }
-
-      .el-tabs__item {
-        line-height: 57px;
-        height: 57px;
-      }
-    }
-
-    .el-tabs__nav-wrap::after {
-      background-color: transparent;
-    }
-  }
-
-  .keywords {
-    .el-card__body {
-      padding-bottom: 10px;
-      box-sizing: border-box;
-      overflow: auto;
-
-      /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
-      &::-webkit-scrollbar {
-        background-color: transparent;
-        width: 6px;
-        height: 6px;
-      }
-
-      &:hover::-webkit-scrollbar {
-        background-color: rgb(241, 241, 241);
-      }
-
-      /*定义滚动条轨道 内阴影+圆角*/
-      &::-webkit-scrollbar-track {
-        background-color: transparent;
-      }
-
-      /*定义滑块 内阴影+圆角*/
-      &::-webkit-scrollbar-thumb {
-        background-color: transparent;
-        border-radius: 3px;
-      }
-
-      &:hover::-webkit-scrollbar-thumb {
-        background-color: rgb(193, 193, 193);
-      }
-
-      &:hover::-webkit-scrollbar-thumb::hover {
-        background-color: rgb(168, 168, 168);
-      }
-    }
-
-    a {
-      margin-right: 10px;
-      margin-bottom: 10px;
-      display: inline-block;
-
-      &:hover .el-tag--plain {
-        background-color: #409eff;
-        border-color: #409eff;
-        color: #fff;
-      }
+      padding: 40px 0 20px;
     }
   }
 }
 
 @media screen and (max-width: $mobile-width) {
   .page-category {
-    .el-col-18 {
-      width: 100% !important;
+    .category-layout {
+      flex-direction: column;
+      gap: 16px;
     }
 
-    .item-row {
-      padding-bottom: 7px;
+    .filter-sidebar,
+    .doc-panel {
+      width: 100%;
+      flex: none;
+    }
 
-      .item-name {
-        width: 50px;
+    .filter-sidebar-inner {
+      position: static;
+    }
+
+    .breadcrumb-card {
+      .el-card__header,
+      .el-card__body {
+        padding-left: 14px;
+        padding-right: 14px;
       }
+    }
 
-      a {
-        margin-right: 10px;
-        margin-bottom: 10px;
+    .filter-card,
+    .doc-list {
+      border-radius: 10px;
+    }
+
+    .filter-card {
+      .el-card__header,
+      .el-card__body {
+        padding-left: 14px;
+        padding-right: 14px;
       }
     }
 
     .doc-list {
       .el-card__header {
-        padding: 0 10px;
-
-        .el-tabs__item {
-          line-height: 40px;
-          height: 40px;
-          padding: 0 10px;
-        }
+        padding: 14px 14px 12px;
       }
 
-      .el-rate__icon {
-        font-size: 15px;
+      .el-card__body {
+        padding: 0 14px 16px;
+      }
+    }
+
+    .doc-list-toolbar {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sort-tabs {
+      .el-tabs__item {
+        height: 32px;
+        line-height: 32px;
+        padding: 0 12px;
       }
     }
   }
 }
 </style>
+
 <style scoped lang="scss">
-@media screen and (max-width: $mobile-width) {
+.page-category {
   :deep(.com-document-list) {
-    // h3 {
-    //   a {
-    //     white-space: inherit;
-    //     overflow: auto;
-    //     text-overflow: inherit;
-    //   }
-    // }
+    li {
+      margin-bottom: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    h3 a {
+      font-size: 19px;
+      font-weight: 600;
+      color: #2f3a45;
+    }
+
     .doc-cover {
-      width: 25%;
-      padding-right: 5px !important;
-
       .el-image {
-        border: 1px solid #efefef;
+        border: 1px solid #e8edf4;
+        border-radius: 8px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
       }
-    }
-
-    .el-col-20 {
-      width: 75%;
-    }
-
-    .doc-desc {
-      // display: none;
-      width: 100%;
-      font-size: 14px;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      height: 48px;
-      line-height: 160%;
-      padding-top: 8px;
     }
 
     .doc-info {
-      font-size: 12px;
+      margin: 10px 0 10px;
+      color: #8b98a7;
+    }
 
-      .el-rate {
-        float: right;
+    .doc-desc {
+      color: #667587;
+      line-height: 1.85;
+    }
+  }
+}
+
+@media screen and (max-width: $mobile-width) {
+  .page-category {
+    :deep(.com-document-list) {
+      .doc-cover {
+        width: 25%;
+        padding-right: 5px !important;
+
+        .el-image {
+          border: 1px solid #efefef;
+        }
       }
 
-      .float-right {
-        float: left;
+      .el-col-20 {
+        width: 75%;
+      }
+
+      .doc-desc {
+        width: 100%;
+        font-size: 14px;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        height: 48px;
+        line-height: 160%;
+        padding-top: 8px;
+      }
+
+      .doc-info {
+        font-size: 12px;
+
+        .el-rate {
+          float: right;
+        }
+
+        .float-right {
+          float: left;
+        }
       }
     }
   }
