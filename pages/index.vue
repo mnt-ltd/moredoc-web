@@ -198,7 +198,6 @@
           </div>
         </div>
       </section>
-      <<<<<<< HEAD ======= >>>>>>> pro
       <section
         v-if="
           settings.display.show_index_categories && featuredCategories.length
