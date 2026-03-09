@@ -22,7 +22,7 @@ export default {
 .autoheight .layout-default .el-main {
   min-height: auto;
   .page {
-    min-height: calc(100vh - 60px - 135px);
+    min-height: calc(100vh - 70px - 135px);
   }
 }
 .layout-default {
@@ -48,7 +48,7 @@ export default {
   .el-main {
     padding-left: 0;
     padding-right: 0;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 70px);
   }
   .el-link {
     font-size: 15px;
@@ -67,7 +67,7 @@ export default {
   .el-breadcrumb__inner.is-link {
     font-weight: normal;
   }
-  padding-top: 60px;
+  padding-top: 70px;
   .el-card {
     border-radius: 12px;
     border: 0;
@@ -77,7 +77,7 @@ export default {
       border-color: transparent !important;
     }
     .el-dropdown-link {
-      line-height: 60px;
+      line-height: 70px;
       display: inline-block;
       font-weight: 400;
       font-size: 1.2em;

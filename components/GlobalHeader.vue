@@ -9,7 +9,7 @@
         ></div>
       </div>
     </template>
-    <el-header v-if="$route.name !== 'search' || isMobile">
+    <el-header v-if="$route.name !== 'search' || isMobile" :height="'70px'">
       <div>
         <el-menu :default-active="activePath" mode="horizontal">
           <el-menu-item class="logo" index="/">
@@ -612,8 +612,8 @@ export default {
     }
     a {
       text-decoration: none;
-      height: 60px;
-      line-height: 60px;
+      height: 70px;
+      line-height: 70px;
       display: inline-block;
       // padding: 0 20px;
       padding: 0 15px;
@@ -624,6 +624,8 @@ export default {
       padding: 0;
       color: #333;
       font-weight: bold;
+      height: 70px;
+      line-height: 70px;
       [class^='el-icon-'] {
         font-size: 15px;
         margin-right: 2px;

@@ -499,6 +499,9 @@ export default {
       display: flex;
       align-items: center;
       color: #98a2b3;
+      margin-left: 6px;
+      color: #000;
+      font-size: 1.2em;
     }
 
     .btn-search {
@@ -515,7 +518,7 @@ export default {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 68px;
+    min-width: 50px;
     padding: 0 14px;
     height: 28px;
     margin: 0 4px 8px;
