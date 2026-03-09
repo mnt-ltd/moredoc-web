@@ -78,6 +78,7 @@
               <nuxt-link to="/upload" class="nuxt-link" target="_blank">
                 <span><i class="el-icon el-icon-upload2"></i> 上传文档</span>
               </nuxt-link>
+              <span class="text-muted">|</span>
               <nuxt-link to="/post" class="nuxt-link" target="_blank">
                 <span><i class="el-icon el-icon-edit"></i> 发布文章</span>
               </nuxt-link>
