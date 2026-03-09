@@ -11,11 +11,7 @@
     </template>
     <el-header v-if="$route.name !== 'search' || isMobile">
       <div>
-        <el-menu
-          :default-active="activePath"
-          class="float-left"
-          mode="horizontal"
-        >
+        <el-menu :default-active="activePath" mode="horizontal">
           <el-menu-item class="logo" index="/">
             <nuxt-link to="/"
               ><img
@@ -110,10 +106,6 @@
             </template>
           </template>
           <el-menu-item
-            v-show="
-              $route.path !== '/' ||
-              navigations.filter((item) => item.enable).length <= 3
-            "
             index="searchbox"
             class="nav-searchbox hidden-xs-only"
             :class="navigations.length <= 2 ? 'nav-searchbox-large' : ''"
@@ -582,7 +574,7 @@ export default {
     }
     & > div {
       margin: 0 auto;
-      width: $default-width;
+      // width: $default-width;
       max-width: $max-width;
     }
     .el-menu--horizontal > .el-submenu .el-submenu__title {
@@ -590,7 +582,7 @@ export default {
     }
     .el-menu.el-menu--horizontal {
       border-bottom: 0;
-      width: $default-width;
+      // width: $default-width;
       max-width: $max-width;
       min-width: $min-width;
       .float-right {
@@ -625,11 +617,13 @@ export default {
       display: inline-block;
       // padding: 0 20px;
       padding: 0 15px;
-      font-size: 14px;
-      font-weight: normal;
+      font-size: 15px;
+      // font-weight: normal;
     }
     .el-menu-item {
       padding: 0;
+      color: #333;
+      font-weight: bold;
       [class^='el-icon-'] {
         font-size: 15px;
         margin-right: 2px;
@@ -637,6 +631,16 @@ export default {
       & > span {
         position: relative;
         top: -1px;
+      }
+    }
+
+    .search-input {
+      .el-input__inner {
+        border-radius: 20px;
+        background-color: $background-grey-light;
+        &:focus {
+          background-color: #fff;
+        }
       }
     }
   }
