@@ -1,6 +1,6 @@
 <template>
   <div class="page page-index">
-    <div class="searchbox">
+    <section class="hero-search">
       <el-carousel
         :interval="3000"
         arrow="always"
@@ -10,7 +10,7 @@
         <a
           v-for="(banner, index) in banners"
           :key="'banner-' + banner.id"
-          :href="banner.url ? banner.url : 'javascript:;'"
+          :href="banner.url || 'javascript:;'"
           :target="banner.url ? '_blank' : ''"
           :title="banner.title"
         >
@@ -23,423 +23,220 @@
           ></el-carousel-item>
         </a>
       </el-carousel>
-      <el-form :model="search" class="search-form" @submit.native.prevent>
-        <el-form-item>
-          <el-input
-            v-model="search.wd"
-            size="large"
-            placeholder="搜索文档..."
-            @keydown.native.enter="onSearch"
-          >
-            <i
-              slot="suffix"
-              class="el-input__icon el-icon-search btn-search"
-              @click="onSearch"
-            ></i>
-          </el-input>
-        </el-form-item>
-        <el-form-item v-if="settings.system.recommend_words">
-          <!-- <span class="hidden-xs-only">大家在搜:</span> -->
-          <nuxt-link
-            v-for="word in settings.system.recommend_words"
-            :key="'kw-' + word"
-            target="_blank"
-            class="search-keywords"
-            :to="{
-              path: '/search',
-              query: { wd: word },
-            }"
-          >
-            <el-button size="mini" plain round type="primary">{{
-              word
-            }}</el-button>
-          </nuxt-link>
-        </el-form-item>
-      </el-form>
-    </div>
-
-    <template v-for="item in advertisements">
-      <div
-        v-if="item.position == 'index_banner_bottom'"
-        :key="item.position + item.id"
-        v-html="item.content"
-      ></div>
-    </template>
-
-    <el-row :gutter="20" class="mgt-20px">
-      <el-col :span="7" class="float-right right-at-recommend">
-        <el-card
-          v-if="user.id > 0"
-          class="box-card hidden-xs-only login-form"
-          shadow="never"
-        >
-          <el-row>
-            <el-col :span="8">
-              <nuxt-link :to="`/me`" target="_blank">
-                <user-avatar :size="64" :user="user" />
-              </nuxt-link>
-            </el-col>
-            <el-col :span="16">
-              <nuxt-link
-                class="el-link el-link--default"
-                target="_blank"
-                :to="`/me`"
-              >
-                <h3>{{ user.username }}</h3>
-              </nuxt-link>
-              <div class="help-block login-tips">
-                <span class="el-link el-link--default" @click="logout">
-                  <i class="fa fa-sign-out"></i> &nbsp;
-                  <small>退出登录</small>
-                </span>
-              </div>
-            </el-col>
-          </el-row>
-          <div class="line"></div>
-          <el-button
-            v-if="sign.id > 0"
-            :key="'sign-' + sign.id"
-            class="btn-block"
-            type="success"
-            disabled
-          >
-            <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
-            今日已签到
-          </el-button>
-          <el-button
-            v-else
-            :key="'sign-0'"
-            class="btn-block"
-            type="success"
-            @click="signToday"
-          >
-            <i class="fa fa-calendar-plus-o"></i>
-            每日签到
-          </el-button>
-          <div class="help-block sub-btn">
-            <el-row>
-              <el-col :span="12">
-                <nuxt-link
-                  to="/upload"
-                  class="el-link el-link--default"
-                  target="_blank"
-                >
-                  <small><i class="el-icon-upload2"></i> 上传文档</small>
-                </nuxt-link>
-              </el-col>
-              <el-col :span="12" class="text-right">
-                <nuxt-link
-                  to="/post"
-                  class="el-link el-link--default"
-                  target="_blank"
-                >
-                  <small><i class="el-icon-plus"></i> 发布文章</small>
-                </nuxt-link>
-              </el-col>
-            </el-row>
-          </div>
-        </el-card>
-        <el-card
-          v-else
-          class="box-card hidden-xs-only login-form"
-          shadow="never"
-        >
-          <el-row>
-            <el-col :span="8">
-              <nuxt-link to="/login">
-                <user-avatar :size="64" :user="user" />
-              </nuxt-link>
-            </el-col>
-            <el-col :span="16">
-              <h3>欢迎您，游客</h3>
-              <div class="help-block login-tips">登录，体验更多功能</div>
-            </el-col>
-          </el-row>
-          <div class="line"></div>
-          <div class="btn-login">
-            <nuxt-link to="/login">
-              <el-button class="btn-block" type="primary">马上登录</el-button>
+      <div class="hero-mask"></div>
+      <div class="hero-content">
+        <el-form :model="search" class="search-form" @submit.native.prevent>
+          <el-form-item>
+            <el-input
+              v-model="search.wd"
+              size="large"
+              placeholder="搜索文档、文章"
+              @keydown.native.enter="onSearch"
+            >
+              <i slot="prefix" class="el-input__icon el-icon-search"></i>
+              <!-- <i
+                slot="suffix"
+                class="el-input__icon el-icon-search btn-search"
+                @click="onSearch"
+              ></i> -->
+            </el-input>
+          </el-form-item>
+          <el-form-item v-if="recommendWords.length" class="search-word-row">
+            <nuxt-link
+              v-for="word in recommendWords"
+              :key="'kw-' + word"
+              target="_blank"
+              class="search-keyword"
+              :to="{
+                path: '/search',
+                query: { wd: word },
+              }"
+            >
+              {{ word }}
             </nuxt-link>
-          </div>
-          <div class="help-block sub-btn">
-            <el-row>
-              <el-col :span="12">
-                <nuxt-link to="/findpassword" class="el-link el-link--default">
-                  <small>找回密码</small>
-                </nuxt-link>
-              </el-col>
-              <el-col :span="12" class="text-right">
-                <nuxt-link to="/register" class="el-link el-link--default">
-                  <small>注册账户</small>
-                </nuxt-link>
-              </el-col>
-            </el-row>
-          </div>
-        </el-card>
-        <el-card shadow="never" class="index-articles mgt-20px">
-          <div slot="header">
-            <i class="fa fa-newspaper-o"></i> {{ articleName }}
-            <nuxt-link to="/article" target="_blank" class="float-right">
-              <el-button type="text">更多</el-button>
-            </nuxt-link>
-          </div>
-          <ArticleSimpleList :articles="articles"></ArticleSimpleList>
-        </el-card>
-      </el-col>
-      <el-col :span="17" class="latest-recommend">
-        <el-card v-loading="loadingRecommend" shadow="never">
-          <div slot="header">
+          </el-form-item>
+        </el-form>
+      </div>
+    </section>
+
+    <div class="page-shell">
+      <section class="section-block recommend-section">
+        <div class="section-header">
+          <div>
+            <h2>文档推荐</h2>
             <div>
-              <i class="fa fa-thumbs-o-up"></i>
-              文档推荐
-              <div class="float-right stats">
-                <template v-if="settings.display.show_document_count">
-                  <el-button type="text"
-                    >{{ stats.document_count || 0 }}
-                    <span class="text-muted">文档</span></el-button
-                  >
-                  <el-button type="text"
-                    >{{ stats.article_count || 0 }}
-                    <span class="text-muted">文章</span>
-                  </el-button>
-                </template>
-                <el-button
-                  v-if="settings.display.show_register_user_count"
-                  type="text"
-                  >{{ stats.user_count || 0 }}
-                  <span class="text-muted">用户</span>
-                </el-button>
-              </div>
+              <nuxt-link to="/upload" class="nuxt-link" target="_blank">
+                <span>上传文档</span>
+              </nuxt-link>
+              <nuxt-link to="/post" class="nuxt-link" target="_blank">
+                <span>发布文章</span>
+              </nuxt-link>
             </div>
           </div>
-          <el-row :gutter="20">
-            <el-col
-              v-for="(item, index) in recommends"
-              :key="'recommend' + item.id"
-              :span="4"
-              :class="isMobile && index > 7 ? 'hidden-xs-only' : ''"
+        </div>
+        <div class="recommend-layout">
+          <div v-loading="loadingRecommend" class="recommend-grid">
+            <nuxt-link
+              v-for="item in recommends.slice(0, 8)"
+              :key="'recommend-' + item.id"
+              :to="`/document/${item.uuid}`"
+              target="_blank"
+              class="recommend-card"
             >
-              <el-tooltip
-                class="item"
-                effect="dark"
-                :content="item.title"
-                placement="top"
+              <div class="recommend-cover-wrap">
+                <document-cover :document="item" :lazy="false" />
+              </div>
+              <div class="recommend-title">{{ item.title }}</div>
+              <div class="recommend-meta">
+                <span>{{ item.category_name || '文档资源' }}</span>
+                <span>{{ formatDate(item.created_at) || '最新发布' }}</span>
+              </div>
+            </nuxt-link>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block latest-section">
+        <div class="section-header">
+          <div>
+            <h2>最新内容</h2>
+            <p>最新上传文档与最新发布文章</p>
+          </div>
+        </div>
+        <div class="latest-grid">
+          <div class="latest-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon doc-icon el-icon-document"></span>
+                <strong>最新文档</strong>
+              </div>
+              <nuxt-link to="/search" target="_blank" class="panel-more">
+                查看更多
+              </nuxt-link>
+            </div>
+            <nuxt-link
+              v-for="(doc, index) in latestDocuments.slice(0, 8)"
+              :key="'latest-doc-' + doc.id"
+              :to="`/document/${doc.uuid}`"
+              target="_blank"
+              class="latest-item"
+            >
+              <span class="latest-rank">{{ index + 1 }}</span>
+              <span class="latest-text">{{ doc.title }}</span>
+              <span class="latest-date">{{ formatDate(doc.created_at) }}</span>
+            </nuxt-link>
+          </div>
+
+          <div class="latest-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon article-icon el-icon-notebook-2"></span>
+                <strong>{{ articleName }}</strong>
+              </div>
+              <nuxt-link to="/article" target="_blank" class="panel-more">
+                查看更多
+              </nuxt-link>
+            </div>
+            <nuxt-link
+              v-for="(article, index) in articles.slice(0, 8)"
+              :key="'latest-article-' + article.id"
+              :to="`/article/${article.identifier || article.id}`"
+              target="_blank"
+              class="latest-item"
+            >
+              <span class="latest-rank latest-rank-article">{{
+                index + 1
+              }}</span>
+              <span class="latest-text">{{ article.title }}</span>
+              <span class="latest-date">{{
+                formatDate(article.created_at)
+              }}</span>
+            </nuxt-link>
+          </div>
+        </div>
+      </section>
+
+      <section
+        v-if="
+          settings.display.show_index_categories && featuredCategories.length
+        "
+        class="section-block categories-section"
+      >
+        <div class="section-header">
+          <div>
+            <h2>分类浏览</h2>
+            <p>按一级分类与二级分类快速进入内容区</p>
+          </div>
+        </div>
+        <div class="category-grid">
+          <div
+            v-for="(category, index) in featuredCategories"
+            :key="'category-' + category.id"
+            class="category-card"
+            :class="`theme-${index % 4}`"
+          >
+            <div class="category-top">
+              <nuxt-link
+                class="category-main-link"
+                :to="`/category/${category.id}`"
+                target="_blank"
               >
-                <nuxt-link :to="`/document/${item.uuid}`" target="_blank">
-                  <document-cover :document="item" />
-                  <div class="el-link el-link--default">{{ item.title }}</div>
-                </nuxt-link>
-              </el-tooltip>
-            </el-col>
-          </el-row>
-        </el-card>
-      </el-col>
-    </el-row>
-    <template v-for="item in advertisements">
-      <div
-        v-if="item.position == 'index_category_top'"
-        :key="item.position + item.id"
-        v-html="item.content"
-      ></div>
-    </template>
-    <div
-      v-if="settings.display.show_index_categories"
-      class="categories mgt-20px"
-    >
-      <el-row :gutter="20">
-        <div
-          v-for="(category, index) in categoryTreesV2.filter(
-            (item) => !item.type
-          )"
-          :key="'tree-' + category.id"
-        >
-          <el-col v-if="index < 4" :span="6">
-            <el-card class="box-card" shadow="never">
-              <div slot="header" class="clearfix">
-                <nuxt-link
-                  class="el-link el-link--default"
-                  :to="`/category/${category.id}`"
-                  target="_blank"
-                >
+                <span class="category-badge">
                   <img
                     :src="category.icon || '/static/images/logo-icon.png'"
                     :alt="category.title"
-                    class="category-icon"
                   />
+                </span>
+                <span class="category-main-text">
                   <strong>{{ category.title }}</strong>
-                </nuxt-link>
-              </div>
+                  <small>{{ category.doc_count || 0 }} 篇文档</small>
+                </span>
+              </nuxt-link>
+              <nuxt-link
+                class="category-more"
+                :to="`/category/${category.id}`"
+                target="_blank"
+              >
+                查看更多
+              </nuxt-link>
+            </div>
+            <div class="category-children">
               <nuxt-link
                 v-for="child in category.children"
                 :key="'child-' + child.id"
-                class="el-link el-link--default"
                 :to="`/category/${child.id}`"
                 target="_blank"
-                >{{ child.title }}</nuxt-link
+                class="category-child"
               >
-            </el-card>
-          </el-col>
+                <span>{{ child.title }}</span>
+                <small>{{ child.doc_count || 0 }}篇</small>
+              </nuxt-link>
+            </div>
+          </div>
         </div>
-      </el-row>
+      </section>
     </div>
-
-    <template v-for="item in advertisements">
-      <div
-        v-if="item.position == 'index_category_bottom'"
-        :key="item.position + item.id"
-        v-html="item.content"
-      ></div>
-    </template>
-    <el-row
-      v-if="settings.display.index_document_style == 'list'"
-      :gutter="isMobile ? 0 : 20"
-      class="category-item-list"
-    >
-      <el-col
-        v-for="item in documents"
-        :key="'card-cate-' + item.category_id"
-        :span="24"
-      >
-        <el-card class="box-card mgt-20px" shadow="never">
-          <div slot="header" class="clearfix">
-            <strong>{{ item.category_name }}</strong>
-            <nuxt-link
-              :to="`/category/${item.category_id}`"
-              class="float-right"
-              target="_blank"
-            >
-              <el-button type="text">更多</el-button>
-            </nuxt-link>
-          </div>
-          <el-row :gutter="isMobile ? 10 : 20">
-            <el-col
-              v-for="doc in item.document"
-              :key="'c-' + item.category_id + 'd' + doc.id"
-              :span="6"
-              :xs="12"
-            >
-              <div class="doc-item">
-                <nuxt-link
-                  class="el-link el-link--default doc-cover"
-                  :to="`/document/${doc.uuid}`"
-                  target="_blank"
-                >
-                  <document-cover
-                    :width="70"
-                    :document="doc"
-                    :show-ext="true"
-                  />
-                </nuxt-link>
-                <div class="doc-title">
-                  <nuxt-link
-                    class="el-link el-link--default"
-                    :to="`/document/${doc.uuid}`"
-                    target="_blank"
-                  >
-                    <div>{{ doc.title }}</div>
-                  </nuxt-link>
-                  <div>{{ doc.pages || '-' }} 页</div>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row v-else :gutter="20" class="category-item-card">
-      <el-col
-        v-for="item in documents"
-        :key="'card-cate-' + item.category_id"
-        :span="12"
-      >
-        <el-card class="box-card mgt-20px" shadow="never">
-          <div slot="header" class="clearfix">
-            <strong>{{ item.category_name }}</strong>
-            <nuxt-link :to="`/category/${item.category_id}`" target="_blank">
-              <el-button style="float: right; padding: 3px 0" type="text"
-                >更多</el-button
-              >
-            </nuxt-link>
-          </div>
-          <div>
-            <div class="card-body-left hidden-xs-only">
-              <nuxt-link target="_blank" :to="`/category/${item.category_id}`">
-                <el-image
-                  lazy
-                  class="category-cover"
-                  :src="item.category_cover"
-                >
-                  <div slot="error" class="image-slot">
-                    <img
-                      src="/static/images/default-category-cover.png"
-                      :alt="item.category_name"
-                    />
-                  </div>
-                </el-image>
-              </nuxt-link>
-            </div>
-            <div class="card-body-right">
-              <nuxt-link
-                v-for="(doc, index) in item.document"
-                v-show="index < 5"
-                :key="'c-' + item.category_id + 'd' + doc.id"
-                class="el-link el-link--default"
-                target="_blank"
-                :to="`/document/${doc.uuid}`"
-              >
-                <img
-                  :src="`/static/images/${getIcon(doc.ext)}_24.png`"
-                  :alt="`${getIcon(doc.ext)}文档`"
-                />
-                <span>{{ doc.title }}</span>
-              </nuxt-link>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-    <template v-for="item in advertisements">
-      <div
-        v-if="item.position == 'index_link_top'"
-        :key="item.position + item.id"
-        v-html="item.content"
-      ></div>
-    </template>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import UserAvatar from '~/components/UserAvatar.vue'
+import { mapGetters } from 'vuex'
 import { listBanner } from '~/api/banner'
-import { listDocument, listDocumentForHome } from '~/api/document'
-import { getSignedToday, signToday } from '~/api/user'
-import { getStats } from '~/api/config'
-import { getIcon } from '~/utils/utils'
-import { advertisementPositions } from '~/utils/enum'
+import { listDocument } from '~/api/document'
 import { listArticle } from '~/api/article'
+
 export default {
-  components: { UserAvatar },
+  name: 'HomeIndexPage',
   data() {
     return {
       banners: [],
       recommends: [],
+      latestDocuments: [],
       loadingRecommend: false,
-      documents: [],
       search: {
         wd: '',
       },
-      sign: {
-        sign_at: 0,
-      },
-      stats: {
-        document_count: '-',
-        user_count: '-',
-      },
-      carouselIndexes: [0], // 跑马灯index，用于跑马灯图片的懒加载
-      advertisementPositions,
-      activeIndex: '0',
+      carouselIndexes: [0],
       articles: [],
     }
   },
@@ -462,63 +259,49 @@ export default {
   },
   computed: {
     ...mapGetters('category', ['categoryTrees']),
-    ...mapGetters('user', ['user']),
     ...mapGetters('setting', ['settings', 'navigations']),
     articleName() {
       const nav = this.navigations.find((nav) => nav.href === '/article')
-      return nav ? nav.title : '文章资讯'
+      return nav ? nav.title : '最新文章'
     },
-    categoryTreesV2() {
-      const trees = (this.categoryTrees || []).filter((item) => {
-        if (this.settings.display.hide_category_without_document) {
-          return item.doc_count > 0 && item.enable
-        }
-        return item.enable
-      })
-
-      // 过滤二级分类
-      trees.forEach((item) => {
-        item.children = (item.children || []).filter((child) => {
-          if (this.settings.display.hide_category_without_document) {
-            return child.doc_count > 0 && child.enable
-          }
-          return child.enable
-        })
-      })
-
-      return trees
+    recommendWords() {
+      return (this.settings.system.recommend_words || []).slice(0, 4)
+    },
+    featuredCategories() {
+      const hideEmpty = this.settings.display.hide_category_without_document
+      return (this.categoryTrees || [])
+        .filter((item) => item.enable && !item.type)
+        .filter((item) => (hideEmpty ? item.doc_count > 0 : true))
+        .map((item) => ({
+          ...item,
+          children: (item.children || []).filter((child) => {
+            if (!child.enable) {
+              return false
+            }
+            return hideEmpty ? child.doc_count > 0 : true
+          }),
+        }))
+        .slice(0, 4)
     },
   },
   async created() {
-    const requests = [
-      this.getRecommendDocuments(),
-      this.getArticles(),
+    await Promise.all([
       this.listBanner(),
-      this.getDocuments(),
-      this.getSignedToday(),
-      this.getStats(),
-      this.getAdvertisements('index'),
-    ]
-    if (this.user.id) {
-      requests.push(this.getUser())
-    }
-    await Promise.all(requests)
+      this.getRecommendDocuments(),
+      this.getLatestDocuments(),
+      this.getArticles(),
+    ])
   },
   methods: {
-    ...mapActions('user', ['logout', 'getUser']),
-    getIcon,
     async listBanner() {
       const res = await listBanner({
         enable: true,
         field: ['id', 'title', 'path', 'url'],
-        type: 0, // 0，网站轮播图
+        type: 0,
       })
       if (res.status === 200) {
-        this.banners = res.data.banner
+        this.banners = res.data.banner || []
       }
-    },
-    changeActiveIndex(tab) {
-      this.activeIndex = tab.name
     },
     onSearch() {
       if (this.search.wd) {
@@ -528,72 +311,34 @@ export default {
     async getArticles() {
       const res = await listArticle({
         page: 1,
-        size: 6,
+        size: 8,
       })
       if (res.status === 200) {
         this.articles = res.data.article || []
       }
     },
-    async getSignedToday() {
-      if (!this.user.id) {
-        return
-      }
-      const res = await getSignedToday()
-      if (res.status === 200) {
-        this.sign = res.data || { id: 0 }
-      }
-    },
-    async signToday() {
-      if (this.sign.id > 0) {
-        this.$message.warning('今日已签到')
-        return
-      }
-      const res = await signToday()
-      if (res.status === 200) {
-        const sign = res.data || { id: 1 }
-        this.sign = sign
-        this.getUser()
-        this.$message.success(
-          `签到成功，获得 ${sign.award || 0} ${
-            this.settings.system.credit_name || '魔豆'
-          }奖励`
-        )
-      } else {
-        this.$message.error(res.message || res.data.message)
-      }
-    },
     async getRecommendDocuments() {
       this.loadingRecommend = true
       const res = await listDocument({
-        field: ['id', 'title', 'uuid'],
+        field: ['id', 'title', 'uuid', 'category_name', 'created_at'],
         is_recommend: true,
         order: 'recommend_at desc',
-        limit: 12,
+        limit: 8,
       })
       this.loadingRecommend = false
       if (res.status === 200) {
         this.recommends = res.data.document || []
       }
     },
-    async getDocuments() {
-      const res = await listDocumentForHome({
+    async getLatestDocuments() {
+      const res = await listDocument({
+        field: ['id', 'title', 'uuid', 'created_at'],
+        order: 'id desc',
         limit: 8,
       })
       if (res.status === 200) {
-        this.documents = (res.data.document || []).filter(
-          (item) => item.document && item.document.length > 0
-        )
+        this.latestDocuments = res.data.document || []
       }
-    },
-    async getStats() {
-      const res = await getStats()
-      if (res.status === 200) {
-        this.stats = res.data || {}
-      }
-    },
-    login() {
-      // 跳转到登录页面，先串通页面
-      this.$router.push('/login')
     },
     changeCarousel(index) {
       const carouselIndexes = this.carouselIndexes
@@ -602,34 +347,32 @@ export default {
       }
       this.carouselIndexes = carouselIndexes
     },
+    formatDate(value) {
+      if (!value) {
+        return ''
+      }
+      const date = new Date(value)
+      if (Number.isNaN(date.getTime())) {
+        return value
+      }
+      const year = date.getFullYear()
+      const month = `${date.getMonth() + 1}`.padStart(2, '0')
+      const day = `${date.getDate()}`.padStart(2, '0')
+      return `${year}-${month}-${day}`
+    },
   },
 }
 </script>
+
 <style lang="scss">
 .page-index {
   width: 100%;
   max-width: 100%;
   margin-top: -20px;
+  padding-bottom: 48px;
 
-  .search-keywords {
-    margin-right: 10px;
-    margin-bottom: 5px;
-    display: inline-block;
-  }
-
-  .upload-box a {
-    border: 1px dashed #ddd;
-    border-radius: 4px;
-    color: #666;
-    text-decoration: none !important;
-    font-size: 13px;
-    display: block;
-    padding: 20px 0;
-    i {
-      font-size: 55px;
-      margin-bottom: 20px;
-      color: #c0c4cc;
-    }
+  a {
+    text-decoration: none;
   }
 
   .el-carousel__button {
@@ -637,505 +380,564 @@ export default {
     height: 3px;
     border-radius: 2px;
   }
-  .searchbox {
-    position: relative;
-    margin-bottom: 20px;
+}
 
-    a {
-      display: inline-block;
-    }
+.hero-search {
+  position: relative;
 
-    .el-carousel__item {
-      background-size: cover !important;
-    }
-
-    // 搜索表单垂直居中显示
-    .search-form {
-      position: absolute;
-      z-index: 99;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 640px;
-      color: #fff;
-
-      .el-form-item {
-        margin-bottom: 0;
-      }
-
-      .el-tag {
-        margin-left: 5px;
-      }
-
-      .el-input__icon {
-        color: #666;
-      }
-
-      .el-input__inner {
-        border-right: 0;
-        height: 48px;
-        line-height: 48px;
-        font-size: 15px;
-        border-radius: 40px;
-
-        &:focus {
-          border-color: #409eff;
-        }
-      }
-
-      .el-input-group__append {
-        background-color: #fff;
-        border-left: 0;
-      }
-    }
+  a {
+    display: inline-block;
   }
 
-  & > .el-row {
-    width: $default-width;
-    max-width: $max-width;
-    margin: 0 auto !important;
+  .el-carousel__item {
+    background-size: cover !important;
   }
 
-  .stat-info {
-    color: #888;
-    font-size: 18px;
-
-    small {
-      font-size: 13px;
-    }
-
-    .el-card__body {
-      padding: 5px 0;
-
-      .el-col {
-        padding: 8px 0;
-
-        &:first-child {
-          border-right: 1px solid #efefef;
-        }
-      }
-    }
+  .hero-mask {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(230, 236, 244, 0.12) 0%,
+      rgba(230, 236, 244, 0.4) 55%,
+      rgba(230, 236, 244, 0.7) 100%
+    );
+    pointer-events: none;
   }
 
-  .categories {
-    background-color: #fff;
-
-    .category-icon {
-      width: 22px;
-      height: 22px;
-      position: relative;
-      top: 5px;
-    }
-
-    .el-card__header {
-      a {
-        font-size: 16px;
-        color: #303133;
-        margin-top: -2px;
-        margin-bottom: 0 !important;
-        margin-left: 3px;
-
-        &:hover {
-          color: #409eff;
-        }
-      }
-    }
-
-    .el-row {
-      margin: 0 auto !important;
-      width: $default-width;
-      max-width: $max-width;
-
-      .el-card__header {
-        padding-left: 0;
-        border-bottom: 0;
-        padding-bottom: 0;
-      }
-
-      .el-card__body {
-        padding: 15px 0 20px;
-        max-height: 115px;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        box-sizing: border-box;
-      }
-
-      a {
-        display: inline-block;
-        padding: 2px 0 5px;
-        text-decoration: none;
-        margin-right: 10px;
-        margin-bottom: 5px;
-      }
-    }
+  .hero-content {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    padding: 0 20px;
+    box-sizing: border-box;
   }
 
-  .login-form {
-    h3 {
-      margin-top: 5px;
+  .search-form {
+    width: 560px;
+    max-width: 100%;
+    margin: 0 auto;
+
+    .el-form-item {
+      margin-bottom: 12px;
     }
 
-    .line {
-      border-top: 1px solid #efefef;
-      margin: 14px 0 15px;
-    }
-
-    ul,
-    li {
-      margin: 0;
-      padding: 0;
-    }
-
-    ul {
-      margin: 10px 0;
-    }
-
-    li {
-      margin-left: 20px;
-      line-height: 200%;
-      color: #555;
+    .el-input__inner {
+      height: 50px;
+      line-height: 50px;
+      border: 0;
+      border-radius: 999px;
+      padding-left: 42px;
+      padding-right: 42px;
       font-size: 15px;
+      color: #606266;
+      box-shadow: 0 10px 30px rgba(31, 45, 61, 0.15);
     }
 
-    .login-tips {
-      margin-top: -10px;
-      font-size: 14px;
-    }
-
-    .user-count {
-      margin: 20px 0;
-      font-size: 13px;
-      color: #999;
-
-      .el-col:nth-child(2) {
-        border-left: 1px solid #efefef;
-        border-right: 1px solid #efefef;
-      }
-
-      span {
-        display: block;
-        margin-top: 5px;
-        font-size: 16px;
-        color: #409eff;
-      }
-    }
-
-    .user-signature {
-      text-align: left;
-      text-indent: 2em;
-      margin-top: 10px;
-      height: 41px;
-      font-size: 14px;
-      line-height: 23px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      word-break: break-all;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-  }
-
-  .el-card__header {
-    .float-right {
-      margin-top: -7px;
-      .text-muted {
-        font-weight: normal !important;
-      }
-    }
-  }
-
-  .sub-btn {
-    position: relative;
-    top: 13px;
-    padding-bottom: 7px;
-  }
-
-  .index-articles {
-    .el-card__body {
-      padding-top: 4px;
-      padding-bottom: 4px;
-      min-height: 253px;
-      box-sizing: border-box;
-    }
-  }
-
-  .latest-recommend {
-    .el-card__body {
-      padding-bottom: 0;
-      min-height: 476px;
-      box-sizing: border-box;
-    }
-
-    a {
-      text-decoration: none;
-      display: block;
-      margin-bottom: 20px;
-
-      &:hover {
-        color: #409eff;
-      }
-
-      .el-image {
-        border: 2px solid #efefef;
-        border-radius: 5px;
-        height: 160px;
-        width: 115px;
-        max-width: 100%;
-
-        img {
-          width: 100%;
-          transition: transform 0.3s ease 0s;
-
-          &:hover {
-            transform: scale(1.2);
-          }
-        }
-      }
-
-      div.el-link {
-        height: 40px;
-        overflow: hidden;
-        margin-bottom: 0px;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        word-break: break-word;
-        font-size: 13px;
-        line-height: 20px;
-      }
-    }
-  }
-
-  .category-item-list {
-    .el-card__body {
-      padding-bottom: 0;
-      .doc-item {
-        margin-bottom: 20px;
-        display: flex;
-        .el-link {
-          display: block;
-        }
-        .doc-cover {
-          width: 70px;
-          margin-right: 15px;
-        }
-        .doc-title {
-          flex: 1;
-          .el-link {
-            font-size: 14px;
-            margin-bottom: 20px;
-            line-height: 180%;
-            & > div {
-              overflow: hidden;
-              display: -webkit-box;
-              text-overflow: ellipsis;
-              height: 50px;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-              word-break: break-word;
-            }
-          }
-          @media screen and (max-width: $mobile-width) {
-            .el-link {
-              margin-bottom: 15px;
-              & > div {
-                height: 66px;
-                line-height: 22px;
-                -webkit-line-clamp: 3;
-              }
-            }
-          }
-          & > div {
-            font-size: 13px;
-            color: #888;
-          }
-        }
-      }
-    }
-  }
-
-  .category-item-card {
-    .el-card__body {
-      padding-bottom: 15px;
-    }
-    .el-card__body > div {
+    .el-input__prefix,
+    .el-input__suffix {
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
+      align-items: center;
+      color: #98a2b3;
+    }
 
-      .card-body-left {
-        width: 180px;
-        padding-right: 20px;
+    .btn-search {
+      cursor: pointer;
+      color: #7b8794;
+    }
+  }
 
-        .category-cover {
-          height: 145px;
-          width: 180px;
-          overflow: hidden;
-        }
+  .search-word-row {
+    text-align: center;
+  }
 
-        .image-slot {
-          height: 145px;
-          overflow: hidden;
-        }
+  .search-keyword {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 68px;
+    padding: 0 14px;
+    height: 28px;
+    margin: 0 4px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.6);
+    color: #5f6c7b;
+    font-size: 12px;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
 
-        img {
-          width: 180px;
-          height: 145px;
-          border-radius: 5px;
-        }
-      }
-
-      .card-body-right {
-        width: 100%;
-        margin-top: -5px;
-        box-sizing: border-box;
-        padding-right: 200px;
-
-        a {
-          text-decoration: none;
-          display: block;
-          line-height: 30px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-
-          img {
-            display: none;
-          }
-        }
-      }
+    &:hover {
+      background: rgba(255, 255, 255, 0.85);
+      color: #2f7cf6;
     }
   }
 }
 
-// =================================
-// 移动端样式
-// =================================
+.page-shell {
+  width: $default-width;
+  max-width: $max-width;
+  margin: 0 auto;
+  padding-top: 22px;
+}
+
+.section-block {
+  margin-bottom: 22px;
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    h2 {
+      margin: 0 0 4px;
+      color: #202939;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    p {
+      margin: 0;
+      color: #7b8794;
+      font-size: 13px;
+    }
+  }
+}
+
+.recommend-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 184px;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.recommend-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.recommend-card,
+.latest-panel,
+.category-card,
+.publish-entry {
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+}
+
+.recommend-card {
+  display: block;
+  padding: 14px 14px 12px;
+  color: #303133;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+  }
+}
+
+.recommend-cover-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 176px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.recommend-title {
+  height: 44px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  color: #111827;
+  font-size: 14px;
+  line-height: 22px;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.recommend-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #98a2b3;
+  font-size: 12px;
+}
+
+.publish-panel {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+}
+
+.publish-entry {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  color: #243b53;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+  }
+
+  .entry-icon {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 14px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+
+  strong {
+    margin-bottom: 6px;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  small {
+    color: #7b8794;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+}
+
+.entry-upload .entry-icon {
+  background: rgba(38, 132, 255, 0.12);
+  color: #2f7cf6;
+}
+
+.entry-post .entry-icon {
+  background: rgba(46, 184, 92, 0.12);
+  color: #2eb85c;
+}
+
+.latest-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.latest-panel {
+  padding: 18px 18px 10px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #111827;
+  font-size: 16px;
+}
+
+.panel-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.doc-icon {
+  background: linear-gradient(135deg, #ff8a5b 0%, #ff6b57 100%);
+}
+
+.article-icon {
+  background: linear-gradient(135deg, #5bc58c 0%, #33a06f 100%);
+}
+
+.panel-more {
+  color: #2f7cf6;
+  font-size: 12px;
+}
+
+.latest-item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 90px;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px dashed #edf2f7;
+  color: #344054;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.latest-rank {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: #ff7a59;
+  color: #fff;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.latest-rank-article {
+  background: #6b7280;
+}
+
+.latest-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.latest-date {
+  color: #98a2b3;
+  font-size: 12px;
+  text-align: right;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.category-card {
+  padding: 18px;
+}
+
+.category-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.category-main-link {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  color: #243b53;
+}
+
+.category-badge {
+  width: 42px;
+  height: 42px;
+  margin-right: 12px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.category-main-text {
+  display: flex;
+  flex-direction: column;
+
+  strong {
+    margin-bottom: 4px;
+    color: #111827;
+    font-size: 18px;
+  }
+
+  small {
+    color: #7b8794;
+    font-size: 12px;
+  }
+}
+
+.category-more {
+  color: #2f7cf6;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.category-children {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px 18px;
+  padding-top: 14px;
+  border-top: 1px solid #eef2f6;
+}
+
+.category-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #52606d;
+  font-size: 13px;
+
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  small {
+    color: #98a2b3;
+    white-space: nowrap;
+  }
+}
+
+.theme-0 .category-badge {
+  background: #fff1ec;
+}
+
+.theme-1 .category-badge {
+  background: #fff8da;
+}
+
+.theme-2 .category-badge {
+  background: #fff0ea;
+}
+
+.theme-3 .category-badge {
+  background: #eaf9ee;
+}
+
 @media screen and (max-width: $mobile-width) {
   .page-index {
-    .searchbox {
-      margin-bottom: 15px;
-
-      .search-form {
-        width: 90%;
-
-        .el-input__inner {
-          height: 40px;
-          line-height: 40px;
-        }
-      }
-    }
+    padding-bottom: 30px;
 
     .el-carousel__arrow {
       display: none;
     }
+  }
 
-    .latest-recommend {
+  .hero-search {
+    .hero-content {
+      padding: 0 14px;
+    }
+
+    .search-form {
       width: 100%;
-      padding-left: 0 !important;
-      padding-right: 0 !important;
 
-      .el-card__body {
-        padding: 15px;
-        padding-bottom: 0;
-        min-height: auto;
+      .el-form-item {
+        margin-bottom: 10px;
       }
 
-      .el-col-4 {
-        width: 25%;
-        padding-left: 7.5px !important;
-        padding-right: 7.5px !important;
-      }
-
-      a {
-        margin-bottom: 15px;
-
-        .el-image {
-          height: auto;
-          width: 100%;
-          border: 1px solid #e6e6e6;
-        }
-
-        div.el-link {
-          font-size: 12px;
-        }
+      .el-input__inner {
+        height: 44px;
+        line-height: 44px;
+        font-size: 14px;
       }
     }
 
-    .right-at-recommend {
-      width: 100%;
-      margin-top: -20px;
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-      margin-bottom: 15px;
+    .search-keyword {
+      min-width: auto;
+      padding: 0 12px;
+      margin-bottom: 6px;
     }
+  }
 
-    .categories {
-      padding-bottom: 15px;
+  .page-shell {
+    width: auto;
+    padding: 16px 10px 0;
+  }
 
-      .el-col-6 {
-        width: 50%;
+  .section-block {
+    margin-bottom: 18px;
 
-        .el-card__body {
-          overflow: hidden;
-        }
-      }
-    }
+    .section-header {
+      margin-bottom: 12px;
 
-    .category-item-list {
-      & > .el-col {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-      }
-      .el-card__body {
-        padding: 15px 10px;
-        .doc-item {
-          margin-bottom: 10px;
-          .doc-cover {
-            margin-right: 10px;
-          }
-          .doc-title {
-            .el-link {
-              font-size: 13px;
-            }
-            & > div {
-              font-size: 12px;
-            }
-          }
-        }
-      }
-    }
-
-    .category-item-card {
-      .el-col-12 {
-        width: 100%;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-
-        .card-body-right {
-          padding-right: 0 !important;
-
-          a {
-            line-height: 35px !important;
-
-            img {
-              display: inline-block !important;
-              height: 18px;
-              width: 18px;
-              position: relative;
-              top: 3px;
-              margin-right: 3px;
-            }
-          }
-        }
+      h2 {
+        font-size: 24px;
       }
     }
   }
-  .page-index .categories .el-row .el-card__body {
-    height: 105px;
+
+  .recommend-layout,
+  .latest-grid,
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recommend-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .recommend-card {
+    padding: 12px;
+  }
+
+  .recommend-cover-wrap {
+    height: 150px;
+  }
+
+  .publish-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: 12px;
+  }
+
+  .publish-entry {
+    padding: 16px;
+
+    strong {
+      font-size: 16px;
+    }
+  }
+
+  .latest-panel {
+    padding: 16px 14px 8px;
+  }
+
+  .latest-item {
+    grid-template-columns: 22px minmax(0, 1fr) 74px;
+    gap: 10px;
+  }
+
+  .latest-date {
+    font-size: 11px;
+  }
+
+  .category-card {
+    padding: 16px 14px;
+  }
+
+  .category-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .category-more {
+    padding-left: 54px;
+  }
+
+  .category-children {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 12px;
   }
 }
 </style>
