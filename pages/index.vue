@@ -58,10 +58,9 @@
         </el-form>
       </div>
     </section>
-
-    <div class="notice-board">
+    <div v-if="notices.length > 0" class="notice-board">
       <div>
-        <el-row v-if="notices.length > 0" :gutter="20">
+        <el-row :gutter="20">
           <el-col :span="24">
             <el-card shadow="never">
               <notice-board :notices="notices" />
@@ -70,7 +69,6 @@
         </el-row>
       </div>
     </div>
-
     <div class="page-shell">
       <section class="section-block recommend-section">
         <div class="section-header">
