@@ -199,10 +199,9 @@
         </div>
         <div class="category-grid">
           <div
-            v-for="(category, index) in featuredCategories"
+            v-for="category in featuredCategories"
             :key="'category-' + category.id"
             class="category-card"
-            :class="`theme-${index % 4}`"
           >
             <div class="category-top">
               <nuxt-link
@@ -322,7 +321,7 @@ export default {
             return hideEmpty ? child.doc_count > 0 : true
           }),
         }))
-        .slice(0, 4)
+      // .slice(0, 4)
     },
   },
   async created() {
