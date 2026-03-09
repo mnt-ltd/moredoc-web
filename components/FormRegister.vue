@@ -74,28 +74,42 @@
           },
         ]"
       >
-        <div v-if="captcha.type == 'audio'">
-          <el-row :gutter="15">
-            <el-col :span="20">
-              <audio controls="controls" :src="captcha.captcha"></audio>
-            </el-col>
-            <el-col :span="4">
-              <el-tooltip placement="top" content="刷新语音验证码">
-                <el-button
-                  icon="el-icon-refresh"
-                  class="btn-audio-refresh"
+        <el-row :gutter="0">
+          <el-col :span="12">
+            <el-input
+              v-model="user.captcha"
+              placeholder="请输入验证码"
+            ></el-input>
+          </el-col>
+          <el-col :span="12">
+            <div v-if="captcha.type == 'audio'">
+              <el-row :gutter="15">
+                <el-col :span="20">
+                  <audio controls="controls" :src="captcha.captcha"></audio>
+                </el-col>
+                <el-col :span="4">
+                  <el-tooltip placement="top" content="刷新语音验证码">
+                    <el-button
+                      icon="el-icon-refresh"
+                      class="btn-audio-refresh"
+                      @click="loadCaptcha"
+                    ></el-button>
+                  </el-tooltip>
+                </el-col>
+              </el-row>
+            </div>
+            <div v-else>
+              <el-tooltip placement="right" content="点击可刷新验证码">
+                <img
+                  :src="captcha.captcha"
+                  class="pointer"
+                  style="height: 40px; margin-left: 5px"
                   @click="loadCaptcha"
-                ></el-button>
+                />
               </el-tooltip>
-            </el-col>
-          </el-row>
-        </div>
-        <div v-else>
-          <el-tooltip placement="right" content="点击可刷新验证码">
-            <img :src="captcha.captcha" class="pointer" @click="loadCaptcha" />
-          </el-tooltip>
-        </div>
-        <el-input v-model="user.captcha" placeholder="请输入验证码"></el-input>
+            </div>
+          </el-col>
+        </el-row>
       </el-form-item>
       <el-form-item
         label="电子邮箱"
@@ -117,14 +131,23 @@
           v-model="user.email"
           placeholder="请输入您的邮箱地址，以便忘记密码时找回"
         >
-          <el-button :disabled="leftSeconds>0" v-if="settings.security.enable_verify_register_email" slot="append" icon="el-icon-message" @click="sendEmailCode">
-            <template v-if="leftSeconds>0">剩余 {{ leftSeconds }} 秒</template>
+          <el-button
+            v-if="settings.security.enable_verify_register_email"
+            slot="append"
+            :disabled="leftSeconds > 0"
+            icon="el-icon-message"
+            @click="sendEmailCode"
+          >
+            <template v-if="leftSeconds > 0"
+              >剩余 {{ leftSeconds }} 秒</template
+            >
             <template v-else>获取邮箱验证码</template>
           </el-button>
-      </el-input>
+        </el-input>
       </el-form-item>
       <!-- 邮箱验证码 -->
-      <el-form-item  v-if="settings.security.enable_verify_register_email"
+      <el-form-item
+        v-if="settings.security.enable_verify_register_email"
         label="邮箱验证码"
         prop="code"
         :rules="[
@@ -135,10 +158,7 @@
           },
         ]"
       >
-        <el-input
-          v-model="user.code"
-          placeholder="请输入邮箱验证码"
-        ></el-input>
+        <el-input v-model="user.code" placeholder="请输入邮箱验证码"></el-input>
       </el-form-item>
       <el-form-item class="register">
         <el-alert
@@ -155,11 +175,11 @@
           type="primary"
           class="btn-block btn-register"
           icon="el-icon-check"
-          @click="execRegister"
           :disabled="
             settings && settings.security && !settings.security.enable_register
           "
           :loading="loading"
+          @click="execRegister"
           >立即注册</el-button
         >
       </el-form-item>
@@ -168,7 +188,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { getUserCaptcha,sendEmailCode } from '~/api/user'
+import { getUserCaptcha, sendEmailCode } from '~/api/user'
 export default {
   name: 'FormRegister',
   props: {
@@ -201,7 +221,7 @@ export default {
   },
   created() {
     // this.loadCaptcha()
-    if(this.settings.security.enable_captcha_register){
+    if (this.settings.security.enable_captcha_register) {
       this.captcha.enable = true
     }
   },
@@ -226,7 +246,7 @@ export default {
             } else {
               this.$router.replace({ name: 'index' })
             }
-          }else{
+          } else {
             this.loadCaptcha()
           }
           this.loading = false
@@ -256,23 +276,23 @@ export default {
       this.$refs.formRegister.clearValidate()
     },
     // 发送邮箱验证码
-    async sendEmailCode(){
-      if(!this.user.email){
+    async sendEmailCode() {
+      if (!this.user.email) {
         this.$message.error('请输入邮箱地址')
         return
       }
 
-      if(!this.user.captcha){
+      if (!this.user.captcha) {
         this.$message.error('请输入验证码')
         return
       }
 
       const res = await sendEmailCode({
-        email:this.user.email,
-        captcha_id:this.user.captcha_id,
-        captcha:this.user.captcha,
+        email: this.user.email,
+        captcha_id: this.user.captcha_id,
+        captcha: this.user.captcha,
       })
-      if(res.status===200){
+      if (res.status === 200) {
         this.$message.success('验证码发送成功')
         this.leftSeconds = 60
         const timer = setInterval(() => {
@@ -281,10 +301,10 @@ export default {
             clearInterval(timer)
           }
         }, 1000)
-      }else{
+      } else {
         this.$message.error(res.data.message || '请求失败')
       }
-    }
+    },
   },
 }
 </script>
