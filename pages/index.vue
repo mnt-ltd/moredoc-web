@@ -140,7 +140,11 @@
               target="_blank"
               class="latest-item"
             >
-              <span class="latest-rank">{{ index + 1 }}</span>
+              <span
+                class="latest-rank"
+                :class="index > 2 ? 'latest-rank-older' : ''"
+                >{{ index + 1 }}</span
+              >
               <span class="latest-text">{{ doc.title }}</span>
               <span class="latest-date">{{ formatDate(doc.created_at) }}</span>
             </nuxt-link>
@@ -163,9 +167,11 @@
               target="_blank"
               class="latest-item"
             >
-              <span class="latest-rank latest-rank-article">{{
-                index + 1
-              }}</span>
+              <span
+                class="latest-rank"
+                :class="index > 2 ? 'latest-rank-older' : ''"
+                >{{ index + 1 }}</span
+              >
               <span class="latest-text">{{ article.title }}</span>
               <span class="latest-date">{{
                 formatDate(article.created_at)
@@ -415,7 +421,6 @@ export default {
   width: 100%;
   max-width: 100%;
   margin-top: -20px;
-  padding-bottom: 48px;
 
   a {
     text-decoration: none;
@@ -804,7 +809,7 @@ export default {
   text-align: center;
 }
 
-.latest-rank-article {
+.latest-rank-older {
   background: #6b7280;
 }
 
@@ -850,13 +855,14 @@ export default {
   height: 42px;
   margin-right: 12px;
   border-radius: 12px;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
   img {
-    width: 22px;
-    height: 22px;
+    width: 42px;
+    height: 42px;
   }
 }
 
@@ -895,6 +901,9 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f6f6f6;
   color: #52606d;
   font-size: 13px;
 
@@ -910,26 +919,8 @@ export default {
   }
 }
 
-.theme-0 .category-badge {
-  background: #fff1ec;
-}
-
-.theme-1 .category-badge {
-  background: #fff8da;
-}
-
-.theme-2 .category-badge {
-  background: #fff0ea;
-}
-
-.theme-3 .category-badge {
-  background: #eaf9ee;
-}
-
 @media screen and (max-width: $mobile-width) {
   .page-index {
-    padding-bottom: 30px;
-
     .el-carousel__arrow {
       display: none;
     }
