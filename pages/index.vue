@@ -59,6 +59,18 @@
       </div>
     </section>
 
+    <div class="notice-board">
+      <div>
+        <el-row v-if="notices.length > 0" :gutter="20">
+          <el-col :span="24">
+            <el-card shadow="never">
+              <notice-board :notices="notices" />
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
+
     <div class="page-shell">
       <section class="section-block recommend-section">
         <div class="section-header">
@@ -268,6 +280,7 @@ export default {
       },
       carouselIndexes: [0],
       articles: [],
+      notices: [],
       recommendBatch: 0,
     }
   },
@@ -331,6 +344,7 @@ export default {
       this.getRecommendDocuments(),
       this.getLatestDocuments(),
       this.getArticles(),
+      this.getNotices(),
     ])
   },
   methods: {
@@ -347,6 +361,16 @@ export default {
     onSearch() {
       if (this.search.wd) {
         location.href = '/search?wd=' + encodeURIComponent(this.search.wd)
+      }
+    },
+    async getNotices() {
+      const res = await listArticle({
+        page: 1,
+        size: 100,
+        is_notice: [1],
+      })
+      if (res.status === 200) {
+        this.notices = res.data.article || []
       }
     },
     async getArticles() {
@@ -436,6 +460,17 @@ export default {
     width: 20px;
     height: 3px;
     border-radius: 2px;
+  }
+
+  .notice-board {
+    margin-top: 0;
+    margin-bottom: 0 !important;
+    background-color: #fff;
+    & > div {
+      width: $default-width;
+      max-width: $max-width;
+      margin: 0 auto;
+    }
   }
 }
 

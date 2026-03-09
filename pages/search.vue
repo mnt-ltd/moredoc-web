@@ -84,7 +84,10 @@
                 @change="changeSearchType"
               >
                 <el-option
-                  v-for="item in categoryTypeOptions"
+                  v-for="item in [
+                    { label: '综合', value: -1 },
+                    ...categoryTypeOptions,
+                  ]"
                   :key="'st-' + item.value"
                   :label="item.label"
                   :value="item.value"
