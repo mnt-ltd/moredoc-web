@@ -605,6 +605,7 @@ export default {
       }
       &.is-active {
         border-color: transparent;
+        color: #6095f7;
       }
       .el-input {
         width: 200px;
@@ -633,6 +634,9 @@ export default {
       & > span {
         position: relative;
         top: -1px;
+      }
+      &.is-active {
+        color: #6095f7;
       }
     }
 
