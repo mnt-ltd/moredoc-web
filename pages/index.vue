@@ -62,37 +62,57 @@
     <div class="page-shell">
       <section class="section-block recommend-section">
         <div class="section-header">
-          <div>
-            <h2>文档推荐</h2>
-            <div>
+          <div class="recommend-header-wrap">
+            <div class="recommend-heading">
+              <h2>文档推荐</h2>
+              <button
+                class="recommend-refresh"
+                type="button"
+                @click="changeRecommendBatch"
+              >
+                <i class="el-icon-refresh-right"></i>
+                <span>换一批</span>
+              </button>
+            </div>
+            <div class="recommend-links">
               <nuxt-link to="/upload" class="nuxt-link" target="_blank">
-                <span>上传文档</span>
+                <span><i class="el-icon el-icon-upload2"></i> 上传文档</span>
               </nuxt-link>
               <nuxt-link to="/post" class="nuxt-link" target="_blank">
-                <span>发布文章</span>
+                <span><i class="el-icon el-icon-edit"></i> 发布文章</span>
               </nuxt-link>
             </div>
           </div>
         </div>
-        <div class="recommend-layout">
-          <div v-loading="loadingRecommend" class="recommend-grid">
-            <nuxt-link
-              v-for="item in recommends.slice(0, 8)"
-              :key="'recommend-' + item.id"
-              :to="`/document/${item.uuid}`"
-              target="_blank"
-              class="recommend-card"
-            >
-              <div class="recommend-cover-wrap">
-                <document-cover :document="item" :lazy="false" />
-              </div>
-              <div class="recommend-title">{{ item.title }}</div>
-              <div class="recommend-meta">
-                <span>{{ item.category_name || '文档资源' }}</span>
-                <span>{{ formatDate(item.created_at) || '最新发布' }}</span>
-              </div>
-            </nuxt-link>
-          </div>
+        <div v-loading="loadingRecommend" class="recommend-grid">
+          <nuxt-link
+            v-for="item in displayedRecommends"
+            :key="'recommend-' + item.id"
+            :to="`/document/${item.uuid}`"
+            target="_blank"
+            class="recommend-card"
+          >
+            <div class="recommend-cover-wrap">
+              <document-cover
+                :document="item"
+                :lazy="false"
+                :width="isMobile ? 88 : 118"
+                :show-ext="true"
+              />
+            </div>
+            <div class="recommend-title">{{ item.title }}</div>
+            <div class="recommend-author">
+              <i class="el-icon el-icon-user"></i>
+              {{ getRecommendAuthor(item) }}
+            </div>
+            <div class="recommend-category">
+              {{
+                item.category && item.category.length > 0
+                  ? item.category[0].title
+                  : '文档资源'
+              }}
+            </div>
+          </nuxt-link>
         </div>
       </section>
 
@@ -100,7 +120,6 @@
         <div class="section-header">
           <div>
             <h2>最新内容</h2>
-            <p>最新上传文档与最新发布文章</p>
           </div>
         </div>
         <div class="latest-grid">
@@ -108,10 +127,10 @@
             <div class="panel-header">
               <div class="panel-title">
                 <span class="panel-icon doc-icon el-icon-document"></span>
-                <strong>最新文档</strong>
+                <strong>文档资料</strong>
               </div>
               <nuxt-link to="/search" target="_blank" class="panel-more">
-                查看更多
+                查看更多 <i class="el-icon el-icon-arrow-right"></i>
               </nuxt-link>
             </div>
             <nuxt-link
@@ -134,7 +153,7 @@
                 <strong>{{ articleName }}</strong>
               </div>
               <nuxt-link to="/article" target="_blank" class="panel-more">
-                查看更多
+                查看更多 <i class="el-icon el-icon-arrow-right"></i>
               </nuxt-link>
             </div>
             <nuxt-link
@@ -165,7 +184,6 @@
         <div class="section-header">
           <div>
             <h2>分类浏览</h2>
-            <p>按一级分类与二级分类快速进入内容区</p>
           </div>
         </div>
         <div class="category-grid">
@@ -238,6 +256,7 @@ export default {
       },
       carouselIndexes: [0],
       articles: [],
+      recommendBatch: 0,
     }
   },
   head() {
@@ -266,6 +285,16 @@ export default {
     },
     recommendWords() {
       return (this.settings.system.recommend_words || []).slice(0, 4)
+    },
+    displayedRecommends() {
+      if (!this.recommends.length) {
+        return []
+      }
+      const start = this.recommendBatch * 8
+      return this.recommends.slice(start, start + 8)
+    },
+    recommendBatchCount() {
+      return Math.max(Math.ceil(this.recommends.length / 8), 1)
     },
     featuredCategories() {
       const hideEmpty = this.settings.display.hide_category_without_document
@@ -320,14 +349,15 @@ export default {
     async getRecommendDocuments() {
       this.loadingRecommend = true
       const res = await listDocument({
-        field: ['id', 'title', 'uuid', 'category_name', 'created_at'],
+        // field: ['id', 'title', 'uuid', 'category_name', 'username', 'cover'],
         is_recommend: true,
         order: 'recommend_at desc',
-        limit: 8,
+        limit: 24,
       })
       this.loadingRecommend = false
       if (res.status === 200) {
         this.recommends = res.data.document || []
+        this.recommendBatch = 0
       }
     },
     async getLatestDocuments() {
@@ -346,6 +376,22 @@ export default {
         carouselIndexes.push(index)
       }
       this.carouselIndexes = carouselIndexes
+    },
+    changeRecommendBatch() {
+      if (this.recommendBatchCount <= 1) {
+        return
+      }
+      this.recommendBatch = (this.recommendBatch + 1) % this.recommendBatchCount
+    },
+    getRecommendAuthor(item) {
+      return (
+        item.realname ||
+        item.nickname ||
+        item.username ||
+        (item.user &&
+          (item.user.realname || item.user.nickname || item.user.username)) ||
+        '未知作者'
+      )
     },
     formatDate(value) {
       if (!value) {
@@ -480,22 +526,23 @@ export default {
   width: $default-width;
   max-width: $max-width;
   margin: 0 auto;
-  padding-top: 22px;
+  padding-top: 10px;
 }
 
 .section-block {
-  margin-bottom: 22px;
+  margin-bottom: 30px;
 
   .section-header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
+    margin-top: 16px;
 
     h2 {
       margin: 0 0 4px;
       color: #202939;
-      font-size: 28px;
+      font-size: 22px;
       line-height: 1.1;
     }
 
@@ -507,17 +554,10 @@ export default {
   }
 }
 
-.recommend-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 184px;
-  gap: 18px;
-  align-items: stretch;
-}
-
 .recommend-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  gap: 20px 24px;
 }
 
 .recommend-card,
@@ -530,9 +570,12 @@ export default {
 }
 
 .recommend-card {
-  display: block;
-  padding: 14px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 16px 16px;
   color: #303133;
+  text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
@@ -545,20 +588,28 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 176px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  background: #f8fafc;
-  overflow: hidden;
+  width: 100%;
+  min-height: 190px;
+  margin-bottom: 14px;
+
+  .com-document-cover {
+    border-color: #e8ebf0;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+
+    img:hover {
+      transform: none;
+    }
+  }
 }
 
 .recommend-title {
-  height: 44px;
-  margin-bottom: 10px;
+  width: 100%;
+  min-height: 48px;
   overflow: hidden;
-  color: #111827;
-  font-size: 14px;
-  line-height: 22px;
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
   display: -webkit-box;
   line-clamp: 2;
   -webkit-line-clamp: 2;
@@ -566,12 +617,63 @@ export default {
   word-break: break-word;
 }
 
-.recommend-meta {
+.recommend-author,
+.recommend-category {
+  width: 100%;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.recommend-author {
+  margin-bottom: 2px;
+  margin-top: 5px;
+  color: #1f2937;
+}
+
+.recommend-header-wrap {
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.recommend-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.recommend-refresh {
+  display: inline-flex;
+  align-items: center;
   gap: 4px;
-  color: #98a2b3;
-  font-size: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #606266;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    color: #2f7cf6;
+  }
+}
+
+.recommend-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+
+  .nuxt-link {
+    color: #606266;
+    font-size: 14px;
+
+    &:hover {
+      color: #2f7cf6;
+    }
+  }
 }
 
 .publish-panel {
@@ -876,7 +978,6 @@ export default {
     }
   }
 
-  .recommend-layout,
   .latest-grid,
   .category-grid {
     grid-template-columns: 1fr;
@@ -892,7 +993,27 @@ export default {
   }
 
   .recommend-cover-wrap {
-    height: 150px;
+    min-height: 150px;
+    margin-bottom: 10px;
+  }
+
+  .recommend-header-wrap {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .recommend-heading {
+    gap: 10px;
+  }
+
+  .recommend-refresh,
+  .recommend-links .nuxt-link {
+    font-size: 13px;
+  }
+
+  .recommend-links {
+    gap: 12px;
   }
 
   .publish-panel {
