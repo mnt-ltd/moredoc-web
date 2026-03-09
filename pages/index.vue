@@ -39,17 +39,20 @@
           </el-input>
         </el-form-item>
         <el-form-item v-if="settings.system.recommend_words">
-          <span class="hidden-xs-only">大家在搜:</span>
+          <!-- <span class="hidden-xs-only">大家在搜:</span> -->
           <nuxt-link
             v-for="word in settings.system.recommend_words"
             :key="'kw-' + word"
             target="_blank"
+            class="search-keywords"
             :to="{
               path: '/search',
               query: { wd: word },
             }"
           >
-            <el-tag size="small">{{ word }}</el-tag>
+            <el-button size="mini" plain round type="primary">{{
+              word
+            }}</el-button>
           </nuxt-link>
         </el-form-item>
       </el-form>
@@ -608,6 +611,12 @@ export default {
   max-width: 100%;
   margin-top: -20px;
 
+  .search-keywords {
+    margin-right: 10px;
+    margin-bottom: 5px;
+    display: inline-block;
+  }
+
   .upload-box a {
     border: 1px dashed #ddd;
     border-radius: 4px;
@@ -664,12 +673,13 @@ export default {
 
       .el-input__inner {
         border-right: 0;
-        height: 45px;
-        line-height: 45px;
+        height: 48px;
+        line-height: 48px;
         font-size: 15px;
+        border-radius: 40px;
 
         &:focus {
-          border-color: #dcdfe6;
+          border-color: #409eff;
         }
       }
 
