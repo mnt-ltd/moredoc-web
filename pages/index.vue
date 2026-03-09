@@ -111,6 +111,11 @@
                   ? item.category[0].title
                   : '文档资源'
               }}
+              {{
+                item.category && item.category.length > 1
+                  ? '· ' + item.category[1].title
+                  : ''
+              }}
             </div>
           </nuxt-link>
         </div>
@@ -226,7 +231,8 @@
             </div>
             <div class="category-children">
               <nuxt-link
-                v-for="child in category.children"
+                v-for="(child, index) in category.children"
+                v-show="index < 9"
                 :key="'child-' + child.id"
                 :to="`/category/${child.id}`"
                 target="_blank"
