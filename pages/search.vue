@@ -58,7 +58,7 @@
     </el-row>
     <div ref="searchBox" class="search-box">
       <el-row :gutter="20">
-        <el-col :span="5" class="logo hidden-xs-only">
+        <el-col :span="4" class="logo hidden-xs-only">
           <nuxt-link to="/" :title="settings.system.sitename"
             ><img
               :src="settings.system.logo || '/static/images/logo-empty.png'"
@@ -66,34 +66,41 @@
               :alt="settings.system.sitename"
           /></nuxt-link>
         </el-col>
-        <el-col :span="13" class="search-form">
-          <el-input
-            v-model="query.wd"
-            class="search-input"
-            size="large"
-            placeholder="请输入关键词"
-            @keyup.enter.native="onSearch"
-          >
-            <!-- 加一个搜索前缀，搜索文章还是文档 -->
-            <el-select
-              slot="prepend"
-              v-model="searchType"
-              placeholder="请选择搜索类型"
-              @change="changeSearchType"
+        <el-col :span="16" class="search-form">
+          <div class="search-form-shell">
+            <el-input
+              v-model="query.wd"
+              clearable
+              class="search-input"
+              size="large"
+              :placeholder="searchPlaceholder"
+              @keyup.enter.native="onSearch"
             >
-              <el-option
-                v-for="item in categoryTypeOptions"
-                :key="'st-' + item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-            <i
-              slot="suffix"
-              class="el-input__icon el-icon-search btn-search"
-              @click="onSearch"
-            ></i>
-          </el-input>
+              <el-select
+                slot="prepend"
+                v-model="searchType"
+                class="search-type-select"
+                placeholder="请选择搜索类型"
+                @change="changeSearchType"
+              >
+                <el-option
+                  v-for="item in categoryTypeOptions"
+                  :key="'st-' + item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+              <el-button
+                slot="append"
+                type="primary"
+                class="btn-search"
+                icon="el-icon-search"
+                @click="onSearch"
+              >
+                搜索
+              </el-button>
+            </el-input>
+          </div>
         </el-col>
       </el-row>
     </div>
@@ -563,6 +570,11 @@ export default {
     filterSize() {
       return this.isMobile ? 'mini' : 'medium'
     },
+    searchPlaceholder() {
+      return this.searchType === 1
+        ? '搜索文章标题、摘要、标签'
+        : '搜索文档标题、标签、摘要'
+    },
   },
   watch: {
     '$route.query': {
@@ -615,7 +627,7 @@ export default {
         path: '/search',
         query: {
           wd: this.query.wd,
-          type: this.query.type,
+          type: this.searchType,
           page: 1,
           size: 10,
           sort: 'default',
@@ -868,14 +880,6 @@ export default {
   }
 }
 .page-search {
-  .el-select .el-input {
-    width: 90px;
-    padding: 0 15px;
-    .el-input__suffix {
-      right: 0;
-      right: 25px;
-    }
-  }
   width: $max-width;
   & > .el-row {
     width: $default-width;
@@ -890,14 +894,17 @@ export default {
     }
   }
   .search-box {
-    padding: 20px 0;
+    padding: 18px 0 22px;
     margin-bottom: 20px;
-    background-color: #fff;
+    background: linear-gradient(180deg, #fff 0%, #f7f9fc 100%);
+    border-bottom: 1px solid #edf1f7;
     width: 100%;
     & > .el-row {
       margin: 0 auto !important;
       width: $default-width;
       max-width: $max-width;
+      display: flex;
+      align-items: center;
     }
     .el-cascader {
       width: 110px;
@@ -909,13 +916,102 @@ export default {
         border: 0;
       }
     }
-    .el-input-group__append,
-    .el-input-group__prepend {
-      padding: 0 2px;
-      background-color: #fff;
+    // .el-input-group__append,
+    // .el-input-group__prepend {
+    //   padding: 0;
+    //   background-color: #fff;
+    //   border: 0;
+    // }
+    .logo {
+      display: flex;
+      align-items: center;
+      min-height: 64px;
+      img {
+        max-height: 52px;
+      }
+    }
+    .search-form {
+      .search-form-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .search-input {
+        margin-top: 0;
+      }
+      .search-form-tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 72px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #eef4ff;
+        color: #3a7be0;
+        font-weight: 600;
+      }
+      .search-form-hint {
+        color: #8a94a6;
+      }
+    }
+    .search-type-select {
+      .el-input {
+        width: 112px;
+      }
+      .el-input__inner {
+        height: 52px;
+        line-height: 52px;
+        padding: 0 32px 0 18px;
+        border: 0;
+        border-right: 1px solid #e8edf5;
+        border-radius: 16px 0 0 16px;
+        font-weight: 600;
+        color: #243b53;
+        background: #f9fbff;
+      }
+      .el-input__suffix {
+        right: 10px;
+      }
     }
     .search-input {
-      margin-top: 5px;
+      .el-input__inner {
+        height: 52px;
+        line-height: 52px;
+        border: 2px solid #4e9bff;
+        border-right: 0;
+        // border-radius: 18px 0 0 18px;
+        box-shadow: 0 8px 24px rgba(64, 158, 255, 0.12);
+        padding-left: 18px;
+        border-left: 0;
+      }
+      .el-input-group__prepend {
+        border: 2px solid #4e9bff;
+        border-right: 0;
+        border-radius: 18px 0 0 18px;
+        // overflow: hidden;
+      }
+      .el-input-group__append {
+        border: 2px solid #4e9bff;
+        border-left: 0;
+        border-radius: 0 18px 18px 0;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(64, 158, 255, 0.12);
+      }
+      .el-input__inner:focus {
+        border-color: #409eff;
+      }
+      .btn-search {
+        min-width: 108px;
+        height: 52px;
+        padding: 0 28px;
+        border: 0;
+        border-radius: 0 14px 14px 0;
+        background: linear-gradient(135deg, #5ba7ff 0%, #409eff 100%);
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: #fff;
+      }
     }
   }
   .scroll {
@@ -1121,11 +1217,50 @@ export default {
 @media screen and (max-width: $mobile-width) {
   .page-search {
     .search-box {
-      padding: 15px 0;
+      padding: 12px 0 16px;
       margin-bottom: 15px;
+      background: #fff;
       .search-form {
         width: 100% !important;
-        padding-top: 55px;
+        padding-top: 50px;
+      }
+      .search-form-shell {
+        gap: 0;
+      }
+      .search-type-select {
+        .el-input {
+          width: 86px;
+        }
+        .el-input__inner {
+          height: 44px;
+          line-height: 44px;
+          padding: 0 24px 0 12px;
+          border-radius: 12px 0 0 12px;
+        }
+      }
+      .search-input {
+        .el-input__inner {
+          height: 44px;
+          line-height: 44px;
+          border-radius: 12px 0 0 12px;
+          padding-left: 12px;
+          box-shadow: none;
+        }
+        .el-input-group__prepend,
+        .el-input-group__append {
+          box-shadow: none;
+          border-radius: 12px 0 0 12px;
+        }
+        .el-input-group__append {
+          border-radius: 0 12px 12px 0;
+        }
+        .btn-search {
+          min-width: 84px;
+          height: 44px;
+          padding: 0 16px;
+          font-size: 15px;
+          border-radius: 0 10px 10px 0;
+        }
       }
     }
 
