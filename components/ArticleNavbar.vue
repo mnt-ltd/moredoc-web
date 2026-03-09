@@ -99,7 +99,7 @@ ul {
   line-height: 40px;
   font-weight: normal;
   padding: 0 10px;
-  border-radius: 3px;
+  border-radius: 6px;
   &:hover {
     background-color: #21293c14;
   }

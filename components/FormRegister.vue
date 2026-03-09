@@ -74,28 +74,42 @@
           },
         ]"
       >
-        <div v-if="captcha.type == 'audio'">
-          <el-row :gutter="15">
-            <el-col :span="20">
-              <audio controls="controls" :src="captcha.captcha"></audio>
-            </el-col>
-            <el-col :span="4">
-              <el-tooltip placement="top" content="刷新语音验证码">
-                <el-button
-                  icon="el-icon-refresh"
-                  class="btn-audio-refresh"
+        <el-row :gutter="0">
+          <el-col :span="12">
+            <el-input
+              v-model="user.captcha"
+              placeholder="请输入验证码"
+            ></el-input>
+          </el-col>
+          <el-col :span="12">
+            <div v-if="captcha.type == 'audio'">
+              <el-row :gutter="15">
+                <el-col :span="20">
+                  <audio controls="controls" :src="captcha.captcha"></audio>
+                </el-col>
+                <el-col :span="4">
+                  <el-tooltip placement="top" content="刷新语音验证码">
+                    <el-button
+                      icon="el-icon-refresh"
+                      class="btn-audio-refresh"
+                      @click="loadCaptcha"
+                    ></el-button>
+                  </el-tooltip>
+                </el-col>
+              </el-row>
+            </div>
+            <div v-else>
+              <el-tooltip placement="right" content="点击可刷新验证码">
+                <img
+                  :src="captcha.captcha"
+                  class="pointer"
+                  style="height: 40px; margin-left: 5px"
                   @click="loadCaptcha"
-                ></el-button>
+                />
               </el-tooltip>
-            </el-col>
-          </el-row>
-        </div>
-        <div v-else>
-          <el-tooltip placement="right" content="点击可刷新验证码">
-            <img :src="captcha.captcha" class="pointer" @click="loadCaptcha" />
-          </el-tooltip>
-        </div>
-        <el-input v-model="user.captcha" placeholder="请输入验证码"></el-input>
+            </div>
+          </el-col>
+        </el-row>
       </el-form-item>
       <el-form-item
         label="电子邮箱"
