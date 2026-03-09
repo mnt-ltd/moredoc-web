@@ -27,13 +27,13 @@
             >
               搜索
             </el-button>
-            <el-button
+            <!-- <el-button
               size="medium"
               icon="el-icon-refresh"
               @click="resetSearch"
             >
               重置
-            </el-button>
+            </el-button> -->
           </div>
         </div>
         <div v-show="showAdvancedFilters" class="article-filter-form__advanced">
@@ -78,78 +78,107 @@
       class="article-list"
       :class="{ 'without-actions': !canManageArticles }"
     >
-      <div class="article-list__head">
-        <div class="article-list__title">文章信息</div>
-        <div class="article-list__stats">阅读/评论/收藏/状态</div>
-        <div v-if="canManageArticles" class="article-list__actions">操作</div>
-      </div>
-      <div v-loading="loading" class="article-list__body">
-        <template v-if="articles.length > 0">
-          <div v-for="item in articles" :key="item.id" class="article-row">
-            <div class="article-row__info">
-              <el-tooltip :content="item.title" placement="top-start">
-                <nuxt-link
-                  target="_blank"
-                  :to="{
-                    name: 'article-id',
-                    params: { id: item.identifier },
-                  }"
-                  class="article-row__title"
-                >
-                  {{ item.title }}
-                </nuxt-link>
-              </el-tooltip>
-              <div class="article-row__meta">
-                <span>
-                  <i class="el-icon-time"></i>
-                  {{ formatRelativeTime(item.created_at) }}
-                </span>
-                <span>{{ formatDatetime(item.created_at) }}</span>
+      <div class="article-list__body">
+        <el-table
+          v-loading="loading"
+          :data="articles"
+          row-key="id"
+          class="article-table"
+          empty-text=""
+        >
+          <el-table-column
+            min-width="360"
+            label="文章"
+            class-name="article-column--info"
+          >
+            <template slot-scope="scope">
+              <div class="article-cell article-cell--info">
+                <el-tooltip :content="scope.row.title" placement="top-start">
+                  <nuxt-link
+                    target="_blank"
+                    :to="{
+                      name: 'article-id',
+                      params: { id: scope.row.identifier },
+                    }"
+                    class="article-row__title"
+                  >
+                    {{ scope.row.title }}
+                  </nuxt-link>
+                </el-tooltip>
+                <div class="article-row__meta">
+                  <span>
+                    <i class="el-icon-time"></i>
+                    {{ formatRelativeTime(scope.row.created_at) }}
+                  </span>
+                  <span>{{ formatDatetime(scope.row.created_at) }}</span>
+                </div>
               </div>
-            </div>
-            <div class="article-row__stats">
-              <div class="article-row__stat-line">
-                <span
-                  ><i class="el-icon-view"></i> {{ item.view_count || 0 }}</span
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="140"
+            label="统计信息"
+            class-name="article-column--stats"
+          >
+            <template slot-scope="scope">
+              <div class="article-cell article-cell--stats">
+                <div class="article-row__stat-line">
+                  <span
+                    ><i class="el-icon-view"></i>
+                    {{ scope.row.view_count || 0 }}</span
+                  >
+                  <span
+                    ><i class="el-icon-chat-dot-round"></i>
+                    {{ scope.row.comment_count || 0 }}</span
+                  >
+                  <span
+                    ><i class="el-icon-star-off"></i>
+                    {{ scope.row.favorite_count || 0 }}</span
+                  >
+                </div>
+                <el-tag
+                  v-if="showPrivateData"
+                  :type="filterStatus(scope.row.status).type"
+                  size="mini"
+                  effect="plain"
                 >
-                <span
-                  ><i class="el-icon-chat-dot-round"></i>
-                  {{ item.comment_count || 0 }}</span
-                >
-                <span
-                  ><i class="el-icon-star-off"></i>
-                  {{ item.favorite_count || 0 }}</span
-                >
+                  {{ filterStatus(scope.row.status).label }}
+                </el-tag>
               </div>
-              <el-tag
-                v-if="showPrivateData"
-                :type="filterStatus(item.status).type"
-                size="mini"
-                effect="plain"
-              >
-                {{ filterStatus(item.status).label }}
-              </el-tag>
-            </div>
-            <div v-if="canManageArticles" class="article-row__actions">
-              <el-button
-                type="text"
-                icon="el-icon-edit-outline"
-                @click="updateArticle(item)"
-              >
-                编辑
-              </el-button>
-              <el-button
-                type="text"
-                icon="el-icon-delete"
-                class="is-danger"
-                @click="deleteArticle(item)"
-              >
-                删除
-              </el-button>
-            </div>
-          </div>
-        </template>
-        <el-empty v-else description="暂无文章"></el-empty>
+            </template>
+          </el-table-column>
+          <el-table-column
+            v-if="canManageArticles"
+            width="92"
+            class-name="article-column--actions"
+            label="操作"
+          >
+            <template slot-scope="scope">
+              <div class="article-cell article-cell--actions">
+                <el-button
+                  type="text"
+                  icon="el-icon-edit-outline"
+                  size="mini"
+                  @click="updateArticle(scope.row)"
+                >
+                  编辑
+                </el-button>
+                <el-button
+                  type="text"
+                  icon="el-icon-delete"
+                  class="is-danger"
+                  size="mini"
+                  @click="deleteArticle(scope.row)"
+                >
+                  删除
+                </el-button>
+              </div>
+            </template>
+          </el-table-column>
+          <template slot="empty">
+            <el-empty description="暂无文章"></el-empty>
+          </template>
+        </el-table>
       </div>
     </div>
 
@@ -196,7 +225,7 @@ export default {
       loading: false,
       query: {
         page: parseInt(this.$route.query.page) || 1,
-        size: 20,
+        size: 10,
         wd: this.$route.query.wd || '',
         created_at: [],
       },
@@ -220,7 +249,7 @@ export default {
         this.query = {
           wd: this.$route.query.wd || '',
           page: parseInt(this.$route.query.page) || 1,
-          size: parseInt(this.$route.query.size) || 20,
+          size: parseInt(this.$route.query.size) || 10,
           created_at: Array.isArray(this.$route.query.created_at)
             ? this.$route.query.created_at
             : [],
@@ -427,15 +456,14 @@ export default {
     }
   }
 
-  .article-list {
-    border: 1px solid #edf1f7;
-    border-radius: 16px;
-    overflow: hidden;
-    background-color: #fff;
-  }
+  // .article-list {
+  //   border: 1px solid #edf1f7;
+  //   border-radius: 16px;
+  //   overflow: hidden;
+  //   background-color: #fff;
+  // }
 
-  .article-list__head,
-  .article-row {
+  .article-list__head {
     display: grid;
     grid-template-columns: minmax(0, 1.7fr) minmax(180px, 260px) 92px;
     column-gap: 18px;
@@ -461,15 +489,45 @@ export default {
     min-height: 120px;
   }
 
-  .article-row {
-    padding: 22px;
-    border-top: 1px solid #f1f4f8;
+  .article-table {
+    width: 100%;
+
+    &::before {
+      display: none;
+    }
+
+    .el-table__body-wrapper {
+      overflow-x: hidden;
+    }
+
+    td {
+      padding: 0;
+      border-bottom: 1px solid #f1f4f8;
+      vertical-align: top;
+    }
+
+    .cell {
+      padding: 0;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+  }
+
+  .article-cell {
+    padding: 22px 0;
+    padding-left: 10px;
+  }
+
+  .article-cell--info {
+    padding-right: 18px;
   }
 
   .article-row__title {
     display: block;
     color: #1f2937;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     line-height: 1.45;
     text-decoration: none;
@@ -498,12 +556,13 @@ export default {
     }
   }
 
-  .article-row__stats {
+  .article-cell--stats {
     display: flex;
     flex-direction: column;
     gap: 10px;
     color: #6b7280;
     font-size: 14px;
+    padding-right: 18px;
   }
 
   .article-row__stat-line {
@@ -519,11 +578,12 @@ export default {
     }
   }
 
-  .article-row__actions {
+  .article-cell--actions {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+    padding-right: 22px;
 
     .el-button {
       margin-left: 0;
@@ -540,19 +600,34 @@ export default {
     margin-top: 20px;
     text-align: right;
   }
+
+  .article-column--stats {
+    .el-tag {
+      width: 72px;
+      text-align: center;
+    }
+  }
 }
 
 @media screen and (max-width: 1200px) {
   .com-user-article {
-    .article-list__head,
-    .article-row {
+    .article-list__head {
       grid-template-columns: minmax(0, 1fr) 180px 78px;
     }
 
     .article-list.without-actions {
-      .article-list__head,
-      .article-row {
+      .article-list__head {
         grid-template-columns: minmax(0, 1fr) 180px;
+      }
+    }
+
+    .article-table {
+      .article-column--stats {
+        width: 180px;
+      }
+
+      .article-column--actions {
+        width: 78px;
       }
     }
   }
@@ -601,11 +676,39 @@ export default {
       display: none;
     }
 
-    .article-row,
-    .article-list.without-actions .article-row {
-      grid-template-columns: 1fr;
-      row-gap: 14px;
-      padding: 18px 16px;
+    .article-table {
+      .el-table__body,
+      .el-table__body tbody,
+      .el-table__body tr,
+      .el-table__body td {
+        display: block;
+        width: 100% !important;
+      }
+
+      .el-table__body-wrapper {
+        overflow-x: visible;
+      }
+
+      .el-table__row {
+        padding: 18px 16px;
+        border-top: 1px solid #f1f4f8;
+      }
+
+      .el-table__row:first-child {
+        border-top: 0;
+      }
+
+      td {
+        border-bottom: 0;
+      }
+
+      .cell {
+        overflow: visible;
+      }
+    }
+
+    .article-cell {
+      padding: 0;
     }
 
     .article-row__title {
@@ -617,9 +720,16 @@ export default {
       -webkit-box-orient: vertical;
     }
 
-    .article-row__actions {
+    .article-cell--stats {
+      padding-top: 14px;
+      padding-right: 0;
+    }
+
+    .article-cell--actions {
       flex-direction: row;
       gap: 14px;
+      padding-top: 14px;
+      padding-right: 0;
     }
 
     .el-pagination {

@@ -27,13 +27,6 @@
             >
               搜索
             </el-button>
-            <el-button
-              size="medium"
-              icon="el-icon-refresh"
-              @click="resetSearch"
-            >
-              重置
-            </el-button>
           </div>
         </div>
         <div
@@ -81,91 +74,117 @@
       class="document-list"
       :class="{ 'without-actions': !canManageDocuments }"
     >
-      <div class="document-list__head">
-        <div class="document-list__select"></div>
-        <div class="document-list__title">文档信息</div>
-        <div class="document-list__stats">阅读/下载/收藏/评分</div>
-        <div v-if="canManageDocuments" class="document-list__actions">操作</div>
-      </div>
-      <div v-loading="loading" class="document-list__body">
-        <template v-if="docs.length > 0">
-          <div
-            v-for="item in docs"
-            :key="item.uuid || item.id"
-            class="document-row"
-          >
-            <div class="document-row__select">
-              <el-checkbox :value="false" disabled></el-checkbox>
-            </div>
-            <div class="document-row__info">
+      <el-table
+        v-loading="loading"
+        :data="docs"
+        row-key="id"
+        class="document-table"
+      >
+        <el-table-column
+          :min-width="360"
+          class-name="document-column--info"
+          label="文档"
+        >
+          <template slot-scope="scope">
+            <div class="document-cell document-cell--info">
               <nuxt-link
                 target="_blank"
                 :to="{
                   name: 'document-id',
-                  params: { id: item.uuid || item.id },
+                  params: { id: scope.row.uuid || scope.row.id },
                 }"
                 class="document-row__cover"
               >
-                <img :src="getDocumentCover(item)" :alt="item.title" />
+                <document-cover :width="88" :document="scope.row" />
               </nuxt-link>
               <div class="document-row__content">
-                <el-tooltip :content="item.title" placement="top-start">
+                <el-tooltip :content="scope.row.title" placement="top-start">
                   <nuxt-link
                     target="_blank"
                     :to="{
                       name: 'document-id',
-                      params: { id: item.uuid || item.id },
+                      params: { id: scope.row.uuid || scope.row.id },
                     }"
                     class="document-row__title"
                   >
-                    {{ item.title }}
+                    {{ scope.row.title }}
                   </nuxt-link>
                 </el-tooltip>
                 <div class="document-row__meta">
                   <span>
                     <i class="el-icon-time"></i>
-                    {{ formatRelativeTime(item.created_at) }}
+                    {{ formatRelativeTime(scope.row.created_at) }}
                   </span>
-                  <span>{{ formatBytes(item.size) }}</span>
-                  <span>{{ item.pages || '-' }} 页</span>
+                  <span>{{ formatBytes(scope.row.size) }}</span>
+                  <span>{{ scope.row.pages || '-' }} 页</span>
                   <el-tag
                     v-if="showPrivateData"
-                    :type="filterStatus(item.status).type"
+                    :type="filterStatus(scope.row.status).type"
                     size="mini"
                     effect="plain"
                   >
-                    {{ filterStatus(item.status).label }}
+                    {{ filterStatus(scope.row.status).label }}
                   </el-tag>
                 </div>
               </div>
             </div>
-            <div class="document-row__stats">
+          </template>
+        </el-table-column>
+        <el-table-column
+          min-width="140"
+          class-name="document-column--stats"
+          label="统计数据"
+        >
+          <template slot-scope="scope">
+            <div class="document-cell document-cell--stats">
               <div class="document-row__stat-line">
                 <span
-                  ><i class="el-icon-view"></i> {{ item.view_count || 0 }}</span
+                  v-if="
+                    settings.display.show_document_view_count || showPrivateData
+                  "
+                  ><i class="el-icon-view"></i>
+                  {{ scope.row.view_count || 0 }}</span
                 >
                 <span
+                  v-if="
+                    settings.display.show_document_download_count ||
+                    showPrivateData
+                  "
                   ><i class="el-icon-download"></i>
-                  {{ item.download_count || 0 }}</span
+                  {{ scope.row.download_count || 0 }}</span
                 >
                 <span
+                  v-if="
+                    settings.display.show_document_favorite_count ||
+                    showPrivateData
+                  "
                   ><i class="el-icon-star-off"></i>
-                  {{ item.favorite_count || 0 }}</span
+                  {{ scope.row.favorite_count || 0 }}</span
                 >
               </div>
               <div class="document-row__rating">
-                <el-rate :value="item.score || 0.0" disabled></el-rate>
+                <el-rate :value="scope.row.score || 0.0" disabled></el-rate>
                 <span class="document-row__rating-value">{{
-                  formatScore(item.score)
+                  formatScore(scope.row.score)
                 }}</span>
               </div>
             </div>
-            <div v-if="canManageDocuments" class="document-row__actions">
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="canManageDocuments"
+          width="92"
+          label="操作"
+          class-name="document-column--actions"
+        >
+          <template slot-scope="scope">
+            <div class="document-cell document-cell--actions">
               <el-button
                 type="text"
                 icon="el-icon-edit-outline"
                 :loading="updating"
-                @click="updateDocument(item)"
+                size="mini"
+                @click="updateDocument(scope.row)"
               >
                 编辑
               </el-button>
@@ -173,15 +192,18 @@
                 type="text"
                 icon="el-icon-delete"
                 class="is-danger"
-                @click="deleteDocument(item)"
+                size="mini"
+                @click="deleteDocument(scope.row)"
               >
                 删除
               </el-button>
             </div>
-          </div>
+          </template>
+        </el-table-column>
+        <template slot="empty">
+          <el-empty description="暂无文档"></el-empty>
         </template>
-        <el-empty v-else description="暂无文档"></el-empty>
-      </div>
+      </el-table>
     </div>
 
     <el-pagination
@@ -254,7 +276,7 @@ export default {
       loading: false,
       query: {
         page: parseInt(this.$route.query.page) || 1,
-        size: 20,
+        size: 10,
         wd: this.$route.query.wd || '',
         created_at: [],
       },
@@ -282,7 +304,7 @@ export default {
         this.query = {
           wd: this.$route.query.wd || '',
           page: parseInt(this.$route.query.page) || 1,
-          size: parseInt(this.$route.query.size) || 20,
+          size: parseInt(this.$route.query.size) || 10,
           created_at: Array.isArray(this.$route.query.created_at)
             ? this.$route.query.created_at
             : [],
@@ -539,15 +561,14 @@ export default {
     }
   }
 
-  .document-list {
-    border: 1px solid #edf1f7;
-    border-radius: 16px;
-    overflow: hidden;
-    background-color: #fff;
-  }
+  // .document-list {
+  //   border: 1px solid #edf1f7;
+  //   border-radius: 16px;
+  //   overflow: hidden;
+  //   background-color: #fff;
+  // }
 
-  .document-list__head,
-  .document-row {
+  .document-list__head {
     display: grid;
     grid-template-columns: 36px minmax(0, 1.7fr) minmax(180px, 260px) 92px;
     column-gap: 18px;
@@ -573,21 +594,48 @@ export default {
     min-height: 120px;
   }
 
-  .document-row {
-    padding: 22px;
-    border-top: 1px solid #f1f4f8;
+  .document-table {
+    width: 100%;
+
+    &::before {
+      display: none;
+    }
+
+    .el-table__body-wrapper {
+      overflow-x: hidden;
+    }
+
+    td {
+      padding: 0;
+      border-bottom: 1px solid #f1f4f8;
+      vertical-align: top;
+    }
+
+    .cell {
+      padding: 0;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
   }
 
-  .document-row__select {
+  .document-cell {
+    padding: 16px 0 16px 10px;
+  }
+
+  .document-cell--select {
     display: flex;
     justify-content: center;
+    padding-left: 12px;
   }
 
-  .document-row__info {
+  .document-cell--info {
     display: flex;
     align-items: flex-start;
     min-width: 0;
     gap: 16px;
+    padding-right: 18px;
   }
 
   .document-row__cover {
@@ -647,9 +695,10 @@ export default {
     }
   }
 
-  .document-row__stats {
+  .document-cell--stats {
     color: #6b7280;
     font-size: 14px;
+    padding-right: 18px;
   }
 
   .document-row__stat-line {
@@ -687,11 +736,12 @@ export default {
     font-weight: 600;
   }
 
-  .document-row__actions {
+  .document-cell--actions {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+    padding-right: 22px;
 
     .el-button {
       margin-left: 0;
@@ -712,15 +762,23 @@ export default {
 
 @media screen and (max-width: 1200px) {
   .com-user-document {
-    .document-list__head,
-    .document-row {
+    .document-list__head {
       grid-template-columns: 36px minmax(0, 1fr) 180px 78px;
     }
 
     .document-list.without-actions {
-      .document-list__head,
-      .document-row {
+      .document-list__head {
         grid-template-columns: 36px minmax(0, 1fr) 180px;
+      }
+    }
+
+    .document-table {
+      .document-column--stats {
+        width: 180px;
+      }
+
+      .document-column--actions {
+        width: 78px;
       }
     }
 
@@ -773,19 +831,48 @@ export default {
       display: none;
     }
 
-    .document-row,
-    .document-list.without-actions .document-row {
-      grid-template-columns: 1fr;
-      row-gap: 14px;
-      padding: 18px 16px;
+    .document-table {
+      .el-table__body,
+      .el-table__body tbody,
+      .el-table__body tr,
+      .el-table__body td {
+        display: block;
+        width: 100% !important;
+      }
+
+      .el-table__body-wrapper {
+        overflow-x: visible;
+      }
+
+      .el-table__row {
+        padding: 18px 16px;
+        border-top: 1px solid #f1f4f8;
+      }
+
+      .el-table__row:first-child {
+        border-top: 0;
+      }
+
+      td {
+        border-bottom: 0;
+      }
+
+      .cell {
+        overflow: visible;
+      }
     }
 
-    .document-row__select {
+    .document-column--select {
       display: none;
     }
 
-    .document-row__info {
+    .document-cell {
+      padding: 0;
+    }
+
+    .document-cell--info {
       gap: 12px;
+      padding-right: 0;
     }
 
     .document-row__cover {
@@ -804,13 +891,21 @@ export default {
     }
 
     .document-row__stats,
-    .document-row__actions {
+    .document-cell--actions {
       padding-left: 60px;
     }
 
-    .document-row__actions {
+    .document-cell--stats {
+      padding-top: 14px;
+      padding-right: 0;
+      padding-left: 60px;
+    }
+
+    .document-cell--actions {
       flex-direction: row;
       gap: 14px;
+      padding-top: 14px;
+      padding-right: 0;
     }
 
     .el-pagination {

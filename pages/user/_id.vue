@@ -156,12 +156,12 @@ export default {
       background-color: #edf1f7;
     }
 
-    .el-tabs__item {
-      padding: 0 0 14px;
-      height: auto;
-      line-height: 1;
-      margin-right: 28px;
-    }
+    // .el-tabs__item {
+    //   padding: 0 0 14px;
+    //   height: auto;
+    //   line-height: 1;
+    //   // margin-right: 28px;
+    // }
 
     .el-tabs__active-bar {
       height: 3px;
