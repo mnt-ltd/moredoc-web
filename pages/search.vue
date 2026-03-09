@@ -155,7 +155,10 @@
         </div>
 
         <!-- 文档语言 -->
-        <div v-if="availableLangs.length > 0" class="filter-section">
+        <div
+          v-if="availableLangs.length > 0 && searchType !== 1"
+          class="filter-section"
+        >
           <h4>
             <i class="el-icon-s-flag"></i>
             语言
@@ -190,7 +193,10 @@
         </div>
 
         <!-- 文档格式 -->
-        <div v-if="availableExts.length > 0" class="filter-section">
+        <div
+          v-if="availableExts.length > 0 && searchType !== 1"
+          class="filter-section"
+        >
           <h4>
             <i class="el-icon-document"></i>
             格式

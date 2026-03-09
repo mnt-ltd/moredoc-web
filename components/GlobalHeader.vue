@@ -488,6 +488,10 @@ export default {
     ])
     await this.checkAndRefreshUser()
 
+    if (this.user.id > 0) {
+      await this.getSignedToday()
+    }
+
     const trees = categoryToTrees(this.categories)
     this.categoryDocumentTrees = trees.filter((item) => {
       if (

@@ -103,7 +103,6 @@ export default {
       this.activeTab = value
     },
   },
-
   methods: {
     tabClick(e) {
       this.$router.push({

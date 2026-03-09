@@ -69,6 +69,7 @@
         >共 <strong>{{ total }}</strong> 个文档</span
       >
     </div>
+    <<<<<<< HEAD ======= >>>>>>> pro
     <div
       class="document-list"
       :class="{ 'without-actions': !canManageDocuments }"
