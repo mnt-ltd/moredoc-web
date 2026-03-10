@@ -329,3 +329,11 @@ body {
 .el-descriptions-item__label.is-bordered-label {
   background-color: #e9eef3;
 }
+
+.hover-link:hover {
+  color: #409eff;
+}
+
+.hover-link-imp:hover {
+  color: #409eff !important;
+}

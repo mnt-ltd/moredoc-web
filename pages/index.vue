@@ -93,9 +93,37 @@
             </div>
           </div>
         </div>
-        <div v-loading="loadingRecommend" class="recommend-grid">
+        <div class="recommend-grid">
+          <template v-if="loadingRecommend">
+            <div
+              v-for="item in 8"
+              :key="'recommend-skeleton-' + item"
+              class="recommend-card recommend-card-skeleton"
+            >
+              <el-skeleton animated>
+                <template slot="template">
+                  <div class="recommend-cover-skeleton">
+                    <el-skeleton-item variant="image" />
+                  </div>
+                  <el-skeleton-item
+                    variant="h3"
+                    class="recommend-title-skeleton"
+                  />
+                  <el-skeleton-item
+                    variant="text"
+                    class="recommend-meta-skeleton recommend-meta-skeleton-author"
+                  />
+                  <el-skeleton-item
+                    variant="text"
+                    class="recommend-meta-skeleton"
+                  />
+                </template>
+              </el-skeleton>
+            </div>
+          </template>
           <nuxt-link
             v-for="item in displayedRecommends"
+            v-else
             :key="'recommend-' + item.id"
             :to="`/document/${item.uuid}`"
             target="_blank"
@@ -109,7 +137,7 @@
                 :show-ext="true"
               />
             </div>
-            <div class="recommend-title">{{ item.title }}</div>
+            <div class="recommend-title hover-link">{{ item.title }}</div>
             <div class="recommend-author">
               <i class="el-icon el-icon-user"></i>
               {{ getRecommendAuthor(item) }}
@@ -137,61 +165,95 @@
           </div>
         </div>
         <div class="latest-grid">
-          <div class="latest-panel">
-            <div class="panel-header">
-              <div class="panel-title">
-                <span class="panel-icon doc-icon el-icon-document"></span>
-                <strong>文档资料</strong>
-              </div>
-              <nuxt-link to="/category" target="_blank" class="panel-more">
-                查看更多 <i class="el-icon el-icon-arrow-right"></i>
-              </nuxt-link>
-            </div>
-            <nuxt-link
-              v-for="(doc, index) in latestDocuments.slice(0, 8)"
-              :key="'latest-doc-' + doc.id"
-              :to="`/document/${doc.uuid}`"
-              target="_blank"
-              class="latest-item"
+          <template v-if="loadingLatest">
+            <div
+              v-for="panel in 2"
+              :key="'latest-skeleton-panel-' + panel"
+              class="latest-panel latest-panel-skeleton"
             >
-              <span
-                class="latest-rank"
-                :class="index > 2 ? 'latest-rank-older' : ''"
-                >{{ index + 1 }}</span
+              <div class="panel-header panel-header-skeleton">
+                <div class="panel-title-skeleton-wrap">
+                  <el-skeleton-item
+                    variant="image"
+                    class="panel-icon-skeleton"
+                  />
+                  <el-skeleton-item variant="h3" class="panel-title-skeleton" />
+                </div>
+                <el-skeleton-item variant="text" class="panel-more-skeleton" />
+              </div>
+              <div
+                v-for="item in 8"
+                :key="'latest-skeleton-row-' + panel + '-' + item"
+                class="latest-item latest-item-skeleton"
               >
-              <span class="latest-text">{{ doc.title }}</span>
-              <span class="latest-date">{{ formatDate(doc.created_at) }}</span>
-            </nuxt-link>
-          </div>
+                <el-skeleton-item variant="text" class="latest-rank-skeleton" />
+                <el-skeleton-item variant="text" class="latest-text-skeleton" />
+                <el-skeleton-item variant="text" class="latest-date-skeleton" />
+              </div>
+            </div>
+          </template>
 
-          <div class="latest-panel">
-            <div class="panel-header">
-              <div class="panel-title">
-                <span class="panel-icon article-icon el-icon-notebook-2"></span>
-                <strong>{{ articleName }}</strong>
+          <template v-else>
+            <div class="latest-panel">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <span class="panel-icon doc-icon el-icon-document"></span>
+                  <strong>文档资料</strong>
+                </div>
+                <nuxt-link to="/category" target="_blank" class="panel-more">
+                  查看更多 <i class="el-icon el-icon-arrow-right"></i>
+                </nuxt-link>
               </div>
-              <nuxt-link to="/article" target="_blank" class="panel-more">
-                查看更多 <i class="el-icon el-icon-arrow-right"></i>
+              <nuxt-link
+                v-for="(doc, index) in latestDocuments.slice(0, 8)"
+                :key="'latest-doc-' + doc.id"
+                :to="`/document/${doc.uuid}`"
+                target="_blank"
+                class="latest-item hover-link"
+              >
+                <span
+                  class="latest-rank"
+                  :class="index > 2 ? 'latest-rank-older' : ''"
+                  >{{ index + 1 }}</span
+                >
+                <span class="latest-text">{{ doc.title }}</span>
+                <span class="latest-date">{{
+                  formatDate(doc.created_at)
+                }}</span>
               </nuxt-link>
             </div>
-            <nuxt-link
-              v-for="(article, index) in articles.slice(0, 8)"
-              :key="'latest-article-' + article.id"
-              :to="`/article/${article.identifier || article.id}`"
-              target="_blank"
-              class="latest-item"
-            >
-              <span
-                class="latest-rank"
-                :class="index > 2 ? 'latest-rank-older' : ''"
-                >{{ index + 1 }}</span
+
+            <div class="latest-panel">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <span
+                    class="panel-icon article-icon el-icon-notebook-2"
+                  ></span>
+                  <strong>{{ articleName }}</strong>
+                </div>
+                <nuxt-link to="/article" target="_blank" class="panel-more">
+                  查看更多 <i class="el-icon el-icon-arrow-right"></i>
+                </nuxt-link>
+              </div>
+              <nuxt-link
+                v-for="(article, index) in articles.slice(0, 8)"
+                :key="'latest-article-' + article.id"
+                :to="`/article/${article.identifier || article.id}`"
+                target="_blank"
+                class="latest-item hover-link"
               >
-              <span class="latest-text">{{ article.title }}</span>
-              <span class="latest-date">{{
-                formatDate(article.created_at)
-              }}</span>
-            </nuxt-link>
-          </div>
+                <span
+                  class="latest-rank"
+                  :class="index > 2 ? 'latest-rank-older' : ''"
+                  >{{ index + 1 }}</span
+                >
+                <span class="latest-text">{{ article.title }}</span>
+                <span class="latest-date">{{
+                  formatDate(article.created_at)
+                }}</span>
+              </nuxt-link>
+            </div>
+          </template>
         </div>
       </section>
 
@@ -270,7 +332,8 @@ export default {
       banners: [],
       recommends: [],
       latestDocuments: [],
-      loadingRecommend: false,
+      loadingRecommend: true,
+      loadingLatest: true,
       search: {
         wd: '',
       },
@@ -338,9 +401,8 @@ export default {
     await Promise.all([
       this.listBanner(),
       this.getRecommendDocuments(),
-      this.getLatestDocuments(),
-      this.getArticles(),
       this.getNotices(),
+      this.getLatestContent(),
     ])
   },
   methods: {
@@ -380,16 +442,27 @@ export default {
     },
     async getRecommendDocuments() {
       this.loadingRecommend = true
-      const res = await listDocument({
-        // field: ['id', 'title', 'uuid', 'category_name', 'username', 'cover'],
-        is_recommend: true,
-        order: 'recommend_at desc',
-        limit: 24,
-      })
-      this.loadingRecommend = false
-      if (res.status === 200) {
-        this.recommends = res.data.document || []
-        this.recommendBatch = 0
+      try {
+        const res = await listDocument({
+          // field: ['id', 'title', 'uuid', 'category_name', 'username', 'cover'],
+          is_recommend: true,
+          order: 'recommend_at desc',
+          limit: 24,
+        })
+        if (res.status === 200) {
+          this.recommends = res.data.document || []
+          this.recommendBatch = 0
+        }
+      } finally {
+        this.loadingRecommend = false
+      }
+    },
+    async getLatestContent() {
+      this.loadingLatest = true
+      try {
+        await Promise.all([this.getLatestDocuments(), this.getArticles()])
+      } finally {
+        this.loadingLatest = false
       }
     },
     async getLatestDocuments() {
@@ -629,6 +702,10 @@ export default {
   }
 }
 
+.recommend-card-skeleton {
+  display: block;
+}
+
 .recommend-cover-wrap {
   display: flex;
   align-items: center;
@@ -645,6 +722,35 @@ export default {
       transform: none;
     }
   }
+}
+
+.recommend-cover-skeleton {
+  width: 100%;
+  height: 190px;
+  margin-bottom: 14px;
+
+  .el-skeleton__item {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+  }
+}
+
+.recommend-title-skeleton {
+  width: 88%;
+  height: 20px;
+  margin: 0 auto 12px;
+}
+
+.recommend-meta-skeleton {
+  width: 70%;
+  height: 14px;
+  margin: 0 auto;
+}
+
+.recommend-meta-skeleton-author {
+  width: 58%;
+  margin-bottom: 8px;
 }
 
 .recommend-title {
@@ -784,6 +890,10 @@ export default {
   padding: 18px 18px 10px;
 }
 
+.latest-panel-skeleton {
+  padding-bottom: 14px;
+}
+
 .panel-header {
   display: flex;
   align-items: center;
@@ -791,6 +901,32 @@ export default {
   padding-bottom: 14px;
   margin-bottom: 2px;
   border-bottom: 1px solid #eef2f6;
+}
+
+.panel-header-skeleton {
+  align-items: center;
+}
+
+.panel-title-skeleton-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-icon-skeleton {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.panel-title-skeleton {
+  width: 96px;
+  height: 18px;
+}
+
+.panel-more-skeleton {
+  width: 72px;
+  height: 14px;
 }
 
 .panel-title {
@@ -836,6 +972,27 @@ export default {
   &:last-child {
     border-bottom: 0;
   }
+}
+
+.latest-item-skeleton {
+  cursor: default;
+}
+
+.latest-rank-skeleton {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+}
+
+.latest-text-skeleton {
+  width: 88%;
+  height: 14px;
+}
+
+.latest-date-skeleton {
+  width: 72px;
+  height: 14px;
+  justify-self: end;
 }
 
 .latest-rank {
@@ -946,6 +1103,10 @@ export default {
   background: #f6f6f6;
   color: #52606d;
   font-size: 13px;
+  &:hover {
+    background: #e9e9e9;
+    color: #2f7cf6;
+  }
 
   span {
     overflow: hidden;
@@ -1025,6 +1186,11 @@ export default {
 
   .recommend-cover-wrap {
     min-height: 150px;
+    margin-bottom: 10px;
+  }
+
+  .recommend-cover-skeleton {
+    height: 150px;
     margin-bottom: 10px;
   }
 
