@@ -20,7 +20,7 @@
               <nuxt-link
                 target="_blank"
                 :to="`/document/${doc.uuid || doc.id}`"
-                class="el-link el-link--primary"
+                class="el-link el-link--primary hover-link-imp"
                 ><img
                   :src="`/static/images/${getIcon(doc.ext)}_24.png`"
                   :alt="`${getIcon(doc.ext)} 文档`"

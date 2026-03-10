@@ -101,7 +101,7 @@
                 :show-ext="true"
               />
             </div>
-            <div class="recommend-title">{{ item.title }}</div>
+            <div class="recommend-title hover-link">{{ item.title }}</div>
             <div class="recommend-author">
               <i class="el-icon el-icon-user"></i>
               {{ getRecommendAuthor(item) }}
@@ -144,7 +144,7 @@
               :key="'latest-doc-' + doc.id"
               :to="`/document/${doc.uuid}`"
               target="_blank"
-              class="latest-item"
+              class="latest-item hover-link"
             >
               <span
                 class="latest-rank"
@@ -171,7 +171,7 @@
               :key="'latest-article-' + article.id"
               :to="`/article/${article.identifier || article.id}`"
               target="_blank"
-              class="latest-item"
+              class="latest-item hover-link"
             >
               <span
                 class="latest-rank"
@@ -915,6 +915,10 @@ export default {
   background: #f6f6f6;
   color: #52606d;
   font-size: 13px;
+  &:hover {
+    background: #e9e9e9;
+    color: #2f7cf6;
+  }
 
   span {
     overflow: hidden;
