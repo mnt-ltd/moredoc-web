@@ -338,8 +338,6 @@ export default {
       this.listBanner(),
       this.getRecommendDocuments(),
       this.getLatestContent(),
-      // this.getLatestDocuments(),
-      // this.getArticles(),
     ])
   },
   head() {
