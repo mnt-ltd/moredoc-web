@@ -62,9 +62,7 @@
       <div>
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-card shadow="never">
-              <notice-board :notices="notices" />
-            </el-card>
+            <notice-board :notices="notices" />
           </el-col>
         </el-row>
       </div>
@@ -347,7 +345,6 @@ export default {
     await Promise.all([
       this.listBanner(),
       this.getRecommendDocuments(),
-      this.getLatestDocuments(),
       this.getNotices(),
       this.getLatestContent(),
     ])
