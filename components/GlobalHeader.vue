@@ -596,7 +596,7 @@ export default {
       this.$nextTick(() => {
         setTimeout(() => {
           this.$refs.searchModalInput.focus()
-        }, 500)
+        }, 300)
       })
     },
     closeSearchModal() {
@@ -752,6 +752,11 @@ export default {
     }
     .el-menu--horizontal > .el-submenu .el-submenu__title {
       padding-top: 1px;
+      height: 70px;
+      line-height: 70px;
+      font-size: 15px;
+      font-weight: 500 !important;
+      color: unset;
     }
     .el-menu.el-menu--horizontal {
       border-bottom: 0;
