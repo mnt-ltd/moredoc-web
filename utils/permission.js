@@ -155,6 +155,16 @@ const cumstomPermissionMap = {
     children: [],
     pages: ['/admin/spider', '/admin/spider/document'],
   },
+  'api.v1.SpiderArticleAPI': {
+    label: '采集文章管理',
+    path: 'ListSpiderArticleList',
+    children: [],
+    pages: [
+      '/admin/spider',
+      '/admin/spider/articlelist',
+      '/admin/spider/articledetail',
+    ],
+  },
   'api.v1.PunishmentAPI': {
     label: '惩罚管理',
     path: 'ListPunishment',
@@ -320,6 +330,16 @@ export const adminMenus = [
         page: '/admin/spider/document',
         title: '文档采集',
         icon: 'el-icon-tickets',
+      },
+      {
+        page: '/admin/spider/articlelist',
+        title: '文章嗅探',
+        icon: 'el-icon-link',
+      },
+      {
+        page: '/admin/spider/articledetail',
+        title: '文章采集',
+        icon: 'el-icon-reading',
       },
     ],
   },

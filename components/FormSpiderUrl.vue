@@ -146,11 +146,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import {
-  spiderUrlStatusOptions,
-  searchEngineOptions,
-  documentDomainOptions,
-} from '~/utils/enum'
+import { spiderUrlStatusOptions } from '~/utils/enum'
 import { createSpiderUrl, updateSpiderUrl } from '~/api/spiderurl'
 export default {
   name: 'FormSpiderUrl',
@@ -193,26 +189,12 @@ export default {
         ext: ['pdf'],
       },
       spiderUrlStatusOptions,
-      searchEngineOptions,
-      documentDomainOptions,
       languages: [],
       domains: [],
     }
   },
   computed: {
     ...mapGetters('setting', ['settings']),
-    searchOptions() {
-      const options = [...this.searchEngineOptions]
-      // 如果配置了 OpenSERP 地址，则添加到搜索引擎选项中
-      if (this.openserpAddr && this.openserpAddr.trim()) {
-        const addr = this.openserpAddr.trim()
-        options.unshift({
-          label: 'OpenSERP',
-          value: addr,
-        })
-      }
-      return options
-    },
   },
   watch: {
     initSpiderUrl: {
