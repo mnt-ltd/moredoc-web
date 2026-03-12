@@ -40,4 +40,10 @@ export const listSpiderUrl = (params) => {
   })
 }
 
-
+export const batchSetSpiderUrlStatus = (data) => {
+  return service({
+    url: '/api/v1/spiderurl/status',
+    method: 'put',
+    data,
+  })
+}
