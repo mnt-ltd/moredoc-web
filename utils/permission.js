@@ -329,7 +329,7 @@ export const adminMenus = [
       {
         page: '/admin/spider/document',
         title: '文档采集',
-        icon: 'el-icon-tickets',
+        icon: 'el-icon-document',
       },
       {
         page: '/admin/spider/articlelist',
@@ -339,7 +339,7 @@ export const adminMenus = [
       {
         page: '/admin/spider/articledetail',
         title: '文章采集',
-        icon: 'el-icon-reading',
+        icon: 'el-icon-tickets',
       },
     ],
   },

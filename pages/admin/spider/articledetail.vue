@@ -193,19 +193,13 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-tabs v-model="detailTab">
-            <el-tab-pane label="HTML编辑" name="editor">
-              <el-input
-                v-model="detailForm.content"
-                type="textarea"
-                :rows="20"
-              ></el-input>
-            </el-tab-pane>
-            <el-tab-pane label="效果预览" name="preview">
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <div class="article-preview" v-html="detailForm.content"></div>
-            </el-tab-pane>
-          </el-tabs>
+          <el-form-item label="文章内容">
+            <TinymceEditor
+              v-model="detailForm.content"
+              :height="560"
+              placeholder="请输入文章 HTML 内容"
+            />
+          </el-form-item>
           <el-form-item class="mgt-20px">
             <el-button
               type="primary"
@@ -298,6 +292,7 @@
 import { mapGetters } from 'vuex'
 import FormSearch from '~/components/FormSearch.vue'
 import TableListV2 from '~/components/TableListV2.vue'
+import TinymceEditor from '~/components/TinymceEditor.vue'
 import { listCategory } from '~/api/category'
 import {
   batchUpdateSpiderArticleDetail,
@@ -312,7 +307,7 @@ import { spiderArticleDetailStatusOptions } from '~/utils/enum'
 
 export default {
   name: 'AdminSpiderArticleDetailPage',
-  components: { FormSearch, TableListV2 },
+  components: { FormSearch, TableListV2, TinymceEditor },
   layout: 'admin',
   data() {
     return {

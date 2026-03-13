@@ -36,10 +36,11 @@
           <!-- 内容编辑器 -->
           <div class="wp-editor-section">
             <el-form-item class="wp-editor-item">
-              <Editor
+              <TinymceEditor
                 v-if="canIPublish"
                 v-model="article.content"
-                :init="init"
+                :height="1213"
+                placeholder="请输入内容"
               />
               <div v-else class="wp-no-permission-editor">
                 <div class="wp-no-permission-hint">
@@ -253,14 +254,12 @@
 </template>
 
 <script>
-import tinymce from 'tinymce/tinymce'
-import Editor from '@tinymce/tinymce-vue'
-import MarkdownIt from 'markdown-it'
+import TinymceEditor from '~/components/TinymceEditor.vue'
 import { createArticle, updateArticle } from '~/api/article'
 import { articleStatusOptions } from '~/utils/enum'
 export default {
   components: {
-    Editor,
+    TinymceEditor,
   },
   props: {
     isAdmin: {
@@ -299,33 +298,8 @@ export default {
     },
   },
   data() {
-    const markdownParser = new MarkdownIt({
-      html: false,
-      linkify: true,
-      typographer: true,
-    })
-    const vm = this
     return {
       articleStatusOptions,
-      init: {
-        base_url: '/static/tinymce',
-        language_url: '/static/tinymce/langs/zh-Hans.js', // 语言包的路径
-        language: 'zh-Hans', // 语言
-        skin_url: '/static/tinymce/skins/ui/oxide', // skin路径
-        height: 1213, // 编辑器高度
-        branding: true, // 是否禁用“Powered by TinyMCE”
-        placeholder: '请输入内容',
-        menubar: true, // 顶部菜单栏显示,
-        toolbar:
-          'undo redo | styleselect blocks | kityformula-editor codesample code table link bold italic | bullist numlist alignleft aligncenter alignright alignjustify indent outdent | image media | searchreplace preview fullscreen help',
-        plugins:
-          'kityformula-editor image media wordcount codesample code link charmap emoticons table searchreplace visualblocks fullscreen table help wordcount lists preview paste',
-        relative_urls: false, // 是否使用相对路径
-        images_upload_handler: this.images_upload_handler,
-        setup(editor) {
-          editor.on('Paste', (event) => vm.handleEditorPaste(event, editor))
-        },
-      },
       loading: false,
       article: {
         title: '',
@@ -338,7 +312,6 @@ export default {
         status: 0,
         notice: 0,
       },
-      markdownParser,
     }
   },
   watch: {
@@ -356,89 +329,9 @@ export default {
       immediate: true,
     },
   },
-  mounted() {
-    tinymce.init({})
-  },
   methods: {
-    images_upload_handler(blobInfo, progress) {
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
-        xhr.withCredentials = false
-        xhr.open('POST', '/api/v1/upload/article?type=image')
-        // 设置header
-        xhr.setRequestHeader(
-          'Authorization',
-          'Bearer ' + this.$store.state.user.token
-        )
-        xhr.upload.onprogress = (e) => {
-          progress((e.loaded / e.total) * 100)
-        }
-
-        xhr.onload = () => {
-          if (xhr.status === 403) {
-            reject(new Error('HTTP Error: ' + xhr.status))
-            return
-          }
-          if (xhr.status < 200 || xhr.status >= 300) {
-            reject(new Error('HTTP Error: ' + xhr.status))
-            return
-          }
-          const res = JSON.parse(xhr.responseText)
-          resolve(res.data.url)
-        }
-
-        xhr.onerror = () => {
-          reject(
-            new Error(
-              'Image upload failed due to a XHR Transport error. Code: ' +
-                xhr.status
-            )
-          )
-        }
-        const formData = new FormData()
-        formData.append('file', blobInfo.blob(), blobInfo.filename())
-        xhr.send(formData)
-      })
-    },
     crawlArticleSuccess(artice) {
       this.article = { ...this.article, ...artice }
-    },
-    handleEditorPaste(event, editor) {
-      const clipboardData = event.clipboardData
-      if (!clipboardData) {
-        return
-      }
-
-      const plaintext = clipboardData.getData('text/plain')
-      // const htmlData = clipboardData.getData('text/html')
-
-      if (!plaintext) {
-        return
-      }
-
-      if (!this.shouldTreatAsMarkdown(plaintext)) {
-        return
-      }
-
-      event.preventDefault()
-      const converted = this.markdownParser.render(plaintext)
-      editor.insertContent(converted)
-    },
-    containsHtml(content) {
-      const htmlTagPattern = /<\/?[a-z][\s\S]*?>/i
-      return htmlTagPattern.test(content)
-    },
-    shouldTreatAsMarkdown(content) {
-      const text = content.trim()
-      if (!text) {
-        return false
-      }
-      if (this.containsHtml(text)) {
-        return false
-      }
-      const markdownIndicators =
-        /(^|\n)(#{1,6}\s.+|[-*+]\s.+|\d+\.\s.+|>\s.+|`{3}|\[[^\]]+\]\([^)]+\)|\*{1,2}[^*]+\*{1,2})/
-      return markdownIndicators.test(text)
     },
     onSubmit() {
       this.$refs.formArticle.validate(async (valid) => {
@@ -472,12 +365,6 @@ export default {
   },
 }
 </script>
-
-<style>
-.tox-promotion {
-  display: none !important;
-}
-</style>
 
 <style lang="scss" scoped>
 // Element UI 风格的管理界面
