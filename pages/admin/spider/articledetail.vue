@@ -65,6 +65,7 @@
           <el-button
             type="text"
             icon="el-icon-view"
+            size="small"
             @click="previewRow(scope.row)"
             >预览</el-button
           >
@@ -72,6 +73,7 @@
             v-if="scope.row.article_id"
             type="text"
             icon="el-icon-link"
+            size="small"
             @click="openPublishedArticle(scope.row)"
             >已发布</el-button
           >
@@ -120,16 +122,6 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="发布时间">
-                <el-date-picker
-                  v-model="detailForm.published_at"
-                  type="datetime"
-                  placeholder="请选择发布时间"
-                  style="width: 100%"
-                ></el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
               <el-form-item label="状态">
                 <el-select v-model="detailForm.status" style="width: 100%">
                   <el-option
@@ -149,11 +141,12 @@
               :rows="3"
             ></el-input>
           </el-form-item>
-          <el-form-item label="内容规则(JSON)">
+          <el-form-item label="内容规则(HTML选择器，每行一个)">
             <el-input
               v-model="detailForm.content_rules"
               type="textarea"
               :rows="5"
+              placeholder="示例：.article-content&#10;#article-content"
             ></el-input>
           </el-form-item>
           <el-tabs v-model="detailTab">
@@ -437,9 +430,6 @@ export default {
       if (res.status === 200) {
         this.detailForm = {
           ...res.data,
-          published_at: res.data.published_at
-            ? new Date(res.data.published_at)
-            : '',
         }
         this.detailVisible = true
         this.detailTab = 'editor'
@@ -485,7 +475,6 @@ export default {
               description: item.description,
               keywords: item.keywords,
               source: item.source,
-              published_at: item.published_at,
               content_rules: item.content_rules,
               enable_browser: item.enable_browser,
             }
@@ -526,7 +515,6 @@ export default {
             description: item.description,
             keywords: item.keywords,
             source: item.source,
-            published_at: item.published_at,
             content_rules: item.content_rules,
             enable_browser: item.enable_browser,
           }

@@ -36,7 +36,7 @@
         :show-edit="true"
         :show-delete="true"
         :show-select="true"
-        :actions-min-width="150"
+        :actions-min-width="100"
         @selectRow="selectRow"
         @editRow="editRow"
         @deleteRow="deleteRow"
@@ -44,6 +44,7 @@
         <template slot="actions" slot-scope="scope">
           <el-button
             type="text"
+            size="small"
             icon="el-icon-reading"
             @click="viewDetails(scope.row)"
             >文章</el-button
@@ -121,20 +122,20 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-form-item label="列表规则(JSON)">
+          <el-form-item label="列表规则(HTML选择器，每行一个)">
             <el-input
               v-model="form.list_rules"
               type="textarea"
               :rows="8"
-              placeholder='示例：{"selectors":[".article-list a"],"exclude_selectors":[".pager"],"include_keywords":["/article/"],"exclude_keywords":["/tag/"],"same_host":true}'
+              placeholder="示例：.article-list > .news-list a"
             ></el-input>
           </el-form-item>
-          <el-form-item label="内容规则(JSON)">
+          <el-form-item label="内容规则(HTML选择器，每行一个)">
             <el-input
               v-model="form.content_rules"
               type="textarea"
-              :rows="8"
-              placeholder='示例：{"mode":1,"select":".article-content","exclude":"script\n.style","replace":"原标题 => "}'
+              :rows="5"
+              placeholder="示例：.article-content > #article-content"
             ></el-input>
           </el-form-item>
           <el-form-item>
@@ -347,11 +348,14 @@ export default {
       if (this.form.id > 0) {
         res = await updateSpiderArticleList({ ...this.form })
       } else {
-        res = await createSpiderArticleList({
+        const req = {
           ...this.form,
           url: this.form.url.split('\n'),
           frequency: parseInt(this.form.frequency) || 0,
-        })
+        }
+        delete req.id
+        delete req.status
+        res = await createSpiderArticleList(req)
       }
       this.loadingSubmit = false
       if (res.status === 200) {
