@@ -443,6 +443,7 @@ export default {
         exclude: this.detailForm.content_exclude_rules,
         replace: this.detailForm.content_replace_rules,
         select: this.detailForm.content_rules,
+        title_selector: this.detailForm.content_title_rules,
       }
       if (this.detailForm.content_rules.trim() === '') {
         req.select = ''
