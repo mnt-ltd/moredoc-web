@@ -63,13 +63,6 @@
       >
         <template slot="actions" slot-scope="scope">
           <el-button
-            type="text"
-            icon="el-icon-view"
-            size="small"
-            @click="previewRow(scope.row)"
-            >预览</el-button
-          >
-          <el-button
             v-if="scope.row.article_id"
             type="text"
             icon="el-icon-link"
@@ -135,7 +128,15 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="来源链接">
-                <el-input v-model="detailForm.url"></el-input>
+                <el-input v-model="detailForm.url">
+                  <el-button
+                    slot="append"
+                    :loading="crawling"
+                    icon="el-icon-truck"
+                    @click="crawlArticle"
+                    >采集文章</el-button
+                  >
+                </el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -205,10 +206,13 @@
             <el-button
               type="primary"
               :loading="loadingSubmit"
+              icon="el-icon-check"
               @click="saveDetail"
               >保存</el-button
             >
-            <el-button @click="detailVisible = false">关闭</el-button>
+            <el-button icon="el-icon-close" @click="detailVisible = false"
+              >关闭</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -298,6 +302,7 @@ import {
   listSpiderArticleDetail,
   updateSpiderArticleDetail,
 } from '~/api/spiderarticle'
+import { crawlArticle } from '~/api/article'
 import { categoryToTrees, genLinkHTML, parseQueryIntArray } from '~/utils/utils'
 import { spiderArticleDetailStatusOptions } from '~/utils/enum'
 
@@ -337,6 +342,7 @@ export default {
         value: 'id',
       },
       spiderArticleDetailStatusOptions,
+      crawling: false,
     }
   },
   head() {
@@ -425,6 +431,37 @@ export default {
         this.categoryTrees = categoryToTrees(res.data.category || [], false)
       }
     },
+    async crawlArticle() {
+      this.crawling = true
+      const req = {
+        url: this.detailForm.url,
+        mode: 1,
+        exclude: this.detailForm.content_exclude_rules,
+        replace: this.detailForm.content_replace_rules,
+        select: this.detailForm.content_rules,
+      }
+      if (this.detailForm.content_rules.trim() === '') {
+        req.select = ''
+        req.mode = 0
+      }
+      const res = await crawlArticle(req)
+      this.crawling = false
+      if (res.status !== 200) {
+        this.$message.error(res.data.message)
+        this.detailForm.error = res.data.message
+        this.detailForm.status = 4 // 采集失败
+      } else {
+        this.detailForm = {
+          ...this.detailForm,
+          title: res.data.title,
+          content: res.data.content,
+          source: res.data.source,
+          description: res.data.description,
+          status: 3, // 采集成功
+        }
+        this.$message.success('采集成功')
+      }
+    },
     async fetchData() {
       this.loading = true
       const res = await listSpiderArticleDetail({
@@ -475,9 +512,6 @@ export default {
       } else {
         this.$message.error(res.data.message)
       }
-    },
-    previewRow(row) {
-      this.editRow(row)
     },
     openPublishedArticle(row) {
       window.open(`/admin/article/set?id=${row.article_id}`, '_blank')
