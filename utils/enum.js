@@ -178,6 +178,25 @@ export const spiderDocumentStatusOptions = [
   { label: '发布失败', value: 8, type: 'danger' },
 ]
 
+export const spiderArticleListStatusOptions = [
+  { label: '待嗅探', value: 0, type: 'info' },
+  { label: '嗅探中', value: 1, type: 'primary' },
+  { label: '嗅探完成', value: 2, type: 'success' },
+  { label: '嗅探失败', value: 3, type: 'warning' },
+]
+
+export const spiderArticleDetailStatusOptions = [
+  { label: '待采集', value: 0, type: 'info' },
+  { label: '采集队列', value: 1, type: 'primary' },
+  { label: '采集中', value: 2, type: 'primary' },
+  { label: '采集成功', value: 3, type: 'success' },
+  { label: '采集失败', value: 4, type: 'warning' },
+  { label: '发布队列', value: 5, type: 'primary' },
+  { label: '发布中', value: 6, type: 'primary' },
+  { label: '发布成功', value: 7, type: 'success' },
+  { label: '发布失败', value: 8, type: 'danger' },
+]
+
 export const datetimePickerPunishmentOptions = {
   shortcuts: [
     {

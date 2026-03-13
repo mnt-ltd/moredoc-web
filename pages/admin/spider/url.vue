@@ -11,7 +11,21 @@
         @onSearch="onSearch"
         @onCreate="onCreate"
         @onDelete="batchDelete"
-      />
+      >
+        <template slot="buttons">
+          <el-form-item>
+            <el-tooltip content="批量将链接设置为待嗅探状态">
+              <el-button
+                :disabled="selectedRow.length === 0"
+                type="warning"
+                icon="el-icon-refresh"
+                @click="batchSetStatus(0)"
+                >批量嗅探</el-button
+              >
+            </el-tooltip>
+          </el-form-item>
+        </template>
+      </FormSearch>
     </el-card>
     <el-card shadow="never" class="mgt-20px">
       <TableListV2
@@ -69,13 +83,19 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { listSpiderUrl, deleteSpiderUrl, getSpiderUrl } from '~/api/spiderurl'
+import {
+  listSpiderUrl,
+  deleteSpiderUrl,
+  getSpiderUrl,
+  batchSetSpiderUrlStatus,
+} from '~/api/spiderurl'
 import { genLinkHTML, parseQueryIntArray } from '~/utils/utils'
 import { spiderUrlStatusOptions } from '~/utils/enum'
 import TableListV2 from '~/components/TableListV2.vue'
 import FormSearch from '~/components/FormSearch.vue'
 import FormSpiderUrl from '~/components/FormSpiderUrl.vue'
 export default {
+  name: 'AdminSpiderUrlPage',
   components: { TableListV2, FormSearch, FormSpiderUrl },
   layout: 'admin',
   data() {
@@ -120,7 +140,7 @@ export default {
       },
     },
   },
-  async created() {
+  created() {
     this.initSearchForm()
     this.initTableListFields()
   },
@@ -130,7 +150,7 @@ export default {
       const res = await listSpiderUrl(this.search)
       if (res.status === 200) {
         const spiderUrls = res.data.spider_url || []
-        spiderUrls.map((item) => {
+        spiderUrls.forEach((item) => {
           item.url_html = genLinkHTML(item.url, item.url)
         })
         this.spiderUrls = spiderUrls
@@ -145,6 +165,32 @@ export default {
       this.$router.push({
         query: this.search,
       })
+    },
+    batchSetStatus(status) {
+      if (this.selectedRow.length === 0) {
+        this.$message.warning('请选择要操作的链接')
+        return
+      }
+      const ids = this.selectedRow.map((item) => item.id)
+      this.$confirm(
+        `您确定要将选中的【${this.selectedRow.length}条】链接设置为【${spiderUrlStatusOptions[status].label}】状态吗？`,
+        '温馨提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(async () => {
+          const res = await batchSetSpiderUrlStatus({ id: ids, status })
+          if (res.status === 200) {
+            this.$message.success('操作成功')
+            this.listSpiderUrl()
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+        .catch(() => {})
     },
     handlePageChange(val) {
       this.search.page = val
@@ -244,7 +290,7 @@ export default {
     },
     initTableListFields() {
       const statusEnum = {}
-      spiderUrlStatusOptions.map((item) => {
+      spiderUrlStatusOptions.forEach((item) => {
         statusEnum[item.value] = item
       })
 
@@ -259,6 +305,30 @@ export default {
         },
         { prop: 'url_html', label: '链接', minWidth: 250, type: 'html' },
         { prop: 'total', label: '发现文档', width: 100, type: 'number' },
+        {
+          prop: 'enable_browser',
+          label: '浏览器渲染',
+          width: 100,
+          type: 'bool',
+        },
+        {
+          prop: 'frequency',
+          label: '检测频率(天)',
+          width: 110,
+          type: 'number',
+        },
+        { prop: 'level', label: '嗅探层级', width: 100, type: 'number' },
+        { prop: 'url_prefix', label: '链接前缀', minWidth: 260 },
+        {
+          prop: 'include_url_keywords',
+          label: '包含关键字',
+          minWidth: 150,
+        },
+        {
+          prop: 'exclude_url_keywords',
+          label: '排除关键字',
+          minWidth: 150,
+        },
         { prop: 'error', label: '错误', minWidth: 150 },
         { prop: 'created_at', label: '创建时间', width: 170, type: 'datetime' },
         { prop: 'updated_at', label: '更新时间', width: 170, type: 'datetime' },
