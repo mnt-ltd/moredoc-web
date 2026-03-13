@@ -111,17 +111,12 @@
       <div style="padding: 0 20px 20px">
         <el-form ref="detailForm" :model="detailForm" label-position="top">
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="16">
               <el-form-item label="标题">
                 <el-input v-model="detailForm.title"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="来源">
-                <el-input v-model="detailForm.source"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
+            <el-col :span="8">
               <el-form-item label="状态">
                 <el-select v-model="detailForm.status" style="width: 100%">
                   <el-option
@@ -133,6 +128,16 @@
                 </el-select>
               </el-form-item>
             </el-col>
+            <el-col :span="12">
+              <el-form-item label="来源名称">
+                <el-input v-model="detailForm.source"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="来源链接">
+                <el-input v-model="detailForm.url"></el-input>
+              </el-form-item>
+            </el-col>
           </el-row>
           <el-form-item label="摘要">
             <el-input
@@ -141,14 +146,48 @@
               :rows="3"
             ></el-input>
           </el-form-item>
-          <el-form-item label="内容规则(HTML选择器，每行一个)">
-            <el-input
-              v-model="detailForm.content_rules"
-              type="textarea"
-              :rows="5"
-              placeholder="示例：.article-content&#10;#article-content"
-            ></el-input>
-          </el-form-item>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="标题规则(HTML选择器，每行一个)">
+                <el-input
+                  v-model="detailForm.content_title_rules"
+                  type="textarea"
+                  :rows="4"
+                  placeholder="示例：h1.article-title"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="内容规则(HTML选择器，每行一个)">
+                <el-input
+                  v-model="detailForm.content_rules"
+                  type="textarea"
+                  :rows="4"
+                  placeholder="示例：.article-content"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="排除规则(HTML选择器，每行一个)">
+                <el-input
+                  v-model="detailForm.content_exclude_rules"
+                  type="textarea"
+                  :rows="4"
+                  placeholder="示例：script"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="替换规则(每行一条，格式：a ==> b)">
+                <el-input
+                  v-model="detailForm.content_replace_rules"
+                  type="textarea"
+                  :rows="4"
+                  placeholder="示例：原标题 ==> &#10;来源：本站 ==> "
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-tabs v-model="detailTab">
             <el-tab-pane label="HTML编辑" name="editor">
               <el-input
@@ -476,6 +515,9 @@ export default {
               keywords: item.keywords,
               source: item.source,
               content_rules: item.content_rules,
+              content_title_rules: item.content_title_rules,
+              content_exclude_rules: item.content_exclude_rules,
+              content_replace_rules: item.content_replace_rules,
               enable_browser: item.enable_browser,
             }
           })
@@ -516,6 +558,9 @@ export default {
             keywords: item.keywords,
             source: item.source,
             content_rules: item.content_rules,
+            content_title_rules: item.content_title_rules,
+            content_exclude_rules: item.content_exclude_rules,
+            content_replace_rules: item.content_replace_rules,
             enable_browser: item.enable_browser,
           }
         })

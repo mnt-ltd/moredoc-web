@@ -91,20 +91,6 @@
               placeholder="请输入文章列表页地址。新增时支持多行输入，每行一个链接。"
             ></el-input>
           </el-form-item>
-          <el-row v-if="form.id > 0" :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="状态">
-                <el-select v-model="form.status" placeholder="请选择状态">
-                  <el-option
-                    v-for="item in spiderArticleListStatusOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="启用浏览器渲染">
@@ -121,23 +107,72 @@
                 ></el-input>
               </el-form-item>
             </el-col>
+            <el-col v-if="form.id > 0" :span="8">
+              <el-form-item label="状态">
+                <el-select v-model="form.status" placeholder="请选择状态">
+                  <el-option
+                    v-for="item in spiderArticleListStatusOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
           </el-row>
           <el-form-item label="列表规则(HTML选择器，每行一个)">
             <el-input
               v-model="form.list_rules"
               type="textarea"
-              :rows="8"
+              :rows="3"
               placeholder="示例：.article-list > .news-list a"
             ></el-input>
           </el-form-item>
-          <el-form-item label="内容规则(HTML选择器，每行一个)">
-            <el-input
-              v-model="form.content_rules"
-              type="textarea"
-              :rows="5"
-              placeholder="示例：.article-content > #article-content"
-            ></el-input>
-          </el-form-item>
+
+          <!-- 折叠 -->
+          <el-divider content-position="left">内容采集规则</el-divider>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="标题规则(HTML选择器，每行一个)">
+                <el-input
+                  v-model="form.content_title_rules"
+                  type="textarea"
+                  :rows="3"
+                  placeholder="示例：h1.article-title"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="内容规则(HTML选择器，每行一个)">
+                <el-input
+                  v-model="form.content_rules"
+                  type="textarea"
+                  :rows="3"
+                  placeholder="示例：.article-content > #article-content"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="排除规则(HTML选择器，每行一个)">
+                <el-input
+                  v-model="form.content_exclude_rules"
+                  type="textarea"
+                  :rows="3"
+                  placeholder="示例：script"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="替换规则(每行一条，格式：a => b)">
+                <el-input
+                  v-model="form.content_replace_rules"
+                  type="textarea"
+                  :rows="3"
+                  placeholder="示例：原字符 => 新字符"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-form-item>
             <el-button
               type="primary"
@@ -230,6 +265,9 @@ export default {
         enable_browser: false,
         list_rules: '',
         content_rules: '',
+        content_title_rules: '',
+        content_exclude_rules: '',
+        content_replace_rules: '',
       }
     },
     async fetchData() {
