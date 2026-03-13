@@ -111,7 +111,11 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="状态">
-                <el-select v-model="detailForm.status" style="width: 100%">
+                <el-select
+                  v-model="detailForm.status"
+                  :disabled="detailForm.status > 4"
+                  style="width: 100%"
+                >
                   <el-option
                     v-for="item in spiderArticleDetailStatusOptions"
                     :key="item.value"
@@ -457,6 +461,7 @@ export default {
           content: res.data.content,
           source: res.data.source,
           description: res.data.description,
+          keywords: res.data.keywords,
           status: 3, // 采集成功
         }
         this.$message.success('采集成功')
