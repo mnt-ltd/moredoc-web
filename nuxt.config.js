@@ -90,6 +90,10 @@ export default {
       target: 'http://127.0.0.1:8880', // 目标服务器
       changeOrigin: true,
     },
+    '/swagger': {
+      target: process.env.API_BASE_URL, // 目标服务器
+      changeOrigin: true,
+    },
   },
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   // pwa: {
