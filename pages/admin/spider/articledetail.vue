@@ -406,7 +406,7 @@ export default {
           type: 'enum',
           enum: statusEnum,
         },
-        { prop: 'title', label: '标题', minWidth: 220 },
+        { prop: 'title', label: '标题', minWidth: 300 },
         { prop: 'url_html', label: '来源链接', minWidth: 260, type: 'html' },
         { prop: 'source', label: '来源', width: 150 },
         {
