@@ -985,11 +985,11 @@ export default {
         line-height: 52px;
         padding: 0 32px 0 18px;
         border: 0;
-        border-right: 1px solid #e8edf5;
+        // border-right: 1px solid #e8edf5;
         border-radius: 16px 0 0 16px;
         font-weight: 600;
         color: #243b53;
-        background: #f9fbff;
+        background: #fff;
       }
       .el-input__suffix {
         right: 10px;
@@ -1006,11 +1006,23 @@ export default {
         padding-left: 18px;
         border-left: 0;
       }
+      & > .el-input__inner {
+        border-radius: 0 !important;
+      }
       .el-input-group__prepend {
         border: 2px solid #4e9bff;
         border-right: 0;
         border-radius: 18px 0 0 18px;
         // overflow: hidden;
+        &::after {
+          content: '';
+          position: absolute;
+          top: 20%;
+          right: -2px;
+          width: 1px;
+          height: 60%;
+          background-color: #ccc;
+        }
       }
       .el-input-group__append {
         border: 2px solid #4e9bff;
@@ -1244,7 +1256,7 @@ export default {
       background: #fff;
       .search-form {
         width: 100% !important;
-        padding-top: 50px;
+        padding-top: 70px;
       }
       .search-form-shell {
         gap: 0;
