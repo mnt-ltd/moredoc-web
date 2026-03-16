@@ -250,18 +250,6 @@ export default {
     clearValidate() {
       this.$refs.formSpiderUrl.clearValidate()
     },
-    async searchDomains(wd = '') {
-      this.loadingDomains = true
-      const res = await listSourceDomain({
-        size: 20,
-        page: 1,
-        wd,
-      })
-      this.loadingDomains = false
-      if (res.data && res.data.sourceDomain) {
-        this.domains = res.data.sourceDomain || []
-      }
-    },
     genLinks() {
       if (this.generator.engine.length === 0) {
         this.$message.error('请选择搜索引擎')
