@@ -97,6 +97,22 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="来源名称" prop="source">
+            <el-input
+              v-model="document.source"
+              placeholder="请输入文档来源名称，如：xx网站名称"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="来源地址" prop="source_url">
+            <el-input
+              v-model="document.source_url"
+              placeholder="请输入文档来源地址，如：https://www.example.com"
+            ></el-input>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-form-item label="关键字">
         <el-input

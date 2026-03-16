@@ -79,8 +79,7 @@ import { getArticle } from '~/api/article'
 export default {
   data() {
     return {
-      canIPublish: false,
-      loading: false,
+      loading: true,
       previewMode: false,
       article: {
         title: '',
@@ -117,23 +116,19 @@ export default {
     trees() {
       return this.categoryTrees.filter((item) => item.type === 1)
     },
+    canIPublish() {
+      if (!this.user || this.user.id <= 0) return false
+      return this.groups.some((group) => group.enable_article)
+    },
   },
-  created() {
-    this.canIPublishArticle()
-    this.getCategories()
+  async created() {
+    await this.getUserGroups()
+    await Promise.all([this.getArticle(), this.getCategories()])
+    this.loading = false
   },
   methods: {
     ...mapActions('category', ['getCategories']),
-    canIPublishArticle() {
-      this.groups.forEach((group) => {
-        if (group.enable_article) {
-          this.canIPublish = true
-        }
-      })
-      if (this.canIPublish) {
-        this.getArticle()
-      }
-    },
+    ...mapActions('user', ['getUserGroups']),
     async getArticle() {
       const identifier = this.$route.query.identifier
       if (!identifier) {

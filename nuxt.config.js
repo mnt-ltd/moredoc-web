@@ -109,6 +109,10 @@ export default {
       target: process.env.API_BASE_URL, // 目标服务器
       changeOrigin: true,
     },
+    '/swagger': {
+      target: process.env.API_BASE_URL, // 目标服务器
+      changeOrigin: true,
+    },
   },
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   // pwa: {

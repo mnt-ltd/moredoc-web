@@ -89,7 +89,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .com-category-card {
-  max-height: calc(100vh - 80px);
+  max-height: calc(100vh - 200px);
   overflow: auto;
   .row {
     display: flex;

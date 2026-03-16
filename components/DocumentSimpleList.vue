@@ -5,7 +5,7 @@
         <el-popover
           v-if="showPopover"
           :placement="placement"
-          width="480"
+          width="520"
           trigger="hover"
           :open-delay="500"
           @show="getPopoverDocument(doc.id)"

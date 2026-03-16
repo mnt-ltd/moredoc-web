@@ -105,6 +105,39 @@
                     ></el-input-number>
                   </el-form-item>
                 </el-col>
+                <template v-if="setMoreInfo">
+                  <!-- 文档来源source和来源地址source_url -->
+                  <el-col :lg="6" :md="8" :sm="24">
+                    <el-form-item label="默认来源名称" prop="source">
+                      <template slot="label">
+                        <span>默认来源名称</span>
+                        <ToolTip
+                          content="如果您不想为每个文档单独设置来源，可以在此处设置默认来源名称"
+                        />
+                      </template>
+                      <el-input
+                        v-model="document.source"
+                        :disabled="loading"
+                        placeholder="请输入文档来源名称，如XX网站名称"
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :lg="10" :md="16" :sm="24">
+                    <el-form-item label="默认来源地址" prop="source_url">
+                      <template slot="label">
+                        <span>默认来源地址</span>
+                        <ToolTip
+                          content="如果您不想为每个文档单独设置来源地址，可以在此处设置默认来源地址，如：https://www.example.com"
+                        />
+                      </template>
+                      <el-input
+                        v-model="document.source_url"
+                        :disabled="loading"
+                        placeholder="请输入文档来源地址，如：https://www.example.com"
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                </template>
               </el-row>
 
               <el-divider content-position="left">上传选项</el-divider>
@@ -123,11 +156,8 @@
                 </el-col>
                 <el-col :lg="6" :md="12" :sm="24">
                   <el-form-item>
-                    <el-checkbox
-                      v-model="setKeywordsAndDescription"
-                      :disabled="loading"
-                    >
-                      🏷️ 设置关键字与摘要
+                    <el-checkbox v-model="setMoreInfo" :disabled="loading">
+                      🏷️ 设置更多信息
                     </el-checkbox>
                   </el-form-item>
                 </el-col>
@@ -191,7 +221,7 @@
                 border="inner"
                 :column-config="{ resizable: true }"
                 :row-config="{
-                  height: setKeywordsAndDescription ? 130 : 80,
+                  height: setMoreInfo ? 130 : 80,
                 }"
                 class="enhanced-file-table"
               >
@@ -271,6 +301,28 @@
                         </el-button>
                       </div>
                     </div>
+                    <div v-show="setMoreInfo" class="file-item mgt-20px">
+                      <el-row :gutter="10">
+                        <el-col :span="10">
+                          <el-input
+                            v-model="row.source"
+                            placeholder="如：XX网站名称"
+                            size="small"
+                          >
+                            <template slot="prepend">来源名称</template>
+                          </el-input>
+                        </el-col>
+                        <el-col :span="14">
+                          <el-input
+                            v-model="row.source_url"
+                            placeholder="如：https://example.com"
+                            size="small"
+                          >
+                            <template slot="prepend">来源地址</template>
+                          </el-input>
+                        </el-col>
+                      </el-row>
+                    </div>
                   </template>
                 </vxe-column>
 
@@ -291,7 +343,7 @@
                   </template>
                 </vxe-column>
 
-                <template v-if="setKeywordsAndDescription">
+                <template v-if="setMoreInfo">
                   <vxe-column
                     field="keywords"
                     title="关键字与摘要"
@@ -488,7 +540,7 @@ export default {
         price: 0,
         overwrite: false,
       },
-      setKeywordsAndDescription: false,
+      setMoreInfo: false,
       currentStep: 0, // 当前步骤
       maxDocumentSize: 50 * 1024 * 1024,
       fileList: [],
@@ -557,6 +609,7 @@ export default {
       )
     },
     canIUploadDocument() {
+      if (!this.user || !this.user.id) return false
       return this.groups.some((group) => group.enable_upload)
     },
     // 当前步骤计算
@@ -575,8 +628,8 @@ export default {
       immediate: true,
     },
   },
-  created() {
-    this.getCategories()
+  async created() {
+    await Promise.all([this.getCategories(), this.getUserGroups()])
     try {
       this.maxDocumentSize =
         (this.settings.security.max_document_size || 50) * 1024 * 1024
@@ -605,7 +658,7 @@ export default {
   },
   methods: {
     formatBytes,
-    ...mapActions('user', ['getUser']),
+    ...mapActions('user', ['getUser', 'getUserGroups']),
     ...mapActions('category', ['getCategories']),
 
     // 设置是否允许选择文件夹上传
@@ -649,6 +702,8 @@ export default {
           title: file.name.substring(0, file.name.lastIndexOf('.')),
           ext,
           price: this.document.price || 0,
+          source: this.document.source || '',
+          source_url: this.document.source_url || '',
           language: this.document.language || '',
           progressStatus: 'success',
           error: '',
@@ -777,6 +832,8 @@ export default {
         description: doc.description,
         attachment_id: doc.attachment_id,
         language: doc.language,
+        source: doc.source,
+        source_url: doc.source_url,
       }
 
       const createDocumentRequest = {

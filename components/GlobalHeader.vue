@@ -9,13 +9,16 @@
         ></div>
       </div>
     </template>
-    <el-header v-if="($route && $route.name !== 'search') || isMobile">
+    <el-header
+      v-if="$route.name !== 'search' || isMobile"
+      :height="'70px'"
+      :class="{
+        'is-scrolled': isScrolled,
+        'is-hidden': !isHeaderVisible,
+      }"
+    >
       <div>
-        <el-menu
-          :default-active="activePath"
-          class="float-left"
-          mode="horizontal"
-        >
+        <el-menu :default-active="activePath" mode="horizontal">
           <el-menu-item class="logo" index="/">
             <nuxt-link to="/"
               ><img
@@ -110,29 +113,25 @@
             </template>
           </template>
           <el-menu-item
-            v-show="
-              $route.path !== '/' ||
-              navigations.filter((item) => item.enable).length <= 3
-            "
             index="searchbox"
             class="nav-searchbox hidden-xs-only"
             :class="navigations.length <= 2 ? 'nav-searchbox-large' : ''"
           >
             <el-input
-              v-model="search.wd"
               class="search-input"
               size="large"
+              readonly
               :placeholder="
                 $route.path.startsWith('/article')
                   ? '搜索文章...'
                   : '搜索文档...'
               "
-              @keydown.native.enter="onSearch"
+              @click.native="openSearchModal"
             >
               <i
                 slot="suffix"
                 class="el-icon-search el-input__icon"
-                @click="onSearch"
+                @click="openSearchModal"
               >
               </i>
             </el-input>
@@ -149,6 +148,14 @@
                 ><i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item v-if="sign.id > 0" disabled
+                  ><i class="fa fa-calendar-check-o"></i>
+                  今日已签到</el-dropdown-item
+                >
+                <el-dropdown-item v-else command="sign"
+                  ><i class="fa fa-calendar-plus-o"></i>
+                  每日签到</el-dropdown-item
+                >
                 <el-dropdown-item command="ucenter"
                   ><i class="fa fa-home"></i> 个人主页</el-dropdown-item
                 >
@@ -174,9 +181,18 @@
           <el-menu-item
             v-else
             index="/login"
-            class="float-right hidden-xs-only"
+            class="float-right hidden-xs-only login"
           >
-            <nuxt-link to="/login"><i class="el-icon-user"></i> 登录</nuxt-link>
+            <nuxt-link to="/login">
+              <el-button type="primary" round>
+                &nbsp;
+                <i
+                  class="el-icon el-icon-user"
+                  style="color: #fff; font-size: 1.2em"
+                ></i>
+                登录 &nbsp;
+              </el-button>
+            </nuxt-link>
           </el-menu-item>
           <el-menu-item
             v-if="isMobile"
@@ -196,16 +212,16 @@
       class="menu-drawer-box"
     >
       <el-input
-        v-model="search.wd"
         class="search-input"
         size="large"
         placeholder="搜索文档..."
-        @keydown.native.enter="onSearch"
+        readonly
+        @click.native="openSearchModal"
       >
         <i
           slot="suffix"
           class="el-icon-search el-input__icon"
-          @click="onSearch"
+          @click="openSearchModal"
         >
         </i>
       </el-input>
@@ -370,6 +386,43 @@
         </template>
       </el-menu>
     </el-drawer>
+
+    <div
+      class="search-modal-overlay"
+      :class="{ show: searchModalVisible }"
+      @click="closeSearchModal"
+    >
+      <div class="search-modal" @click.stop>
+        <div class="search-modal-header">
+          <h3>搜索</h3>
+          <button class="close-btn" type="button" @click="closeSearchModal">
+            <i class="el-icon-close"></i>
+          </button>
+        </div>
+        <div class="search-modal-body">
+          <el-input
+            ref="searchModalInput"
+            v-model="search.wd"
+            class="search-modal-input"
+            size="large"
+            :placeholder="searchPlaceholder"
+            @keydown.native.enter="onSearch"
+          >
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          </el-input>
+          <el-button
+            type="primary"
+            class="search-submit-btn"
+            :disabled="!search.wd"
+            icon="el-icon-search"
+            @click="onSearch"
+          >
+            搜索
+          </el-button>
+        </div>
+        <div class="search-modal-footer">按 Enter 键快速搜索</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -396,10 +449,15 @@ export default {
       activeCollapse: 'categories',
       advertisements: [],
       activePath: '/',
+      searchModalVisible: false,
+      isScrolled: false,
+      isHeaderVisible: true,
+      lastScrollTop: 0,
     }
   },
   async fetch() {
     this.resetActivePath()
+    this.syncSearchType()
     await Promise.all([
       this.getCategories(),
       this.getSettings(),
@@ -444,17 +502,37 @@ export default {
     ...mapGetters('user', ['user', 'token', 'allowPages', 'permissions']),
     ...mapGetters('setting', ['settings', 'navigations']),
     ...mapGetters('category', ['categories']),
+    searchPlaceholder() {
+      return this.search.type === 1 ? '搜索文章...' : '搜索文档...'
+    },
   },
   watch: {
     $route(to, from) {
       this.resetActivePath()
+      this.syncSearchType()
+      if (to.fullPath !== from.fullPath) {
+        this.closeSearchModal()
+      }
+    },
+    'user.id'(value) {
+      if (value > 0) {
+        this.getSignedToday()
+      } else {
+        this.sign = { id: 0 }
+      }
     },
   },
   mounted() {
-    window.addEventListener('focus', this.checkAndRefreshUser())
+    window.addEventListener('focus', this.handleWindowFocus)
+    window.addEventListener('scroll', this.handleScroll, { passive: true })
+    this.handleScroll()
+    if (this.user.id > 0) {
+      this.getSignedToday()
+    }
   },
   beforeDestroy() {
-    window.removeEventListener('focus', this.checkAndRefreshUser())
+    window.removeEventListener('focus', this.handleWindowFocus)
+    window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
     ...mapActions('category', ['getCategories']),
@@ -466,6 +544,42 @@ export default {
       'getUserPermissions',
       'getUserGroups',
     ]),
+    handleWindowFocus() {
+      this.checkAndRefreshUser()
+    },
+    handleScroll() {
+      const currentScrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop ||
+        0
+
+      this.isScrolled = currentScrollTop > 10
+
+      if (currentScrollTop > this.lastScrollTop && currentScrollTop > 100) {
+        this.isHeaderVisible = false
+      } else {
+        this.isHeaderVisible = true
+      }
+
+      this.lastScrollTop = currentScrollTop
+    },
+    syncSearchType() {
+      this.search.type = this.$route.path.startsWith('/article') ? 1 : 0
+    },
+    openSearchModal() {
+      this.syncSearchType()
+      this.search.wd = ''
+      this.searchModalVisible = true
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.$refs.searchModalInput.focus()
+        }, 300)
+      })
+    },
+    closeSearchModal() {
+      this.searchModalVisible = false
+    },
     showMenuDrawer() {
       this.getSignedToday()
       this.menuDrawerVisible = true
@@ -490,12 +604,19 @@ export default {
       })
     },
     async getSignedToday() {
+      if (!this.user.id) {
+        return
+      }
       const res = await getSignedToday()
       if (res.status === 200) {
         this.sign = res.data || this.sign
       }
     },
     async signToday() {
+      if (this.sign.id > 0) {
+        this.$message.warning('今日已签到')
+        return
+      }
       const res = await signToday()
       if (res.status === 200) {
         const sign = res.data || { id: 1 }
@@ -511,9 +632,10 @@ export default {
       }
     },
     onSearch() {
-      if (!this.search.wd) return
+      const wd = (this.search.wd || '').trim()
+      if (!wd) return
       this.menuDrawerVisible = false
-      const wd = this.search.wd
+      this.searchModalVisible = false
       this.$router.push({
         path: '/search',
         query: {
@@ -523,17 +645,11 @@ export default {
       })
       this.search.wd = ''
     },
-    updateVuex() {
-      this.checkAndRefreshUser()
-      // 更新系统配置信息
-      this.getSettings()
-      // 更新分类信息
-      this.getCategories()
-      // 更新导航栏
-      this.listNavigation()
-    },
     async handleDropdown(command) {
       switch (command) {
+        case 'sign':
+          await this.signToday()
+          break
         case 'logout':
           await this.logout()
           location.reload()
@@ -571,7 +687,20 @@ export default {
     z-index: 100;
     overflow: hidden;
     border-bottom: 1px solid $background-grey-light;
-    .logo {
+    transition: transform 0.3s ease, box-shadow 0.3s ease,
+      background-color 0.3s ease;
+
+    &.is-scrolled {
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    &.is-hidden {
+      transform: translateY(-100%);
+    }
+
+    .logo,
+    .login {
       &.is-active {
         border-color: transparent !important;
       }
@@ -582,19 +711,25 @@ export default {
     }
     & > div {
       margin: 0 auto;
-      width: $default-width;
+      // width: $default-width;
       max-width: $max-width;
     }
     .el-menu--horizontal > .el-submenu .el-submenu__title {
       padding-top: 1px;
+      height: 70px;
+      line-height: 70px;
+      font-size: 15px;
+      font-weight: 500 !important;
+      color: unset;
     }
     .el-menu.el-menu--horizontal {
       border-bottom: 0;
-      width: $default-width;
+      // width: $default-width;
       max-width: $max-width;
       min-width: $min-width;
       .float-right {
         float: right;
+        padding-right: 15px;
         a {
           padding: 0 15px;
         }
@@ -613,6 +748,7 @@ export default {
       }
       &.is-active {
         border-color: transparent;
+        color: #6095f7;
       }
       .el-input {
         width: 200px;
@@ -620,16 +756,20 @@ export default {
     }
     a {
       text-decoration: none;
-      height: 60px;
-      line-height: 60px;
+      height: 70px;
+      line-height: 70px;
       display: inline-block;
       // padding: 0 20px;
       padding: 0 15px;
-      font-size: 14px;
-      font-weight: normal;
+      font-size: 15px;
+      // font-weight: normal;
     }
     .el-menu-item {
       padding: 0;
+      color: #333;
+      font-weight: bold;
+      height: 70px;
+      line-height: 70px;
       [class^='el-icon-'] {
         font-size: 15px;
         margin-right: 2px;
@@ -637,6 +777,135 @@ export default {
       & > span {
         position: relative;
         top: -1px;
+      }
+      &.is-active {
+        color: #6095f7;
+      }
+    }
+
+    .search-input {
+      cursor: pointer;
+
+      .el-input__inner {
+        border-radius: 20px;
+        background-color: $background-grey-light;
+        cursor: pointer;
+        &:focus {
+          background-color: #fff;
+        }
+      }
+    }
+  }
+
+  .search-modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 100px;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+
+    &.show {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  .search-modal {
+    width: calc(100% - 32px);
+    max-width: 560px;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    transform: translateY(-18px) scale(0.96);
+    transition: all 0.3s ease;
+
+    .search-modal-overlay.show & {
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .search-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid #f0f1f2;
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #303133;
+    }
+
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 8px;
+      background: #f5f7fa;
+      color: #909399;
+      cursor: pointer;
+
+      &:hover {
+        color: #606266;
+      }
+    }
+  }
+
+  .search-modal-body {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+
+    .search-modal-input {
+      flex: 1;
+
+      .el-input__inner {
+        height: 44px;
+        border-radius: 12px;
+      }
+    }
+
+    .search-submit-btn {
+      min-width: 96px;
+      height: 44px;
+      border-radius: 12px;
+    }
+  }
+
+  .search-modal-footer {
+    padding: 0 20px 18px;
+    color: #909399;
+    font-size: 13px;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: $mobile-width) {
+  .com-global-header {
+    .search-modal-overlay {
+      padding-top: 70px;
+      padding-right: 16px;
+      padding-left: 16px;
+    }
+
+    .search-modal-body {
+      flex-direction: column;
+
+      .search-submit-btn {
+        width: 100%;
       }
     }
   }
