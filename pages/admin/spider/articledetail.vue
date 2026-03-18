@@ -117,7 +117,9 @@
                   style="width: 100%"
                 >
                   <el-option
-                    v-for="item in spiderArticleDetailStatusOptions"
+                    v-for="item in spiderArticleDetailStatusOptions.filter(
+                      (o) => (detailForm.status > 4 ? true : o.value <= 4)
+                    )"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
