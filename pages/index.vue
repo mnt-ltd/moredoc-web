@@ -257,12 +257,7 @@
         </div>
       </section>
 
-      <section
-        v-if="
-          settings.display.show_index_categories && featuredCategories.length
-        "
-        class="section-block categories-section"
-      >
+      <section class="section-block categories-section">
         <div class="section-header">
           <div>
             <h2>分类浏览</h2>

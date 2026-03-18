@@ -195,10 +195,7 @@
         </section>
 
         <!-- Featured Categories Section -->
-        <section
-          v-if="settings.display.show_index_categories"
-          class="featured-categories"
-        >
+        <section class="featured-categories">
           <div class="section-header">
             <h2 class="section-title">
               <i class="el-icon-menu"></i>

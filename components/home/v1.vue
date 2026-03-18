@@ -247,10 +247,7 @@
         v-html="item.content"
       ></div>
     </template>
-    <div
-      v-if="settings.display.show_index_categories"
-      class="categories mgt-20px"
-    >
+    <div class="categories mgt-20px">
       <el-row :gutter="20">
         <div
           v-for="(category, index) in categoryTreesV2.filter(
